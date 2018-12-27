@@ -1,0 +1,34 @@
+package com.thor.core.dao.mapper;
+
+import com.thor.common.base.BaseMapper;
+import com.thor.core.entity.Resource;
+import com.thor.core.entity.Tag;
+import com.thor.core.entity.User;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ *
+ * @auth ldang
+ */
+@Mapper
+public interface UserMapper extends BaseMapper<User> {
+
+	List<User> list(Map<String, Object> paramMap);
+
+	List<User> login(User user);
+
+	User get(Map<String, Object> paramMap);
+
+	void add(User user);
+
+	void update(User user);
+
+    void delete(Map<String, Object> paramMap);
+
+    List<Resource> getResources(Map<String,Object> paramMap);
+
+    List<Tag> getTags(Map<String,Object> paramMap);
+}

@@ -1,0 +1,34 @@
+spring:
+    datasource:
+        hikari:
+            first: 
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/stark?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+                username: root
+                password: 123456
+            second: 
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/stark?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+                username: root
+                password: 123456
+    jpa: 
+        show-sql: true
+        properties: 
+            hibernate: 
+                format-sql: true
+                user_sql_comments: true
+
+eureka:
+  client:
+    enabled: false
+    serviceUrl:
+      devZone: http://${EUREKA_IP:localhost}:${EUREKA_PORT:8761}/${REGISTRY_NAME:eureka}/
+
+
+logging:
+  level:
+    com.thor.core.dao.mapper: debug
+mybatis:
+  configuration:
+    variables:
+      tablePrefix: stark_
+
+        
