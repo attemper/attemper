@@ -8,7 +8,7 @@ import com.thor.common.constant.GlobalConstants;
  */
 public interface PrimaryKeyGeneratorConstants {
 
-    String GENERATOR_TABLE = GlobalConstants.TABLE_PREFIX + "pk_generator";
+    String GENERATOR_TABLE = GlobalConstants.LOG_DB_PREFIX + "pk_generator";
 
     String PK_COLUMN_NAME = "TABLE_NAME";
 

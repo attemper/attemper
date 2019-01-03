@@ -4,7 +4,7 @@ server:
         uri-encoding: UTF-8
         max-threads: 1000
         min-spare-threads: 30
-    port: 5200
+    port: 5210
     connection-timeout: 5s
     servlet:
       context-path: /${spring.application.name}
@@ -49,7 +49,7 @@ spring:
                 connection-test-query: select 1
     jpa: 
         hibernate: 
-            ddl-auto: update
+            ddl-auto: none
     jackson: 
         date-format: yyyy-MM-dd HH:mm:ss SSS
         time-zone: GMT+8
@@ -79,4 +79,4 @@ eureka:
     preferSameZone: false
 
 superTenant:
-  id: thor
+  id: stark

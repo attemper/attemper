@@ -6,7 +6,7 @@ spring:
                 username: root
                 password: 123456
             second: 
-                jdbc-url: jdbc:mysql://127.0.0.1:3306/stark?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/log?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
                 username: root
                 password: 123456
     jpa: 

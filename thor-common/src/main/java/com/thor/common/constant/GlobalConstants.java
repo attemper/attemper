@@ -16,6 +16,8 @@ public interface GlobalConstants {
 
 	String jpaEntityLocation = basePackageLocation + "**.entity";
 
+	String LOG_DB_PREFIX = "";
+
 	String TABLE_PREFIX = "stark_";
 
 	String messagesPropertiesName = "messages";

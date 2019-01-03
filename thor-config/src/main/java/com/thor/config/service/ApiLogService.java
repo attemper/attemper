@@ -1,5 +1,6 @@
 package com.thor.config.service;
 
+import com.thor.config.annotation.MultiDataSource;
 import com.thor.config.dao.repo.ApiLogRepository;
 import com.thor.config.entity.ApiLog;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ public class ApiLogService {
 	
 	@Transactional
 	@Async
+	@MultiDataSource
 	public void save(ApiLog apiLog){
 		if(apiLog.getParam() != null && apiLog.getParam().length() > 2000) {
 			apiLog.setParam(apiLog.getParam().substring(0, 2000));

@@ -20,7 +20,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = GlobalConstants.TABLE_PREFIX + ConfigDBConstants.TB_API_LOG)
+@Table(name = GlobalConstants.LOG_DB_PREFIX + ConfigDBConstants.TB_API_LOG)
 public class ApiLog implements PrimaryKeyGeneratorConstants {
 
     /** 主键编号 */

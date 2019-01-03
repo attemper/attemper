@@ -1,6 +1,10 @@
 export default {
   route: {
     dashboard: 'Dashboard',
+    job: 'Job',
+    atomJob: 'AtomJob',
+    groupJob: 'GroupJob',
+    flowJob: 'FlowJob',
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
@@ -63,6 +67,19 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
     externalLink: 'External Link'
+  },
+  actions: {
+    handle: 'handle',
+    add: 'add',
+    update: 'update',
+    save: 'save',
+    search: 'refresh',
+    refresh: 'refresh',
+    remove: 'remove',
+    cancel: 'cancel',
+    reset: 'reset',
+    transferIn: 'transfer in',
+    transferOut: 'transfer out'
   },
   navbar: {
     logOut: 'Log Out',
