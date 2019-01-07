@@ -1,7 +1,6 @@
 package com.thor.web.exception;
 
-import com.thor.common.enums.ResultStatus;
-import com.thor.common.result.CommonResult;
+import com.stark.sdk.common.result.CommonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DuplicateKeyException;
@@ -22,8 +21,8 @@ public class WebExceptionAdvicer {
      * @return
      */
     @ExceptionHandler(DuplicateKeyException.class)
-    public CommonResult handleDuplicateKeyException(DuplicateKeyException e){
-        return CommonResult.put(ResultStatus.SQL_ERROR_DUMPLICATE_KEY);
+    public CommonResult handleDuplicateKeyException(DuplicateKeyException e) {
+        return CommonResult.put(1200);
     }
 
     /**
@@ -32,7 +31,7 @@ public class WebExceptionAdvicer {
      * @return
      */
     @ExceptionHandler(Exception.class)
-    public CommonResult handleException(Exception e){
+    public CommonResult handleException(Exception e) {
         log.error(e.getMessage(), e);
         return CommonResult.error(e.getMessage());
     }

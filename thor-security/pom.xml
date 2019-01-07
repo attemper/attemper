@@ -16,42 +16,5 @@
             <groupId>com.thor</groupId>
             <artifactId>thor-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <exclusions>
-            	<exclusion>
-                	<groupId>com.fasterxml.jackson.core</groupId>
-                	<artifactId>jackson-databind</artifactId>
-                </exclusion>
-                <exclusion>
-                	<groupId>com.fasterxml.jackson.core</groupId>
-                	<artifactId>jackson-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <exclusions>
-            	<exclusion>
-                	<groupId>com.fasterxml.jackson.core</groupId>
-                	<artifactId>jackson-databind</artifactId>
-                </exclusion>
-                <exclusion>
-                	<groupId>com.fasterxml.jackson.core</groupId>
-                	<artifactId>jackson-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 </project>

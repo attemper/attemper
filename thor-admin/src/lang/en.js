@@ -1,10 +1,6 @@
 export default {
   route: {
     dashboard: 'Dashboard',
-    job: 'Job',
-    atomJob: 'AtomJob',
-    groupJob: 'GroupJob',
-    flowJob: 'FlowJob',
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
@@ -68,19 +64,6 @@ export default {
     i18n: 'I18n',
     externalLink: 'External Link'
   },
-  actions: {
-    handle: 'handle',
-    add: 'add',
-    update: 'update',
-    save: 'save',
-    search: 'refresh',
-    refresh: 'refresh',
-    remove: 'remove',
-    cancel: 'cancel',
-    reset: 'reset',
-    transferIn: 'transfer in',
-    transferOut: 'transfer out'
-  },
   navbar: {
     logOut: 'Log Out',
     dashboard: 'Dashboard',
@@ -104,7 +87,8 @@ export default {
   },
   permission: {
     roles: 'Your roles',
-    switchRoles: 'Switch roles'
+    switchRoles: 'Switch roles',
+    tips: 'In some cases it is not suitable to use v-permission, such as element Tab component or el-table-column and other asynchronous rendering dom cases which can only be achieved by manually setting the v-if.'
   },
   guide: {
     description: 'The guide page is useful for some people who entered the project for the first time. You can briefly introduce the features of the project. Demo is based on ',
@@ -158,6 +142,9 @@ export default {
   zip: {
     export: 'Export',
     placeholder: 'Please enter the file name(default file)'
+  },
+  pdf: {
+    tips: 'Here we use window.print() to implement the feature of downloading pdf.'
   },
   theme: {
     change: 'Change Theme',

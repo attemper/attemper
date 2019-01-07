@@ -23,7 +23,10 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
 		<spring.boot.version>2.1.1.RELEASE</spring.boot.version>
-		<spring.cloud.version>2.0.1.RELEASE</spring.cloud.version>
+		<spring.cloud.version>2.0.2.RELEASE</spring.cloud.version>
+
+		<stark.sdk.version>1.0.0-SNAPSHOT</stark.sdk.version>
+		<thor.sdk.version>1.0.0-SNAPSHOT</thor.sdk.version>
 
 		<mysql.version>5.1.27</mysql.version>
 		<redis.spring.boot.version>2.0.5.RELEASE</redis.spring.boot.version>
@@ -95,15 +98,9 @@
 			<!-- 服务注册所需环境 -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-				<version>${spring.cloud.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 				<version>${spring.cloud.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
@@ -246,6 +243,20 @@
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>${servlet.api.version}</version>
+			</dependency>
+
+			<!-- thor sdk -->
+			<dependency>
+				<groupId>com.thor</groupId>
+				<artifactId>thor-sdk-common</artifactId>
+				<version>${thor.sdk.version}</version>
+			</dependency>
+
+			<!-- stark sdk -->
+			<dependency>
+				<groupId>com.stark</groupId>
+				<artifactId>stark-sdk-microservice</artifactId>
+				<version>${stark.sdk.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -5,14 +5,6 @@ package com.thor.common.constant;
  */
 public interface CommonConstants {
 
-    String asc = "asc";
-
-    String desc = "desc";
-
-    String page = "page";
-
-    String list = "list";
-
     String undefined = "undefined";
 
     String _null = "null";
@@ -21,15 +13,5 @@ public interface CommonConstants {
 
     String tenantId = "tenantId";
 
-    String sign = "sign";
-
-    String header = "header";
-
     String token = "token";
-
-    int DEF_CURRENT_PAGE = 1;
-
-    int DEF_PAGE_SIZE = 10;
-
-    int MAX_PAGE_SIZE = 1000;
 }

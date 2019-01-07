@@ -1,27 +1,20 @@
 package com.thor.web.aspect;
 
-import com.thor.common.constant.CommonConstants;
+
+import com.stark.sdk.common.constant.StarkSdkCommonConstants;
+import com.stark.sdk.common.exception.RTException;
+import com.stark.sdk.common.param.CommonParam;
+import com.stark.sdk.common.result.CommonResult;
 import com.thor.common.constant.GlobalConstants;
-import com.thor.common.enums.ResultStatus;
-import com.thor.common.exception.RTException;
-import com.thor.common.param.CommonParam;
-import com.thor.common.property.CommonProperty;
-import com.thor.common.result.CommonResult;
 import com.thor.config.entity.ApiLog;
 import com.thor.config.service.ApiLogService;
 import com.thor.config.util.IPUtil;
 import com.thor.config.util.ServletUtil;
 import com.thor.config.util.StringUtil;
-import com.thor.core.entity.Tenant;
-import com.thor.core.entity.User;
-import com.thor.core.param.tenant.TenantGetParam;
-import com.thor.core.service.TenantService;
-import com.thor.security.ext.service.JWTService;
 import com.thor.web.annotation.IgnoreLogResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -52,13 +45,7 @@ import java.util.Set;
 public class ControllerAspect {
 
     @Autowired
-    private JWTService jwtService;
-
-    @Autowired
     private ApiLogService apiLogService;
-
-    @Autowired
-    private TenantService tenantService;
 
     private static Validator validator = Validation
             .byProvider(HibernateValidator.class).configure().failFast(true).buildValidatorFactory().getValidator();
@@ -111,7 +98,7 @@ public class ControllerAspect {
                 apiLog.setResult(result.toString());
             }
             return result;
-        } catch (RTException rte){
+        } catch (RTException rte) {
             result = CommonResult.error(rte);
             throw rte;
         } catch (Exception e){
@@ -137,16 +124,16 @@ public class ControllerAspect {
         CommonResult result = null;
         // 处理日志的分类，方法等
         preHandleLog(joinPoint, apiLog);
-        String tenantId = ServletUtil.getHeader(CommonConstants.tenantId);
+        String tenantId = ServletUtil.getHeader(StarkSdkCommonConstants.tenantId);
         apiLog.setTenantId(tenantId);
-        Tenant tenant = tenantService.getTenant(new TenantGetParam(tenantId));
+        /*Tenant tenant = tenantService.get(new TenantGetParam(tenantId));
         if(tenant == null){
-            return CommonResult.putAdd(ResultStatus.TENANT_NOTEXIST_ERROR, tenantId);
+            return CommonResult.putAdd(1500, tenantId);
         }
-        String sign = ServletUtil.getHeader(CommonConstants.sign);
+        String sign = ServletUtil.getHeader(StarkSdkCommonConstants.sign);
         if(!StringUtils.equals(sign, tenant.getSign())){
-            return CommonResult.putAdd(ResultStatus.TENANT_SIGN_INCORRECT_ERROR, sign);
-        }
+            return CommonResult.putAdd(1501, sign);
+        }*/
         Object[] args = joinPoint.getArgs();
         if (args != null) {
             for (Object arg : args) {
@@ -155,8 +142,7 @@ public class ControllerAspect {
                 if(!violations.isEmpty()){
                     ConstraintViolation<Object> violation = violations.iterator().next();
                     String codeStr = violation.getMessage();
-                    return CommonResult.put(Integer.valueOf(codeStr),
-                            CommonProperty.getValue(GlobalConstants.PREFIX_STATUS_MSG + codeStr));
+                    return CommonResult.put(Integer.valueOf(codeStr));
                 }
                 if(arg instanceof CommonParam){
                     CommonParam commonParam = (CommonParam) arg;
@@ -166,8 +152,7 @@ public class ControllerAspect {
                     if(codeStr != null){
                         try{
                             int code = Integer.parseInt(codeStr);
-                            return CommonResult.put(code,
-                                    CommonProperty.getValue(GlobalConstants.PREFIX_STATUS_MSG + code));
+                            return CommonResult.put(code);
                         }catch (NumberFormatException e){
                             return CommonResult.error(codeStr);
                         }
@@ -252,14 +237,14 @@ public class ControllerAspect {
      * @return
      */
     private String resolveUserNameFromToken(){
-        String token = ServletUtil.getHeader(CommonConstants.token);
+        /*String token = ServletUtil.getHeader(StarkSdkCommonConstants.token);
         if(token != null && !CommonConstants._null.equals(token)
                 && !CommonConstants.undefined.equals(token)){
             User user = jwtService.parseTokenToUser(token);
             if(user != null){
                 return user.getUserName();
             }
-        }
+        }*/
         return null;
     }
 
@@ -270,7 +255,7 @@ public class ControllerAspect {
      */
     private String resolveUserNameFromParam(CommonParam commonParam) {
         try{
-            Field field = commonParam.getClass().getDeclaredField(CommonConstants.userName);
+            Field field = commonParam.getClass().getDeclaredField(StarkSdkCommonConstants.userName);
             field.setAccessible(true);
             return (String) field.get(commonParam);
         }catch (Exception e){
@@ -283,7 +268,7 @@ public class ControllerAspect {
      * @param result
      * @param apiLog
      */
-    private static ApiLog resultToLog(CommonResult result, ApiLog apiLog){
+    private static ApiLog resultToLog(CommonResult result, ApiLog apiLog) {
         if(result != null){
             apiLog.setCode(result.getCode());
             apiLog.setMsg(result.getMsg());

@@ -11,7 +11,6 @@ import componentsRouter from './modules/components'
 import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
-import jobRouter from './modules/job'
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -25,10 +24,11 @@ import jobRouter from './modules/job'
 * redirect: noredirect           if `redirect:noredirect` will no redirect in the breadcrumb
 * name:'router-name'             the name is used by <keep-alive> (must set!!!)
 * meta : {
-    roles: ['admin','editor']     will control the page roles (you can set multiple roles)
+    roles: ['admin','editor']    will control the page roles (you can set multiple roles)
     title: 'title'               the name show in submenu and breadcrumb (recommend set)
-    icon: 'svg-name'             the icon show in the sidebar,
-    noCache: true                if true ,the page will no be cached(default is false)
+    icon: 'svg-name'             the icon show in the sidebar
+    noCache: true                if true, the page will no be cached(default is false)
+    breadcrumb: false            if false, the item will hidden in breadcrumb(default is true)
   }
 **/
 export const constantRouterMap = [
@@ -142,7 +142,7 @@ export const asyncRouterMap = [
       }
     ]
   },
-  jobRouter,
+
   {
     path: '/icon',
     component: Layout,
@@ -291,6 +291,26 @@ export const asyncRouterMap = [
         meta: { title: 'exportZip' }
       }
     ]
+  },
+
+  {
+    path: '/pdf',
+    component: Layout,
+    redirect: '/pdf/index',
+    meta: { title: 'PDF', icon: 'pdf' },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/pdf/index'),
+        name: 'PDF',
+        meta: { title: 'PDF' }
+      }
+    ]
+  },
+  {
+    path: '/pdf/download',
+    component: () => import('@/views/pdf/download'),
+    hidden: true
   },
 
   {

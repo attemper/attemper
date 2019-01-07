@@ -1,9 +1,10 @@
 <template>
   <el-breadcrumb class="app-breadcrumb" separator="/">
     <transition-group name="breadcrumb">
-      <el-breadcrumb-item v-for="(item,index) in levelList" v-if="item.meta.title" :key="item.path">
-        <span v-if="item.redirect==='noredirect'||index==levelList.length-1" class="no-redirect">{{ generateTitle(item.meta.title) }}</span>
-        <router-link v-else :to="item.redirect||item.path">{{ generateTitle(item.meta.title) }}</router-link>
+      <el-breadcrumb-item v-for="(item,index) in levelList" v-if="item.meta.title&&item.meta.breadcrumb!==false" :key="item.path">
+        <span v-if="item.redirect==='noredirect'||index==levelList.length-1" class="no-redirect">{{
+        generateTitle(item.meta.title) }}</span>
+        <a v-else @click.prevent="handleLink(item)">{{ generateTitle(item.meta.title) }}</a>
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>
@@ -30,12 +31,8 @@ export default {
   methods: {
     generateTitle,
     getBreadcrumb() {
-      const { params } = this.$route
       let matched = this.$route.matched.filter(item => {
         if (item.name) {
-          // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
-          var toPath = pathToRegexp.compile(item.path)
-          item.path = toPath(params)
           return true
         }
       })
@@ -44,6 +41,20 @@ export default {
         matched = [{ path: '/dashboard', meta: { title: 'dashboard' }}].concat(matched)
       }
       this.levelList = matched
+    },
+    pathCompile(path) {
+      // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
+      const { params } = this.$route
+      var toPath = pathToRegexp.compile(path)
+      return toPath(params)
+    },
+    handleLink(item) {
+      const { redirect, path } = item
+      if (redirect) {
+        this.$router.push(redirect)
+        return
+      }
+      this.$router.push(this.pathCompile(path))
     }
   }
 }

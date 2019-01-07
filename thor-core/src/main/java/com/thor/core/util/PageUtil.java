@@ -1,8 +1,8 @@
 package com.thor.core.util;
 
 import com.github.pagehelper.Page;
-import com.thor.common.constant.CommonConstants;
-import com.thor.common.result.PageResult;
+import com.stark.sdk.common.constant.StarkSdkCommonConstants;
+import com.stark.sdk.common.result.PageResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,8 +20,8 @@ public class PageUtil {
      */
     public static Map<String, Object> toResultMap(Page<?> page){
         Map<String, Object> resultMap = new HashMap<>(2);
-        resultMap.put(CommonConstants.page, toPageResult(page));
-        resultMap.put(CommonConstants.list, page.getResult());
+        resultMap.put(StarkSdkCommonConstants.page, toPageResult(page));
+        resultMap.put(StarkSdkCommonConstants.list, page.getResult());
         return resultMap;
     }
 

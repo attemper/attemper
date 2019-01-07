@@ -1,8 +1,6 @@
 package com.thor.config.conf;
 
-import com.thor.common.constant.CommonConstants;
-import com.thor.common.property.CommonProperty;
-import com.thor.config.constant.ConfigStrConstants;
+import com.stark.sdk.common.constant.StarkSdkCommonConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,15 +41,15 @@ public class Swagger2Config {
     public Docket apiV1() {
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .contact(new Contact(contactName, contactUrl, contactEmail))
-                .title(CommonProperty.getValue(ConfigStrConstants.SWAGGER2_TITLE))
-                .description(CommonProperty.getValue(ConfigStrConstants.SWAGGER2_DESCRIPTION))
+                .title("REST接口文档")
+                .description("基于swagger2的REST API")
                 .version("v1")
                 .build();
         Parameter tokenParameter = new ParameterBuilder()
-                .parameterType(CommonConstants.header)
-                .name(CommonConstants.token)
+                .parameterType(StarkSdkCommonConstants.header)
+                .name(StarkSdkCommonConstants.token)
                 .modelRef(new ModelRef("String"))
-                .description(CommonProperty.getValue(ConfigStrConstants.SWAGGER2_ACCESS_TOKEN_DESCRIPTION))
+                .description("基于JWT(json web token)实现的访问令牌")
                 .build();
         List<Parameter> parameterList = new ArrayList<>();
         parameterList.add(tokenParameter);

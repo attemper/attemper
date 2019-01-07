@@ -31,4 +31,9 @@ mybatis:
     variables:
       tablePrefix: stark_
 
-        
+stark:
+  eurekaZone: ${eureka.client.serviceUrl.devZone}
+  serviceUrls: http://localhost:5200/
+  serviceName: stark
+  tenantId: stark
+  sign: 2fbb71b04b02738300427866d6e3181a
