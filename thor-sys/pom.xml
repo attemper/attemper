@@ -16,6 +16,10 @@
             <groupId>com.thor</groupId>
             <artifactId>thor-config</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.xiaoleilu</groupId>
+            <artifactId>hutool-core</artifactId>
+        </dependency>
         <!-- 服务注册所需环境 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

@@ -63,7 +63,8 @@ mybatis:
     mapperLocations: classpath*:mapper/*Mapper.xml
     configuration:
       map-underscore-to-camel-case: true
-  
+      variables:
+        tablePrefix: thor_
 # eureka        
 eureka:
   instance:

@@ -1,5 +1,7 @@
 package com.thor.core.conf;
 
+import com.thor.core.controller.AtomJobController;
+import com.thor.core.service.AtomJobService;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,12 +15,10 @@ import javax.validation.ValidatorFactory;
 @Configuration
 //@EnableConfigurationProperties(CoreProperties.class)
 @ComponentScan(basePackageClasses = {
-        //controller
-
         //service
-
-        //init
-        //CustomPostConstruct.class
+        AtomJobService.class,
+        //controller
+        AtomJobController.class
 })
 public class CoreConfiguration {
 

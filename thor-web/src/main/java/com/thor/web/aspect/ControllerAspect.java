@@ -5,12 +5,16 @@ import com.stark.sdk.common.constant.StarkSdkCommonConstants;
 import com.stark.sdk.common.exception.RTException;
 import com.stark.sdk.common.param.CommonParam;
 import com.stark.sdk.common.result.CommonResult;
+import com.stark.sdk.common.result.user.AdminInfo;
+import com.stark.sdk.microservice.client.StarkClient;
 import com.thor.common.constant.GlobalConstants;
 import com.thor.config.entity.ApiLog;
+import com.thor.config.properties.StarkAppProperties;
 import com.thor.config.service.ApiLogService;
 import com.thor.config.util.IPUtil;
-import com.thor.config.util.ServletUtil;
 import com.thor.config.util.StringUtil;
+import com.thor.sys.annotation.IgnoreAuthentication;
+import com.thor.sys.holder.AdminInfoHolder;
 import com.thor.web.annotation.IgnoreLogResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -45,6 +49,12 @@ import java.util.Set;
 public class ControllerAspect {
 
     @Autowired
+    private StarkAppProperties properties;
+
+    @Autowired
+    private StarkClient starkClient;
+
+    @Autowired
     private ApiLogService apiLogService;
 
     private static Validator validator = Validation
@@ -53,9 +63,11 @@ public class ControllerAspect {
     /**
      * 切点<br>
      */
-    @Pointcut("(execution(public * " + GlobalConstants.basePackageLocation + "security.controller.*Controller.*(..)))"
+    @Pointcut("(execution(public * " + GlobalConstants.basePackageLocation + "sys.controller.*Controller.*(..)))"
             + "||"
             + "(execution(public * " + GlobalConstants.basePackageLocation + "core.controller.*Controller.*(..)))"
+            + "||"
+            + "(execution(public * " + GlobalConstants.basePackageLocation + "security.controller.*Controller.*(..)))"
     )
     public void aroundController() {
 
@@ -90,9 +102,14 @@ public class ControllerAspect {
         // 校验通过
         Instant begin = Instant.now();
         try {
-            result = (CommonResult) joinPoint.proceed();
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             Method method = signature.getMethod();
+            IgnoreAuthentication ignoreAuthentication = method.getAnnotation(IgnoreAuthentication.class);
+            if (ignoreAuthentication == null || !ignoreAuthentication.value()) {
+                CommonResult<AdminInfo> adminInfoCommonResult = starkClient.getAdminInfo();
+                AdminInfoHolder.set(adminInfoCommonResult.getResult());
+            }
+            result = (CommonResult) joinPoint.proceed();
             IgnoreLogResult ignoreLogResult = method.getAnnotation(IgnoreLogResult.class);
             if (ignoreLogResult == null || !ignoreLogResult.value() && result != null) { // 不忽略结果
                 apiLog.setResult(result.toString());
@@ -109,6 +126,7 @@ public class ControllerAspect {
                 Instant end = Instant.now();
                 result.setDuration(String.valueOf(Duration.between(begin, end).toMillis() / 1000.0));// 请求耗时
             }
+            AdminInfoHolder.clear();
             apiLogService.save(resultToLog(result, apiLog));
         }
     }
@@ -124,16 +142,7 @@ public class ControllerAspect {
         CommonResult result = null;
         // 处理日志的分类，方法等
         preHandleLog(joinPoint, apiLog);
-        String tenantId = ServletUtil.getHeader(StarkSdkCommonConstants.tenantId);
-        apiLog.setTenantId(tenantId);
-        /*Tenant tenant = tenantService.get(new TenantGetParam(tenantId));
-        if(tenant == null){
-            return CommonResult.putAdd(1500, tenantId);
-        }
-        String sign = ServletUtil.getHeader(StarkSdkCommonConstants.sign);
-        if(!StringUtils.equals(sign, tenant.getSign())){
-            return CommonResult.putAdd(1501, sign);
-        }*/
+        apiLog.setTenantId(properties.getTenantId());
         Object[] args = joinPoint.getArgs();
         if (args != null) {
             for (Object arg : args) {
@@ -164,6 +173,10 @@ public class ControllerAspect {
             }
         }
         return result;
+    }
+
+    private void resolveToken() {
+
     }
 
     private void preHandleLog(ProceedingJoinPoint joinPoint, ApiLog apiLog) {

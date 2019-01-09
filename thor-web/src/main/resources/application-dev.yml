@@ -2,7 +2,7 @@ spring:
     datasource:
         hikari:
             first: 
-                jdbc-url: jdbc:mysql://127.0.0.1:3306/stark?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/thor?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
                 username: root
                 password: 123456
             second: 
@@ -26,10 +26,6 @@ eureka:
 logging:
   level:
     com.thor.core.dao.mapper: debug
-mybatis:
-  configuration:
-    variables:
-      tablePrefix: stark_
 
 stark:
   eurekaZone: ${eureka.client.serviceUrl.devZone}

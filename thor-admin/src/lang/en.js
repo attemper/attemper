@@ -86,17 +86,16 @@ export default {
     atomJob: {
       title: 'AtomJob',
       columns: {
-        jobId: 'Id',
         jobName: 'Name',
-        version: 'Version',
+        displayName: 'Display Name',
         status: 'Status',
-        createTime: 'Created Time',
-        updateTime: 'Last Updated Time',
+        createTime: 'Created',
+        updateTime: 'Last Updated',
         remark: 'Remark'
       },
       placeholder: {
-        jobId: 'Please entry Job Id',
         jobName: 'Please entry Job Name',
+        displayName: 'Please entry Job Display Name',
         status: 'Please select Status',
         remark: 'Please entry Remark'
       }

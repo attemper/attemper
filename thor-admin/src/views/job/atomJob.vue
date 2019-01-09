@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('job.atomJob.columns.jobId')" v-model="page.jobId" style="width: 100px;" class="filter-item" @keyup.enter.native="handleFilter"/>
       <el-input :placeholder="$t('job.atomJob.columns.jobName')" v-model="page.jobName" style="width: 100px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+      <el-input :placeholder="$t('job.atomJob.columns.displayName')" v-model="page.displayName" style="width: 100px;" class="filter-item" @keyup.enter.native="handleFilter"/>
       <el-select v-model="page.status" :placeholder="$t('job.atomJob.columns.status')" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"/>
       </el-select>
@@ -24,19 +24,14 @@
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange">
-      <el-table-column :label="$t('job.atomJob.columns.version')" width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.version }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('job.atomJob.columns.jobId')" prop="id" sortable="custom" align="center" width="65">
-        <template slot-scope="scope">
-          <span>{{ scope.row.jobId }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('job.atomJob.columns.jobName')" min-width="150px">
+      <el-table-column :label="$t('job.atomJob.columns.jobName')" prop="id" sortable="custom" align="center" width="90">
         <template slot-scope="scope">
           <span>{{ scope.row.jobName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('job.atomJob.columns.displayName')" min-width="150px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.displayName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('job.atomJob.columns.status')" class-name="status-col" width="100">
@@ -71,11 +66,11 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item :label="$t('job.atomJob.columns.jobId')" prop="jobId">
-          <el-input v-model="temp.jobId" :placeholder="$t('job.atomJob.placeholder.jobId')"/>
-        </el-form-item>
         <el-form-item :label="$t('job.atomJob.columns.jobName')" prop="jobName">
           <el-input v-model="temp.jobName" :placeholder="$t('job.atomJob.placeholder.jobName')"/>
+        </el-form-item>
+        <el-form-item :label="$t('job.atomJob.columns.displayName')" prop="displayName">
+          <el-input v-model="temp.displayName" :placeholder="$t('job.atomJob.placeholder.displayName')"/>
         </el-form-item>
         <el-form-item :label="$t('job.atomJob.columns.status')">
           <el-select v-model="temp.status" :placeholder="$t('job.atomJob.placeholder.status')" class="filter-item">
@@ -106,7 +101,7 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
+import { listReq, addReq, updateReq/* ,getReq, removeReq*/ } from '@/api/job/atomJob'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -134,10 +129,10 @@ export default {
       page: {
         currentPage: 1,
         pageSize: 10,
-        jobId: undefined,
         jobName: undefined,
+        displayName: undefined,
         status: 0,
-        sort: '+jobId'
+        sort: 'JOB_NAME'
       },
       importanceOptions: [1, 2, 3],
       statusOptions: [
@@ -158,11 +153,11 @@ export default {
           label: this.$t('job.status.disposible')
         }
       ],
-      sortOptions: [{ label: 'ID Ascending', key: '+jobId' }, { label: 'ID Descending', key: '-jobId' }],
+      sortOptions: [{ label: 'ID Ascending', key: 'JOB_NAME' }, { label: 'ID Descending', key: 'JOB_NAME DESC' }],
       showCreateTime: false,
       temp: {
-        jobId: undefined,
-        jobName: '',
+        jobName: undefined,
+        displayName: '',
         status: 0,
         remark: ''
       },
@@ -188,9 +183,9 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.page).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+      listReq(this.page).then(response => {
+        this.list = response.data.result.list
+        this.total = response.data.result.page.total
 
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -217,16 +212,16 @@ export default {
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.page.sort = '+jobId'
+        this.page.sort = '+jobName'
       } else {
-        this.page.sort = '-jobId'
+        this.page.sort = '-jobName'
       }
       this.handleFilter()
     },
     resetTemp() {
       this.temp = {
-        jobId: undefined,
-        jobName: '',
+        jobName: undefined,
+        displayName: '',
         status: 0,
         remark: ''
       }
@@ -242,9 +237,9 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.jobId = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.jobName = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
+          this.temp.jobName = parseInt(Math.random() * 100) + 1024 // mock a id
+          this.temp.displayName = 'vue-element-admin'
+          addReq(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -271,7 +266,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
+          updateReq(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
                 const index = this.list.indexOf(v)
@@ -299,12 +294,6 @@ export default {
       })
       const index = this.list.indexOf(row)
       this.list.splice(index, 1)
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
     },
     handleDownload() {
       this.downloadLoading = true
