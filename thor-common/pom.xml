@@ -11,4 +11,10 @@
 
     <artifactId>thor-common</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.thor</groupId>
+            <artifactId>thor-sdk-common</artifactId>
+        </dependency>
+    </dependencies>
 </project>

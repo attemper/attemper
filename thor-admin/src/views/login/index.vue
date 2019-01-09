@@ -8,14 +8,14 @@
         <lang-select class="set-language"/>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="userName">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          v-model="loginForm.username"
-          :placeholder="$t('login.username')"
-          name="username"
+          v-model="loginForm.userName"
+          :placeholder="$t('login.userName')"
+          name="userName"
           type="text"
           auto-complete="on"
         />
@@ -41,11 +41,11 @@
 
       <div style="position:relative">
         <div class="tips">
-          <span>{{ $t('login.username') }} : admin</span>
+          <span>{{ $t('login.userName') }} : admin</span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
         </div>
         <div class="tips">
-          <span style="margin-right:18px;">{{ $t('login.username') }} : editor</span>
+          <span style="margin-right:18px;">{{ $t('login.userName') }} : editor</span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
         </div>
 
@@ -81,7 +81,7 @@ export default {
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
+      if (value.length < 1) {
         callback(new Error('The password can not be less than 6 digits'))
       } else {
         callback()
@@ -89,11 +89,11 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '1111111'
+        userName: '',
+        password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       passwordType: 'password',

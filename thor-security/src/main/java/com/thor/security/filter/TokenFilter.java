@@ -27,9 +27,10 @@ public class TokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = ServletUtil.getHeader(CommonConstants.token);
-        if (token == null) {
+        filterChain.doFilter(request, response);
+        /*if (token == null) {
             redirectOrSendNotPermitted(request, response);
-        }
+        }*/
     }
 
     /**

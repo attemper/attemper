@@ -29,7 +29,6 @@ import org.springframework.context.annotation.Configuration;
         GlobalExceptionAdvicer.class,
 
         //swagger2配置
-        StarkClientConfig.class,
         Swagger2Config.class,
 
         //bean factory bean

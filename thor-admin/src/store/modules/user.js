@@ -1,5 +1,6 @@
-import { loginByUsername, logout, getUserInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { loginByUsername } from '@/api/login'
+import { getUserInfo } from '@/api/user'
+import { getToken, removeToken, setToken } from '@/utils/auth'
 
 const user = {
   state: {
@@ -8,9 +9,11 @@ const user = {
     code: '',
     token: getToken(),
     name: '',
+    displayName: '',
     avatar: '',
     introduction: '',
     roles: [],
+    resourceNames: [],
     setting: {
       articlePlatform: []
     }
@@ -35,6 +38,12 @@ const user = {
     SET_NAME: (state, name) => {
       state.name = name
     },
+    SET_DISPLAY_NAME: (state, displayName) => {
+      state.displayName = displayName
+    },
+    SET_RESOURCE_NAMES: (state, resourceNames) => {
+      state.resourceNames = resourceNames
+    },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
@@ -46,12 +55,15 @@ const user = {
   actions: {
     // 用户名登录
     LoginByUsername({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+      const userName = userInfo.userName.trim()
       return new Promise((resolve, reject) => {
-        loginByUsername(username, userInfo.password).then(response => {
-          const data = response.data
-          commit('SET_TOKEN', data.token)
-          setToken(response.data.token)
+        loginByUsername(userName, userInfo.password).then(response => {
+          const result = response.data.result
+          commit('SET_NAME', result.user.userName)
+          commit('SET_DISPLAY_NAME', result.user.displayName)
+          // commit('setAccess', result.user.access)
+          commit('SET_TOKEN', result.token)
+          setToken(result.token)
           resolve()
         }).catch(error => {
           reject(error)
@@ -62,11 +74,33 @@ const user = {
     // 获取用户信息
     GetUserInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(response => {
+        getUserInfo().then(response => {
           if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
             reject('error')
           }
-          const data = response.data
+          const result = response.data.result
+          commit('SET_NAME', result.user.userName)
+          commit('SET_DISPLAY_NAME', result.user.displayName)
+          const roleNames = []
+          if (result.tags && result.tags.length) {
+            result.tags.forEach(tag => {
+              if (tag.tagType === 0) {
+                roleNames.push(tag.tagName)
+              }
+            })
+            commit('SET_ROLES', roleNames)
+            sessionStorage.roleNames = JSON.stringify(roleNames)
+          }
+          const resourceNames = []
+          if (result.resources && result.resources.length) {
+            result.resources.forEach(resource => {
+              resourceNames.push(resource.resourceName)
+            })
+            commit('SET_RESOURCE_NAMES', resourceNames)
+            sessionStorage.resourceNames = JSON.stringify(resourceNames)
+          }
+          resolve(resourceNames)
+          /* const data = response.data
 
           if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', data.roles)
@@ -77,7 +111,7 @@ const user = {
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)
-          resolve(response)
+          resolve(response)*/
         }).catch(error => {
           reject(error)
         })
@@ -101,14 +135,21 @@ const user = {
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        /* logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           removeToken()
           resolve()
         }).catch(error => {
           reject(error)
-        })
+        })*/
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
+        sessionStorage.removeItem('roleNames')
+        commit('SET_RESOURCENAMES', [])
+        sessionStorage.removeItem('resourceNames')
+        removeToken()
+        resolve()
       })
     },
 

@@ -5,9 +5,12 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
  * @param roles
  * @param route
  */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
+function hasPermission(resourceNames, route) {
+  if (!route.name) {
+    console.error('the route name must exist:{}', route.path)
+  }
+  if (route.meta && !route.meta.notMenu) { // 是菜单
+    return resourceNames.some(resourceName => route.name === resourceName)
   } else {
     return true
   }
@@ -18,14 +21,14 @@ function hasPermission(roles, route) {
  * @param routes asyncRouterMap
  * @param roles
  */
-function filterAsyncRouter(routes, roles) {
+function filterAsyncRouter(routes, resourceNames) {
   const res = []
 
   routes.forEach(route => {
     const tmp = { ...route }
-    if (hasPermission(roles, tmp)) {
+    if (hasPermission(resourceNames, tmp)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRouter(tmp.children, roles)
+        tmp.children = filterAsyncRouter(tmp.children, resourceNames)
       }
       res.push(tmp)
     }
@@ -46,9 +49,19 @@ const permission = {
     }
   },
   actions: {
-    GenerateRoutes({ commit }, data) {
+    GenerateRoutes({ commit }) {
       return new Promise(resolve => {
-        const { roles } = data
+        const roleNames = JSON.parse(sessionStorage.roleNames)
+        const resourceNames = JSON.parse(sessionStorage.resourceNames)
+        let accessedRouters
+        if (roleNames.includes('admin')) {
+          accessedRouters = asyncRouterMap
+        } else {
+          accessedRouters = filterAsyncRouter(asyncRouterMap, resourceNames)
+        }
+        commit('SET_ROUTERS', accessedRouters)
+        resolve()
+        /* const { roles } = data
         let accessedRouters
         if (roles.includes('admin')) {
           accessedRouters = asyncRouterMap
@@ -56,7 +69,7 @@ const permission = {
           accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
         }
         commit('SET_ROUTERS', accessedRouters)
-        resolve()
+        resolve()*/
       })
     }
   }

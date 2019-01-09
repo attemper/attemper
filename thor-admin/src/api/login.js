@@ -1,29 +1,25 @@
 import request from '@/utils/request'
+import config from '@/config'
 
-export function loginByUsername(username, password) {
+const { APIPath } = config
+export const SubPath = '/login'
+
+export function loginByUsername(userName, password) {
   const data = {
-    username,
+    userName,
     password
   }
   return request({
-    url: '/login/login',
-    method: 'post',
-    data
+    url: APIPath.SYS + SubPath,
+    data,
+    method: 'post'
   })
 }
 
 export function logout() {
   return request({
-    url: '/login/logout',
+    url: APIPath.SYS + '/logout',
     method: 'post'
-  })
-}
-
-export function getUserInfo(token) {
-  return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
   })
 }
 

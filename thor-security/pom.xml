@@ -16,5 +16,9 @@
             <groupId>com.thor</groupId>
             <artifactId>thor-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.thor</groupId>
+            <artifactId>thor-sys</artifactId>
+        </dependency>
     </dependencies>
 </project>

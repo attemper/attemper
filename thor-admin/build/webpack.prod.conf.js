@@ -58,6 +58,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       title: 'vue-element-admin',
       templateParameters: {
         BASE_URL: config.build.assetsPublicPath + config.build.assetsSubDirectory,
+        CUSTOM_TITLE: '调度中心'
       },
       minify: {
         removeComments: true,

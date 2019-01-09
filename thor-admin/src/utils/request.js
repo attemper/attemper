@@ -15,7 +15,7 @@ service.interceptors.request.use(
     // Do something before request is sent
     if (store.getters.token) {
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-      config.headers['X-Token'] = getToken()
+      config.headers['token'] = getToken()
     }
     return config
   },
@@ -28,7 +28,23 @@ service.interceptors.request.use(
 
 // response interceptor
 service.interceptors.response.use(
-  response => response,
+  // response => response,
+  res => {
+    const { data, status } = res
+    if (data.code && data.code !== 200) {
+      if (data.code === 1000 || data.code === 1001 || data.code === 1002) {
+        window.location = '/401'
+      }
+      Message({
+        message: data.msg,
+        type: 'error',
+        duration: 5 * 1000,
+        showClose: true
+      })
+      throw new Error(data.msg)
+    }
+    return { data, status }
+  },
   /**
    * 下面的注释为通过在response里，自定义code来标示请求状态
    * 当code返回如下情况则说明权限有问题，登出并返回到登录页
@@ -64,8 +80,9 @@ service.interceptors.response.use(
   // },
   error => {
     console.log('err' + error) // for debug
+    const errorInfo = error.response
     Message({
-      message: error.message,
+      message: errorInfo.status + ':' + errorInfo.statusText,
       type: 'error',
       duration: 5 * 1000
     })

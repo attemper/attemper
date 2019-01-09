@@ -5,6 +5,7 @@ import com.thor.common.constant.GlobalConstants;
 import com.thor.config.conf.ConfigConfiguration;
 import com.thor.core.conf.CoreConfiguration;
 import com.thor.security.conf.SecurityConfiguration;
+import com.thor.sys.conf.SysConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Import({
 		ConfigConfiguration.class,
+		SysConfiguration.class,
 		CoreConfiguration.class,
 		SecurityConfiguration.class
 })

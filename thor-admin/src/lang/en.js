@@ -1,6 +1,10 @@
 export default {
   route: {
     dashboard: 'Dashboard',
+    job: 'Job',
+    atomJob: 'AtomJob',
+    groupJob: 'GroupJob',
+    flowJob: 'FlowJob',
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
@@ -64,6 +68,52 @@ export default {
     i18n: 'I18n',
     externalLink: 'External Link'
   },
+  actions: {
+    handle: 'handle',
+    add: 'add',
+    update: 'update',
+    save: 'save',
+    search: 'refresh',
+    refresh: 'refresh',
+    remove: 'remove',
+    cancel: 'cancel',
+    reset: 'reset',
+    transferIn: 'transfer in',
+    transferOut: 'transfer out'
+  },
+  job: {
+    title: 'Job',
+    atomJob: {
+      title: 'AtomJob',
+      columns: {
+        jobId: 'Id',
+        jobName: 'Name',
+        version: 'Version',
+        status: 'Status',
+        createTime: 'Created Time',
+        updateTime: 'Last Updated Time',
+        remark: 'Remark'
+      },
+      placeholder: {
+        jobId: 'Please entry Job Id',
+        jobName: 'Please entry Job Name',
+        status: 'Please select Status',
+        remark: 'Please entry Remark'
+      }
+    },
+    groupJob: {
+      title: 'GroupJob'
+    },
+    flowJob: {
+      title: 'FlowJob'
+    },
+    status: {
+      enable: 'Enable',
+      disable: 'Disable',
+      transient: 'Transient',
+      disposible: 'Disposible'
+    }
+  },
   navbar: {
     logOut: 'Log Out',
     dashboard: 'Dashboard',
@@ -75,7 +125,7 @@ export default {
   login: {
     title: 'Login Form',
     logIn: 'Log in',
-    username: 'Username',
+    userName: 'Username',
     password: 'Password',
     any: 'any',
     thirdparty: 'Or connect with',

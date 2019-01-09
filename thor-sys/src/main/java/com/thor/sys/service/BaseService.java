@@ -1,4 +1,4 @@
-package com.thor.core.service;
+package com.thor.sys.service;
 
 public interface BaseService {
 

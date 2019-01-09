@@ -1,4 +1,4 @@
-package com.thor.core.service;
+package com.thor.sys.service;
 
 import com.thor.common.constant.CommonConstants;
 import com.thor.config.util.ServletUtil;

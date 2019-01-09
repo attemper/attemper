@@ -60,6 +60,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       title: 'vue-element-admin',
       templateParameters: {
         BASE_URL: config.dev.assetsPublicPath + config.dev.assetsSubDirectory,
+        CUSTOM_TITLE: '调度中心'
       },
     }),
   ]

@@ -1,7 +1,9 @@
 package com.thor.security.conf;
 
 import com.thor.config.properties.StarkAppProperties;
+import com.thor.security.controller.LoginController;
 import com.thor.security.filter.TokenFilter;
+import com.thor.security.service.LoginService;
 import com.thor.security.xss.XssFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -10,15 +12,17 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan(basePackageClasses = {
-        //conf
-        RedisConfig.class,
-
         //filter
         XssFilter.class,
 
-        //controller
+        //conf
+        RedisConfig.class,
 
         //service
+        LoginService.class,
+
+        //controller
+        LoginController.class,
 })
 public class SecurityConfiguration {
 
