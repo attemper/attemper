@@ -9,6 +9,20 @@ import { hasAccess } from '@/utils/tools'
 
 NProgress.configure({ showSpinner: false })// NProgress Configuration
 
+function hasPermissionOfConstant(name) {
+  const routePermissionJudge = (list) => {
+    return list.some(item => {
+      if (item.children && item.children.length) {
+        return routePermissionJudge(item.children)
+      } else if (item.name === name) {
+        return true
+      }
+    })
+  }
+
+  return routePermissionJudge(constantRouterMap)
+}
+
 // permission judge function
 function hasPermission(access, name) {
   const routePermissionJudge = (list) => {
@@ -21,14 +35,19 @@ function hasPermission(access, name) {
     })
   }
 
-  return routePermissionJudge(constantRouterMap) || routePermissionJudge(asyncRouterMap)
+  return hasPermissionOfConstant(name) || routePermissionJudge(asyncRouterMap)
 }
 
 const whiteList = ['/login', '/auth-redirect']// no redirect whitelist
 
 function turnTo(to, access, next) {
-  if (hasPermission(access, to.name)) {
+  if (to.name && hasPermission(access, to.name)) {
     next()
+  } else if (!to.name) {
+    const name = to.path.substring(to.path.lastIndexOf('/') + 1)
+    if (hasPermission(access, name)) {
+      next({ path: to.path, replace: true })
+    }
   } else {
     next({ path: '/401', replace: true, query: { noGoBack: true }})
   }
