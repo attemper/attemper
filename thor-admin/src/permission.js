@@ -1,5 +1,5 @@
 import router from './router'
-import { asyncRouterMap, constantRouterMap } from '@/router'
+import { asyncRouterMap, devRouterMap, constantRouterMap } from '@/router'
 import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
@@ -9,33 +9,30 @@ import { hasAccess } from '@/utils/tools'
 
 NProgress.configure({ showSpinner: false })// NProgress Configuration
 
-function hasPermissionOfConstant(name) {
-  const routePermissionJudge = (list) => {
-    return list.some(item => {
-      if (item.children && item.children.length) {
-        return routePermissionJudge(item.children)
-      } else if (item.name === name) {
-        return true
-      }
-    })
-  }
+function staticAccessJudge(list, name) {
+  return list.some(item => {
+    if (item.children && item.children.length) {
+      return staticAccessJudge(item.children, name)
+    } else if (item.name === name) {
+      return true
+    }
+  })
+}
 
-  return routePermissionJudge(constantRouterMap)
+function asyncAccessJudge(list, access, name) {
+  return list.some(item => {
+    if (item.children && item.children.length) {
+      return asyncAccessJudge(item.children, access, name)
+    } else if (item.name === name) {
+      return hasAccess(access, item)
+    }
+  })
 }
 
 // permission judge function
 function hasPermission(access, name) {
-  const routePermissionJudge = (list) => {
-    return list.some(item => {
-      if (item.children && item.children.length) {
-        return routePermissionJudge(item.children)
-      } else if (item.name === name) {
-        return hasAccess(access, item)
-      }
-    })
-  }
-
-  return hasPermissionOfConstant(name) || routePermissionJudge(asyncRouterMap)
+  // TODO bug:应该根据role来判断，admin才可以校验所有，其他用户只能校验Constant和动态路由
+  return staticAccessJudge(constantRouterMap, name) || asyncAccessJudge(asyncRouterMap, access, name) || staticAccessJudge(devRouterMap, name)
 }
 
 const whiteList = ['/login', '/auth-redirect']// no redirect whitelist

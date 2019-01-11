@@ -81,7 +81,9 @@ export default {
     transferIn: 'Transfer In',
     transferOut: 'Transfer Out',
     import: 'Import',
-    export: 'Export'
+    export: 'Export',
+    last: 'Last',
+    next: 'Next'
   },
   tip: {
     search: 'please entry something to search',
@@ -100,11 +102,13 @@ export default {
     rules: {
       jobName: 'The Job Name can not be null',
       displayName: 'The Display Name can not be null',
+      jobType: 'The Job Type can not be null',
       status: 'The Status can not be null'
     },
     columns: {
-      jobName: 'Name',
+      jobName: 'Job Name',
       displayName: 'Display Name',
+      jobType: 'Job Type',
       status: 'Status',
       createTime: 'Created',
       updateTime: 'Last Updated',
@@ -113,11 +117,37 @@ export default {
     placeholder: {
       jobName: 'Please entry Job Name',
       displayName: 'Please entry Job Display Name',
+      jobType: 'Please select Job Type',
       status: 'Please select Status',
       remark: 'Please entry Remark'
     },
+    jobTypes: {
+      httpJob: 'Http Job'
+    },
+    steps: {
+      base: 'Base',
+      job: 'Job',
+      trigger: 'Trigger',
+      arg: 'Argument'
+    },
     atomJob: {
-      title: 'AtomJob'
+      title: 'AtomJob',
+      httpJob: {
+        jobConfig: {
+          columns: {
+            requestMethod: 'Request Method',
+            uri: '(Relative) URI'
+          },
+          placeholder: {
+            requestMethod: 'Please select Request Method',
+            uri: 'Please entry (Relative) URI'
+          },
+          rules: {
+            requestMethod: 'Request Method can not be null',
+            uri: '(Relative) URI can not be null'
+          }
+        }
+      }
     },
     groupJob: {
       title: 'GroupJob'

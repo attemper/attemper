@@ -33,7 +33,7 @@ service.interceptors.response.use(
     const { data, status } = res
     if (data.code && data.code !== 200) {
       if (data.code === 1000 || data.code === 1001 || data.code === 1002) {
-        window.location = '/401'
+        window.location = '/'
       }
       Message({
         message: data.msg,

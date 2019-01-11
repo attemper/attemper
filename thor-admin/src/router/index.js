@@ -123,7 +123,11 @@ export default new Router({
   routes: constantRouterMap
 })
 
-export const asyncRouterMap = [
+/**
+ * 仅用于参考开发，admin才可见
+ * @type {Array}
+ */
+export const devRouterMap = [
   {
     name: 'permission',
     path: '/permission',
@@ -156,7 +160,6 @@ export const asyncRouterMap = [
       }
     ]
   },
-  jobRouter,
   {
     name: 'icon',
     path: '/icon',
@@ -387,7 +390,10 @@ export const asyncRouterMap = [
         meta: { title: 'externalLink', icon: 'link' }
       }
     ]
-  },
+  }
+]
 
-  { path: '*', redirect: '/404', hidden: true }
+export const asyncRouterMap = [
+  jobRouter,
+  { name: '404', path: '*', redirect: '/404', hidden: true }
 ]

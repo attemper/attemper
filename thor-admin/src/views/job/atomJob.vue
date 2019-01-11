@@ -4,7 +4,7 @@
       <el-input :placeholder="$t('job.columns.jobName')" v-model="page.jobName" style="width: 100px;" class="filter-item" @keyup.enter.native="handleFilter"/>
       <el-input :placeholder="$t('job.columns.displayName')" v-model="page.displayName" style="width: 100px;" class="filter-item" @keyup.enter.native="handleFilter"/>
       <el-select v-model="page.status" :placeholder="$t('job.columns.status')" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in statusOptions" :key="item.value" :label="item.text" :value="item.value"/>
+        <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
@@ -18,6 +18,7 @@
 
     <el-table
       v-loading="listLoading"
+      ref="jobTable"
       :key="tableKey"
       :data="list"
       border
@@ -39,7 +40,7 @@
           <span>{{ scope.row.displayName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('job.columns.status')" :filters="statusOptions" :filter-method="filterStatus" class-name="status-col" width="100">
+      <el-table-column :label="$t('job.columns.status')" :filters="jobStatuses" :filter-method="filterStatus" class-name="status-col" width="100">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
@@ -64,26 +65,59 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="page.currentPage" :limit.sync="page.pageSize" @pagination="search" />
 
-    <el-dialog :title="editDialog.title" :visible.sync="editDialog.visible">
-      <el-form ref="form" :rules="rules" :model="temp" label-position="left" label-width="150px" style="width: 500px; margin-left:50px;">
+    <el-dialog :title="editDialog.title" :visible.sync="editDialog.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-steps :active="editDialog.currentStep">
+        <el-step :title="$t('job.steps.base')"/>
+        <el-step :title="$t('job.steps.job')"/>
+        <el-step :title="$t('job.steps.arg')"/>
+        <el-step :title="$t('job.steps.trigger')"/>
+      </el-steps>
+      <el-form v-show="editDialog.currentStep === 1" ref="baseForm" :rules="baseRules" :model="job" label-position="left" label-width="150px" class="form-layout">
         <el-form-item :label="$t('job.columns.jobName')" prop="jobName">
-          <el-input v-model="temp.jobName" :placeholder="$t('job.placeholder.jobName')"/>
+          <el-input v-model="job.jobName" :placeholder="$t('job.placeholder.jobName')"/>
         </el-form-item>
         <el-form-item :label="$t('job.columns.displayName')" prop="displayName">
-          <el-input v-model="temp.displayName" :placeholder="$t('job.placeholder.displayName')"/>
+          <el-input v-model="job.displayName" :placeholder="$t('job.placeholder.displayName')"/>
         </el-form-item>
-        <el-form-item :label="$t('job.columns.status')">
-          <el-select v-model="temp.status" :placeholder="$t('job.placeholder.status')" class="filter-item">
-            <el-option v-for="item in statusOptions" :key="item.value" :label="item.text" :value="item.value"/>
+        <el-form-item :label="$t('job.columns.jobType')" prop="jobType">
+          <el-select v-model="job.jobType" :placeholder="$t('job.placeholder.jobType')" class="filter-item">
+            <el-option v-for="item in jobTypes" :key="item.value" :label="item.label" :value="item.value"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('job.columns.status')" prop="status">
+          <el-select v-model="job.status" :placeholder="$t('job.placeholder.status')" class="filter-item">
+            <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('job.columns.remark')">
-          <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="temp.remark" :placeholder="$t('job.placeholder.remark')" type="textarea"/>
+          <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="job.remark" :placeholder="$t('job.placeholder.remark')" type="textarea"/>
+        </el-form-item>
+      </el-form>
+      <el-form v-show="editDialog.currentStep === 2 && job.jobType === 11" ref="httpJobForm" :rules="httpJobRules" :model="httpJobConfig" label-position="left" label-width="150px" class="form-layout">
+        <el-form-item :label="$t('job.atomJob.httpJob.jobConfig.columns.requestMethod')" prop="requestMethod">
+          <el-select v-model="httpJobConfig.requestMethod" :placeholder="$t('job.atomJob.httpJob.jobConfig.placeholder.requestMethod')" class="filter-item">
+            <el-option v-for="item in requestMethods" :key="item.value" :label="item.label" :value="item.value"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('job.atomJob.httpJob.jobConfig.columns.uri')" prop="uri">
+          <el-input v-model="httpJobConfig.uri" :placeholder="$t('job.atomJob.httpJob.jobConfig.placeholder.uri')"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="editDialog.visible = false">{{ $t('actions.cancel') }}</el-button>
-        <el-button type="primary" @click="save">{{ $t('actions.save') }}</el-button>
+        <el-row>
+          <el-col :span="4" :offset="2">
+            <el-button :disabled="editDialog.currentStep === 1" type="primary" @click="editDialog.currentStep--">{{ $t('actions.last') }}</el-button>
+          </el-col>
+          <el-col :span="4" :offset="3">
+            <el-button type="info" @click="editDialog.visible = false">{{ $t('actions.cancel') }}</el-button>
+          </el-col>
+          <el-col :span="4">
+            <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
+          </el-col>
+          <el-col :span="4" :offset="3">
+            <el-button :disabled="editDialog.currentStep === 4" type="primary" @click="editDialog.currentStep++">{{ $t('actions.next') }}</el-button>
+          </el-col>
+        </el-row>
       </div>
     </el-dialog>
 
@@ -91,13 +125,14 @@
 </template>
 
 <script>
-import { listReq/* , getReq*/, removeReq, addReq, updateReq } from '@/api/job/baseJob'
+import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/job/baseJob'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { load } from '@/constant'
 
 export default {
-  name: 'AtomJob',
+  name: 'AtomJob1',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -123,58 +158,62 @@ export default {
         pageSize: 10,
         jobName: undefined,
         displayName: undefined,
+        jobType: undefined,
         status: undefined,
         sort: 'JOB_NAME'
       },
       importanceOptions: [1, 2, 3],
-      statusOptions: [
-        {
-          text: this.$t('job.status.enable'),
-          value: 0
-        },
-        {
-          text: this.$t('job.status.disable'),
-          value: 1
-        },
-        {
-          text: this.$t('job.status.transient'),
-          value: 2
-        },
-        {
-          text: this.$t('job.status.disposible'),
-          value: 3
-        }
-      ],
-      sortOptions: [{ label: this.$t('job.sort.nameAsc'), key: 'JOB_NAME' }, { label: this.$t('job.sort.nameDesc'), key: 'JOB_NAME DESC' }],
+      jobStatuses: [],
+      jobTypes: [],
+      requestMethods: [],
+      /* sortOptions: [{ label: this.$t('job.sort.nameAsc'), key: 'JOB_NAME' }, { label: this.$t('job.sort.nameDesc'), key: 'JOB_NAME DESC' }],*/
       showCreateTime: false,
-      temp: {
+      job: {
         jobName: undefined,
         displayName: '',
-        jobType: 10,
+        jobType: 11,
         status: 0,
-        remark: ''
+        remark: '',
+        jobContent: ''
+      },
+      httpJobConfig: {
+        requestMethod: 'POST',
+        uri: ''
       },
       editDialog: {
         oper: undefined,
         title: undefined,
-        visible: false
+        visible: false,
+        currentStep: 1
       },
-      rules: {
+      baseRules: {
         jobName: [{ required: true, trigger: 'blur' }],
         displayName: [{ required: true, trigger: 'blur' }],
+        jobType: [{ required: true, trigger: 'blur' }],
         status: [{ required: true, trigger: 'blur' }]
+      },
+      httpJobRules: {
+        requestMethod: [{ required: true, trigger: 'blur' }],
+        uri: [{ required: true, trigger: 'blur' }]
       },
       downloadLoading: false,
       selections: []
     }
   },
   created() {
-    this.rules.jobName[0].message = this.$t('job.rules.jobName')
-    this.rules.displayName[0].message = this.$t('job.rules.displayName')
-    this.rules.status[0].message = this.$t('job.rules.status')
+    this.loadConst()
+    this.setFormRules()
     this.search()
   },
   methods: {
+    setFormRules() {
+      this.baseRules.jobName[0].message = this.$t('job.rules.jobName')
+      this.baseRules.displayName[0].message = this.$t('job.rules.displayName')
+      this.baseRules.status[0].message = this.$t('job.rules.status')
+      this.baseRules.jobType[0].message = this.$t('job.rules.jobType')
+      this.httpJobRules.requestMethod[0].message = this.$t('job.atomJob.httpJob.jobConfig.rules.requestMethod')
+      this.httpJobRules.uri[0].message = this.$t('job.atomJob.httpJob.jobConfig.rules.uri')
+    },
     search() {
       this.listLoading = true
       listReq(this.page).then(response => {
@@ -205,47 +244,68 @@ export default {
       }
       this.handleFilter()
     },
-    resetTemp() {
-      this.temp = {
-        jobName: undefined,
-        displayName: '',
-        status: 0,
-        remark: ''
+    reset() {
+      if (!this.selections || !this.selections.length || !this.selections[0].jobName) {
+        this.job = {
+          jobName: undefined,
+          displayName: '',
+          jobType: 11,
+          status: 0,
+          remark: ''
+        }
+      } else {
+        getReq({ jobName: this.selections[0].jobName }).then(res => {
+          this.job = res.data.result
+          if (this.job.jobType === 11) { // http job
+            this.httpJobConfig = JSON.parse(this.job.jobContent)
+          } // else if other job
+        })
       }
     },
     handleAdd() {
-      this.resetTemp()
       this.editDialog.oper = 'add'
+      this.selectRow(null)
+      this.reset() // to set to origin
       this.editDialog.title = this.$t('actions.add')
       this.editDialog.visible = true
       this.$nextTick(() => {
-        this.$refs['form'].clearValidate()
+        this.$refs['baseForm'].clearValidate()
       })
     },
     save() {
-      this.$refs.form.validate((valid) => {
+      this.$refs.baseForm.validate((valid) => {
         if (valid) {
-          const request = (this.editDialog.oper === 'add' ? addReq(this.temp) : updateReq(this.temp))
-          request.then(res => {
-            this.$message.success(res.data.msg)
-            this.editDialog.visible = false
-            this.search()
-          })
+          if (this.job.jobType === 11) {
+            this.$refs.httpJobForm.validate((valid1) => {
+              if (valid1) {
+                const request = (this.editDialog.oper === 'add' ? addReq(this.job) : updateReq(this.job))
+                this.job.jobContent = JSON.stringify(this.httpJobConfig)
+                request.then(res => {
+                  this.$message.success(res.data.msg)
+                  this.editDialog.visible = false
+                  this.search()
+                })
+              }
+            })
+          } // else if other job
         }
       })
     },
     handleUpdate(row) {
+      this.selectRow(row)
       this.editDialog.oper = 'update'
-      this.temp = Object.assign({}, row) // copy obj
+      this.reset() // get the newest
+      // this.job = Object.assign({}, row) // copy obj
       this.editDialog.title = this.$t('actions.update')
       this.editDialog.visible = true
       this.$nextTick(() => {
-        this.$refs['form'].clearValidate()
+        this.$refs['baseForm'].clearValidate()
       })
     },
     handleRemove(row) {
       const jobNames = []
       if (row && row.jobName) {
+        this.selectRow(row) // just select the row
         jobNames.push(row.jobName)
       } else if (this.selections.length) {
         this.selections.forEach((sel) => {
@@ -288,8 +348,8 @@ export default {
       }))
     },
     formatStatus(status) {
-      for (let i = 0; i < this.statusOptions.length; i++) {
-        const statusOption = this.statusOptions[i]
+      for (let i = 0; i < this.jobStatuses.length; i++) {
+        const statusOption = this.jobStatuses[i]
         if (statusOption.value === status) {
           return statusOption.text
         }
@@ -299,9 +359,33 @@ export default {
     filterStatus(value, row) {
       return row.status === value
     },
+    selectRow(row) {
+      this.$refs.jobTable.clearSelection()
+      if (row && row.jobName) {
+        this.$refs.jobTable.toggleRowSelection(row, true)
+      }
+    },
     handleSelectionChange(val) {
       this.selections = val
+    },
+    loadConst() {
+      load(`./array/${this.$store.state.app.language}.js`).then((array) => {
+        this.jobTypes = array.jobTypes
+        this.jobStatuses = array.jobStatuses
+        this.requestMethods = array.requestMethods
+      })
     }
   }
 }
 </script>
+
+<style lang="scss">
+  .form{
+    &-layout{
+      width: 500px;
+      min-height: 350px;
+      margin-top: 20px;
+      margin-left:50px;
+    }
+  }
+</style>
