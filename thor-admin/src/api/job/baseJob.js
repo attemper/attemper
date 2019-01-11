@@ -2,15 +2,7 @@ import request from '@/utils/request'
 import config from '@/config'
 
 const { APIPath } = config
-export const SubPath = '/job/atomJob'
-
-export const listReq = (params) => {
-  return request({
-    url: APIPath.DISPATCH + SubPath + APIPath.LIST,
-    method: 'get',
-    params: params
-  })
-}
+export const SubPath = '/job/base'
 
 export const addReq = (data) => {
   return request({
@@ -25,6 +17,14 @@ export const updateReq = (data) => {
     url: APIPath.DISPATCH + SubPath + APIPath.UPDATE,
     method: 'put',
     data: data
+  })
+}
+
+export const listReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + APIPath.LIST,
+    method: 'get',
+    params: params
   })
 }
 

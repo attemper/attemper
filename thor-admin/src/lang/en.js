@@ -69,36 +69,55 @@ export default {
     externalLink: 'External Link'
   },
   actions: {
-    handle: 'handle',
-    add: 'add',
-    update: 'update',
-    save: 'save',
-    search: 'refresh',
-    refresh: 'refresh',
-    remove: 'remove',
-    cancel: 'cancel',
-    reset: 'reset',
-    transferIn: 'transfer in',
-    transferOut: 'transfer out'
+    handle: 'Handle',
+    add: 'Add',
+    update: 'Update',
+    save: 'Save',
+    search: 'Search',
+    refresh: 'Refresh',
+    remove: 'Remove',
+    cancel: 'Cancel',
+    reset: 'Reset',
+    transferIn: 'Transfer In',
+    transferOut: 'Transfer Out',
+    import: 'Import',
+    export: 'Export'
+  },
+  tip: {
+    search: 'please entry something to search',
+    batchRemove: 'batch remove',
+    confirm: 'please confirm to do',
+    remove: 'please select the data to remove',
+    removeConfirm: 'are you sure to remove it(them)?',
+    saveConfirm: 'are you sure to save it'
   },
   job: {
     title: 'Job',
+    sort: {
+      nameAsc: 'jobName Ascending',
+      nameDesc: 'jobName Descending'
+    },
+    rules: {
+      jobName: 'The Job Name can not be null',
+      displayName: 'The Display Name can not be null',
+      status: 'The Status can not be null'
+    },
+    columns: {
+      jobName: 'Name',
+      displayName: 'Display Name',
+      status: 'Status',
+      createTime: 'Created',
+      updateTime: 'Last Updated',
+      remark: 'Remark'
+    },
+    placeholder: {
+      jobName: 'Please entry Job Name',
+      displayName: 'Please entry Job Display Name',
+      status: 'Please select Status',
+      remark: 'Please entry Remark'
+    },
     atomJob: {
-      title: 'AtomJob',
-      columns: {
-        jobName: 'Name',
-        displayName: 'Display Name',
-        status: 'Status',
-        createTime: 'Created',
-        updateTime: 'Last Updated',
-        remark: 'Remark'
-      },
-      placeholder: {
-        jobName: 'Please entry Job Name',
-        displayName: 'Please entry Job Display Name',
-        status: 'Please select Status',
-        remark: 'Please entry Remark'
-      }
+      title: 'AtomJob'
     },
     groupJob: {
       title: 'GroupJob'
