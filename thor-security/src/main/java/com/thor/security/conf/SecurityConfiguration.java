@@ -1,8 +1,6 @@
 package com.thor.security.conf;
 
-import com.thor.config.properties.StarkAppProperties;
 import com.thor.security.controller.LoginController;
-import com.thor.security.filter.TokenFilter;
 import com.thor.security.service.LoginService;
 import com.thor.security.xss.XssFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -22,18 +20,10 @@ import org.springframework.context.annotation.Configuration;
         LoginService.class,
 
         //controller
-        LoginController.class,
+        LoginController.class
+
 })
 public class SecurityConfiguration {
-
-    @Bean
-    public FilterRegistrationBean tokenFilterRegistrationBean(StarkAppProperties properties) {
-        FilterRegistrationBean filterBean = new FilterRegistrationBean();
-        filterBean.setFilter(new TokenFilter(properties));
-        filterBean.getInitParameters().put("exclusions", "*.js,*.css,*.gif,*.jpg,*.png,*.html,*.map,*.woff,*.jpeg,*.tif,*.fiff");
-        filterBean.addUrlPatterns("/api/*");
-        return filterBean;
-    }
 
     @Bean
     public FilterRegistrationBean xssFilterRegistrationBean(){
