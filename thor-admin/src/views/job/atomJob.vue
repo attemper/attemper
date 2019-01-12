@@ -12,7 +12,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('actions.search') }}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="handleAdd">{{ $t('actions.add') }}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="handleRemove">{{ $t('actions.remove') }}</el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>
+      <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>-->
       <el-checkbox v-model="showCreateTime" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">{{ $t('job.columns.createTime') }}</el-checkbox>
     </div>
 
@@ -127,7 +127,7 @@
 <script>
 import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/job/baseJob'
 import waves from '@/directive/waves' // Waves directive
-import { parseTime } from '@/utils'
+// import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 
@@ -162,7 +162,6 @@ export default {
         status: undefined,
         sort: 'JOB_NAME'
       },
-      importanceOptions: [1, 2, 3],
       jobStatuses: [],
       jobTypes: [],
       requestMethods: [],
@@ -324,7 +323,7 @@ export default {
           })
         })
     },
-    handleDownload() {
+    /* handleDownload() {
       this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
           const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
@@ -346,7 +345,7 @@ export default {
           return v[j]
         }
       }))
-    },
+    }, */
     formatStatus(status) {
       for (let i = 0; i < this.jobStatuses.length; i++) {
         const statusOption = this.jobStatuses[i]

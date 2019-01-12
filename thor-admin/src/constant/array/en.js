@@ -42,3 +42,13 @@ export const requestMethods = [
     value: 'DELETE'
   }
 ]
+
+export const transferTitles = [
+  'pull',
+  'push'
+]
+
+export const allocateTitles = [
+  'exclude',
+  'included'
+]

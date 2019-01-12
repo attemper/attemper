@@ -81,7 +81,7 @@ public class BaseJobService extends BaseServiceAdapter {
         }
         BaseJob updatedJob = toBaseJob(saveParam);
         updatedJob.setCreateTime(baseJob.getCreateTime());
-        baseJob.setUpdateTime(new Date());
+        updatedJob.setUpdateTime(new Date());
         mapper.update(updatedJob);
         return updatedJob;
     }

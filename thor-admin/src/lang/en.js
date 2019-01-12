@@ -150,7 +150,10 @@ export default {
       }
     },
     groupJob: {
-      title: 'GroupJob'
+      title: 'GroupJob',
+      subJobTransfer: {
+        filterPlaceholder: 'Job/Display Name'
+      }
     },
     flowJob: {
       title: 'FlowJob'
