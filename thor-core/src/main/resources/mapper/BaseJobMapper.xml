@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.thor.core.dao.mapper.BaseJobMapper">
+<mapper namespace="com.thor.core.dao.mapper.job.BaseJobMapper">
 
     <insert id="add" parameterType="com.thor.sdk.common.result.job.BaseJob">
         INSERT INTO ${tablePrefix}job (

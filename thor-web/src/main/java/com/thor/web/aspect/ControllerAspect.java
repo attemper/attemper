@@ -65,7 +65,7 @@ public class ControllerAspect {
      */
     @Pointcut("(execution(public * " + GlobalConstants.basePackageLocation + "sys.controller.*Controller.*(..)))"
             + "||"
-            + "(execution(public * " + GlobalConstants.basePackageLocation + "core.controller.*Controller.*(..)))"
+            + "(execution(public * " + GlobalConstants.basePackageLocation + "core.controller..*.*Controller.*(..)))"
             + "||"
             + "(execution(public * " + GlobalConstants.basePackageLocation + "security.controller.*Controller.*(..)))"
     )

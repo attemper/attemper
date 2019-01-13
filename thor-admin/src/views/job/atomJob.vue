@@ -40,7 +40,7 @@
           <span>{{ scope.row.displayName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('job.columns.status')" :filters="jobStatuses" :filter-method="filterStatus" class-name="status-col" width="100">
+      <el-table-column :label="$t('job.columns.status')" :filters="jobStatuses" :filter-method="filterStatus" align="center" class-name="status-col" width="100">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>

@@ -152,10 +152,18 @@ export default {
     },
     groupJob: {
       title: 'GroupJob',
-      subJobTransfer: {
-        filterPlaceholder: 'Job/Display Name',
-        innerDialogName: 'set priority',
-        priorityLabel: 'priority'
+      subJob: {
+        innerDialog: {
+          title: 'set priority',
+          label: 'priority'
+        },
+        actions: {
+          updateSubJobs: 'Update',
+          removeSubJobs: 'Remove'
+        },
+        columns: {
+          priority: 'priority'
+        }
       }
     },
     flowJob: {

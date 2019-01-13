@@ -35,7 +35,7 @@
           <span>{{ scope.row.jobName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('job.columns.displayName')" min-width="150px">
+      <el-table-column :label="$t('job.columns.displayName')" align="center" min-width="150px">
         <template slot-scope="scope">
           <span>{{ scope.row.displayName }}</span>
         </template>
@@ -63,7 +63,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="page.currentPage" :limit.sync="page.pageSize" @pagination="search" />
+    <pagination v-show="page.total>0" :total="page.total" :page.sync="page.currentPage" :limit.sync="page.pageSize" @pagination="search" />
 
     <el-dialog :title="editDialog.title" :visible.sync="editDialog.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-steps :active="editDialog.currentStep">
@@ -90,41 +90,64 @@
           </el-form-item>
         </el-form>
         <div v-show="editDialog.currentStep === 2" style="text-align: center" >
-          <el-transfer
-            v-model="targetKeys"
-            :titles="allocateTitles"
-            :button-texts="transferTitles"
-            :format="{
-              noChecked: '${total}',
-              hasChecked: '${checked}/${total}'
-            }"
-            :props="{
-              key: 'jobName',
-              label: 'displayName'
-            }"
-            :data="subJobDatas"
-            :filter-placeholder="$t('job.groupJob.subJobTransfer.filterPlaceholder')"
-            :render-content="renderFunc"
-            class="transfer-class"
-            style="text-align: left; display: inline-block;"
-            filterable
-            @change="handleChange">
-            <el-button slot="left-footer" class="transfer-footer" size="small" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
-            <el-button slot="right-footer" class="transfer-footer" size="small" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
-          </el-transfer>
+          <el-input :placeholder="$t('job.columns.jobName')" v-model="subJob.page.jobName" style="width: 100px;" class="filter-item" @keyup.enter.native="handleSubJobFilter"/>
+          <el-input :placeholder="$t('job.columns.displayName')" v-model="subJob.page.displayName" style="width: 100px;" class="filter-item" @keyup.enter.native="handleSubJobFilter"/>
+          <el-select v-model="subJob.page.status" :placeholder="$t('job.columns.status')" clearable class="filter-item" style="width: 130px">
+            <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
+          </el-select>
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleSubJobFilter">{{ $t('actions.search') }}</el-button>
+          <el-button v-waves :disabled="!subJob.selections || !subJob.selections.length" class="filter-item" type="primary" icon="el-icon-edit" @click="subJob.setDialog = true">{{ $t('job.groupJob.subJob.actions.updateSubJobs') }}</el-button>
+          <el-button v-waves :disabled="!subJob.selections || !subJob.selections.length || subJob.selections.every(cell => !cell.priority)" class="filter-item" type="danger" icon="el-icon-delete" @click="removeSubJobs">{{ $t('job.groupJob.subJob.actions.removeSubJobs') }}</el-button>
+          <el-table
+            v-loading="subJob.listLoading"
+            ref="subJobTable"
+            :key="subJob.tableKey"
+            :data="subJob.list"
+            border
+            fit
+            highlight-current-row
+            style="width: 100%; margin-top: 20px;"
+            @selection-change="handleSubJobSelectionChange">
+            <el-table-column
+              type="selection"
+              width="40"/>
+            <el-table-column :label="$t('job.columns.jobName')" prop="jobName" align="center" min-width="120px">
+              <template slot-scope="scope">
+                <span>{{ scope.row.jobName }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('job.columns.displayName')" align="center" min-width="150px">
+              <template slot-scope="scope">
+                <span>{{ scope.row.displayName }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('job.columns.status')" class-name="status-col" width="100px">
+              <template slot-scope="scope">
+                <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('job.groupJob.subJob.columns.priority')" class-name="status-col" width="100px">
+              <template slot-scope="scope">
+                <span>
+                  {{ scope.row.priority }}
+                </span>
+              </template>
+            </el-table-column>
+          </el-table>
+          <pagination v-show="subJob.page.total>0" :total="subJob.page.total" :page.sync="subJob.page.currentPage" :limit.sync="subJob.page.pageSize" @pagination="search" />
           <el-dialog
-            :visible.sync="subJobTransfer.innerVisible"
+            :visible.sync="subJob.setDialog"
             :center="true"
             :modal="true"
             :close-on-click-modal="false"
-            :title="$t('job.groupJob.subJobTransfer.innerDialogName')"
+            :title="$t('job.groupJob.subJob.innerDialog.title')"
             width="25%"
             style="padding-top: 50px;"
             append-to-body>
             <el-form label-position="left" label-width="100px">
-              <el-form-item :label="$t('job.groupJob.subJobTransfer.priorityLabel')" prop="jobName">
-                <el-input-number v-model="tempPriority" :min="1" :precision="0" size="medium"/>
-                <el-button type="success" style="margin-left: 20px;" @click="addSubJobs">{{ $t('actions.ok') }}</el-button>
+              <el-form-item :label="$t('job.groupJob.subJob.innerDialog.label')">
+                <el-input-number v-model="subJob.tempPriority" :min="1" :precision="0" size="medium"/>
+                <el-button type="success" style="margin-left: 20px;" @click="updateSubJobs">{{ $t('actions.ok') }}</el-button>
               </el-form-item>
             </el-form>
           </el-dialog>
@@ -153,6 +176,7 @@
 
 <script>
 import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/job/baseJob'
+import { atomAndSubJobsListReq, updateSubReq, removeSubReq } from '@/api/job/groupJob'
 import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
@@ -176,25 +200,39 @@ export default {
     return {
       tableKey: 0,
       list: null,
-      total: 0,
       listLoading: true,
       page: {
         currentPage: 1,
         pageSize: 10,
+        total: 0,
         jobName: undefined,
         displayName: undefined,
         jobType: 1,
         status: undefined,
         sort: 'JOB_NAME'
       },
-      jobStatuses: [],
-      subJobTransfer: {
-        innerVisible: false,
-        movedKeys: []
+      selections: [],
+      subJob: {
+        tableKey: 0,
+        list: null,
+        listLoading: true,
+        selections: [],
+        setDialog: false,
+        tempPriority: 1,
+        page: {
+          groupName: undefined,
+          currentPage: 1,
+          pageSize: 10,
+          total: 0,
+          lowerJobType: 10,
+          jobName: undefined,
+          displayName: undefined,
+          jobType: 11,
+          status: undefined
+        },
+        subJobDatas: [] // struct like {jobName: 'myJob', priority: 1}
       },
-      allocateTitles: [],
-      transferTitles: [],
-      /* sortOptions: [{ label: this.$t('job.sort.nameAsc'), key: 'JOB_NAME' }, { label: this.$t('job.sort.nameDesc'), key: 'JOB_NAME DESC' }],*/
+      jobStatuses: [],
       showCreateTime: false,
       job: {
         jobName: undefined,
@@ -204,7 +242,6 @@ export default {
         remark: '',
         jobContent: ''
       },
-      subJobConfig: {},
       editDialog: {
         oper: undefined,
         title: undefined,
@@ -216,12 +253,7 @@ export default {
         displayName: [{ required: true, trigger: 'blur' }],
         status: [{ required: true, trigger: 'blur' }]
       },
-      downloadLoading: false,
-      selections: [],
-      subJobDatas: [],
-      targetKeys: [],
-      tempPriority: 1,
-      selectedSubJobs: [] // struct like {jobName: 'myJob', priority: 1}
+      downloadLoading: false
     }
   },
   created() {
@@ -239,7 +271,7 @@ export default {
       this.listLoading = true
       listReq(this.page).then(response => {
         this.list = response.data.result.list
-        this.total = response.data.result.page.total
+        this.page.total = response.data.result.page.total
         this.listLoading = false
         // Just to simulate the time of the request
         /* setTimeout(() => {
@@ -250,6 +282,10 @@ export default {
     handleFilter() {
       this.page.currentPage = 1
       this.search()
+    },
+    handleSubJobFilter() {
+      this.subJob.page.currentPage = 1
+      this.restJob()
     },
     sortChange(data) {
       const { prop, order } = data
@@ -323,7 +359,7 @@ export default {
         .then(() => {
           removeReq({ jobNames: jobNames }).then(res => {
             this.$message.success(res.data.msg)
-            this.search()
+            this.handleFilter()
           })
         })
     },
@@ -358,21 +394,17 @@ export default {
     },
     last() {
       this.editDialog.currentStep--
-      if (this.editDialog.currentStep === 2) {
-        this.generateData()
-      }
+      this.reset()
     },
     next() {
       this.editDialog.currentStep++
-      if (this.editDialog.currentStep === 2) {
-        this.generateData()
-      }
+      this.reset()
     },
     reset() {
       if (this.editDialog.currentStep === 1) {
         this.resetBase()
       } else if (this.editDialog.currentStep === 2) {
-        this.generateData()
+        this.restJob()
       }
     },
     resetBase() {
@@ -387,63 +419,58 @@ export default {
       } else {
         getReq({ jobName: this.selections[0].jobName }).then(res => {
           this.job = res.data.result
-          if (this.job.jobType === 11) { // http job
-            this.subJobConfig = JSON.parse(this.job.jobContent)
-          } // else if other job
         })
       }
     },
-    generateData() {
-      this.subJobDatas = []
-      this.targetKeys = []
-      const page = {
-        currentPage: 1,
-        pageSize: 1000,
-        lowerJobType: 10
+    restJob() {
+      // this.subJobDatas = []
+      if (this.selections && this.selections.length && this.selections[0].jobName) {
+        this.subJob.page.groupName = this.selections[0].jobName
       }
-      listReq(page).then(res => {
-        res.data.result.list.forEach(atomJob => {
-          this.subJobDatas.push({
-            jobName: atomJob.jobName,
-            displayName: atomJob.displayName,
-            disabled: atomJob.status === 1,
-            jobType: atomJob.jobType
+      this.subJob.listLoading = true
+      atomAndSubJobsListReq(this.subJob.page).then(res => {
+        this.subJob.list = res.data.result.list
+        this.subJob.page.total = res.data.result.page.total
+        setTimeout(() => {
+          this.subJob.listLoading = false
+        }, 200)
+      })
+    },
+    handleSubJobSelectionChange(val) {
+      this.subJob.selections = val
+    },
+    updateSubJobs() {
+      const jobNames = []
+      this.subJob.selections.forEach(sel => {
+        jobNames.push(sel.jobName)
+      })
+      const data = {
+        groupName: this.selections[0].jobName,
+        jobNames: jobNames,
+        priority: this.subJob.tempPriority
+      }
+      updateSubReq(data).then(res => {
+        this.$message.success(res.data.msg)
+        this.handleSubJobFilter()
+        this.subJob.setDialog = false
+      })
+    },
+    removeSubJobs() {
+      this.$confirm('', this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+        .then(() => {
+          const jobNames = []
+          this.subJob.selections.forEach(sel => {
+            jobNames.push(sel.jobName)
+          })
+          const data = {
+            groupName: this.selections[0].jobName,
+            jobNames: jobNames
+          }
+          removeSubReq(data).then(res => {
+            this.$message.success(res.data.msg)
+            this.handleSubJobFilter()
           })
         })
-      })
-    },
-    handleChange(value, direction, movedKeys) {
-      if (direction === 'right') {
-        this.subJobTransfer.innerVisible = true
-        this.subJobTransfer.movedKeys = movedKeys
-      } else if (direction === 'left') {
-        const newTargetKeys = []
-        this.targetKeys.forEach(key => {
-          if (!movedKeys.includes(key)) {
-            newTargetKeys.push(key)
-          }
-        })
-        this.targetKeys = newTargetKeys
-      }
-    },
-    addSubJobs() {
-      this.subJobTransfer.movedKeys.forEach(key => {
-        this.targetKeys.push(key)
-      })
-      console.log(123)
-    },
-    renderFunc(h, option) {
-      if (option.jobType === 11) {
-        return h(
-          'span',
-          { style: 'color: #67C23A;' },
-          [option.jobName, ' - ', option.displayName]
-        )
-      }
-      return h(
-        'span',
-        [option.jobName, ' - ', option.displayName]
-      )
     }
   }
 }
@@ -459,28 +486,6 @@ export default {
       // width: 500px;
       // min-height: 350px;
       margin-left:50px;
-    }
-  }
-  .transfer-footer {
-    margin-left: 20px;
-    padding: 5px 5px;
-  }
-  .transfer-class{
-    .el-transfer-panel{
-      border: 1px solid #ebeef5;
-      border-radius: 4px;
-      overflow: hidden;
-      background: #fff;
-      display: inline-block;
-      vertical-align: middle;
-      width: 360px;
-      height: 500px;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-      position: relative;
-    }
-    .el-transfer-panel__list.is-filterable {
-      height: 100%;
     }
   }
 </style>

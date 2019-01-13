@@ -1,8 +1,8 @@
-package com.thor.core.service;
+package com.thor.core.service.job;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.thor.core.dao.mapper.BaseJobMapper;
+import com.thor.core.dao.mapper.job.BaseJobMapper;
 import com.thor.core.util.PageUtil;
 import com.thor.sdk.common.param.job.BaseJobGetParam;
 import com.thor.sdk.common.param.job.BaseJobListParam;
