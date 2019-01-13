@@ -83,7 +83,8 @@ export default {
     import: 'Import',
     export: 'Export',
     last: 'Last',
-    next: 'Next'
+    next: 'Next',
+    ok: 'OK'
   },
   tip: {
     search: 'please entry something to search',
@@ -152,7 +153,9 @@ export default {
     groupJob: {
       title: 'GroupJob',
       subJobTransfer: {
-        filterPlaceholder: 'Job/Display Name'
+        filterPlaceholder: 'Job/Display Name',
+        innerDialogName: 'set priority',
+        priorityLabel: 'priority'
       }
     },
     flowJob: {

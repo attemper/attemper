@@ -91,7 +91,7 @@
         </el-form>
         <div v-show="editDialog.currentStep === 2" style="text-align: center" >
           <el-transfer
-            v-model="myTransfer"
+            v-model="targetKeys"
             :titles="allocateTitles"
             :button-texts="transferTitles"
             :format="{
@@ -112,6 +112,22 @@
             <el-button slot="left-footer" class="transfer-footer" size="small" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
             <el-button slot="right-footer" class="transfer-footer" size="small" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
           </el-transfer>
+          <el-dialog
+            :visible.sync="subJobTransfer.innerVisible"
+            :center="true"
+            :modal="true"
+            :close-on-click-modal="false"
+            :title="$t('job.groupJob.subJobTransfer.innerDialogName')"
+            width="25%"
+            style="padding-top: 50px;"
+            append-to-body>
+            <el-form label-position="left" label-width="100px">
+              <el-form-item :label="$t('job.groupJob.subJobTransfer.priorityLabel')" prop="jobName">
+                <el-input-number v-model="tempPriority" :min="1" :precision="0" size="medium"/>
+                <el-button type="success" style="margin-left: 20px;" @click="addSubJobs">{{ $t('actions.ok') }}</el-button>
+              </el-form-item>
+            </el-form>
+          </el-dialog>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -172,8 +188,9 @@ export default {
         sort: 'JOB_NAME'
       },
       jobStatuses: [],
-      subJobtransfer: {
-        //
+      subJobTransfer: {
+        innerVisible: false,
+        movedKeys: []
       },
       allocateTitles: [],
       transferTitles: [],
@@ -201,9 +218,10 @@ export default {
       },
       downloadLoading: false,
       selections: [],
-      myTransfer: [],
       subJobDatas: [],
-      targetKeys: []
+      targetKeys: [],
+      tempPriority: 1,
+      selectedSubJobs: [] // struct like {jobName: 'myJob', priority: 1}
     }
   },
   created() {
@@ -246,24 +264,6 @@ export default {
         this.page.sort = 'JOB_NAME DESC'
       }
       this.handleFilter()
-    },
-    reset() {
-      if (!this.selections || !this.selections.length || !this.selections[0].jobName) {
-        this.job = {
-          jobName: undefined,
-          displayName: '',
-          jobType: 1,
-          status: 0,
-          remark: ''
-        }
-      } else {
-        getReq({ jobName: this.selections[0].jobName }).then(res => {
-          this.job = res.data.result
-          if (this.job.jobType === 11) { // http job
-            this.subJobConfig = JSON.parse(this.job.jobContent)
-          } // else if other job
-        })
-      }
     },
     handleAdd() {
       this.editDialog.oper = 'add'
@@ -368,6 +368,31 @@ export default {
         this.generateData()
       }
     },
+    reset() {
+      if (this.editDialog.currentStep === 1) {
+        this.resetBase()
+      } else if (this.editDialog.currentStep === 2) {
+        this.generateData()
+      }
+    },
+    resetBase() {
+      if (!this.selections || !this.selections.length || !this.selections[0].jobName) {
+        this.job = {
+          jobName: undefined,
+          displayName: '',
+          jobType: 1,
+          status: 0,
+          remark: ''
+        }
+      } else {
+        getReq({ jobName: this.selections[0].jobName }).then(res => {
+          this.job = res.data.result
+          if (this.job.jobType === 11) { // http job
+            this.subJobConfig = JSON.parse(this.job.jobContent)
+          } // else if other job
+        })
+      }
+    },
     generateData() {
       this.subJobDatas = []
       this.targetKeys = []
@@ -381,18 +406,16 @@ export default {
           this.subJobDatas.push({
             jobName: atomJob.jobName,
             displayName: atomJob.displayName,
-            disabled: atomJob.status === 1
+            disabled: atomJob.status === 1,
+            jobType: atomJob.jobType
           })
         })
       })
     },
     handleChange(value, direction, movedKeys) {
       if (direction === 'right') {
-        if (movedKeys && movedKeys.length) {
-          movedKeys.forEach(key => {
-            this.targetKeys.push(key)
-          })
-        }
+        this.subJobTransfer.innerVisible = true
+        this.subJobTransfer.movedKeys = movedKeys
       } else if (direction === 'left') {
         const newTargetKeys = []
         this.targetKeys.forEach(key => {
@@ -403,8 +426,24 @@ export default {
         this.targetKeys = newTargetKeys
       }
     },
+    addSubJobs() {
+      this.subJobTransfer.movedKeys.forEach(key => {
+        this.targetKeys.push(key)
+      })
+      console.log(123)
+    },
     renderFunc(h, option) {
-      return <span>{ option.jobName } - { option.displayName }</span>
+      if (option.jobType === 11) {
+        return h(
+          'span',
+          { style: 'color: #67C23A;' },
+          [option.jobName, ' - ', option.displayName]
+        )
+      }
+      return h(
+        'span',
+        [option.jobName, ' - ', option.displayName]
+      )
     }
   }
 }
