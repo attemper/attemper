@@ -62,29 +62,37 @@ public class GroupJobService extends BaseServiceAdapter {
         saveParam.getJobNames().forEach(newSubJobName -> {
             subJobList.add(PriorityJobEntity.builder().jobName(newSubJobName).priority(saveParam.getPriority()).build());
         });
-        String jobContentJsonStr = groupJob.getJobContent();
+        String jobContentJsonStr = groupJob.getJobContent() == null ? "" : groupJob.getJobContent();
         replaceJobContent(groupJob, subJobList, jobContentJsonStr);
         return groupJob;
     }
 
     private void replaceJobContent(BaseJob groupJob, List<PriorityJobEntity> subJobList, String jobContentJsonStr) {
-        if (StringUtils.isNotBlank(jobContentJsonStr)) {
-            try {
-                ObjectNode jobContentNode = (ObjectNode) objectMapper.readTree(jobContentJsonStr);
-                ArrayNode subJobsNode = objectMapper.createArrayNode();
-                subJobList.forEach(subJob -> {
-                    ObjectNode objectNode = objectMapper.createObjectNode();
-                    objectNode.put(CoreConstants.jobName, subJob.getJobName());
-                    objectNode.put(CoreConstants.priority, subJob.getPriority());
-                    subJobsNode.add(objectNode);
-                });
-                jobContentNode.replace(CoreConstants.subJobs, subJobsNode);
-                groupJob.setJobContent(objectMapper.writeValueAsString(jobContentNode));
-                mapper.update(groupJob);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-                throw new RTException(6140);
+        try {
+            ObjectNode jobContentNode;
+            if (StringUtils.isNotBlank(jobContentJsonStr)) {
+                jobContentNode = (ObjectNode) objectMapper.readTree(jobContentJsonStr);
+            } else {
+                jobContentNode = objectMapper.createObjectNode();
             }
+            ArrayNode subJobsNode = objectMapper.createArrayNode();
+            subJobList.forEach(subJob -> {
+                ObjectNode objectNode = objectMapper.createObjectNode();
+                objectNode.put(CoreConstants.jobName, subJob.getJobName());
+                objectNode.put(CoreConstants.priority, subJob.getPriority());
+                subJobsNode.add(objectNode);
+            });
+
+            if (jobContentNode.has(CoreConstants.subJobs)) {
+                jobContentNode.replace(CoreConstants.subJobs, subJobsNode);
+            } else {
+                jobContentNode.set(CoreConstants.subJobs, subJobsNode);
+            }
+            groupJob.setJobContent(objectMapper.writeValueAsString(jobContentNode));
+            mapper.update(groupJob);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw new RTException(6140);
         }
     }
 

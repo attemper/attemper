@@ -57,6 +57,7 @@
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="openSubJobDialog(scope.row)">{{ $t('job.groupJob.subJob.actions.allot') }}</el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)"/>
           <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleRemove(scope.row)"/>
         </template>
@@ -68,7 +69,6 @@
     <el-dialog :title="editDialog.title" :visible.sync="editDialog.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-steps :active="editDialog.currentStep">
         <el-step :title="$t('job.steps.base')"/>
-        <el-step :title="$t('job.steps.job')"/>
         <el-step :title="$t('job.steps.arg')"/>
         <el-step :title="$t('job.steps.trigger')"/>
       </el-steps>
@@ -89,69 +89,6 @@
             <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="job.remark" :placeholder="$t('job.placeholder.remark')" type="textarea"/>
           </el-form-item>
         </el-form>
-        <div v-show="editDialog.currentStep === 2" style="text-align: center" >
-          <el-input :placeholder="$t('job.columns.jobName')" v-model="subJob.page.jobName" style="width: 100px;" class="filter-item" @keyup.enter.native="handleSubJobFilter"/>
-          <el-input :placeholder="$t('job.columns.displayName')" v-model="subJob.page.displayName" style="width: 100px;" class="filter-item" @keyup.enter.native="handleSubJobFilter"/>
-          <el-select v-model="subJob.page.status" :placeholder="$t('job.columns.status')" clearable class="filter-item" style="width: 130px">
-            <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
-          </el-select>
-          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleSubJobFilter">{{ $t('actions.search') }}</el-button>
-          <el-button v-waves :disabled="!subJob.selections || !subJob.selections.length" class="filter-item" type="primary" icon="el-icon-edit" @click="subJob.setDialog = true">{{ $t('job.groupJob.subJob.actions.updateSubJobs') }}</el-button>
-          <el-button v-waves :disabled="!subJob.selections || !subJob.selections.length || subJob.selections.every(cell => !cell.priority)" class="filter-item" type="danger" icon="el-icon-delete" @click="removeSubJobs">{{ $t('job.groupJob.subJob.actions.removeSubJobs') }}</el-button>
-          <el-table
-            v-loading="subJob.listLoading"
-            ref="subJobTable"
-            :key="subJob.tableKey"
-            :data="subJob.list"
-            border
-            fit
-            highlight-current-row
-            style="width: 100%; margin-top: 20px;"
-            @selection-change="handleSubJobSelectionChange">
-            <el-table-column
-              type="selection"
-              width="40"/>
-            <el-table-column :label="$t('job.columns.jobName')" prop="jobName" align="center" min-width="120px">
-              <template slot-scope="scope">
-                <span>{{ scope.row.jobName }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('job.columns.displayName')" align="center" min-width="150px">
-              <template slot-scope="scope">
-                <span>{{ scope.row.displayName }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('job.columns.status')" class-name="status-col" width="100px">
-              <template slot-scope="scope">
-                <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('job.groupJob.subJob.columns.priority')" class-name="status-col" width="100px">
-              <template slot-scope="scope">
-                <span>
-                  {{ scope.row.priority }}
-                </span>
-              </template>
-            </el-table-column>
-          </el-table>
-          <pagination v-show="subJob.page.total>0" :total="subJob.page.total" :page.sync="subJob.page.currentPage" :limit.sync="subJob.page.pageSize" @pagination="search" />
-          <el-dialog
-            :visible.sync="subJob.setDialog"
-            :center="true"
-            :modal="true"
-            :close-on-click-modal="false"
-            :title="$t('job.groupJob.subJob.innerDialog.title')"
-            width="25%"
-            style="padding-top: 50px;"
-            append-to-body>
-            <el-form label-position="left" label-width="100px">
-              <el-form-item :label="$t('job.groupJob.subJob.innerDialog.label')">
-                <el-input-number v-model="subJob.tempPriority" :min="1" :precision="0" size="medium"/>
-                <el-button type="success" style="margin-left: 20px;" @click="updateSubJobs">{{ $t('actions.ok') }}</el-button>
-              </el-form-item>
-            </el-form>
-          </el-dialog>
-        </div>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-row>
@@ -165,12 +102,76 @@
             <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
           </el-col>
           <el-col :span="4" :offset="3">
-            <el-button :disabled="editDialog.currentStep === 4" type="primary" @click="next">{{ $t('actions.next') }}</el-button>
+            <el-button :disabled="editDialog.currentStep === 3" type="primary" @click="next">{{ $t('actions.next') }}</el-button>
           </el-col>
         </el-row>
       </div>
     </el-dialog>
-
+    <el-dialog :title="$t('job.groupJob.subJob.title')" :visible.sync="subJob.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false">
+      <div class="setting" style="text-align: center">
+        <el-input :placeholder="$t('job.columns.jobName')" v-model="subJob.page.jobName" style="width: 100px;" class="filter-item" @keyup.enter.native="handleSubJobFilter"/>
+        <el-input :placeholder="$t('job.columns.displayName')" v-model="subJob.page.displayName" style="width: 100px;" class="filter-item" @keyup.enter.native="handleSubJobFilter"/>
+        <el-select v-model="subJob.page.status" :placeholder="$t('job.columns.status')" clearable class="filter-item" style="width: 130px">
+          <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
+        </el-select>
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleSubJobFilter">{{ $t('actions.search') }}</el-button>
+        <el-button v-waves :disabled="!subJob.selections || !subJob.selections.length" class="filter-item" type="primary" icon="el-icon-edit" @click="subJob.setDialog = true">{{ $t('job.groupJob.subJob.actions.updateSubJobs') }}</el-button>
+        <el-button v-waves :disabled="!subJob.selections || !subJob.selections.length || subJob.selections.every(cell => !cell.priority)" class="filter-item" type="danger" icon="el-icon-delete" @click="removeSubJobs">{{ $t('job.groupJob.subJob.actions.removeSubJobs') }}</el-button>
+        <el-table
+          v-loading="subJob.listLoading"
+          ref="subJobTable"
+          :key="subJob.tableKey"
+          :data="subJob.list"
+          border
+          fit
+          highlight-current-row
+          style="width: 100%; margin-top: 20px;"
+          @selection-change="handleSubJobSelectionChange">
+          <el-table-column
+            type="selection"
+            width="40"/>
+          <el-table-column :label="$t('job.columns.jobName')" prop="jobName" align="center" min-width="120px">
+            <template slot-scope="scope">
+              <span>{{ scope.row.jobName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('job.columns.displayName')" align="center" min-width="150px">
+            <template slot-scope="scope">
+              <span>{{ scope.row.displayName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('job.columns.status')" class-name="status-col" width="100px">
+            <template slot-scope="scope">
+              <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('job.groupJob.subJob.columns.priority')" class-name="status-col" width="100px">
+            <template slot-scope="scope">
+              <span>
+                {{ scope.row.priority }}
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <pagination v-show="subJob.page.total>0" :total="subJob.page.total" :page.sync="subJob.page.currentPage" :limit.sync="subJob.page.pageSize" @pagination="search" />
+        <el-dialog
+          :visible.sync="subJob.setDialog"
+          :center="true"
+          :modal="true"
+          :close-on-click-modal="false"
+          :title="$t('job.groupJob.subJob.innerDialog.title')"
+          width="25%"
+          style="padding-top: 50px;"
+          append-to-body>
+          <el-form label-position="left" label-width="100px">
+            <el-form-item :label="$t('job.groupJob.subJob.innerDialog.label')">
+              <el-input-number v-model="subJob.tempPriority" :min="1" :precision="0" size="medium"/>
+              <el-button type="success" style="margin-left: 20px;" @click="updateSubJobs">{{ $t('actions.ok') }}</el-button>
+            </el-form-item>
+          </el-form>
+        </el-dialog>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -213,6 +214,7 @@ export default {
       },
       selections: [],
       subJob: {
+        visible: false,
         tableKey: 0,
         list: null,
         listLoading: true,
@@ -285,7 +287,7 @@ export default {
     },
     handleSubJobFilter() {
       this.subJob.page.currentPage = 1
-      this.restJob()
+      this.resetJob()
     },
     sortChange(data) {
       const { prop, order } = data
@@ -314,19 +316,12 @@ export default {
     save() {
       this.$refs.baseForm.validate((valid) => {
         if (valid) {
-          if (this.job.jobType === 11) {
-            this.$refs.subJobForm.validate((valid1) => {
-              if (valid1) {
-                const request = (this.editDialog.oper === 'add' ? addReq(this.job) : updateReq(this.job))
-                this.job.jobContent = JSON.stringify(this.subJobConfig)
-                request.then(res => {
-                  this.$message.success(res.data.msg)
-                  this.editDialog.visible = false
-                  this.search()
-                })
-              }
-            })
-          } // else if other job
+          const request = (this.editDialog.oper === 'add' ? addReq(this.job) : updateReq(this.job))
+          request.then(res => {
+            this.$message.success(res.data.msg)
+            this.editDialog.visible = false
+            this.search()
+          })
         }
       })
     },
@@ -404,7 +399,7 @@ export default {
       if (this.editDialog.currentStep === 1) {
         this.resetBase()
       } else if (this.editDialog.currentStep === 2) {
-        this.restJob()
+        //
       }
     },
     resetBase() {
@@ -422,8 +417,12 @@ export default {
         })
       }
     },
-    restJob() {
-      // this.subJobDatas = []
+    openSubJobDialog(row) {
+      this.selectRow(row)
+      this.subJob.visible = true
+      this.resetJob(row)
+    },
+    resetJob() {
       if (this.selections && this.selections.length && this.selections[0].jobName) {
         this.subJob.page.groupName = this.selections[0].jobName
       }

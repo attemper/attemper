@@ -39,7 +39,9 @@
             `DISPLAY_NAME` = #{displayName, jdbcType=VARCHAR},
         </if>
         JOB_TYPE = #{jobType, jdbcType=INTEGER},
-        JOB_CONTENT = #{jobContent, jdbcType=VARCHAR},
+        <if test="jobContent != null">
+            JOB_CONTENT = #{jobContent, jdbcType=VARCHAR},
+        </if>
         STATUS = #{status, jdbcType=INTEGER},
         CATEGORY_NAME = #{categoryName, jdbcType=VARCHAR},
         UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},

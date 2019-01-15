@@ -61,6 +61,7 @@ public class BaseJobService extends BaseServiceAdapter {
             throw new DuplicateKeyException(saveParam.getJobName());
         }
         baseJob = toBaseJob(saveParam);
+        baseJob.setJobContent(saveParam.getJobContent());
         baseJob.setTenantId(injectAdminedTenant().getId());
         Date now = new Date();
         baseJob.setCreateTime(now);
@@ -80,6 +81,9 @@ public class BaseJobService extends BaseServiceAdapter {
             return add(saveParam); //相当于复制后修改
         }
         BaseJob updatedJob = toBaseJob(saveParam);
+        if (saveParam.getJobContent() != null) {
+            updatedJob.setJobContent(saveParam.getJobContent());
+        }
         updatedJob.setCreateTime(baseJob.getCreateTime());
         updatedJob.setUpdateTime(new Date());
         mapper.update(updatedJob);
@@ -103,7 +107,6 @@ public class BaseJobService extends BaseServiceAdapter {
                 .jobType(saveParam.getJobType())
                 .status(saveParam.getStatus())
                 .categoryName(saveParam.getCategoryName())
-                .jobContent(saveParam.getJobContent())
                 .remark(saveParam.getRemark())
                 .build();
     }

@@ -153,11 +153,13 @@ export default {
     groupJob: {
       title: 'GroupJob',
       subJob: {
+        title: 'Allot Sub Jobs',
         innerDialog: {
           title: 'set priority',
           label: 'priority'
         },
         actions: {
+          allot: 'allot',
           updateSubJobs: 'Update',
           removeSubJobs: 'Remove'
         },
