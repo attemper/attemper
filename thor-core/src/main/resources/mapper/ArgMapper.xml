@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thor.core.dao.mapper.arg.ArgMapper">
+    <insert id="add" parameterType="com.thor.sdk.common.result.job.arg.Arg">
+        INSERT INTO ${tablePrefix}arg (
+            `ARG_NAME`,
+            `ARG_TYPE`,
+            `DEF_VAL`,
+            `CREATE_TIME`,
+            `UPDATE_TIME`,
+            `REMARK`,
+            `TENANT_ID`
+        )
+        VALUES
+        (
+            #{argName, jdbcType=VARCHAR},
+            #{argType, jdbcType=INTEGER},
+            #{defVal, jdbcType=VARCHAR},
+            #{createTime, jdbcType=TIMESTAMP},
+            #{updateTime, jdbcType=TIMESTAMP},
+            #{remark, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+        );
+    </insert>
+
+    <update id="update" parameterType="com.thor.sdk.common.result.job.arg.Arg">
+        UPDATE
+        ${tablePrefix}arg
+        SET
+        <if test="argType != null">
+            ARG_TYPE = #{argType, jdbcType=INTEGER},
+        </if>
+        <if test="defVal != null">
+            DEF_VAL = #{defVal, jdbcType=VARCHAR},
+        </if>
+        UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+        <if test="remark != null">
+            REMARK = #{remark, jdbcType=VARCHAR}
+        </if>
+        <where>
+            <include refid="condArgName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </update>
+
+    <select id="get" resultType="com.thor.sdk.common.result.job.arg.Arg" parameterType="map">
+        SELECT
+        `ARG_NAME`,
+        `ARG_TYPE`,
+        `DEF_VAL`,
+        `CREATE_TIME`,
+        `UPDATE_TIME`,
+        `REMARK`,
+        `TENANT_ID`
+        FROM
+        ${tablePrefix}arg
+        <where>
+            <include refid="condArgName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <select id="list" parameterType="map" resultType="com.thor.sdk.common.result.job.arg.Arg">
+        SELECT *
+        FROM ${tablePrefix}arg
+        <where>
+            <if test="argName != null">
+                and lower(ARG_NAME) like concat('%', lower(#{argName, jdbcType=VARCHAR}), '%')
+            </if>
+            <include refid="condTenantId"/>
+            <if test="argType != null">
+                and ARG_TYPE = #{argType, jdbcType = INTEGER}
+            </if>
+            <if test="defVal != null">
+                and lower(DEF_VAL) like concat('%', lower(#{defVal, jdbcType = VARCHAR}), '%')
+            </if>
+            <if test="remark != null">
+                and lower(REMARK) like concat('%', lower(#{remark, jdbcType = VARCHAR}), '%')
+            </if>
+        </where>
+        <choose>
+            <when test="sort == null">
+                order by ARG_NAME ${direction}
+            </when>
+            <otherwise>
+                order by ${sort} ${direction}
+            </otherwise>
+        </choose>
+    </select>
+
+    <delete id="delete" parameterType="map">
+        delete from ${tablePrefix}arg
+        <where>
+            <if test="argNames != null">
+                ARG_NAME in
+                <foreach item="argName" collection="argNames" open="(" separator="," close=")">
+                    #{argName}
+                </foreach>
+            </if>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
+    <sql id="condArgName">
+        <if test="argName != null">
+            and ARG_NAME = #{argName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+</mapper>
