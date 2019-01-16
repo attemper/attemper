@@ -57,6 +57,7 @@
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="openDesignDialog(scope.row)">{{ $t('job.atomJob.actions.design') }}</el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)"/>
           <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleRemove(scope.row)"/>
         </template>
@@ -68,7 +69,6 @@
     <el-dialog :title="editDialog.title" :visible.sync="editDialog.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-steps :active="editDialog.currentStep">
         <el-step :title="$t('job.steps.base')"/>
-        <el-step :title="$t('job.steps.job')"/>
         <el-step :title="$t('job.steps.arg')"/>
         <el-step :title="$t('job.steps.trigger')"/>
       </el-steps>
@@ -93,16 +93,6 @@
           <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="job.remark" :placeholder="$t('job.placeholder.remark')" type="textarea"/>
         </el-form-item>
       </el-form>
-      <el-form v-show="editDialog.currentStep === 2 && job.jobType === 11" ref="httpJobForm" :rules="httpJobRules" :model="httpJobConfig" label-position="left" label-width="150px" class="form-layout">
-        <el-form-item :label="$t('job.atomJob.httpJob.jobConfig.columns.requestMethod')" prop="requestMethod">
-          <el-select v-model="httpJobConfig.requestMethod" :placeholder="$t('job.atomJob.httpJob.jobConfig.placeholder.requestMethod')" class="filter-item">
-            <el-option v-for="item in requestMethods" :key="item.value" :label="item.label" :value="item.value"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('job.atomJob.httpJob.jobConfig.columns.uri')" prop="uri">
-          <el-input v-model="httpJobConfig.uri" :placeholder="$t('job.atomJob.httpJob.jobConfig.placeholder.uri')"/>
-        </el-form-item>
-      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-row>
           <el-col :span="4" :offset="2">
@@ -121,18 +111,42 @@
       </div>
     </el-dialog>
 
+    <el-dialog :title="$t('job.atomJob.designDialog.title')" :visible.sync="designDialog.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-form v-show="job.jobType === 11" ref="httpJobForm" :rules="httpJobRules" :model="httpJobConfig" label-position="left" label-width="150px" class="form-layout">
+        <el-form-item :label="$t('job.atomJob.httpJob.jobConfig.columns.requestMethod')" prop="requestMethod">
+          <el-select v-model="httpJobConfig.requestMethod" :placeholder="$t('job.atomJob.httpJob.jobConfig.placeholder.requestMethod')" class="filter-item">
+            <el-option v-for="item in requestMethods" :key="item.value" :label="item.label" :value="item.value"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('job.atomJob.httpJob.jobConfig.columns.uri')" prop="uri">
+          <el-input v-model="httpJobConfig.uri" :placeholder="$t('job.atomJob.httpJob.jobConfig.placeholder.uri')"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-row>
+          <el-col :span="4" :offset="6">
+            <el-button type="info" @click="designDialog.visible = false">{{ $t('actions.cancel') }}</el-button>
+          </el-col>
+          <el-col :span="4" :offset="3">
+            <el-button type="success" @click="saveDesign">{{ $t('actions.save') }}</el-button>
+          </el-col>
+        </el-row>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/job/baseJob'
+import { listReq, removeReq, addReq, updateReq } from '@/api/job/baseJob'
+import { updateJobConfigReq } from '@/api/job/atomJob'
 import waves from '@/directive/waves' // Waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 
 export default {
-  name: 'AtomJob1',
+  name: 'AtomJob',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -184,6 +198,9 @@ export default {
         title: undefined,
         visible: false,
         currentStep: 1
+      },
+      designDialog: {
+        visible: false
       },
       baseRules: {
         jobName: [{ required: true, trigger: 'blur' }],
@@ -253,18 +270,12 @@ export default {
           remark: ''
         }
       } else {
-        getReq({ jobName: this.selections[0].jobName }).then(res => {
-          this.job = res.data.result
-          if (this.job.jobType === 11) { // http job
-            this.httpJobConfig = JSON.parse(this.job.jobContent)
-          } // else if other job
-        })
+        this.job = this.selections[0]
       }
     },
     handleAdd() {
       this.editDialog.oper = 'add'
       this.selectRow(null)
-      this.reset() // to set to origin
       this.editDialog.title = this.$t('actions.add')
       this.editDialog.visible = true
       this.$nextTick(() => {
@@ -274,26 +285,19 @@ export default {
     save() {
       this.$refs.baseForm.validate((valid) => {
         if (valid) {
-          if (this.job.jobType === 11) {
-            this.$refs.httpJobForm.validate((valid1) => {
-              if (valid1) {
-                const request = (this.editDialog.oper === 'add' ? addReq(this.job) : updateReq(this.job))
-                this.job.jobContent = JSON.stringify(this.httpJobConfig)
-                request.then(res => {
-                  this.$message.success(res.data.msg)
-                  this.editDialog.visible = false
-                  this.search()
-                })
-              }
-            })
-          } // else if other job
+          const request = (this.editDialog.oper === 'add' ? addReq(this.job) : updateReq(this.job))
+          // this.job.jobContent = JSON.stringify(this.httpJobConfig)
+          request.then(res => {
+            this.$message.success(res.data.msg)
+            this.editDialog.visible = false
+            this.search()
+          })
         }
       })
     },
     handleUpdate(row) {
       this.selectRow(row)
       this.editDialog.oper = 'update'
-      this.reset() // get the newest
       // this.job = Object.assign({}, row) // copy obj
       this.editDialog.title = this.$t('actions.update')
       this.editDialog.visible = true
@@ -363,6 +367,7 @@ export default {
       if (row && row.jobName) {
         this.$refs.jobTable.toggleRowSelection(row, true)
       }
+      this.reset() // get the newest or reset to origin
     },
     handleSelectionChange(val) {
       this.selections = val
@@ -373,6 +378,43 @@ export default {
         this.jobStatuses = array.jobStatuses
         this.requestMethods = array.requestMethods
       })
+    },
+    openDesignDialog(row) {
+      this.designDialog.visible = true
+      this.selectRow(row)
+
+      this.resetJobConfig()
+    },
+    saveDesign() {
+      if (this.job.jobType === 11) {
+        this.$refs.httpJobForm.validate((valid1) => {
+          if (valid1) {
+            const data = {
+              jobName: this.job.jobName,
+              jobContent: JSON.stringify(this.httpJobConfig)
+            }
+            updateJobConfigReq(data).then(res => {
+              this.$message.success(res.data.msg)
+              this.designDialog.visible = false
+              this.handleFilter()
+            })
+          }
+        })
+      } // else if other job
+    },
+    resetJobConfig() {
+      if (!this.selections || !this.selections.length || !this.selections[0].jobName || !this.job.jobContent || !this.job.jobContent.length) {
+        if (this.job.jobType === 11) {
+          this.httpJobConfig = {
+            requestMethod: 'POST',
+            uri: ''
+          }
+        }
+      } else {
+        if (this.job.jobType === 11) { // http job
+          this.httpJobConfig = JSON.parse(this.job.jobContent)
+        } // else if other job
+      }
     }
   }
 }

@@ -133,6 +133,12 @@ export default {
     },
     atomJob: {
       title: 'AtomJob',
+      actions: {
+        design: 'design'
+      },
+      designDialog: {
+        title: 'design job'
+      },
       httpJob: {
         jobConfig: {
           columns: {

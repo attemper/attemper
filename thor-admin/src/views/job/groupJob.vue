@@ -57,7 +57,7 @@
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="openSubJobDialog(scope.row)">{{ $t('job.groupJob.subJob.actions.allot') }}</el-button>
+          <el-button type="primary" size="mini" @click="openDesignDialog(scope.row)">{{ $t('job.groupJob.subJob.actions.allot') }}</el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)"/>
           <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleRemove(scope.row)"/>
         </template>
@@ -417,7 +417,7 @@ export default {
         })
       }
     },
-    openSubJobDialog(row) {
+    openDesignDialog(row) {
       this.selectRow(row)
       this.subJob.visible = true
       this.resetJob(row)
