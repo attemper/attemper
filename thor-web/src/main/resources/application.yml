@@ -78,3 +78,6 @@ eureka:
     availabilityZones:
       default: devZone
     preferSameZone: false
+
+superTenant:
+  id: thor

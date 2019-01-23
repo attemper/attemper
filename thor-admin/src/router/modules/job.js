@@ -13,6 +13,15 @@ const jobRouter = {
     icon: 'job'
   },
   children: [{
+    path: 'jobs',
+    component: () => import('@/views/job/jobs'),
+    name: 'jobs',
+    meta: {
+      title: 'jobs',
+      icon: 'atom-job'
+    }
+  },
+  {
     path: 'atom-job',
     component: () => import('@/views/job/atomJob'),
     name: 'atom-job',

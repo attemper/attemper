@@ -1,6 +1,6 @@
 package com.thor.config.conf;
 
-import com.stark.sdk.common.constant.StarkSdkCommonConstants;
+import com.thor.sdk.common.constant.ThorSdkCommonConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,8 +46,8 @@ public class Swagger2Config {
                 .version("v1")
                 .build();
         Parameter tokenParameter = new ParameterBuilder()
-                .parameterType(StarkSdkCommonConstants.header)
-                .name(StarkSdkCommonConstants.token)
+                .parameterType(ThorSdkCommonConstants.header)
+                .name(ThorSdkCommonConstants.token)
                 .modelRef(new ModelRef("String"))
                 .description("基于JWT(json web token)实现的访问令牌")
                 .build();

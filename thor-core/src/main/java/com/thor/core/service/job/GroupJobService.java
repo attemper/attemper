@@ -4,14 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.stark.sdk.common.constant.StarkSdkCommonConstants;
-import com.stark.sdk.common.exception.RTException;
-import com.stark.sdk.common.result.PageResult;
 import com.thor.core.constant.CoreConstants;
 import com.thor.core.dao.mapper.job.BaseJobMapper;
+import com.thor.sdk.common.constant.ThorSdkCommonConstants;
+import com.thor.sdk.common.exception.RTException;
 import com.thor.sdk.common.param.job.group.GroupSubJobRemoveParam;
 import com.thor.sdk.common.param.job.group.GroupSubJobUpdateParam;
 import com.thor.sdk.common.param.job.group.GroupWithAtomAndSubListParam;
+import com.thor.sdk.common.result.PageResult;
 import com.thor.sdk.common.result.job.BaseJob;
 import com.thor.sdk.common.result.job.config.support.PriorityJobEntity;
 import com.thor.sys.service.BaseServiceAdapter;
@@ -162,8 +162,8 @@ public class GroupJobService extends BaseServiceAdapter {
         pageResult.setCurrentPage(listParam.getCurrentPage());
         pageResult.setPageSize(listParam.getPageSize());
         pageResult.setTotal(allJobMapList.size());
-        resultMap.put(StarkSdkCommonConstants.list, pagedMapList);
-        resultMap.put(StarkSdkCommonConstants.page, pageResult);
+        resultMap.put(ThorSdkCommonConstants.list, pagedMapList);
+        resultMap.put(ThorSdkCommonConstants.page, pageResult);
         return resultMap;
     }
 
@@ -190,7 +190,7 @@ public class GroupJobService extends BaseServiceAdapter {
     private Map<String, Object> toGroupGetParam(String groupName) {
         Map<String, Object> groupParamMap = new HashMap<>(2);
         groupParamMap.put(CoreConstants.jobName, groupName);
-        groupParamMap.put(StarkSdkCommonConstants.tenantId, injectAdminedTenant().getId());
+        groupParamMap.put(ThorSdkCommonConstants.tenantId, injectAdminedTenant().getId());
         return groupParamMap;
     }
 }

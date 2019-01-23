@@ -16,6 +16,4 @@ public interface GlobalConstants {
 
 	String LOG_DB_PREFIX = "";
 
-	String TABLE_PREFIX = "stark_";
-
 }

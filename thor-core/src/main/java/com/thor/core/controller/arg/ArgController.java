@@ -1,6 +1,5 @@
 package com.thor.core.controller.arg;
 
-import com.stark.sdk.common.result.CommonResult;
 import com.thor.core.service.arg.ArgService;
 import com.thor.sdk.common.constant.ThorAPIConst;
 import com.thor.sdk.common.constant.ThorAPIPath;
@@ -8,6 +7,7 @@ import com.thor.sdk.common.param.arg.ArgGetParam;
 import com.thor.sdk.common.param.arg.ArgListParam;
 import com.thor.sdk.common.param.arg.ArgRemoveParam;
 import com.thor.sdk.common.param.arg.ArgSaveParam;
+import com.thor.sdk.common.result.CommonResult;
 import com.thor.sdk.common.result.arg.Arg;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

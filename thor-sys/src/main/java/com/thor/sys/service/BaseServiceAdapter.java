@@ -1,9 +1,11 @@
 package com.thor.sys.service;
 
-import com.stark.sdk.common.result.tenant.Tenant;
-import com.stark.sdk.common.result.user.User;
-import com.thor.common.constant.CommonConstants;
-import com.thor.sys.holder.AdminInfoHolder;
+import com.thor.config.util.ServletUtil;
+import com.thor.sdk.common.constant.ThorSdkCommonConstants;
+import com.thor.sdk.common.result.tenant.Tenant;
+import com.thor.sdk.common.result.user.User;
+import com.thor.sys.holder.TenantHolder;
+import com.thor.sys.holder.UserHolder;
 import com.xiaoleilu.hutool.bean.BeanUtil;
 
 import java.util.Map;
@@ -19,12 +21,29 @@ public abstract class BaseServiceAdapter implements BaseService {
      */
     @Override
     public User injectUser() {
-        return AdminInfoHolder.get().getUser();
+        return UserHolder.get();
+    }
+
+    @Override
+    public String injectTenantId() {
+        return ServletUtil.getHeader(ThorSdkCommonConstants.tenantId);
+    }
+
+    /**
+     * 将对象转为map并设置tenantId
+     *
+     * @param obj
+     * @return
+     */
+    protected Map<String, Object> injectTenantIdToMap(Object obj) {
+        Map<String, Object> paramMap = BeanUtil.beanToMap(obj);
+        paramMap.put(ThorSdkCommonConstants.tenantId, injectTenantId());
+        return paramMap;
     }
 
     @Override
     public Tenant injectAdminedTenant() {
-        return AdminInfoHolder.get().getTenant();
+        return TenantHolder.get();
     }
 
     /**
@@ -34,7 +53,7 @@ public abstract class BaseServiceAdapter implements BaseService {
      */
     protected Map<String, Object> injectAdminedTenantIdToMap(Object obj) {
         Map<String, Object> paramMap = BeanUtil.beanToMap(obj);
-        paramMap.put(CommonConstants.tenantId, injectAdminedTenant().getId());
+        paramMap.put(ThorSdkCommonConstants.tenantId, injectAdminedTenant().getId());
         return paramMap;
     }
 }

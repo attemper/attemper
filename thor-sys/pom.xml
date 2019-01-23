@@ -18,7 +18,17 @@
         </dependency>
         <dependency>
             <groupId>com.xiaoleilu</groupId>
-            <artifactId>hutool-core</artifactId>
+            <artifactId>hutool-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- 服务注册所需环境 -->
         <dependency>

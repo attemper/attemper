@@ -1,6 +1,6 @@
 package com.thor.web.exception;
 
-import com.stark.sdk.common.result.CommonResult;
+import com.thor.sdk.common.result.CommonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DuplicateKeyException;

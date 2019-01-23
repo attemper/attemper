@@ -14,3 +14,25 @@ export const oneOf = (value, validList) => {
 export const hasAccess = (access, route) => {
   return (route.meta && route.meta.notMenu) || oneOf(route.name, access)
 }
+
+/**
+ * 资源权限工具方法
+ * @param value
+ * @returns {boolean}
+ */
+export const canAccess = (value) => {
+  let isExist = false
+  const resourceNamesStr = sessionStorage.getItem('resourceNames')
+  if (resourceNamesStr) {
+    const resourceNames = JSON.parse(resourceNamesStr)
+    if (resourceNames && resourceNames.length) {
+      for (let i = 0; i < resourceNames.length; i++) {
+        if (resourceNames[i] === value) {
+          isExist = true
+          break
+        }
+      }
+    }
+  }
+  return isExist
+}

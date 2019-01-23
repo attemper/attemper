@@ -1,5 +1,5 @@
 import { loginByUsername } from '@/api/login'
-import { getUserInfo } from '@/api/user'
+import { getUserInfo } from '@/api/sys/user'
 import { getToken, removeToken, setToken } from '@/utils/auth'
 
 const user = {

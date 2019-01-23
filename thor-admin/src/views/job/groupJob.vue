@@ -176,7 +176,7 @@
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/job/baseJob'
+import { listReq, /* getReq,*/ removeReq, addReq, updateReq } from '@/api/job/baseJob'
 import { atomAndSubJobsListReq, updateSubReq, removeSubReq } from '@/api/job/groupJob'
 import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -231,8 +231,7 @@ export default {
           displayName: undefined,
           jobType: 11,
           status: undefined
-        },
-        subJobDatas: [] // struct like {jobName: 'myJob', priority: 1}
+        }
       },
       jobStatuses: [],
       showCreateTime: false,
@@ -306,7 +305,6 @@ export default {
     handleAdd() {
       this.editDialog.oper = 'add'
       this.selectRow(null)
-      this.reset() // to set to origin
       this.editDialog.title = this.$t('actions.add')
       this.editDialog.visible = true
       this.$nextTick(() => {
@@ -328,7 +326,6 @@ export default {
     handleUpdate(row) {
       this.selectRow(row)
       this.editDialog.oper = 'update'
-      this.reset() // get the newest
       // this.job = Object.assign({}, row) // copy obj
       this.editDialog.title = this.$t('actions.update')
       this.editDialog.visible = true
@@ -375,6 +372,7 @@ export default {
       if (row && row.jobName) {
         this.$refs.jobTable.toggleRowSelection(row, true)
       }
+      this.reset() // get the newest or reset to origin
     },
     handleSelectionChange(val) {
       this.selections = val
@@ -412,15 +410,12 @@ export default {
           remark: ''
         }
       } else {
-        getReq({ jobName: this.selections[0].jobName }).then(res => {
-          this.job = res.data.result
-        })
+        this.job = this.selections[0]
       }
     },
     openDesignDialog(row) {
       this.selectRow(row)
       this.subJob.visible = true
-      this.resetJob(row)
     },
     resetJob() {
       if (this.selections && this.selections.length && this.selections[0].jobName) {

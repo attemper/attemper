@@ -1,24 +1,28 @@
 package com.thor.web.aspect;
 
-
-import com.stark.sdk.common.constant.StarkSdkCommonConstants;
-import com.stark.sdk.common.exception.RTException;
-import com.stark.sdk.common.param.CommonParam;
-import com.stark.sdk.common.result.CommonResult;
-import com.stark.sdk.common.result.user.AdminInfo;
-import com.stark.sdk.microservice.client.StarkClient;
+import com.thor.common.constant.CommonConstants;
 import com.thor.common.constant.GlobalConstants;
 import com.thor.config.entity.ApiLog;
-import com.thor.config.properties.StarkAppProperties;
 import com.thor.config.service.ApiLogService;
 import com.thor.config.util.IPUtil;
+import com.thor.config.util.ServletUtil;
 import com.thor.config.util.StringUtil;
-import com.thor.sys.annotation.IgnoreAuthentication;
-import com.thor.sys.holder.AdminInfoHolder;
+import com.thor.sdk.common.constant.ThorSdkCommonConstants;
+import com.thor.sdk.common.exception.RTException;
+import com.thor.sdk.common.param.CommonParam;
+import com.thor.sdk.common.param.tenant.TenantGetParam;
+import com.thor.sdk.common.result.CommonResult;
+import com.thor.sdk.common.result.tenant.Tenant;
+import com.thor.sdk.common.result.user.User;
+import com.thor.security.ext.service.JWTService;
+import com.thor.sys.holder.TenantHolder;
+import com.thor.sys.holder.UserHolder;
+import com.thor.sys.service.TenantService;
 import com.thor.web.annotation.IgnoreLogResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -49,13 +53,13 @@ import java.util.Set;
 public class ControllerAspect {
 
     @Autowired
-    private StarkAppProperties properties;
-
-    @Autowired
-    private StarkClient starkClient;
+    private JWTService jwtService;
 
     @Autowired
     private ApiLogService apiLogService;
+
+    @Autowired
+    private TenantService tenantService;
 
     private static Validator validator = Validation
             .byProvider(HibernateValidator.class).configure().failFast(true).buildValidatorFactory().getValidator();
@@ -102,14 +106,9 @@ public class ControllerAspect {
         // 校验通过
         Instant begin = Instant.now();
         try {
+            result = (CommonResult) joinPoint.proceed();
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             Method method = signature.getMethod();
-            IgnoreAuthentication ignoreAuthentication = method.getAnnotation(IgnoreAuthentication.class);
-            if (ignoreAuthentication == null || !ignoreAuthentication.value()) {
-                CommonResult<AdminInfo> adminInfoCommonResult = starkClient.getAdminInfo();
-                AdminInfoHolder.set(adminInfoCommonResult.getResult());
-            }
-            result = (CommonResult) joinPoint.proceed();
             IgnoreLogResult ignoreLogResult = method.getAnnotation(IgnoreLogResult.class);
             if (ignoreLogResult == null || !ignoreLogResult.value() && result != null) { // 不忽略结果
                 apiLog.setResult(result.toString());
@@ -126,7 +125,8 @@ public class ControllerAspect {
                 Instant end = Instant.now();
                 result.setDuration(String.valueOf(Duration.between(begin, end).toMillis() / 1000.0));// 请求耗时
             }
-            AdminInfoHolder.clear();
+            UserHolder.clear();
+            TenantHolder.clear();
             apiLogService.save(resultToLog(result, apiLog));
         }
     }
@@ -142,7 +142,16 @@ public class ControllerAspect {
         CommonResult result = null;
         // 处理日志的分类，方法等
         preHandleLog(joinPoint, apiLog);
-        apiLog.setTenantId(properties.getTenantId());
+        String tenantId = ServletUtil.getHeader(ThorSdkCommonConstants.tenantId);
+        apiLog.setTenantId(tenantId);
+        Tenant tenant = tenantService.get(new TenantGetParam(tenantId));
+        if (tenant == null) {
+            return CommonResult.putAdd(1500, tenantId);
+        }
+        String sign = ServletUtil.getHeader(ThorSdkCommonConstants.sign);
+        if (!StringUtils.equals(sign, tenant.getSign())) {
+            return CommonResult.putAdd(1501, sign);
+        }
         Object[] args = joinPoint.getArgs();
         if (args != null) {
             for (Object arg : args) {
@@ -173,10 +182,6 @@ public class ControllerAspect {
             }
         }
         return result;
-    }
-
-    private void resolveToken() {
-
     }
 
     private void preHandleLog(ProceedingJoinPoint joinPoint, ApiLog apiLog) {
@@ -250,14 +255,19 @@ public class ControllerAspect {
      * @return
      */
     private String resolveUserNameFromToken(){
-        /*String token = ServletUtil.getHeader(StarkSdkCommonConstants.token);
-        if(token != null && !CommonConstants._null.equals(token)
-                && !CommonConstants.undefined.equals(token)){
-            User user = jwtService.parseTokenToUser(token);
+        String token = ServletUtil.getHeader(ThorSdkCommonConstants.token);
+        if (StringUtils.isNotBlank(token) && !CommonConstants._null.equals(token)
+                && !CommonConstants.undefined.equals(token) && !CommonConstants._false.equals(token)) {
+            User user = null;
+            try {
+                user = jwtService.parseTokenToUser(token);
+            } catch (Exception e) { // 很可能该接口未被shiro拦截，应当考虑白名单的设置
+                log.error(e.getMessage(), e);
+            }
             if(user != null){
                 return user.getUserName();
             }
-        }*/
+        }
         return null;
     }
 
@@ -268,7 +278,7 @@ public class ControllerAspect {
      */
     private String resolveUserNameFromParam(CommonParam commonParam) {
         try{
-            Field field = commonParam.getClass().getDeclaredField(StarkSdkCommonConstants.userName);
+            Field field = commonParam.getClass().getDeclaredField(ThorSdkCommonConstants.userName);
             field.setAccessible(true);
             return (String) field.get(commonParam);
         }catch (Exception e){

@@ -1,7 +1,7 @@
 package com.thor.config.exception;
 
-import com.stark.sdk.common.exception.RTException;
-import com.stark.sdk.common.result.CommonResult;
+import com.thor.sdk.common.exception.RTException;
+import com.thor.sdk.common.result.CommonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;

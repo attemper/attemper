@@ -1,7 +1,13 @@
 export default {
   route: {
     dashboard: 'Dashboard',
+    sys: 'System',
+    tenant: 'Tenant',
+    user: 'User',
+    tag: 'Tag',
+    resource: 'Resource',
     job: 'Job',
+    jobs: 'Job Design',
     atomJob: 'AtomJob',
     groupJob: 'GroupJob',
     flowJob: 'FlowJob',
@@ -94,6 +100,115 @@ export default {
     removeConfirm: 'are you sure to remove it(them)?',
     saveConfirm: 'are you sure to save it'
   },
+  sys: {
+    tenant: {
+      columns: {
+        id: 'ID',
+        name: 'Name',
+        sign: 'Sign',
+        admin: 'Administrator'
+      },
+      rules: {
+        id: 'The Tenant ID can not be empty',
+        name: 'The Tenant Name can not be empty',
+        admin: 'The Administrator can not be empty'
+      },
+      placeholder: {
+        id: 'Please entry Tenant ID',
+        name: 'Please entry Tenant Name',
+        admin: 'Please Select Administrator'
+      }
+    },
+    user: {
+      columns: {
+        userName: 'User Name',
+        displayName: 'Display Name',
+        password: 'Password',
+        email: 'Email',
+        mobile: 'Mobile',
+        status: 'Status'
+      },
+      rules: {
+        userName: 'User Name can not be empty',
+        displayName: 'Display Name can not be empty',
+        email: 'Email is invalid',
+        mobile: 'Mobile must be length of 11'
+      },
+      placeholder: {
+        userName: 'Please entry User Name',
+        displayName: 'Please entry Display Name',
+        password: 'Please entry Password',
+        email: 'Please entry Email',
+        mobile: 'Please entry Mobile'
+      },
+      tip: {
+        tag: 'Allocate Tag',
+        tagFilterTip: 'Tag or Display Name'
+      },
+      actions: {
+        tag: 'Tag'
+      }
+    },
+    tag: {
+      columns: {
+        tagName: 'Tag Name',
+        displayName: 'Display Name',
+        tagType: 'Tag Type',
+        remark: 'Remark'
+      },
+      rules: {
+        tagName: 'Tag Name can not be empty',
+        displayName: 'Display Name can not be empty',
+        tagType: 'Tag Type can not be empty'
+      },
+      placeholder: {
+        tagName: 'Please entry Tag Name',
+        displayName: 'Please entry Display Name',
+        remark: 'Please entry Remark'
+      },
+      tip: {
+        user: 'Allocate User',
+        resource: 'Allocate Resource',
+        userFilterTip: 'User or Display Name'
+      },
+      actions: {
+        user: 'User',
+        resource: 'Resource'
+      },
+      label: {
+        allocateUser: 'Allocate User',
+        allocateResource: 'Allocate Resource'
+      }
+    },
+    resource: {
+      title: {
+        left: 'Resource Tree',
+        right: 'Detail'
+      },
+      label: {
+        resourceName: 'Resource Name',
+        displayName: 'Display Name',
+        resourceType: 'Resource Type',
+        uri: 'URI',
+        icon: 'Icon',
+        position: 'Position'
+      },
+      rules: {
+        resourceName: 'Resource Name can not be empty',
+        displayName: 'Display Name can not be empty'
+      },
+      placeholder: {
+        resourceName: 'Please entry Resource Name',
+        displayName: 'Please entry Display Name',
+        uri: 'Please entry URI',
+        icon: 'Please entry Icon'
+      },
+      tip: {
+        searchKey: 'Resource/Display Name',
+        resourceRemoveWarning: 'Please remove children first'
+      }
+    }
+  },
   job: {
     title: 'Job',
     sort: {
@@ -130,6 +245,27 @@ export default {
       job: 'Job',
       trigger: 'Trigger',
       arg: 'Argument'
+    },
+    actions: {
+      design: 'Design',
+      param: 'Param',
+      trigger: 'Trigger'
+    },
+    httpJob: {
+      jobConfig: {
+        columns: {
+          requestMethod: 'Request Method',
+          uri: '(Relative) URI'
+        },
+        placeholder: {
+          requestMethod: 'Please select Request Method',
+          uri: 'Please entry (Relative) URI'
+        },
+        rules: {
+          requestMethod: 'Request Method can not be null',
+          uri: '(Relative) URI can not be null'
+        }
+      }
     },
     atomJob: {
       title: 'AtomJob',
@@ -176,12 +312,6 @@ export default {
     },
     flowJob: {
       title: 'FlowJob'
-    },
-    status: {
-      enable: 'Enable',
-      disable: 'Disable',
-      transient: 'Transient',
-      disposible: 'Disposible'
     }
   },
   navbar: {

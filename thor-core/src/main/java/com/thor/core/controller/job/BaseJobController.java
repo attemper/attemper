@@ -1,6 +1,5 @@
 package com.thor.core.controller.job;
 
-import com.stark.sdk.common.result.CommonResult;
 import com.thor.core.service.job.BaseJobService;
 import com.thor.sdk.common.constant.ThorAPIConst;
 import com.thor.sdk.common.constant.ThorAPIPath;
@@ -8,6 +7,7 @@ import com.thor.sdk.common.param.job.BaseJobGetParam;
 import com.thor.sdk.common.param.job.BaseJobListParam;
 import com.thor.sdk.common.param.job.BaseJobRemoveParam;
 import com.thor.sdk.common.param.job.BaseJobSaveParam;
+import com.thor.sdk.common.result.CommonResult;
 import com.thor.sdk.common.result.job.BaseJob;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

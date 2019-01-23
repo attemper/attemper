@@ -1,10 +1,10 @@
 package com.thor.core.controller.job;
 
-import com.stark.sdk.common.result.CommonResult;
 import com.thor.core.service.job.AtomJobService;
 import com.thor.sdk.common.constant.ThorAPIConst;
 import com.thor.sdk.common.constant.ThorAPIPath;
 import com.thor.sdk.common.param.job.atom.AtomJobConfigUpdateParam;
+import com.thor.sdk.common.result.CommonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

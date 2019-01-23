@@ -1,5 +1,13 @@
 export default {
   /**
+   * @description 租户编号
+   */
+  tenantId: 'thor',
+  /**
+   * @description 认证签名
+   */
+  sign: '575e22bc356137a41abdef379b776dba',
+  /**
    * API path
    */
   APIPath: {

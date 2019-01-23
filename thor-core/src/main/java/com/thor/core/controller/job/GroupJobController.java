@@ -1,12 +1,12 @@
 package com.thor.core.controller.job;
 
-import com.stark.sdk.common.result.CommonResult;
 import com.thor.core.service.job.GroupJobService;
 import com.thor.sdk.common.constant.ThorAPIConst;
 import com.thor.sdk.common.constant.ThorAPIPath;
 import com.thor.sdk.common.param.job.group.GroupSubJobRemoveParam;
 import com.thor.sdk.common.param.job.group.GroupSubJobUpdateParam;
 import com.thor.sdk.common.param.job.group.GroupWithAtomAndSubListParam;
+import com.thor.sdk.common.result.CommonResult;
 import com.thor.sdk.common.result.job.BaseJob;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

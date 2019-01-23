@@ -9,9 +9,6 @@ public interface CommonConstants {
 
     String _null = "null";
 
-    String userName = "userName";
+    String _false = "false";
 
-    String tenantId = "tenantId";
-
-    String token = "token";
 }
