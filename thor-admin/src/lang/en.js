@@ -8,9 +8,6 @@ export default {
     resource: 'Resource',
     job: 'Job',
     jobs: 'Job Design',
-    atomJob: 'AtomJob',
-    groupJob: 'GroupJob',
-    flowJob: 'FlowJob',
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
@@ -293,15 +290,12 @@ export default {
       }
     },
     groupJob: {
-      title: 'GroupJob',
       subJob: {
-        title: 'Allot Sub Jobs',
         innerDialog: {
           title: 'set priority',
           label: 'priority'
         },
         actions: {
-          allot: 'allot',
           updateSubJobs: 'Update',
           removeSubJobs: 'Remove'
         },
@@ -309,9 +303,6 @@ export default {
           priority: 'priority'
         }
       }
-    },
-    flowJob: {
-      title: 'FlowJob'
     }
   },
   navbar: {

@@ -65,21 +65,21 @@
             </el-form-item>
             <el-form-item :label="$t('sys.resource.label.icon')">
               <el-row>
-                <el-col span = "18">
+                <el-col :span = "18">
                   <el-input v-model="resource.icon" :placeholder="$t('sys.resource.placeholder.icon')"/>
                 </el-col>
-                <el-col span = "4" offset= "2">
-                  <i v-if="resource.icon && resource.icon.indexOf('el-') === 0" :class="resource.icon"/>
-                  <svg-icon v-if="resource.icon && resource.icon.indexOf('el-') !== 0" :icon-class="resource.icon"/>
+                <el-col v-if="resource.icon" :span = "4" :offset= "2">
+                  <i v-if="resource.icon.indexOf('el-') === 0" :class="resource.icon"/>
+                  <svg-icon v-else :icon-class="resource.icon"/>
                 </el-col>
               </el-row>
             </el-form-item>
             <el-form-item :label="$t('sys.resource.label.position')">
-              <el-input-number v-model="resource.position" :placeholder="$t('sys.resource.placeholder.position')"/>
+              <el-input-number v-model="resource.position"/>
             </el-form-item>
           </el-form>
           <el-row>
-            <el-col span="4" offset="10">
+            <el-col :span="4" :offset="10">
               <el-button style="width:60%" type="success" icon="el-icon-circle-check-outline" @click="save">
                 {{ $t('actions.save') }}
               </el-button>
@@ -145,7 +145,6 @@ export default {
           const resource = sourceList[i]
           if (!resource.parentResourceName) {
             root = resource
-            root.expand = true
             break
           }
         }
@@ -157,9 +156,6 @@ export default {
       for (let i = 0; i < sourceList.length; i++) {
         const resource = sourceList[i]
         if (resource.parentResourceName === cell.resourceName) {
-          if (resource.resourceType === 0) {
-            resource.expand = true
-          }
           if (!cell.children) {
             cell.children = []
           }
@@ -183,50 +179,49 @@ export default {
       })
     },
     append(data) {
-      const children = data.children || []
       const position = Math.floor(Math.random() * 1000)
-      this.resource = {
+      const newChild = {
         parentResourceName: data.resourceName,
         resourceName: data.resourceName + '-' + position,
         displayName: data.resourceName + '-' + position,
         resourceType: !data.parentResourceName ? 0 : data.resourceType === 0 ? 1 : 2,
         uri: null,
         icon: null,
-        position: position
+        position: position,
+        transition: true
       }
-      children.push(this.resource)
-      data.expand = true
-      this.$set(data, 'children', children)
+      if (!data.children) {
+        this.$set(data, 'children', [])
+      }
+      data.children.push(newChild)
+      this.$refs.tree.setCurrentNode(newChild)
     },
-    remove(root, node, data) {
-      if (!data.resourceName) {
-        this.removeNode(root, node, data)
-        return
-      }
-      if (data.resourceType === 0 && data.children && data.children.length > 0) {
-        this.$Message.warning(this.$t('sys.resource.tip.resourceRemoveWarning'))
+    remove(node, data) {
+      if (data.transition) {
+        this.removeNode(node, data)
       } else {
-        this.$Modal.confirm({
-          title: this.$t('tip.confirm'),
-          content: '<p>' + this.$t('tip.removeConfirm') + ':<br><span style="color: red">' + data.displayName + '</span></p>',
-          onOk: () => {
-            removeReq({ resourceNames: [data.resourceName] }).then(res => {
-              this.$Message.success(res.data.msg)
-              this.initTreeData()
+        if (data.children && data.children.length > 0) {
+          this.$message.warning(this.$t('sys.resource.tip.resourceRemoveWarning'))
+        } else {
+          const msg = '<p>' + this.$t('tip.removeConfirm') + ':<br><span style="color: red">' + data.displayName + '</span></p>'
+          this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
+            .then(() => {
+              removeReq({ resourceNames: [data.resourceName] }).then(res => {
+                this.$message.success(res.data.msg)
+                this.removeNode(node, data)
+              })
             })
-          }
-        })
+        }
       }
     },
-    removeNode(root, node, data) {
-      const parentKey = root.find(el => el === node).parent
-      const parent = root.find(el => el.nodeKey === parentKey).node
-      const index = parent.children.indexOf(data)
-      parent.children.splice(index, 1)
+    removeNode(node, data) {
+      const parent = node.parent
+      const children = parent.data.children
+      const index = children.findIndex(d => d.resourceName === data.resourceName)
+      children.splice(index, 1)
       this.visible = false
     },
     selectNode(data) {
-      data.selected = true
       Object.assign(this.resource, data)
       this.visible = true
     },

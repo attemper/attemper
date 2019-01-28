@@ -18,34 +18,7 @@ const jobRouter = {
     name: 'jobs',
     meta: {
       title: 'jobs',
-      icon: 'atom-job'
-    }
-  },
-  {
-    path: 'atom-job',
-    component: () => import('@/views/job/atomJob'),
-    name: 'atom-job',
-    meta: {
-      title: 'atomJob',
-      icon: 'atom-job'
-    }
-  },
-  {
-    path: 'group-job',
-    component: () => import('@/views/job/groupJob'),
-    name: 'group-job',
-    meta: {
-      title: 'groupJob',
-      icon: 'group-job'
-    }
-  },
-  {
-    path: 'flow-job',
-    component: () => import('@/views/job/flowJob'),
-    name: 'flow-job',
-    meta: {
-      title: 'flowJob',
-      icon: 'flow-job'
+      icon: 'jobs'
     }
   }
   ]

@@ -132,7 +132,7 @@
           <el-button v-waves :disabled="!subJob.selections || !subJob.selections.length || subJob.selections.every(cell => !cell.priority)" class="filter-item" type="danger" icon="el-icon-delete" @click="removeSubJobs">{{ $t('job.groupJob.subJob.actions.removeSubJobs') }}</el-button>
           <el-table
             v-loading="subJob.listLoading"
-            ref="subtables"
+            ref="subTables"
             :key="subJob.tableKey"
             :data="subJob.list"
             border
@@ -199,7 +199,7 @@ import Pagination from '@/components/Pagination' // Secondary package based on e
 import { load } from '@/constant'
 
 export default {
-  name: 'AtomJob',
+  name: 'Jobs',
   components: { Pagination },
   directives: { waves },
   filters: {
