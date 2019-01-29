@@ -6,9 +6,18 @@ const tagsView = {
   mutations: {
     ADD_VISITED_VIEW: (state, view) => {
       if (state.visitedViews.some(v => v.path === view.path)) return
+      const router = { ...view }
+      let title
+      if (typeof view.meta.title === 'function') {
+        view.meta.__titleIsFunction__ = true
+        title = view.meta.title(router)
+        view.meta.displayTitle = title
+      } else {
+        title = view.meta.title || 'no-name'
+      }
       state.visitedViews.push(
         Object.assign({}, view, {
-          title: view.meta.title || 'no-name'
+          title: title
         })
       )
     },

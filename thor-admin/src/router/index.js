@@ -40,6 +40,7 @@ export const constantRouterMap = [
     children: [
       {
         path: '/redirect/:path*',
+        notMenu: true,
         component: () => import('@/views/redirect/index')
       }
     ]

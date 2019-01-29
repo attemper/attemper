@@ -467,9 +467,6 @@ export default {
       }
       return item
     },
-    filterStatus(value, row) {
-      return row.status === value
-    },
     selectRow(row) {
       this.$refs.tables.clearSelection()
       if (row && row.jobName) {
@@ -491,12 +488,15 @@ export default {
       })
     },
     openDesignDialog(row) {
+      this.editDialog.title = this.$t('job.actions.design')
       this.editDialog.design.visible = true
       this.selectRow(row)
       if (row.jobType === 11) {
         this.resetHttpJob()
       } else if (row.jobType === 1) {
         this.searchSubJob()
+      } else if (row.jobType === 0) {
+        this.openDesignJobFlow()
       }
     },
     saveDesign() {
@@ -562,6 +562,17 @@ export default {
             this.searchSubJob()
           })
         })
+    },
+    openDesignJobFlow() {
+      const route = {
+        name: 'flow',
+        params: {
+          title: this.$t('route.flow'),
+          jobName: this.selections[0].jobName,
+          displayName: this.selections[0].displayName
+        }
+      }
+      this.$router.push(route)
     }
   }
 }

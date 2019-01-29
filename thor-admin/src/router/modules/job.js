@@ -12,15 +12,26 @@ const jobRouter = {
     title: 'job',
     icon: 'job'
   },
-  children: [{
-    path: 'jobs',
-    component: () => import('@/views/job/jobs'),
-    name: 'jobs',
-    meta: {
-      title: 'jobs',
-      icon: 'jobs'
+  children: [
+    {
+      path: 'jobs',
+      component: () => import('@/views/job/jobs'),
+      name: 'jobs',
+      meta: {
+        title: 'jobs',
+        icon: 'jobs'
+      }
+    },
+    {
+      path: 'flow/:jobName',
+      component: () => import('@/views/job/flow'),
+      name: 'flow',
+      hidden: true,
+      meta: {
+        title: route => `${route.params.title}:${route.params.displayName}`,
+        notMenu: true
+      }
     }
-  }
   ]
 }
 export default jobRouter

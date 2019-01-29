@@ -8,6 +8,7 @@ export default {
     resource: 'Resource',
     job: 'Job',
     jobs: 'Job Design',
+    flow: 'Draw Flow',
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
@@ -236,12 +237,6 @@ export default {
     },
     jobTypes: {
       httpJob: 'Http Job'
-    },
-    steps: {
-      base: 'Base',
-      job: 'Job',
-      trigger: 'Trigger',
-      arg: 'Argument'
     },
     actions: {
       design: 'Design',
