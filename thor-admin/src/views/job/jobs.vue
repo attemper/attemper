@@ -567,9 +567,7 @@ export default {
       const route = {
         name: 'flow',
         params: {
-          title: this.$t('route.flow'),
-          jobName: this.selections[0].jobName,
-          displayName: this.selections[0].displayName
+          id: this.selections[0].jobName
         }
       }
       this.$router.push(route)

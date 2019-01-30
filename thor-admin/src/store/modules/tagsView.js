@@ -11,7 +11,6 @@ const tagsView = {
       if (typeof view.meta.title === 'function') {
         view.meta.__titleIsFunction__ = true
         title = view.meta.title(router)
-        view.meta.displayTitle = title
       } else {
         title = view.meta.title || 'no-name'
       }

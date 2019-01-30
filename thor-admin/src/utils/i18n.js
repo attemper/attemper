@@ -5,7 +5,7 @@ export function generateTitle(title) {
   }
   if (typeof title === 'function') {
     const displayTitle = this.$route.meta.title(this.$route)
-    return displayTitle !== 'undefined' ? displayTitle : this.$route.meta.displayTitle
+    return (displayTitle && displayTitle.indexOf('undefined') === -1) ? displayTitle : this.$route.meta.id
   }
   const hasKey = this.$te('route.' + title)
 

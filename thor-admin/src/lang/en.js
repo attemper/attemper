@@ -8,7 +8,6 @@ export default {
     resource: 'Resource',
     job: 'Job',
     jobs: 'Job Design',
-    flow: 'Draw Flow',
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
