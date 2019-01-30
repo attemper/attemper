@@ -35,20 +35,22 @@ function hasPermission(access, name) {
   return staticAccessJudge(constantRouterMap, name) || asyncAccessJudge(asyncRouterMap, access, name) || staticAccessJudge(devRouterMap, name)
 }
 
-const whiteList = ['/login', '/auth-redirect']// no redirect whitelist
-
 function turnTo(to, access, next) {
   if (to.name && hasPermission(access, to.name)) {
     next()
   } else if (!to.name) {
-    const name = to.path.substring(to.path.lastIndexOf('/') + 1)
-    if (hasPermission(access, name)) {
-      next({ path: to.path, replace: true })
-    }
+    const array = to.path.split('/')
+    array.forEach(subPath => {
+      if (hasPermission(access, subPath)) {
+        next({ path: to.path, replace: true })
+      }
+    })
   } else {
     next({ path: '/401', replace: true, query: { noGoBack: true }})
   }
 }
+
+const whiteList = ['/login', '/auth-redirect']// no redirect whitelist
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
