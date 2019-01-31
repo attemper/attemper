@@ -87,7 +87,8 @@ export default {
     export: 'Export',
     last: 'Last',
     next: 'Next',
-    ok: 'OK'
+    ok: 'OK',
+    download: 'Download'
   },
   tip: {
     search: 'please entry something to search',
@@ -296,6 +297,12 @@ export default {
         columns: {
           priority: 'priority'
         }
+      }
+    },
+    flowJob: {
+      btn: {
+        bpmn: 'BPMN',
+        svg: 'SVG'
       }
     }
   },
