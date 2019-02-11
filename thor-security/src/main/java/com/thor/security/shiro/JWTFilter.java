@@ -12,6 +12,7 @@ import com.thor.security.exception.JWTDecodedException;
 import com.thor.security.exception.JWTExpiredException;
 import com.thor.security.model.JWTToken;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -66,10 +68,10 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         try{
             executeLogin(request, response);
         }catch (JWTDecodedException e){
-            log.error(e.getMessage(), e);
+            //log.error(e.getMessage(), e);
             return printError(response, 1001);
         }catch (JWTExpiredException e){
-            log.error(e.getMessage(), e);
+            //log.error(e.getMessage(), e);
             return printError(response, 1000);
         }
         return true;
@@ -97,6 +99,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     private boolean printError(ServletResponse response, int code) {
         try {
+            ((HttpServletResponse) response).setStatus(HttpStatus.SC_UNAUTHORIZED);
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             CommonResult result = CommonResult.put(code);
             String json = ContextBeanAware.getBean(ObjectMapper.class).writeValueAsString(result);

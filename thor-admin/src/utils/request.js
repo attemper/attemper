@@ -83,13 +83,20 @@ service.interceptors.response.use(
   //   }
   // },
   error => {
-    console.log('err' + error) // for debug
     const errorInfo = error.response
-    Message({
-      message: errorInfo.status + ':' + errorInfo.statusText,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    console.log(errorInfo.status, ':', errorInfo.statusText) // for debug
+    const data = errorInfo.data
+    if (data.code && data.code !== 200) {
+      if (data.code === 1000 || data.code === 1001 || data.code === 1002) {
+        window.location = '/'
+      }
+      Message({
+        message: data.msg,
+        type: 'error',
+        duration: 5 * 1000,
+        showClose: true
+      })
+    }
     return Promise.reject(error)
   }
 )

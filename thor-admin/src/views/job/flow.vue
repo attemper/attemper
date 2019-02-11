@@ -1,7 +1,7 @@
 <template>
-  <div ref="content" class="containers">
+  <div ref="content" class="content">
     <div ref="canvas" class="canvas"/>
-    <div id="js-properties-panel" class="panel"/>
+    <div ref="propertiesPanel" class="properties-panel-parent"/>
     <ul class="buttons">
       <li>{{ $t('actions.download') }}</li>
       <li>
@@ -28,8 +28,6 @@ export default {
   data() {
     return {
       bpmnModeler: null,
-      container: null,
-      canvas: null,
       xmlStr: null,
       processName: ''
     }
@@ -39,7 +37,6 @@ export default {
   },
   methods: {
     bindBpmn() {
-      this.container = this.$refs.content
       const canvas = this.$refs.canvas
       const customTranslateModule = {
         translate: ['value', customTranslate]
@@ -47,7 +44,7 @@ export default {
       this.bpmnModeler = new BpmnModeler({
         container: canvas,
         propertiesPanel: {
-          parent: '#js-properties-panel'
+          parent: this.$refs.propertiesPanel
         },
         additionalModules: [
           propertiesProviderModule,
@@ -127,22 +124,39 @@ export default {
   @import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css';
   @import 'diagram-js-minimap/assets/diagram-js-minimap.css';
 
-  .containers{
+  .content{
     position: absolute;
     background-color: #ffffff;
     width: 100%;
-    height: 90%;
+    height: 100%;
+    font-size: 12px;
   }
   .canvas{
-    width: 100%;
-    height: 100%;
-  }
-  .panel{
     position: absolute;
-    right: 0;
     top: 0;
-    width: 300px;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
+  .properties-panel-parent{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 260px;
+    z-index: 10;
+    border-left: 1px solid #ccc;
+    overflow: auto;
+  }
+  .djs-minimap{
+    top: 10px;
+    right: 270px;
+  }
+/*  .toggle{
+    position: absolute;
+    top: 20px;
+    right: 280px;
+  }*/
   .buttons{
     position: absolute;
     left: 20px;
