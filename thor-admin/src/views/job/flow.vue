@@ -29,6 +29,9 @@ import minimapModule from 'diagram-js-minimap'
 import prioritiesModule from 'bpmn-js-task-priorities/lib/priorities'
 import customTranslate from '@/utils/customTranslate'
 import startDiagram from './resources/start.bpmn'
+import {
+  getProcessId
+} from './scripts/support'
 
 export default {
   data() {
@@ -42,7 +45,7 @@ export default {
   },
   methods: {
     save() {
-      //
+      console.log(this.bpmnModeler)
     },
     bindBpmn() {
       const canvas = this.$refs.canvas
@@ -73,11 +76,11 @@ export default {
       const downloadSvgLink = this.$refs.saveSvg
       this.bpmnModeler.on('commandStack.changed', function() {
         self.saveSVG(function(err, svg) {
-          self.setEncoded(downloadSvgLink, 'diagram.svg', err ? null : svg)
+          self.setEncoded(downloadSvgLink, self.getExportFileName() + '.svg', err ? null : svg)
         })
 
         self.saveDiagram(function(err, xml) {
-          self.setEncoded(downloadLink, 'diagram.bpmn', err ? null : xml)
+          self.setEncoded(downloadLink, self.getExportFileName() + '.bpmn', err ? null : xml)
         })
       })
 
@@ -110,6 +113,9 @@ export default {
         link.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodedData
         link.download = name
       }
+    },
+    getExportFileName() {
+      return getProcessId(this.bpmnModeler) || 'flow'
     },
     initWidget() {
       const self = this
