@@ -301,8 +301,12 @@ export default {
     },
     flowJob: {
       btn: {
-        bpmn: 'BPMN',
+        xml: 'XML',
         svg: 'SVG'
+      },
+      title: {
+        xml: 'download as .xml(.bpmn) file',
+        svg: 'download as .svg image'
       }
     }
   },

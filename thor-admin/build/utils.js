@@ -86,6 +86,11 @@ exports.styleLoaders = function(options) {
     })
   }
 
+  output.push({
+      test: /\.bpmn$/,
+      use: 'raw-loader'
+  })
+
   return output
 }
 

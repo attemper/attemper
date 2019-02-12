@@ -1,0 +1,48 @@
+@import 'bpmn-js/dist/assets/diagram-js.css';
+@import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
+@import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
+@import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
+@import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css';
+@import 'diagram-js-minimap/assets/diagram-js-minimap.css';
+@import "~@/styles/bpmn.scss";
+
+.content{
+  position: absolute;
+  background-color: #ffffff;
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+}
+.canvas{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.buttons{
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  &>li{
+    display:inline-block;
+    margin: 5px;
+    &>a{
+      color: #999;
+      background: #eee;
+      cursor: not-allowed;
+      padding: 8px;
+      border: 1px solid #ccc;
+      &.active{
+        color: #333;
+        background: #fff;
+        cursor: pointer;
+      }
+    }
+  }
+}
+.custom-buttons{
+  position: absolute;
+  bottom: 30px;
+  right: 400px;
+}
