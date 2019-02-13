@@ -4,8 +4,10 @@ package com.thor.web;
 import com.thor.common.constant.GlobalConstants;
 import com.thor.config.conf.ConfigConfiguration;
 import com.thor.core.conf.CoreConfiguration;
+import com.thor.sdk.common.constant.ThorSdkGlobalConstants;
 import com.thor.security.conf.SecurityConfiguration;
 import com.thor.sys.conf.SysConfiguration;
+import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,6 +35,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan(GlobalConstants.mybatisPlusMapperLocation)   //mybatis dao
 @EnableAsync  //开启异步执行
 @SpringBootApplication
+@EnableProcessApplication(ThorSdkGlobalConstants.defaultContextPath)
 public class ThorWebApplication {
 
 	/**

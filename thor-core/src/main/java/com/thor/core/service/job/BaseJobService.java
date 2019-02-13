@@ -10,6 +10,8 @@ import com.thor.sdk.common.param.job.BaseJobSaveParam;
 import com.thor.sdk.common.result.job.BaseJob;
 import com.thor.sys.service.BaseServiceAdapter;
 import com.thor.sys.util.PageUtil;
+import org.camunda.bpm.model.bpmn.Bpmn;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -66,6 +68,12 @@ public class BaseJobService extends BaseServiceAdapter {
         Date now = new Date();
         baseJob.setCreateTime(now);
         baseJob.setUpdateTime(now);
+        BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(baseJob.getJobName())
+                .name(baseJob.getDisplayName())
+                .startEvent()
+                .id("StartEvent_1")
+                .done();
+        baseJob.setJobContent(Bpmn.convertToString(modelInstance));
         mapper.add(baseJob);
         return baseJob;
     }
@@ -106,7 +114,6 @@ public class BaseJobService extends BaseServiceAdapter {
                 .displayName(saveParam.getDisplayName())
                 .jobType(saveParam.getJobType())
                 .status(saveParam.getStatus())
-                .categoryName(saveParam.getCategoryName())
                 .remark(saveParam.getRemark())
                 .build();
     }

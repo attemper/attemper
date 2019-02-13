@@ -361,7 +361,7 @@ export default {
         this.job = {
           jobName: undefined,
           displayName: '',
-          jobType: 11,
+          jobType: 0,
           status: 0,
           remark: ''
         }

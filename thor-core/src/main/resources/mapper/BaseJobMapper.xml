@@ -11,7 +11,6 @@
         `JOB_TYPE`,
         `JOB_CONTENT`,
         `STATUS`,
-        `CATEGORY_NAME`,
         `CREATE_TIME`,
         `UPDATE_TIME`,
         `REMARK`,
@@ -24,7 +23,6 @@
         #{jobType, jdbcType=INTEGER},
         #{jobContent, jdbcType=VARCHAR},
         #{status, jdbcType=INTEGER},
-        #{categoryName, jdbcType=VARCHAR},
         #{createTime, jdbcType=TIMESTAMP},
         #{updateTime, jdbcType=TIMESTAMP},
         #{remark, jdbcType=VARCHAR},
@@ -43,7 +41,6 @@
             JOB_CONTENT = #{jobContent, jdbcType=VARCHAR},
         </if>
         STATUS = #{status, jdbcType=INTEGER},
-        CATEGORY_NAME = #{categoryName, jdbcType=VARCHAR},
         UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
         REMARK = #{remark, jdbcType=VARCHAR}
         <where>

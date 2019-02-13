@@ -47,7 +47,7 @@ export const jobTypes = [
   {
     label: 'Flow Job',
     value: 0
-  },
+  }/*,
   {
     label: 'Group Job',
     value: 1
@@ -55,7 +55,7 @@ export const jobTypes = [
   {
     label: 'Http Job',
     value: 11
-  }
+  }*/
 ]
 
 export const jobStatuses = [

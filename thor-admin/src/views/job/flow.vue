@@ -5,13 +5,16 @@
     <ul class="buttons">
       <li>{{ $t('actions.download') }}</li>
       <li>
-        <a ref="saveDiagram" :title="$t('job.flowJob.title.xml')" href="javascript:">{{ $t('job.flowJob.btn.xml') }}</a>
+        <a ref="exportBPMN" :title="$t('job.flowJob.title.xml')" href="javascript:">{{ $t('job.flowJob.btn.xml') }}</a>
       </li>
       <li>
-        <a ref="saveSvg" :title="$t('job.flowJob.title.svg')" href="javascript:">{{ $t('job.flowJob.btn.svg') }}</a>
+        <a ref="exportSvg" :title="$t('job.flowJob.title.svg')" href="javascript:">{{ $t('job.flowJob.btn.svg') }}</a>
       </li>
     </ul>
     <div class="custom-buttons">
+      <el-button type="info" size="mini" @click="refresh">
+        {{ $t('actions.refresh') }}
+      </el-button>
       <el-button type="success" size="mini" @click="save">
         {{ $t('actions.save') }}
       </el-button>
@@ -20,6 +23,7 @@
 </template>
 
 <script>
+import { getReq, updateReq } from '@/api/job/baseJob'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import propertiesPanelModule from 'bpmn-js-properties-panel'
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
@@ -28,24 +32,23 @@ import minimapModule from 'diagram-js-minimap'
 // import { diff } from 'bpmn-js-differ' // https://github.com/bpmn-io/bpmn-js-differ
 import prioritiesModule from 'bpmn-js-task-priorities/lib/priorities'
 import customTranslate from '@/utils/customTranslate'
-import startDiagram from './resources/start.bpmn'
 import {
-  getProcessId
+  getTimeStr
 } from './scripts/support'
 
 export default {
   data() {
     return {
-      bpmnModeler: null,
-      processName: ''
+      job: null,
+      bpmnModeler: null
     }
   },
   mounted() {
     this.bindBpmn()
   },
   methods: {
-    save() {
-      console.log(this.bpmnModeler)
+    refresh() {
+      // TODO
     },
     bindBpmn() {
       const canvas = this.$refs.canvas
@@ -72,24 +75,28 @@ export default {
         }
       })
       const self = this
-      const downloadLink = this.$refs.saveDiagram
-      const downloadSvgLink = this.$refs.saveSvg
+      const downloadLink = this.$refs.exportBPMN
+      const downloadSvgLink = this.$refs.exportSvg
       this.bpmnModeler.on('commandStack.changed', function() {
-        self.saveSVG(function(err, svg) {
+        self.exportSvg(function(err, svg) {
           self.setEncoded(downloadSvgLink, self.getExportFileName() + '.svg', err ? null : svg)
         })
 
-        self.saveDiagram(function(err, xml) {
+        self.exportBPMN(function(err, xml) {
           self.setEncoded(downloadLink, self.getExportFileName() + '.bpmn', err ? null : xml)
+        })
+
+        self.bindJobContent(function(err, xml) {
+          if (!err) {
+            self.job.jobContent = xml
+          } else {
+            console.error(err)
+          }
         })
       })
 
-      this.createNewDiagram()
-
       this.initWidget()
-    },
-    createNewDiagram() {
-      this.openDiagram(startDiagram)
+      this.initData()
     },
     openDiagram(xml) {
       this.bpmnModeler.importXML(xml, function(err) {
@@ -98,10 +105,15 @@ export default {
         }
       })
     },
-    saveSVG(done) {
+    save() {
+      updateReq(this.job).then(res => {
+        this.$message.success(res.data.msg)
+      })
+    },
+    exportSvg(done) {
       this.bpmnModeler.saveSVG(done)
     },
-    saveDiagram(done) {
+    exportBPMN(done) {
       this.bpmnModeler.saveXML({ format: true }, function(err, xml) {
         done(err, xml)
       })
@@ -115,7 +127,18 @@ export default {
       }
     },
     getExportFileName() {
-      return getProcessId(this.bpmnModeler) || 'flow'
+      return (this.job.displayName || this.job.jobName || 'undefined') + '-' + getTimeStr()
+    },
+    bindJobContent(done) {
+      this.bpmnModeler.saveXML({ format: true }, function(err, xml) {
+        done(err, xml)
+      })
+    },
+    initData() {
+      getReq({ jobName: this.$route.params.id }).then(res => {
+        this.job = res.data.result
+        this.openDiagram(this.job.jobContent) // open the job content
+      })
     },
     initWidget() {
       const self = this
