@@ -155,28 +155,30 @@ public class ControllerAspect {
         Object[] args = joinPoint.getArgs();
         if (args != null) {
             for (Object arg : args) {
-                //1.validator校验
-                Set<ConstraintViolation<Object>> violations = validator.validate(arg);
-                if(!violations.isEmpty()){
-                    ConstraintViolation<Object> violation = violations.iterator().next();
-                    String codeStr = violation.getMessage();
-                    return CommonResult.put(Integer.valueOf(codeStr));
-                }
-                if(arg instanceof CommonParam){
-                    CommonParam commonParam = (CommonParam) arg;
-                    commonParam.preHandle();  //预处理参数
-                    //2.补充校验
-                    String codeStr = commonParam.validate();
-                    if(codeStr != null){
-                        try{
-                            int code = Integer.parseInt(codeStr);
-                            return CommonResult.put(code);
-                        }catch (NumberFormatException e){
-                            return CommonResult.error(codeStr);
-                        }
+                if (arg != null) {
+                    //1.validator校验
+                    Set<ConstraintViolation<Object>> violations = validator.validate(arg);
+                    if (!violations.isEmpty()) {
+                        ConstraintViolation<Object> violation = violations.iterator().next();
+                        String codeStr = violation.getMessage();
+                        return CommonResult.put(Integer.valueOf(codeStr));
                     }
-                    if(apiLog.getUserName() == null){
-                        apiLog.setUserName(resolveUserNameFromParam(commonParam));
+                    if (arg instanceof CommonParam) {
+                        CommonParam commonParam = (CommonParam) arg;
+                        commonParam.preHandle();  //预处理参数
+                        //2.补充校验
+                        String codeStr = commonParam.validate();
+                        if (codeStr != null) {
+                            try {
+                                int code = Integer.parseInt(codeStr);
+                                return CommonResult.put(code);
+                            } catch (NumberFormatException e) {
+                                return CommonResult.error(codeStr);
+                            }
+                        }
+                        if (apiLog.getUserName() == null) {
+                            apiLog.setUserName(resolveUserNameFromParam(commonParam));
+                        }
                     }
                 }
             }

@@ -23,10 +23,10 @@
         from ${tablePrefix}tenant
         <where>
             <if test="id != null">
-                and ID like concat('%', #{id, jdbcType=VARCHAR}, '%')
+                and lower(ID) like concat('%', lower(#{id, jdbcType=VARCHAR}), '%')
             </if>
             <if test="name != null">
-                and `NAME` like concat('%', #{name, jdbcType=VARCHAR}, '%')
+                and lower(`NAME`) like concat('%', lower(#{name, jdbcType=VARCHAR}), '%')
             </if>
             <if test="matchAdmin != null">
                 and ADMIN = #{matchAdmin, jdbcType=VARCHAR}

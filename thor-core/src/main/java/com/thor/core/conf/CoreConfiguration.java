@@ -2,10 +2,8 @@ package com.thor.core.conf;
 
 import com.thor.core.controller.arg.ArgController;
 import com.thor.core.controller.job.BaseJobController;
-import com.thor.core.controller.job.GroupJobController;
 import com.thor.core.service.arg.ArgService;
 import com.thor.core.service.job.BaseJobService;
-import com.thor.core.service.job.GroupJobService;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,12 +19,10 @@ import javax.validation.ValidatorFactory;
 @ComponentScan(basePackageClasses = {
         //service
         BaseJobService.class,
-        GroupJobService.class,
         ArgService.class,
 
         //controller
         BaseJobController.class,
-        GroupJobController.class,
         ArgController.class
 })
 public class CoreConfiguration {

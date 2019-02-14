@@ -96,7 +96,8 @@ export default {
     confirm: 'please confirm to do',
     remove: 'please select the data to remove',
     removeConfirm: 'are you sure to remove it(them)?',
-    saveConfirm: 'are you sure to save it'
+    saveConfirm: 'are you sure to save it',
+    clickToSeeDetail: 'Tip:click the button to see detail'
   },
   sys: {
     tenant: {
@@ -216,13 +217,13 @@ export default {
     rules: {
       jobName: 'The Job Name can not be null',
       displayName: 'The Display Name can not be null',
-      jobType: 'The Job Type can not be null',
       status: 'The Status can not be null'
     },
     columns: {
+      reversion: 'Reversion',
+      version: 'Version',
       jobName: 'Job Name',
       displayName: 'Display Name',
-      jobType: 'Job Type',
       status: 'Status',
       createTime: 'Created',
       updateTime: 'Last Updated',
@@ -231,73 +232,13 @@ export default {
     placeholder: {
       jobName: 'Please entry Job Name',
       displayName: 'Please entry Job Display Name',
-      jobType: 'Please select Job Type',
       status: 'Please select Status',
       remark: 'Please entry Remark'
-    },
-    jobTypes: {
-      httpJob: 'Http Job'
     },
     actions: {
       design: 'Design',
       param: 'Param',
       trigger: 'Trigger'
-    },
-    httpJob: {
-      jobConfig: {
-        columns: {
-          requestMethod: 'Request Method',
-          uri: '(Relative) URI'
-        },
-        placeholder: {
-          requestMethod: 'Please select Request Method',
-          uri: 'Please entry (Relative) URI'
-        },
-        rules: {
-          requestMethod: 'Request Method can not be null',
-          uri: '(Relative) URI can not be null'
-        }
-      }
-    },
-    atomJob: {
-      title: 'AtomJob',
-      actions: {
-        design: 'design'
-      },
-      designDialog: {
-        title: 'design job'
-      },
-      httpJob: {
-        jobConfig: {
-          columns: {
-            requestMethod: 'Request Method',
-            uri: '(Relative) URI'
-          },
-          placeholder: {
-            requestMethod: 'Please select Request Method',
-            uri: 'Please entry (Relative) URI'
-          },
-          rules: {
-            requestMethod: 'Request Method can not be null',
-            uri: '(Relative) URI can not be null'
-          }
-        }
-      }
-    },
-    groupJob: {
-      subJob: {
-        innerDialog: {
-          title: 'set priority',
-          label: 'priority'
-        },
-        actions: {
-          updateSubJobs: 'Update',
-          removeSubJobs: 'Remove'
-        },
-        columns: {
-          priority: 'priority'
-        }
-      }
     },
     flowJob: {
       btn: {

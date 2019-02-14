@@ -6,42 +6,48 @@
 
     <insert id="add" parameterType="com.thor.sdk.common.result.job.BaseJob">
         INSERT INTO ${tablePrefix}job (
-        `JOB_NAME`,
-        `DISPLAY_NAME`,
-        `JOB_TYPE`,
-        `JOB_CONTENT`,
-        `STATUS`,
-        `CREATE_TIME`,
-        `UPDATE_TIME`,
-        `REMARK`,
-        `TENANT_ID`
+            `JOB_NAME`,
+            `STATUS`,
+            `CREATE_TIME`,
+            `REMARK`,
+            `TENANT_ID`
         )
         VALUES
         (
-        #{jobName, jdbcType=VARCHAR},
-        #{displayName, jdbcType=VARCHAR},
-        #{jobType, jdbcType=INTEGER},
-        #{jobContent, jdbcType=VARCHAR},
-        #{status, jdbcType=INTEGER},
-        #{createTime, jdbcType=TIMESTAMP},
-        #{updateTime, jdbcType=TIMESTAMP},
-        #{remark, jdbcType=VARCHAR},
-        #{tenantId, jdbcType=VARCHAR}
+            #{jobName, jdbcType=VARCHAR},
+            #{status, jdbcType=INTEGER},
+            #{createTime, jdbcType=TIMESTAMP},
+            #{remark, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="addHistory" parameterType="com.thor.sdk.common.result.job.BaseJob">
+        INSERT INTO ${tablePrefix}job_history (
+            `JOB_NAME`,
+            `DISPLAY_NAME`,
+            `JOB_CONTENT`,
+            `REVERSION`,
+            `VERSION`,
+            `UPDATE_TIME`,
+            `TENANT_ID`
+        )
+        VALUES
+        (
+            #{jobName, jdbcType=VARCHAR},
+            #{displayName, jdbcType=VARCHAR},
+            #{jobContent, jdbcType=VARCHAR},
+            #{reversion, jdbcType=INTEGER},
+            #{version, jdbcType=INTEGER},
+            #{updateTime, jdbcType=TIMESTAMP},
+            #{tenantId, jdbcType=VARCHAR}
         )
     </insert>
 
     <update id="update" parameterType="com.thor.sdk.common.result.job.BaseJob">
         UPDATE ${tablePrefix}job j
         SET
-        <if test="displayName != null">
-            `DISPLAY_NAME` = #{displayName, jdbcType=VARCHAR},
-        </if>
-        JOB_TYPE = #{jobType, jdbcType=INTEGER},
-        <if test="jobContent != null">
-            JOB_CONTENT = #{jobContent, jdbcType=VARCHAR},
-        </if>
         STATUS = #{status, jdbcType=INTEGER},
-        UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
         REMARK = #{remark, jdbcType=VARCHAR}
         <where>
             <include refid="condJobName"/>
@@ -50,40 +56,51 @@
     </update>
 
     <select id="get" parameterType="map" resultType="com.thor.sdk.common.result.job.BaseJob">
-        select * from ${tablePrefix}job j
+        select jh.*, j.`STATUS`, j.`CREATE_TIME`, j.REMARK
+        from ${tablePrefix}job j
+        join ${tablePrefix}job_history jh
+        using(JOB_NAME, TENANT_ID)
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
+            <if test="reversion != null">
+                and REVERSION = #{reversion, jdbcType=INTEGER}
+            </if>
         </where>
+        <if test="reversion == null">
+            order by REVERSION desc limit 1
+        </if>
     </select>
 
     <select id="list" parameterType="map" resultType="com.thor.sdk.common.result.job.BaseJob">
-        select *
-        from ${tablePrefix}job j
+        SELECT jh.*, j.`STATUS`, j.`CREATE_TIME`, j.REMARK
+        FROM ${tablePrefix}job j
+        JOIN ${tablePrefix}job_history jh
+        USING(JOB_NAME, TENANT_ID)
+        JOIN (SELECT JOB_NAME, TENANT_ID, MAX(REVERSION) AS REVERSION FROM ${tablePrefix}job_history GROUP BY JOB_NAME,
+        TENANT_ID) jh_m
+        USING(JOB_NAME, TENANT_ID, REVERSION)
         <where>
             <if test="jobName != null">
-                and JOB_NAME like concat('%', #{jobName, jdbcType=VARCHAR}, '%')
+                and lower(j.JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
             </if>
             <if test="displayName != null">
-                and `DISPLAY_NAME` like concat('%', #{displayName, jdbcType=VARCHAR}, '%')
+                and lower(DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
             </if>
-            <if test="jobType != null">
-                and JOB_TYPE = #{jobType, jdbcType=INTEGER}
-            </if>
-            <if test="status != null">
-                and `STATUS` = #{status, jdbcType=INTEGER}
-            </if>
-            <if test="lowerJobType != null">
-                and `JOB_TYPE` &gt;= #{lowerJobType, jdbcType=INTEGER}
+            <if test="status != null &amp;&amp;status.size() &gt; 0">
+                and `STATUS` in
+                <foreach item="item" collection="status" open="(" separator="," close=")">
+                    #{item, jdbcType=INTEGER}
+                </foreach>
             </if>
             <include refid="condTenantId"/>
         </where>
         <choose>
             <when test="sort == null">
-                order by JOB_NAME
+                order by j.JOB_NAME
             </when>
             <otherwise>
-                order by ${sort}
+                order by j.${sort}
             </otherwise>
         </choose>
     </select>

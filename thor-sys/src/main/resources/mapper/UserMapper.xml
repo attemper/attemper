@@ -98,16 +98,16 @@
         select * from ${tablePrefix}user u
         <where>
             <if test="userName != null">
-                and USER_NAME like concat('%', #{userName, jdbcType=VARCHAR}, '%')
+                and lower(USER_NAME) like concat('%', lower(#{userName, jdbcType=VARCHAR}), '%')
             </if>
             <if test="displayName != null">
-                and DISPLAY_NAME like concat('%', #{displayName, jdbcType=VARCHAR}, '%')
+                and lower(DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
             </if>
             <if test="email != null">
-                and EMAIL like concat('%', #{email, jdbcType=VARCHAR}, '%')
+                and lower(EMAIL) like concat('%', lower(#{email, jdbcType=VARCHAR}), '%')
             </if>
             <if test="mobile != null">
-                and MOBILE like concat('%', #{mobile, jdbcType=VARCHAR}, '%')
+                and lower(MOBILE) like concat('%', lower(#{mobile, jdbcType=VARCHAR}), '%')
             </if>
             <if test="status != null">
                 and STATUS = #{status, jdbcType=INTEGER}

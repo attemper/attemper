@@ -142,7 +142,6 @@ export default {
     },
     initWidget() {
       const self = this
-      //
       function registerFileDrop(container, callback) {
         function handleFileSelect(e) {
           e.stopPropagation()

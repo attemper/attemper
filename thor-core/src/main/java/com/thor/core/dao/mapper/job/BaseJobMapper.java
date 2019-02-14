@@ -22,6 +22,8 @@ public interface BaseJobMapper extends BaseMapper<BaseJob> {
     @Override
     void add(BaseJob baseJob);
 
+    void addHistory(BaseJob baseJob);
+
     @Override
     void update(BaseJob baseJob);
 }

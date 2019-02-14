@@ -10,13 +10,14 @@ import com.thor.sdk.common.param.job.BaseJobSaveParam;
 import com.thor.sdk.common.result.job.BaseJob;
 import com.thor.sys.service.BaseServiceAdapter;
 import com.thor.sys.util.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.Map;
 
@@ -63,18 +64,22 @@ public class BaseJobService extends BaseServiceAdapter {
             throw new DuplicateKeyException(saveParam.getJobName());
         }
         baseJob = toBaseJob(saveParam);
-        baseJob.setJobContent(saveParam.getJobContent());
-        baseJob.setTenantId(injectAdminedTenant().getId());
         Date now = new Date();
         baseJob.setCreateTime(now);
         baseJob.setUpdateTime(now);
-        BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(baseJob.getJobName())
-                .name(baseJob.getDisplayName())
-                .startEvent()
-                .id("StartEvent_1")
-                .done();
-        baseJob.setJobContent(Bpmn.convertToString(modelInstance));
+        baseJob.setReversion(1);
+        if (saveParam.getJobContent() == null) {
+            BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(baseJob.getJobName())
+                    .name(baseJob.getDisplayName())
+                    .startEvent()
+                    .id("StartEvent_1")
+                    .done();
+            baseJob.setJobContent(Bpmn.convertToString(modelInstance));
+        } else {
+            baseJob.setJobContent(saveParam.getJobContent());
+        }
         mapper.add(baseJob);
+        mapper.addHistory(baseJob);
         return baseJob;
     }
 
@@ -94,8 +99,25 @@ public class BaseJobService extends BaseServiceAdapter {
         }
         updatedJob.setCreateTime(baseJob.getCreateTime());
         updatedJob.setUpdateTime(new Date());
-        mapper.update(updatedJob);
+        if (checkNeedUpgradeReversion(baseJob, updatedJob)) { //need upgrade
+            updatedJob.setReversion(baseJob.getReversion() + 1);
+            mapper.addHistory(updatedJob);
+        } else {
+            mapper.update(updatedJob);
+        }
         return updatedJob;
+    }
+
+    /**
+     * 判断是否需要更新模型版本
+     *
+     * @param baseJob
+     * @param updatedJob
+     * @return
+     */
+    private boolean checkNeedUpgradeReversion(BaseJob baseJob, BaseJob updatedJob) {
+        return !StringUtils.equals(baseJob.getDisplayName(), updatedJob.getDisplayName())
+                || !StringUtils.equals(baseJob.getJobContent(), updatedJob.getJobContent());
     }
 
     /**
@@ -112,9 +134,10 @@ public class BaseJobService extends BaseServiceAdapter {
         return BaseJob.builder()
                 .jobName(saveParam.getJobName())
                 .displayName(saveParam.getDisplayName())
-                .jobType(saveParam.getJobType())
+                .jobContent(saveParam.getJobContent())
                 .status(saveParam.getStatus())
                 .remark(saveParam.getRemark())
+                .tenantId(injectAdminedTenant().getId())
                 .build();
     }
 }

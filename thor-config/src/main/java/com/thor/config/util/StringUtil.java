@@ -16,7 +16,7 @@ public class StringUtil {
         }
         StringBuilder sb = new StringBuilder();
         for(Object cell : arr){
-            sb.append(cell.toString() + ",");
+            sb.append((cell == null ? "" : cell.toString()) + ",");
         }
         return sb.deleteCharAt(sb.length() - 1).toString();
     }

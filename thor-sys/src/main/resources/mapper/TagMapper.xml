@@ -70,18 +70,18 @@
         select * from ${tablePrefix}tag t
         <where>
             <if test="tagName != null">
-                and TAG_NAME like concat('%', #{tagName, jdbcType=VARCHAR}, '%')
+                and lower(TAG_NAME) like concat('%', lower(#{tagName, jdbcType=VARCHAR}), '%')
             </if>
             <include refid="condTagType"/>
             <include refid="condTenantId"/>
             <if test="displayName != null">
-                and DISPLAY_NAME like concat('%', #{displayName, jdbcType=VARCHAR}, '%')
+                and lower(DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
             </if>
             <if test="email != null">
-                and EMAIL like concat('%', #{email, jdbcType=VARCHAR}, '%')
+                and lower(EMAIL) like concat('%', lower(#{email, jdbcType=VARCHAR}), '%')
             </if>
             <if test="remark != null">
-                and REMARK like concat('%', #{remark, jdbcType=VARCHAR}, '%')
+                and lower(REMARK) like concat('%', lower(#{remark, jdbcType=VARCHAR}), '%')
             </if>
         </where>
         <choose>

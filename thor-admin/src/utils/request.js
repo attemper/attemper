@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Qs from 'qs'
 import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
@@ -21,6 +22,18 @@ service.interceptors.request.use(
     }
     config.headers['tenantId'] = tenantId
     config.headers['sign'] = sign
+    /*
+    solve the array params
+    qs.stringify({ id: ['b', 'c'] }, { arrayFormat: 'indices' })
+    // 'id[0]=b&id[1]=c'
+    qs.stringify({ id: ['b', 'c'] }, { arrayFormat: 'brackets' })
+    // 'id[]=b&id[]=c'
+    qs.stringify({ id: ['b', 'c'] }, { arrayFormat: 'repeat' })
+    // 'id=b&id=c'
+     */
+    config.paramsSerializer = function(params) {
+      return Qs.stringify(params, { arrayFormat: 'accept' })
+    }
     return config
   },
   error => {
