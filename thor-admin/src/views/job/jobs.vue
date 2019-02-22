@@ -1,17 +1,45 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('job.columns.jobName')" v-model="page.jobName" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
-      <el-input :placeholder="$t('job.columns.displayName')" v-model="page.displayName" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
-      <el-select v-model="page.status" :placeholder="$t('job.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
+      <el-input
+        :placeholder="$t('job.columns.jobName')"
+        v-model="page.jobName"
+        style="width: 100px;"
+        class="filter-item"
+        @keyup.enter.native="search"/>
+      <el-input
+        :placeholder="$t('job.columns.displayName')"
+        v-model="page.displayName"
+        style="width: 100px;"
+        class="filter-item"
+        @keyup.enter.native="search"/>
+      <el-select
+        v-model="page.status"
+        :placeholder="$t('job.columns.status')"
+        multiple
+        clearable
+        collapse-tags
+        class="filter-item"
+        style="width: 160px">
         <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>-->
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="add">{{ $t('actions.add') }}</el-button>
-      <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{
+      $t('actions.search') }}
+      </el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="add">{{
+      $t('actions.add') }}
+      </el-button>
+      <el-button
+        :disabled="!selections || !selections.length"
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="danger"
+        icon="el-icon-delete"
+        @click="remove">{{ $t('actions.remove') }}
+      </el-button>
       <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>
       <el-checkbox v-model="showCreateTime" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">{{ $t('job.columns.createTime') }}</el-checkbox>-->
     </div>
@@ -30,7 +58,7 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
-            <el-form-item :label="$t('job.columns.createTime')" >
+            <el-form-item :label="$t('job.columns.createTime')">
               <span>{{ props.row.createTime }}</span>
             </el-form-item>
             <el-form-item :label="$t('job.columns.updateTime')">
@@ -42,7 +70,12 @@
       <el-table-column
         type="selection"
         width="40"/>
-      <el-table-column :label="$t('job.columns.jobName')" prop="jobName" sortable="custom" align="center" min-width="100px">
+      <el-table-column
+        :label="$t('job.columns.jobName')"
+        prop="jobName"
+        sortable="custom"
+        align="center"
+        min-width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.jobName }}</span>
         </template>
@@ -86,21 +119,49 @@
         <template slot-scope="scope">
           <div>
             <el-button type="primary" size="mini" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
-            <el-button style="background-color:	#3CB371; border-color:	#3CB371; color: #fff;" size="mini" @click="openDesignDialog(scope.row)">{{ $t('job.actions.design') }}</el-button>
+            <el-button
+              style="background-color:	#3CB371; border-color:	#3CB371; color: #fff;"
+              size="mini"
+              @click="openDesignDialog(scope.row)">{{ $t('job.actions.design') }}
+            </el-button>
           </div>
           <div style="padding-top: 6px;">
-            <el-button style="background-color:	#A4D3EE; border-color:	#A4D3EE; color: #fff;" size="mini">{{ $t('job.actions.param') }}</el-button>
-            <el-button style="background-color:	#FFBBFF; border-color:	#FFBBFF; color: #fff;" size="mini">{{ $t('job.actions.trigger') }}</el-button>
+            <el-button style="background-color:	#A4D3EE; border-color:	#A4D3EE; color: #fff;" size="mini">{{
+            $t('job.actions.param') }}
+            </el-button>
+            <el-button
+              style="background-color:	#FFBBFF; border-color:	#FFBBFF; color: #fff;"
+              size="mini"
+              @click="openTriggerDialog(scope.row)">{{ $t('job.actions.trigger') }}
+            </el-button>
           </div>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="page.total>0" :total="page.total" :page.sync="page.currentPage" :limit.sync="page.pageSize" @pagination="search" />
+    <pagination
+      v-show="page.total>0"
+      :total="page.total"
+      :page.sync="page.currentPage"
+      :limit.sync="page.pageSize"
+      @pagination="search"/>
 
-    <el-dialog :title="editDialog.title" :visible.sync="editDialog.base.visible || editDialog.design.visible || editDialog.param.visible || editDialog.trigger.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false" :before-close="close">
+    <el-dialog
+      :title="editDialog.title"
+      :visible.sync="editDialog.base.visible || editDialog.param.visible || editDialog.trigger.visible"
+      :center="true"
+      :modal="true"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :before-close="close">
       <div v-show="editDialog.base.visible">
-        <el-form ref="baseForm" :rules="rules.baseRules" :model="job" label-position="left" label-width="150px" class="form-layout">
+        <el-form
+          ref="baseForm"
+          :rules="rules.baseRules"
+          :model="job"
+          label-position="left"
+          label-width="150px"
+          class="form-layout">
           <el-form-item :label="$t('job.columns.jobName')" prop="jobName">
             <el-input v-model="job.jobName" :placeholder="$t('job.placeholder.jobName')"/>
           </el-form-item>
@@ -113,7 +174,11 @@
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('job.columns.remark')">
-            <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="job.remark" :placeholder="$t('job.placeholder.remark')" type="textarea"/>
+            <el-input
+              :autosize="{ minRows: 2, maxRows: 4}"
+              v-model="job.remark"
+              :placeholder="$t('job.placeholder.remark')"
+              type="textarea"/>
           </el-form-item>
           <el-form-item>
             <el-button type="info" @click="editDialog.base.visible = false">{{ $t('actions.cancel') }}</el-button>
@@ -121,7 +186,40 @@
           </el-form-item>
         </el-form>
       </div>
-      <div v-show="editDialog.design.visible"/>
+      <div v-show="editDialog.trigger.visible">
+        <div v-for="(item,index) in periodTiggers" :key="index" style="margin-bottom: 10px;">
+          <el-row :gutter="10">
+            <el-col :span="4">
+              <el-button icon="el-icon-plus" type="success" size="mini" @click="addRow"/>
+              <el-button v-show="periodTiggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="romoveRow(index)"/>
+            </el-col>
+            <el-col :span="4">
+              <div>
+                <el-select v-model="item.calendar" size="mini">
+                  <el-option
+                    v-for="cal in calendars"
+                    :key="cal"
+                    :value="cal">
+                    {{ cal }}
+                  </el-option>
+                </el-select>
+              </div>
+            </el-col>
+            <el-col :span="4">
+              <div>start</div>
+            </el-col>
+            <el-col :span="4">
+              <div>period</div>
+            </el-col>
+            <el-col :span="4">
+              <div>count</div>
+            </el-col>
+            <el-col :span="4">
+              <div>end</div>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -179,9 +277,6 @@ export default {
         base: {
           visible: false
         },
-        design: {
-          visible: false
-        },
         param: {
           visible: false
         },
@@ -197,7 +292,14 @@ export default {
         }
       },
       downloadLoading: false,
-      selections: []
+      selections: [],
+      calendars: ['Nature', 'Working', 'Legal', 'A Share', 'H Share'],
+      periodTiggers: [
+        {
+          calendar: null
+        }
+      ]
+
     }
   },
   created() {
@@ -250,7 +352,6 @@ export default {
     },
     close() {
       this.editDialog.base.visible =
-        this.editDialog.design.visible =
           this.editDialog.param.visible =
             this.editDialog.trigger.visible = false
     },
@@ -306,28 +407,28 @@ export default {
         })
     },
     /* handleDownload() {
-        this.downloadLoading = true
-          import('@/vendor/Export2Excel').then(excel => {
-            const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-            const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-            const data = this.formatJson(filterVal, this.list)
-            excel.export_json_to_excel({
-              header: tHeader,
-              data,
-              filename: 'table-list'
+          this.downloadLoading = true
+            import('@/vendor/Export2Excel').then(excel => {
+              const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
+              const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+              const data = this.formatJson(filterVal, this.list)
+              excel.export_json_to_excel({
+                header: tHeader,
+                data,
+                filename: 'table-list'
+              })
+              this.downloadLoading = false
             })
-            this.downloadLoading = false
-          })
-      },
-      formatJson(filterVal, jsonData) {
-        return jsonData.map(v => filterVal.map(j => {
-          if (j === 'timestamp') {
-            return parseTime(v[j])
-          } else {
-            return v[j]
-          }
-        }))
-      }, */
+        },
+        formatJson(filterVal, jsonData) {
+          return jsonData.map(v => filterVal.map(j => {
+            if (j === 'timestamp') {
+              return parseTime(v[j])
+            } else {
+              return v[j]
+            }
+          }))
+        }, */
     formatStatus(item) {
       for (let i = 0; i < this.jobStatuses.length; i++) {
         const option = this.jobStatuses[i]
@@ -355,9 +456,13 @@ export default {
     },
     openDesignDialog(row) {
       this.editDialog.title = this.$t('job.actions.design')
-      this.editDialog.design.visible = true
       this.selectRow(row)
       this.openDesignJobFlow()
+    },
+    openTriggerDialog(row) {
+      // this.editDialog.title = this.$t('job.actions.design')
+      this.selectRow(row)
+      this.editDialog.trigger.visible = true
     },
     openDesignJobFlow() {
       const route = {
@@ -367,30 +472,46 @@ export default {
         }
       }
       this.$router.push(route)
+    },
+    addRow() {
+      const obj = {
+        calendar: null
+      }
+      this.periodTiggers.push(obj)
+    },
+    romoveRow(index) {
+      this.periodTiggers.splice(index, 1)
     }
   }
 }
 </script>
 
 <style lang="scss">
-  .form{
-    &-layout{
+  .form {
+    &-layout {
       width: 500px;
       min-height: 350px;
       margin-top: 20px;
-      margin-left:50px;
+      margin-left: 50px;
     }
   }
+
   .table-expand {
     font-size: 0;
   }
+
   .table-expand label {
     width: 150px;
     color: #99a9bf;
   }
+
   .table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;
     width: 25%;
   }
+
+  /*.trigger{
+    &-
+  }*/
 </style>
