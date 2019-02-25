@@ -249,6 +249,36 @@ export default {
         xml: 'download as .xml(.bpmn) file',
         svg: 'download as .svg image'
       }
+    },
+    trigger: {
+      tab: {
+        time: {
+          title: 'Time',
+          cron: 'Cron',
+          real: 'Real',
+          fixed: 'Fixed'
+        },
+        event: {
+          title: 'Event'
+        }
+      },
+      title: {
+        triggerInfo: 'Trigger Info',
+        timeUnit: 'Time Unit',
+        timeRange: 'Time Range',
+        period: 'Period',
+        timeRangeOfDay: 'Time Range Of Day'
+      },
+      placeholder: {
+        triggerName: 'Please Entry Trigger Name',
+        calendar: 'Select Calendar',
+        timeUnit: 'Time Unit',
+        startTime: 'Start Time',
+        endTime: 'End Time',
+        period: 'Please Entry Period',
+        startTimeOfDay: 'Start Time Of Day',
+        endTimeOfDay: 'End Time Of Day'
+      }
     }
   },
   navbar: {
