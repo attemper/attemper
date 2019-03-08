@@ -193,13 +193,25 @@
               <svg-icon icon-class="time"/> {{ $t('job.trigger.tab.time.title') }}
             </span>
             <el-tabs tab-position="left">
-              <el-tab-pane :label="$t('job.trigger.tab.time.cron')">Cron Expression</el-tab-pane>
+              <el-tab-pane :label="$t('job.trigger.tab.time.cron')">
+                <div v-for="(item,index) in cronTriggers" :key="index" style="margin-bottom: 10px;">
+                  <el-row>
+                    <el-col :span="4">
+                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addCronRow"/>
+                      <el-button v-show="cronTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCronRow(index)"/>
+                    </el-col>
+                    <el-col :span="20">
+                      <cron-input v-model="item.cron" @change="changeCron" @reset="resetCron"/>
+                    </el-col>
+                  </el-row>
+                </div>
+              </el-tab-pane>
               <el-tab-pane :label="$t('job.trigger.tab.time.real')">
                 <div v-for="(item,index) in realTimeTriggers" :key="index" style="margin-bottom: 10px;">
                   <el-row>
                     <el-col :span="4">
                       <el-button icon="el-icon-plus" type="success" size="mini" @click="addRealRow"/>
-                      <el-button v-show="realTimeTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="romoveRealRow(index)"/>
+                      <el-button v-show="realTimeTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeRealRow(index)"/>
                     </el-col>
                     <el-col :span="20">
                       <el-form :model="item" label-width="150px" label-position="left" size="mini">
@@ -260,7 +272,7 @@
                   <el-row>
                     <el-col :span="4">
                       <el-button icon="el-icon-plus" type="success" size="mini" @click="addFixedRow"/>
-                      <el-button v-show="fixedTimeTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="romoveFixedRow(index)"/>
+                      <el-button v-show="fixedTimeTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeFixedRow(index)"/>
                     </el-col>
                     <el-col :span="20">
                       <el-form :model="item" label-width="150px" label-position="left" size="mini">
@@ -348,10 +360,15 @@ import waves from '@/directive/waves' // Waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
+import CronInput from 'vue-cron-generator/src/components/cron-input'
+import { DEFAULT_CRON_EXPRESSION } from 'vue-cron-generator/src/constant/filed'
 
 export default {
   name: 'Jobs',
-  components: { Pagination },
+  components: {
+    Pagination,
+    CronInput
+  },
   directives: { waves },
   filters: {
     statusFilter(item) {
@@ -413,6 +430,11 @@ export default {
       downloadLoading: false,
       selections: [],
       calendars: [],
+      cronTriggers: [
+        {
+          expression: DEFAULT_CRON_EXPRESSION
+        }
+      ],
       realTimeTriggers: [
         {
           calendar: null,
@@ -424,7 +446,8 @@ export default {
           calendar: null,
           startTime: null
         }
-      ]
+      ],
+      cron: this.resetCron()
     }
   },
   created() {
@@ -600,13 +623,22 @@ export default {
       }
       this.$router.push(route)
     },
+    addCronRow() {
+      const obj = {
+        cron: DEFAULT_CRON_EXPRESSION
+      }
+      this.cronTriggers.push(obj)
+    },
+    removeCronRow(index) {
+      this.cronTriggers.splice(index, 1)
+    },
     addRealRow() {
       const obj = {
         calendar: null
       }
       this.realTimeTriggers.push(obj)
     },
-    romoveRealRow(index) {
+    removeRealRow(index) {
       this.realTimeTriggers.splice(index, 1)
     },
     addFixedRow() {
@@ -615,8 +647,14 @@ export default {
       }
       this.fixedTimeTriggers.push(obj)
     },
-    romoveFixedRow(index) {
+    removeFixedRow(index) {
       this.fixedTimeTriggers.splice(index, 1)
+    },
+    changeCron(cron) {
+      this.cron = cron
+    },
+    resetCron(cron) {
+      this.cron = DEFAULT_CRON_EXPRESSION
     }
   }
 }
