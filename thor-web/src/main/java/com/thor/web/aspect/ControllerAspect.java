@@ -2,6 +2,7 @@ package com.thor.web.aspect;
 
 import com.thor.common.constant.CommonConstants;
 import com.thor.common.constant.GlobalConstants;
+import com.thor.config.annotation.IgnoreLogResult;
 import com.thor.config.entity.ApiLog;
 import com.thor.config.service.ApiLogService;
 import com.thor.config.util.IPUtil;
@@ -18,7 +19,6 @@ import com.thor.security.ext.service.JWTService;
 import com.thor.sys.holder.TenantHolder;
 import com.thor.sys.holder.UserHolder;
 import com.thor.sys.service.TenantService;
-import com.thor.web.annotation.IgnoreLogResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
