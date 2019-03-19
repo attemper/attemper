@@ -254,30 +254,39 @@ export default {
       tab: {
         time: {
           title: 'Time',
-          cron: 'Cron',
-          real: 'Real',
-          fixed: 'Fixed'
+          cron: 'Cron Expression',
+          calendarOffset: 'Calendar Offset',
+          dailyInterval: 'Daily Interval',
+          calendarInterval: 'Calendar Interval'
         },
         event: {
           title: 'Event'
         }
       },
       title: {
-        triggerInfo: 'Trigger Info',
+        preserveDayLight: 'Preserve Day Light',
+        skipDayIfNoHour: 'Skip Day if no Hour'
+        /* triggerInfo: 'Trigger Info',
         timeUnit: 'Time Unit',
         timeRange: 'Time Range',
         period: 'Period',
-        timeRangeOfDay: 'Time Range Of Day'
+        timeRangeOfDay: 'Time Range Of Day',
+        limit: 'Limit',
+        */
       },
       placeholder: {
-        triggerName: 'Please Entry Trigger Name',
-        calendar: 'Select Calendar',
+        triggerName: 'Trigger Name',
+        calendar: 'Calendar',
         timeUnit: 'Time Unit',
         startTime: 'Start Time',
         endTime: 'End Time',
-        period: 'Please Entry Period',
+        interval: 'Interval',
         startTimeOfDay: 'Start Time Of Day',
-        endTimeOfDay: 'End Time Of Day'
+        endTimeOfDay: 'End Time Of Day',
+        repeatCount: 'Repeat Count',
+        daysOfWeek: 'Week Days',
+        innerOffset: 'Inner Offset',
+        outerOffset: 'Outer Offset'
       }
     }
   },

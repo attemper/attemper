@@ -85,53 +85,83 @@ export const calendars = [
   }
 ]
 
-export const realTimeUnits = [
+export const milliSecondTimeUnits = [
   {
-    label: 'Second',
-    value: 5
-  },
-  {
-    label: 'Minute',
-    value: 10
-  },
-  {
-    label: 'Hour',
-    value: 15
+    label: 'MilliSecond',
+    value: 'MILLISECOND'
   }
 ]
 
-export const fixedTimeUnits = [
+export const inDayTimeUnits = [
   {
     label: 'Second',
-    value: 5
+    value: 'SECOND'
   },
   {
     label: 'Minute',
-    value: 10
+    value: 'MINUTE'
   },
   {
     label: 'Hour',
-    value: 15
-  },
+    value: 'HOUR'
+  }
+]
+
+export const overDayTimeUnits = [
   {
     label: 'Day',
-    value: 20
+    value: 'DAY'
   },
   {
     label: 'Week',
-    value: 25
+    value: 'WEEK'
   },
   {
     label: 'Month',
-    value: 30
+    value: 'MONTH'
+  },
+  {
+    label: 'Season',
+    value: 'SEASON'
   },
   {
     label: 'Half-Year',
-    value: 35
+    value: 'HALF_YEAR'
   },
   {
     label: 'Year',
-    value: 40
+    value: 'YEAR'
+  }
+]
+
+export const daysOfWeek = [
+  {
+    label: 'Sunday',
+    value: 1
+  },
+  {
+    label: 'Monday',
+    value: 2
+  },
+  {
+    label: 'Tuesday',
+    value: 3
+  },
+  {
+    label: 'Wednesday',
+    value: 4
+  },
+  {
+    label: 'Thursday',
+    value: 5
+  },
+  {
+    label: 'Friday',
+    value: 6
+  },
+  {
+    label: 'Saturday',
+    value: 7
   }
 ]
 

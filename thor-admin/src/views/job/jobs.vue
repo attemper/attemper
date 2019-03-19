@@ -194,71 +194,35 @@
             </span>
             <el-tabs tab-position="left">
               <el-tab-pane :label="$t('job.trigger.tab.time.cron')">
-                <div v-for="(item,index) in cronTriggers" :key="index" style="margin-bottom: 10px;">
+                <div v-for="(item,index) in trigger.cronTriggers" :key="index" style="margin-bottom: 10px;">
                   <el-row>
                     <el-col :span="4">
                       <el-button icon="el-icon-plus" type="success" size="mini" @click="addCronRow"/>
-                      <el-button v-show="cronTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCronRow(index)"/>
+                      <el-button v-show="trigger.cronTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCronRow(index)"/>
                     </el-col>
                     <el-col :span="20">
-                      <cron-input v-model="item.cron" @change="changeCron" @reset="resetCron"/>
-                    </el-col>
-                  </el-row>
-                </div>
-              </el-tab-pane>
-              <el-tab-pane :label="$t('job.trigger.tab.time.real')">
-                <div v-for="(item,index) in realTimeTriggers" :key="index" style="margin-bottom: 10px;">
-                  <el-row>
-                    <el-col :span="4">
-                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addRealRow"/>
-                      <el-button v-show="realTimeTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeRealRow(index)"/>
-                    </el-col>
-                    <el-col :span="20">
-                      <el-form :model="item" label-width="150px" label-position="left" size="mini">
-                        <el-form-item :label="$t('job.trigger.title.triggerInfo')">
+                      <el-form :model="item" size="mini">
+                        <el-form-item>
                           <el-col :span="10">
-                            <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')"/>
+                            <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')" size="mini"/>
                           </el-col>
                           <el-col :span="10" :offset="2">
-                            <el-select v-model="item.calendar" :placeholder="$t('job.trigger.placeholder.calendar')">
-                              <el-option
-                                v-for="ele in calendars"
-                                :key="ele.value"
-                                :label="ele.label"
-                                :value="ele.value"/>
-                            </el-select>
+                            <cron-input v-model="item.expression" @change="changeCron($event, index)" @reset="resetCron($event, index)"/>
                           </el-col>
                         </el-form-item>
-                        <el-form-item :label="$t('job.trigger.title.timeRange')">
+                        <el-form-item>
                           <el-col :span="11">
                             <el-date-picker
                               v-model="item.startTime"
                               :placeholder="$t('job.trigger.placeholder.startTime')"
                               type="datetime"/>
                           </el-col>
-                          <el-col :span="1">-</el-col>
+                          <el-col :span="2">-</el-col>
                           <el-col :span="11">
                             <el-date-picker
                               v-model="item.endTime"
                               :placeholder="$t('job.trigger.placeholder.endTime')"
                               type="datetime"/>
-                          </el-col>
-                        </el-form-item>
-                        <el-form-item :label="$t('job.trigger.title.period')">
-                          <el-col :span="6">
-                            <el-input-number v-model="item.period" :precision="0" :min="1" :step="1" controls-position="right"/>
-                          </el-col>
-                          <el-col :span="8" :offset="1">
-                            <el-select v-model="item.timeUnit" :placeholder="$t('job.trigger.placeholder.timeUnit')">
-                              <el-option
-                                v-for="ele in realTimeUnits"
-                                :key="ele.value"
-                                :label="ele.label"
-                                :value="ele.value"/>
-                            </el-select>
-                          </el-col>
-                          <el-col :span="6" :offset="2">
-                            <el-input-number v-model="item.repeatCount" :precision="0" :min="1" :step="1" controls-position="right"/>
                           </el-col>
                         </el-form-item>
                       </el-form>
@@ -267,37 +231,28 @@
                   <hr style="border: 1px dashed #E4E7ED;" color ="#E4E7ED" size = "1">
                 </div>
               </el-tab-pane>
-              <el-tab-pane :label="$t('job.trigger.tab.time.fixed')">
-                <div v-for="(item,index) in fixedTimeTriggers" :key="index" style="margin-bottom: 10px;">
+              <el-tab-pane :label="$t('job.trigger.tab.time.calendarOffset')">
+                <div v-for="(item,index) in trigger.calendarOffsetTriggers" :key="index" style="margin-bottom: 10px;">
                   <el-row>
                     <el-col :span="4">
-                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addFixedRow"/>
-                      <el-button v-show="fixedTimeTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeFixedRow(index)"/>
+                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addCalendarOffsetRow"/>
+                      <el-button v-show="trigger.calendarOffsetTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCalendarOffsetRow(index)"/>
                     </el-col>
                     <el-col :span="20">
-                      <el-form :model="item" label-width="150px" label-position="left" size="mini">
-                        <el-form-item :label="$t('job.trigger.title.triggerInfo')">
+                      <el-form :model="item" size="mini">
+                        <el-form-item>
                           <el-col :span="10">
                             <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')"/>
                           </el-col>
-                          <el-col :span="10" :offset="2">
-                            <el-select v-model="item.calendar" :placeholder="$t('job.trigger.placeholder.calendar')">
-                              <el-option
-                                v-for="ele in calendars"
-                                :key="ele.value"
-                                :label="ele.label"
-                                :value="ele.value"/>
-                            </el-select>
-                          </el-col>
                         </el-form-item>
-                        <el-form-item :label="$t('job.trigger.title.timeRange')">
+                        <el-form-item>
                           <el-col :span="11">
                             <el-date-picker
                               v-model="item.startTime"
                               :placeholder="$t('job.trigger.placeholder.startTime')"
                               type="datetime"/>
                           </el-col>
-                          <el-col :span="1">-</el-col>
+                          <el-col :span="2">-</el-col>
                           <el-col :span="11">
                             <el-date-picker
                               v-model="item.endTime"
@@ -305,33 +260,189 @@
                               type="datetime"/>
                           </el-col>
                         </el-form-item>
-                        <el-form-item :label="$t('job.trigger.title.timeRangeOfDay')">
+                        <el-form-item>
                           <el-col :span="11">
-                            <el-time-select
+                            <el-time-picker
                               :placeholder="$t('job.trigger.placeholder.startTimeOfDay')"
-                              v-model="item.startTimeOfDay"
-                              :picker-options="{start: '00:00', step: '00:05',end: '23:55'}"/>
-                          </el-col>
-                          <el-col :span="1">-</el-col>
-                          <el-col :span="11">
-                            <el-time-select
-                              :placeholder="$t('job.trigger.placeholder.endTimeOfDay')"
-                              v-model="item.endTimeOfDay"
-                              :picker-options="{start: '00:00', step: '00:05',end: '23:55', minTime: item.startTimeOfDay}"/>
+                              v-model="item.startTimeOfDay"/>
                           </el-col>
                         </el-form-item>
-                        <el-form-item :label="$t('job.trigger.title.period')">
-                          <el-col :span="6">
-                            <el-input-number v-model="item.period" :precision="0" :min="1" :step="1" controls-position="right"/>
-                          </el-col>
-                          <el-col :span="12" :offset="1">
-                            <el-select v-model="item.timeUnit" :placeholder="$t('job.trigger.placeholder.timeUnit')">
+                        <el-form-item>
+                          <el-col :span="8">
+                            <el-select v-model="item.timeUnit" :placeholder="$t('job.trigger.placeholder.timeUnit')" filterable>
                               <el-option
-                                v-for="ele in fixedTimeUnits"
+                                v-for="ele in overDayTimeUnits"
                                 :key="ele.value"
                                 :label="ele.label"
                                 :value="ele.value"/>
                             </el-select>
+                          </el-col>
+                          <el-col :span="7" :offset="1">
+                            <el-input-number v-model="item.repeatCount" :placeholder="$t('job.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right"/>
+                          </el-col>
+                        </el-form-item>
+                        <el-form-item>
+                          <el-col :span="6">
+                            <el-input-number v-model="item.innerOffset" :placeholder="$t('job.trigger.placeholder.innerOffset')" :precision="0" :min="0" :step="1" controls-position="right"/>
+                          </el-col>
+                          <el-col :span="6" :offset="2">
+                            <el-input-number v-model="item.outerOffset" :placeholder="$t('job.trigger.placeholder.outerOffset')" :precision="0" :min="0" :step="1" controls-position="right"/>
+                          </el-col>
+                        </el-form-item>
+                      </el-form>
+                    </el-col>
+                  </el-row>
+                  <hr style="border: 1px dashed #E4E7ED;" color ="#E4E7ED" size = "1">
+                </div>
+              </el-tab-pane>
+              <el-tab-pane :label="$t('job.trigger.tab.time.dailyInterval')">
+                <div v-for="(item,index) in trigger.dailyIntervalTriggers" :key="index" style="margin-bottom: 10px;">
+                  <el-row>
+                    <el-col :span="4">
+                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addDailyIntervalRow"/>
+                      <el-button v-show="trigger.dailyIntervalTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeDailyIntervalRow(index)"/>
+                    </el-col>
+                    <el-col :span="20">
+                      <el-form :model="item" size="mini">
+                        <el-form-item>
+                          <el-col :span="10">
+                            <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')"/>
+                          </el-col>
+                          <!--<el-col :span="10" :offset="2">
+                            <el-select v-model="item.calendar" :placeholder="$t('job.trigger.placeholder.calendar')">
+                              <el-option
+                                v-for="ele in calendars"
+                                :key="ele.value"
+                                :label="ele.label"
+                                :value="ele.value"/>
+                            </el-select>
+                          </el-col>-->
+                        </el-form-item>
+                        <el-form-item>
+                          <el-col :span="11">
+                            <el-date-picker
+                              v-model="item.startTime"
+                              :placeholder="$t('job.trigger.placeholder.startTime')"
+                              type="datetime"/>
+                          </el-col>
+                          <el-col :span="2">-</el-col>
+                          <el-col :span="11">
+                            <el-date-picker
+                              v-model="item.endTime"
+                              :placeholder="$t('job.trigger.placeholder.endTime')"
+                              type="datetime"/>
+                          </el-col>
+                        </el-form-item>
+                        <el-form-item>
+                          <el-col :span="11">
+                            <el-time-picker
+                              :placeholder="$t('job.trigger.placeholder.startTimeOfDay')"
+                              v-model="item.startTimeOfDay"/>
+                          </el-col>
+                          <el-col :span="2">-</el-col>
+                          <el-col :span="11">
+                            <el-time-picker
+                              :placeholder="$t('job.trigger.placeholder.endTimeOfDay')"
+                              v-model="item.endTimeOfDay"/>
+                          </el-col>
+                        </el-form-item>
+                        <el-form-item>
+                          <el-col :span="6">
+                            <el-input-number v-model="item.interval" :placeholder="$t('job.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right"/>
+                          </el-col>
+                          <el-col :span="8" :offset="1">
+                            <el-select v-model="item.timeUnit" :placeholder="$t('job.trigger.placeholder.timeUnit')" filterable>
+                              <el-option
+                                v-for="ele in milliSecondTimeUnits.concat(inDayTimeUnits)"
+                                :key="ele.value"
+                                :label="ele.label"
+                                :value="ele.value"/>
+                            </el-select>
+                          </el-col>
+                          <el-col :span="7" :offset="1">
+                            <el-input-number v-model="item.repeatCount" :placeholder="$t('job.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right"/>
+                          </el-col>
+                        </el-form-item>
+                        <el-form-item>
+                          <el-col :span="6">
+                            <el-select v-model="item.daysOfWeek" :placeholder="$t('job.trigger.placeholder.daysOfWeek')" multiple filterable collapse-tags style="width: 160px;">
+                              <el-option
+                                v-for="ele in daysOfWeek"
+                                :key="ele.value"
+                                :label="ele.label"
+                                :value="ele.value"/>
+                            </el-select>
+                          </el-col>
+                        </el-form-item>
+                      </el-form>
+                    </el-col>
+                  </el-row>
+                  <hr style="border: 1px dashed #E4E7ED;" color ="#E4E7ED" size = "1">
+                </div>
+              </el-tab-pane>
+              <el-tab-pane :label="$t('job.trigger.tab.time.calendarInterval')">
+                <div v-for="(item,index) in trigger.calendarIntervalTriggers" :key="index" style="margin-bottom: 10px;">
+                  <el-row>
+                    <el-col :span="4">
+                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addCalendarIntervalRow"/>
+                      <el-button v-show="trigger.calendarIntervalTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCalendarIntervalRow(index)"/>
+                    </el-col>
+                    <el-col :span="20">
+                      <el-form :model="item" size="mini">
+                        <el-form-item>
+                          <el-col :span="10">
+                            <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')"/>
+                          </el-col>
+                          <!--<el-col :span="10" :offset="2">
+                            <el-select v-model="item.calendar" :placeholder="$t('job.trigger.placeholder.calendar')">
+                              <el-option
+                                v-for="ele in calendars"
+                                :key="ele.value"
+                                :label="ele.label"
+                                :value="ele.value"/>
+                            </el-select>
+                          </el-col>-->
+                        </el-form-item>
+                        <el-form-item>
+                          <el-col :span="11">
+                            <el-date-picker
+                              v-model="item.startTime"
+                              :placeholder="$t('job.trigger.placeholder.startTime')"
+                              type="datetime"/>
+                          </el-col>
+                          <el-col :span="2">-</el-col>
+                          <el-col :span="11">
+                            <el-date-picker
+                              v-model="item.endTime"
+                              :placeholder="$t('job.trigger.placeholder.endTime')"
+                              type="datetime"/>
+                          </el-col>
+                        </el-form-item>
+                        <el-form-item>
+                          <el-col :span="6">
+                            <el-input-number v-model="item.interval" :placeholder="$t('job.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right"/>
+                          </el-col>
+                          <el-col :span="8" :offset="1">
+                            <el-select v-model="item.timeUnit" :placeholder="$t('job.trigger.placeholder.timeUnit')">
+                              <el-option
+                                v-for="ele in inDayTimeUnits.concat(overDayTimeUnits)"
+                                :key="ele.value"
+                                :label="ele.label"
+                                :value="ele.value"/>
+                            </el-select>
+                          </el-col>
+                          <el-col :span="7" :offset="1">
+                            <el-input-number v-model="item.repeatCount" :placeholder="$t('job.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right"/>
+                          </el-col>
+                        </el-form-item>
+                        <el-form-item>
+                          <el-col :span="12">
+                            <span>{{ $t('job.trigger.title.preserveDayLight') }}</span>
+                            <el-switch v-model="item.preserveDayLight"/>
+                          </el-col>
+                          <el-col :span="12">
+                            <span>{{ $t('job.trigger.title.skipDayIfNoHour') }}</span>
+                            <el-switch v-model="item.skipDayIfNoHour"/>
                           </el-col>
                         </el-form-item>
                       </el-form>
@@ -349,6 +460,14 @@
             event
           </el-tab-pane>
         </el-tabs>
+        <el-row style="margin-top: 20px;">
+          <el-col :span="4" :offset="8">
+            <el-button type="info" @click="editDialog.trigger.visible = false">{{ $t('actions.cancel') }}</el-button>
+          </el-col>
+          <el-col :span="4" :offset="1">
+            <el-button type="success" @click="saveTrigger">{{ $t('actions.save') }}</el-button>
+          </el-col>
+        </el-row>
       </div>
     </el-dialog>
   </div>
@@ -356,12 +475,52 @@
 
 <script>
 import { listReq, removeReq, addReq, updateReq } from '@/api/job/baseJob'
+// import * as triggerApi from '@/api/job/trigger'
 import waves from '@/directive/waves' // Waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 import CronInput from 'vue-cron-generator/src/components/cron-input'
 import { DEFAULT_CRON_EXPRESSION } from 'vue-cron-generator/src/constant/filed'
+
+const CRON_OBJ = {
+  triggerName: '',
+  expression: DEFAULT_CRON_EXPRESSION,
+  startTime: null,
+  endTime: null
+}
+const CALENDAR_OFFSET_OBJ = {
+  triggerName: '',
+  startTime: null,
+  endTime: null,
+  startTimeOfDay: null,
+  timeUnit: null,
+  repeatCount: -1,
+  innerOffset: 0,
+  outerOffset: 0
+}
+const DAILY_INTERVAL_OBJ =
+  {
+    triggerName: '',
+    startTime: null,
+    endTime: null,
+    startTimeOfDay: null,
+    endTimeOfDay: null,
+    interval: 1,
+    timeUnit: null,
+    repeatCount: -1,
+    daysOfWeek: [1, 2, 3, 4, 5, 6, 7]
+  }
+const CALENDAR_INTERVAL_OBJ =
+  {
+    triggerName: '',
+    calendar: null,
+    startTime: null,
+    endTime: null,
+    repeatCount: -1,
+    preserveDayLight: false,
+    skipDayIfNoHour: false
+  }
 
 export default {
   name: 'Jobs',
@@ -396,8 +555,10 @@ export default {
         sort: 'JOB_NAME'
       },
       jobStatuses: [],
-      realTimeUnits: [],
-      fixedTimeUnits: [],
+      milliSecondTimeUnits: [],
+      inDayTimeUnits: [],
+      overDayTimeUnits: [],
+      daysOfWeek: [],
       /* sortOptions: [{ label: this.$t('job.sort.nameAsc'), key: 'JOB_NAME' }, { label: this.$t('job.sort.nameDesc'), key: 'JOB_NAME DESC' }],*/
       showCreateTime: false,
       job: {
@@ -429,25 +590,13 @@ export default {
       },
       downloadLoading: false,
       selections: [],
-      calendars: [],
-      cronTriggers: [
-        {
-          expression: DEFAULT_CRON_EXPRESSION
-        }
-      ],
-      realTimeTriggers: [
-        {
-          calendar: null,
-          startTime: null
-        }
-      ],
-      fixedTimeTriggers: [
-        {
-          calendar: null,
-          startTime: null
-        }
-      ],
-      cron: this.resetCron()
+      // calendars: [],
+      trigger: {
+        cronTriggers: [],
+        calendarOffsetTriggers: [],
+        dailyIntervalTriggers: [],
+        calendarIntervalTriggers: []
+      }
     }
   },
   created() {
@@ -535,6 +684,42 @@ export default {
         }
       })
     },
+    saveTrigger() {
+      const trigger = { jobName: this.job.jobName }
+      for (let i = 0; i < this.trigger.cronTriggers.length; i++) {
+        if (JSON.stringify(this.trigger.cronTriggers[i]) !== JSON.stringify(CRON_OBJ)) {
+          if (!trigger.cronTriggers) {
+            trigger.cronTriggers = []
+          }
+          trigger.cronTriggers.push(this.trigger.cronTriggers[i])
+        }
+      }
+      for (let i = 0; i < this.trigger.calendarOffsetTriggers.length; i++) {
+        if (JSON.stringify(this.trigger.calendarOffsetTriggers[i]) !== JSON.stringify(CALENDAR_OFFSET_OBJ)) {
+          if (!trigger.calendarOffsetTriggers) {
+            trigger.calendarOffsetTriggers = []
+          }
+          trigger.calendarOffsetTriggers.push(this.trigger.calendarOffsetTriggers[i])
+        }
+      }
+      for (let i = 0; i < this.trigger.dailyIntervalTriggers.length; i++) {
+        if (JSON.stringify(this.trigger.dailyIntervalTriggers[i]) !== JSON.stringify(DAILY_INTERVAL_OBJ)) {
+          if (!trigger.dailyIntervalTriggers) {
+            trigger.dailyIntervalTriggers = []
+          }
+          trigger.dailyIntervalTriggers.push(this.trigger.dailyIntervalTriggers[i])
+        }
+      }
+      for (let i = 0; i < this.trigger.calendarIntervalTriggers.length; i++) {
+        if (JSON.stringify(this.trigger.calendarIntervalTriggers[i]) !== JSON.stringify(CALENDAR_INTERVAL_OBJ)) {
+          if (!trigger.calendarIntervalTriggers) {
+            trigger.calendarIntervalTriggers = []
+          }
+          trigger.calendarIntervalTriggers.push(this.trigger.calendarIntervalTriggers[i])
+        }
+      }
+      console.log(trigger)
+    },
     remove() {
       const jobNames = []
       if (this.selections.length) {
@@ -599,9 +784,11 @@ export default {
     loadConst() {
       load(`./array/${this.$store.state.app.language}.js`).then((array) => {
         this.jobStatuses = array.jobStatuses
-        this.realTimeUnits = array.realTimeUnits
-        this.fixedTimeUnits = array.fixedTimeUnits
-        this.calendars = array.calendars
+        this.milliSecondTimeUnits = array.milliSecondTimeUnits
+        this.inDayTimeUnits = array.inDayTimeUnits
+        this.overDayTimeUnits = array.overDayTimeUnits
+        this.daysOfWeek = array.daysOfWeek
+        // this.calendars = array.calendars
       })
     },
     openDesignDialog(row) {
@@ -613,6 +800,18 @@ export default {
       // this.editDialog.title = this.$t('job.actions.design')
       this.selectRow(row)
       this.editDialog.trigger.visible = true
+      if (this.trigger.cronTriggers.length === 0) {
+        this.addCronRow()
+      }
+      if (this.trigger.calendarOffsetTriggers.length === 0) {
+        this.addCalendarOffsetRow()
+      }
+      if (this.trigger.dailyIntervalTriggers.length === 0) {
+        this.addDailyIntervalRow()
+      }
+      if (this.trigger.calendarIntervalTriggers.length === 0) {
+        this.addCalendarIntervalRow()
+      }
     },
     openDesignJobFlow() {
       const route = {
@@ -624,37 +823,34 @@ export default {
       this.$router.push(route)
     },
     addCronRow() {
-      const obj = {
-        cron: DEFAULT_CRON_EXPRESSION
-      }
-      this.cronTriggers.push(obj)
+      this.trigger.cronTriggers.push(Object.assign({}, CRON_OBJ))
     },
     removeCronRow(index) {
-      this.cronTriggers.splice(index, 1)
+      this.trigger.cronTriggers.splice(index, 1)
     },
-    addRealRow() {
-      const obj = {
-        calendar: null
-      }
-      this.realTimeTriggers.push(obj)
+    changeCron(newCron, index) {
+      this.trigger.cronTriggers[index].expression = newCron
     },
-    removeRealRow(index) {
-      this.realTimeTriggers.splice(index, 1)
+    resetCron(oldCron, index) {
+      this.trigger.cronTriggers[index].expression = DEFAULT_CRON_EXPRESSION
     },
-    addFixedRow() {
-      const obj = {
-        calendar: null
-      }
-      this.fixedTimeTriggers.push(obj)
+    addCalendarOffsetRow() {
+      this.trigger.calendarOffsetTriggers.push(Object.assign({}, CALENDAR_OFFSET_OBJ))
     },
-    removeFixedRow(index) {
-      this.fixedTimeTriggers.splice(index, 1)
+    removeCalendarOffsetRow(index) {
+      this.trigger.calendarOffsetTriggers.splice(index, 1)
     },
-    changeCron(cron) {
-      this.cron = cron
+    addDailyIntervalRow() {
+      this.trigger.dailyIntervalTriggers.push(Object.assign({}, DAILY_INTERVAL_OBJ))
     },
-    resetCron(cron) {
-      this.cron = DEFAULT_CRON_EXPRESSION
+    removeDailyIntervalRow(index) {
+      this.trigger.dailyIntervalTriggers.splice(index, 1)
+    },
+    addCalendarIntervalRow() {
+      this.trigger.calendarIntervalTriggers.push(Object.assign({}, CALENDAR_INTERVAL_OBJ))
+    },
+    removeCalendarIntervalRow(index) {
+      this.trigger.calendarIntervalTriggers.splice(index, 1)
     }
   }
 }
