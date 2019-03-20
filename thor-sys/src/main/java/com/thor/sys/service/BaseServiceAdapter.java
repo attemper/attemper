@@ -36,7 +36,12 @@ public abstract class BaseServiceAdapter implements BaseService {
      * @return
      */
     protected Map<String, Object> injectTenantIdToMap(Object obj) {
-        Map<String, Object> paramMap = BeanUtil.beanToMap(obj);
+        Map<String, Object> paramMap;
+        if (!(obj instanceof Map)) {
+            paramMap = BeanUtil.beanToMap(obj);
+        } else {
+            paramMap = (Map<String, Object>) obj;
+        }
         paramMap.put(ThorSdkCommonConstants.tenantId, injectTenantId());
         return paramMap;
     }
@@ -52,7 +57,12 @@ public abstract class BaseServiceAdapter implements BaseService {
      * @return
      */
     protected Map<String, Object> injectAdminedTenantIdToMap(Object obj) {
-        Map<String, Object> paramMap = BeanUtil.beanToMap(obj);
+        Map<String, Object> paramMap;
+        if (!(obj instanceof Map)) {
+            paramMap = BeanUtil.beanToMap(obj);
+        } else {
+            paramMap = (Map<String, Object>) obj;
+        }
         paramMap.put(ThorSdkCommonConstants.tenantId, injectAdminedTenant().getId());
         return paramMap;
     }

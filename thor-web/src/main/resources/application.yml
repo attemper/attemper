@@ -51,7 +51,7 @@ spring:
         hibernate: 
             ddl-auto: none
     jackson: 
-        date-format: yyyy-MM-dd HH:mm:ss SSS
+        date-format: yyyy-MM-dd HH:mm:ss
         time-zone: GMT+8
         defaultPropertyInclusion: non_null   #非空node才序列化
         deserialization: 

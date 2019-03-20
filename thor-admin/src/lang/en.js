@@ -265,14 +265,20 @@ export default {
       },
       title: {
         preserveDayLight: 'Preserve Day Light',
-        skipDayIfNoHour: 'Skip Day if no Hour'
-        /* triggerInfo: 'Trigger Info',
+        skipDayIfNoHour: 'Skip Day if no Hour',
+        triggerName: 'Trigger Name',
+        expression: 'Expression',
         timeUnit: 'Time Unit',
         timeRange: 'Time Range',
-        period: 'Period',
         timeRangeOfDay: 'Time Range Of Day',
-        limit: 'Limit',
-        */
+        // calendar: 'Calendar',
+        interval: 'Interval',
+        startTimeOfDay: 'Start Time Of Day',
+        repeatCount: 'Repeat Count',
+        daysOfWeek: 'Week Days',
+        innerOffset: 'Inner Offset',
+        outerOffset: 'Outer Offset',
+        reversed: 'Reversed'
       },
       placeholder: {
         triggerName: 'Trigger Name',
@@ -287,6 +293,12 @@ export default {
         daysOfWeek: 'Week Days',
         innerOffset: 'Inner Offset',
         outerOffset: 'Outer Offset'
+      },
+      tip: {
+        noTrigger: 'no trigger can be saved',
+        triggerNameNotBlank: 'The triggerName can not be blank',
+        startAfterEndTime: 'The startTime can not be after endTime',
+        cronExpressionInvalid: 'The cron expression is invalid'
       }
     }
   },

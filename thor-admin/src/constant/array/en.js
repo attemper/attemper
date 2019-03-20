@@ -107,11 +107,14 @@ export const inDayTimeUnits = [
   }
 ]
 
-export const overDayTimeUnits = [
+export const dayTimeUnit = [
   {
     label: 'Day',
     value: 'DAY'
-  },
+  }
+]
+
+export const overDayTimeUnits = [
   {
     label: 'Week',
     value: 'WEEK'
@@ -137,31 +140,31 @@ export const overDayTimeUnits = [
 export const daysOfWeek = [
   {
     label: 'Sunday',
-    value: 1
+    value: '1'
   },
   {
     label: 'Monday',
-    value: 2
+    value: '2'
   },
   {
     label: 'Tuesday',
-    value: 3
+    value: '3'
   },
   {
     label: 'Wednesday',
-    value: 4
+    value: '4'
   },
   {
     label: 'Thursday',
-    value: 5
+    value: '5'
   },
   {
     label: 'Friday',
-    value: 6
+    value: '6'
   },
   {
     label: 'Saturday',
-    value: 7
+    value: '7'
   }
 ]
 

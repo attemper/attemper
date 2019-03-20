@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thor.core.dao.mapper.job.TriggerMapper">
+
+    <select id="getCronTriggers" parameterType="map"
+            resultType="com.thor.sdk.common.result.job.trigger.CronTriggerResult">
+        SELECT *
+        FROM ${tablePrefix}job_triggers jt
+        JOIN ${tablePrefix}triggers t
+        USING (TRIGGER_NAME, TENANT_ID)
+        JOIN ${tablePrefix}triggers_cron tc
+        USING (TRIGGER_NAME, TENANT_ID)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <delete id="deleteCronTriggers" parameterType="map">
+        DELETE FROM
+        jt, t, tc USING
+        ${tablePrefix}job_triggers jt
+        JOIN ${tablePrefix}triggers t
+        USING (trigger_name, tenant_id)
+        JOIN ${tablePrefix}triggers_cron tc
+        USING (trigger_name, tenant_id)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
+    <insert id="saveCronTriggers" parameterType="list">
+        <include refid="saveJobTrigger"/>
+        insert into ${tablePrefix}triggers_cron
+        (
+        TRIGGER_NAME,
+        EXPRESSION,
+        TENANT_ID
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.triggerName, jdbcType=VARCHAR},
+            #{item.expression, jdbcType=VARCHAR},
+            #{item.tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getCalendarOffsetTriggers" parameterType="map"
+            resultType="com.thor.sdk.common.result.job.trigger.CalendarOffsetTriggerResult">
+        SELECT *
+        FROM ${tablePrefix}job_triggers jt
+        JOIN ${tablePrefix}triggers t
+        USING (TRIGGER_NAME, TENANT_ID)
+        JOIN ${tablePrefix}triggers_calendar_offset tco
+        USING (TRIGGER_NAME, TENANT_ID)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <delete id="deleteCalendarOffsetTriggers" parameterType="map">
+        DELETE FROM
+        jt, t, tco USING
+        ${tablePrefix}job_triggers jt
+        JOIN ${tablePrefix}triggers t
+        USING (trigger_name, tenant_id)
+        JOIN ${tablePrefix}triggers_calendar_offset tco
+        USING (trigger_name, tenant_id)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
+    <insert id="saveCalendarOffsetTriggers" parameterType="list">
+        <include refid="saveJobTrigger"/>
+        insert into ${tablePrefix}triggers_calendar_offset
+        (
+        `TRIGGER_NAME`,
+        `TIME_UNIT`,
+        `START_TIME_OF_DAY`,
+        `INNER_OFFSET`,
+        `OUTER_OFFSET`,
+        `REPEAT_COUNT`,
+        `REVERSED`,
+        `TENANT_ID`
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.triggerName, jdbcType=VARCHAR},
+            #{item.timeUnit, jdbcType=VARCHAR},
+            #{item.startTimeOfDay, jdbcType=VARCHAR},
+            #{item.innerOffset, jdbcType=INTEGER},
+            #{item.outerOffset, jdbcType=INTEGER},
+            #{item.repeatCount, jdbcType=INTEGER},
+            #{item.reversed, jdbcType=BOOLEAN},
+            #{item.tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getDailyIntervalTriggers" parameterType="map"
+            resultType="com.thor.sdk.common.result.job.trigger.DailyIntervalTriggerResult">
+        SELECT *
+        FROM ${tablePrefix}job_triggers jt
+        JOIN ${tablePrefix}triggers t
+        USING (TRIGGER_NAME, TENANT_ID)
+        JOIN ${tablePrefix}triggers_daily_interval tdi
+        USING (TRIGGER_NAME, TENANT_ID)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <delete id="deleteDailyIntervalTriggers" parameterType="map">
+        DELETE FROM
+        jt, t, tdi USING
+        ${tablePrefix}job_triggers jt
+        JOIN ${tablePrefix}triggers t
+        USING (trigger_name, tenant_id)
+        JOIN ${tablePrefix}triggers_daily_interval tdi
+        USING (trigger_name, tenant_id)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
+    <insert id="saveDailyIntervalTriggers" parameterType="list">
+        <include refid="saveJobTrigger"/>
+        insert into ${tablePrefix}triggers_daily_interval
+        (
+        `TRIGGER_NAME`,
+        `TIME_UNIT`,
+        `DAYS_OF_WEEK`,
+        `START_TIME_OF_DAY`,
+        `END_TIME_OF_DAY`,
+        `INTERVAL`,
+        `REPEAT_COUNT`,
+        `TENANT_ID`
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.triggerName, jdbcType=VARCHAR},
+            #{item.timeUnit, jdbcType=VARCHAR},
+            #{item.daysOfWeek, jdbcType=VARCHAR},
+            #{item.startTimeOfDay, jdbcType=VARCHAR},
+            #{item.endTimeOfDay, jdbcType=VARCHAR},
+            #{item.interval, jdbcType=INTEGER},
+            #{item.repeatCount, jdbcType=INTEGER},
+            #{item.tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getCalendarIntervalTriggers" parameterType="map"
+            resultType="com.thor.sdk.common.result.job.trigger.CalendarIntervalTriggerResult">
+        SELECT *
+        FROM ${tablePrefix}job_triggers jt
+        JOIN ${tablePrefix}triggers t
+        USING (TRIGGER_NAME, TENANT_ID)
+        JOIN ${tablePrefix}triggers_calendar_interval tci
+        USING (TRIGGER_NAME, TENANT_ID)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <delete id="deleteCalendarIntervalTriggers" parameterType="map">
+        DELETE FROM
+        jt, t, tci USING
+        ${tablePrefix}job_triggers jt
+        JOIN ${tablePrefix}triggers t
+        USING (trigger_name, tenant_id)
+        JOIN ${tablePrefix}triggers_calendar_interval tci
+        USING (trigger_name, tenant_id)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
+    <insert id="saveCalendarIntervalTriggers" parameterType="list">
+        <include refid="saveJobTrigger"/>
+        insert into ${tablePrefix}triggers_calendar_interval
+        (
+        `TRIGGER_NAME`,
+        `TIME_UNIT`,
+        `INTERVAL`,
+        `REPEAT_COUNT`,
+        `PRESERVE_DAY_LIGHT`,
+        `SKIP_DAY_IF_NO_HOUR`,
+        `TENANT_ID`
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.triggerName, jdbcType=VARCHAR},
+            #{item.timeUnit, jdbcType=VARCHAR},
+            #{item.interval, jdbcType=INTEGER},
+            #{item.repeatCount, jdbcType=INTEGER},
+            #{item.preserveDayLight, jdbcType=BOOLEAN},
+            #{item.skipDayIfNoHour, jdbcType=BOOLEAN},
+            #{item.tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <sql id="saveJobTrigger">
+        insert into ${tablePrefix}job_triggers
+        (
+        `TRIGGER_NAME`,
+        `JOB_NAME`,
+        `STATUS`,
+        `TENANT_ID`
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.triggerName, jdbcType=VARCHAR},
+            #{item.jobName, jdbcType=VARCHAR},
+            #{item.status, jdbcType=INTEGER},
+            #{item.tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+        ;
+        insert into ${tablePrefix}triggers
+        (
+        `TRIGGER_NAME`,
+        `TRIGGER_TYPE`,
+        `DESCRIPTION`,
+        `START_TIME`,
+        `END_TIME`,
+        `TENANT_ID`
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.triggerName, jdbcType=VARCHAR},
+            #{item.triggerType, jdbcType=VARCHAR},
+            #{item.description, jdbcType=VARCHAR},
+            #{item.startTime, jdbcType=TIMESTAMP},
+            #{item.endTime, jdbcType=TIMESTAMP},
+            #{item.tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+        ;
+    </sql>
+
+    <sql id="condJobName">
+        <if test="jobName != null">
+            and jt.JOB_NAME = #{jobName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and jt.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+</mapper>

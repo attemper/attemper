@@ -36,3 +36,11 @@ export const getTimeStr = () => {
     (min < 10 ? '0' + min : min) +
     (sec < 10 ? '0' + sec : sec)
 }
+
+export const isBlank = (str) => {
+  return !str || str.trim() === ''
+}
+
+export const startAfterEndTime = (startTimeStr, endTimeStr) => {
+  return startTimeStr != null && endTimeStr != null && startTimeStr > endTimeStr
+}
