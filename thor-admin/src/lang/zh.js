@@ -1,6 +1,13 @@
 export default {
   route: {
     dashboard: '首页',
+    sys: '系统管理',
+    tenant: '租户管理',
+    user: '用户管理',
+    tag: '标签管理',
+    resource: '资源管理',
+    job: '任务管理',
+    jobs: '任务设计',
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',
@@ -63,6 +70,238 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
     externalLink: '外链'
+  },
+  actions: {
+    handle: '操作',
+    add: '新增',
+    update: '编辑',
+    save: '保存',
+    search: '查询',
+    refresh: '刷新',
+    remove: '删除',
+    cancel: '取消',
+    reset: '重置',
+    transferIn: '移入',
+    transferOut: '移出',
+    import: '导入',
+    export: '导出',
+    last: '上一个',
+    next: '下一个',
+    ok: '确定',
+    download: '下载'
+  },
+  tip: {
+    search: '请输入查询关键字',
+    batchRemove: '批量删除',
+    confirm: '请确认',
+    remove: '请选中删除的数据',
+    removeConfirm: '确定删除？',
+    saveConfirm: '确定保存？',
+    clickToSeeDetail: '提示：点击按钮可查看详情'
+  },
+  sys: {
+    tenant: {
+      columns: {
+        id: '编号',
+        name: '名称',
+        sign: '认证码',
+        admin: '管理员'
+      },
+      rules: {
+        id: '租户编号不能为空',
+        name: '租户名称不能为空',
+        admin: '管理员不能为空'
+      },
+      placeholder: {
+        id: '请输入租户编号',
+        name: '请输入租户名称',
+        admin: '请选择管理员'
+      }
+    },
+    user: {
+      columns: {
+        userName: '用户名',
+        displayName: '中文名',
+        password: '密码',
+        email: '邮箱',
+        mobile: '手机号',
+        status: '状态'
+      },
+      rules: {
+        userName: '用户名不能为空',
+        displayName: '中文名不能为空',
+        email: '邮箱非法',
+        mobile: '手机号长度必须为11位'
+      },
+      placeholder: {
+        userName: '请输入用户名',
+        displayName: '请输入中文名',
+        password: '请输入密码',
+        email: '请输入邮箱',
+        mobile: '请输入手机号'
+      },
+      tip: {
+        tag: '分配标签',
+        tagFilterTip: '标签名称或中文名称'
+      },
+      actions: {
+        tag: '标签'
+      }
+    },
+    tag: {
+      columns: {
+        tagName: '标签名称',
+        displayName: '中文名称',
+        tagType: '标签类型',
+        remark: '备注'
+      },
+      rules: {
+        tagName: '标签名称不能为空',
+        displayName: '中文名不能为空',
+        tagType: '标签类型不能为空'
+      },
+      placeholder: {
+        tagName: '请输入标签名称',
+        displayName: '请输入中文名',
+        remark: '请输入备注'
+      },
+      tip: {
+        user: '分配用户',
+        resource: '分配资源',
+        userFilterTip: '用户名或中文名称'
+      },
+      actions: {
+        user: '用户',
+        resource: '资源'
+      },
+      label: {
+        allocateUser: '分配用户',
+        allocateResource: '分配资源'
+      }
+    },
+    resource: {
+      title: {
+        left: '资源树',
+        right: '详情'
+      },
+      label: {
+        resourceName: '资源名称',
+        displayName: '中文名称',
+        resourceType: '资源类型',
+        uri: 'URI',
+        icon: '图标',
+        position: '位置'
+      },
+      rules: {
+        resourceName: '资源名称不能为空',
+        displayName: '中文名称不能为空'
+      },
+      placeholder: {
+        resourceName: '请输入资源名称',
+        displayName: '请输入中文名称',
+        uri: '请输入URI',
+        icon: '请输入图标'
+      },
+      tip: {
+        searchKey: '资源名称/中文名称',
+        resourceRemoveWarning: '请先删除子节点'
+      }
+    }
+  },
+  job: {
+    title: '任务',
+    sort: {
+      nameAsc: '按任务名称升序',
+      nameDesc: '按任务名称降序'
+    },
+    rules: {
+      jobName: '任务名称不能为空',
+      displayName: '中文名称不能为空',
+      status: '状态不能为空'
+    },
+    columns: {
+      reversion: '模型版本',
+      version: '发布版本',
+      jobName: '任务名称',
+      displayName: '中文名称',
+      status: '状态',
+      createTime: '创建时间',
+      updateTime: '上次修改时间',
+      remark: '备注'
+    },
+    placeholder: {
+      jobName: '请输入任务名称',
+      displayName: '请输入中文名称',
+      status: '请选择状态',
+      remark: '请输入备注'
+    },
+    actions: {
+      design: '设计',
+      param: '参数',
+      trigger: '触发器'
+    },
+    flowJob: {
+      btn: {
+        xml: 'XML',
+        svg: 'SVG'
+      },
+      title: {
+        xml: '以.xml(.bpmn)文件导出',
+        svg: '以.svg文件导出'
+      }
+    },
+    trigger: {
+      tab: {
+        time: {
+          title: '时间',
+          cron: 'Cron表达式触发器',
+          calendarOffset: '日程偏移触发器',
+          dailyInterval: '日间周期触发器',
+          calendarInterval: '日历周期触发器'
+        },
+        event: {
+          title: '事件'
+        }
+      },
+      title: {
+        preserveDayLight: '维持夏令时',
+        skipDayIfNoHour: '不存在时刻跳过',
+        triggerName: '触发器名称',
+        expression: 'cron表达式',
+        timeZone: '时区',
+        timeUnit: '时间单位',
+        timeRange: '起止时间',
+        timeRangeOfDay: '当日起止时刻',
+        // calendar: 'Calendar',
+        interval: '周期',
+        startTimeOfDay: '当日开始时刻',
+        repeatCount: '重复次数',
+        daysOfWeek: '星期',
+        innerOffset: '日程内偏移量',
+        outerOffset: '日程外偏移量',
+        reversed: '是否倒数'
+      },
+      placeholder: {
+        triggerName: '触发器名称',
+        calendar: '日历',
+        timeUnit: '时间单位',
+        startTime: '开始时间',
+        endTime: '结束时间',
+        interval: '周期',
+        startTimeOfDay: '当日开始时刻',
+        endTimeOfDay: '当日结束时刻',
+        repeatCount: '重复次数',
+        daysOfWeek: '星期',
+        innerOffset: '日程内偏移量',
+        outerOffset: '日程外偏移量'
+      },
+      tip: {
+        noTrigger: '没有触发器需要保存',
+        triggerNameNotBlank: '触发器名称不能为空',
+        startAfterEndTime: '开始时间不能晚于结束时间',
+        cronExpressionInvalid: 'cron表达式格式非法'
+      }
+    }
   },
   navbar: {
     logOut: '退出登录',

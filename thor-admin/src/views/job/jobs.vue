@@ -216,7 +216,7 @@
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"/>
                           </el-col>
-                          <el-col :span="11">
+                          <el-col :span="11" :offset="1">
                             <el-date-picker
                               v-model="item.endTime"
                               :placeholder="$t('job.trigger.placeholder.endTime')"
@@ -259,7 +259,7 @@
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"/>
                           </el-col>
-                          <el-col :span="11">
+                          <el-col :span="11" :offset="1">
                             <el-date-picker
                               v-model="item.endTime"
                               :placeholder="$t('job.trigger.placeholder.endTime')"
@@ -329,7 +329,7 @@
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"/>
                           </el-col>
-                          <el-col :span="11">
+                          <el-col :span="11" :offset="1">
                             <el-date-picker
                               v-model="item.endTime"
                               :placeholder="$t('job.trigger.placeholder.endTime')"
@@ -344,7 +344,7 @@
                               v-model="item.startTimeOfDay"
                               value-format="HH:mm:ss"/>
                           </el-col>
-                          <el-col :span="11">
+                          <el-col :span="11" :offset="1">
                             <el-time-picker
                               :placeholder="$t('job.trigger.placeholder.endTimeOfDay')"
                               v-model="item.endTimeOfDay"
@@ -410,7 +410,7 @@
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"/>
                           </el-col>
-                          <el-col :span="11">
+                          <el-col :span="11" :offset="1">
                             <el-date-picker
                               v-model="item.endTime"
                               :placeholder="$t('job.trigger.placeholder.endTime')"
