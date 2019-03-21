@@ -4,7 +4,7 @@
 
 <mapper namespace="com.thor.core.dao.mapper.job.BaseJobMapper">
 
-    <insert id="add" parameterType="com.thor.sdk.common.result.job.BaseJob">
+    <insert id="add" parameterType="com.thor.sdk.common.result.dispatch.job.BaseJob">
         INSERT INTO ${tablePrefix}job (
             `JOB_NAME`,
             `STATUS`,
@@ -22,7 +22,7 @@
         )
     </insert>
 
-    <insert id="addHistory" parameterType="com.thor.sdk.common.result.job.BaseJob">
+    <insert id="addHistory" parameterType="com.thor.sdk.common.result.dispatch.job.BaseJob">
         INSERT INTO ${tablePrefix}job_history (
             `JOB_NAME`,
             `DISPLAY_NAME`,
@@ -44,7 +44,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.thor.sdk.common.result.job.BaseJob">
+    <update id="update" parameterType="com.thor.sdk.common.result.dispatch.job.BaseJob">
         UPDATE ${tablePrefix}job j
         SET
         STATUS = #{status, jdbcType=INTEGER},
@@ -55,7 +55,7 @@
         </where>
     </update>
 
-    <select id="get" parameterType="map" resultType="com.thor.sdk.common.result.job.BaseJob">
+    <select id="get" parameterType="map" resultType="com.thor.sdk.common.result.dispatch.job.BaseJob">
         select jh.*, j.`STATUS`, j.`CREATE_TIME`, j.REMARK
         from ${tablePrefix}job j
         join ${tablePrefix}job_history jh
@@ -72,7 +72,7 @@
         </if>
     </select>
 
-    <select id="list" parameterType="map" resultType="com.thor.sdk.common.result.job.BaseJob">
+    <select id="list" parameterType="map" resultType="com.thor.sdk.common.result.dispatch.job.BaseJob">
         SELECT jh.*, j.`STATUS`, j.`CREATE_TIME`, j.REMARK
         FROM ${tablePrefix}job j
         JOIN ${tablePrefix}job_history jh

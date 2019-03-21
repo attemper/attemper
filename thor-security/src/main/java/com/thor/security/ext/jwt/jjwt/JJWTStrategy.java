@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thor.config.bean.ContextBeanAware;
 import com.thor.sdk.common.constant.ThorSdkCommonConstants;
 import com.thor.sdk.common.exception.RTException;
-import com.thor.sdk.common.result.user.User;
+import com.thor.sdk.common.result.sys.user.User;
 import com.thor.security.exception.JWTDecodedException;
 import com.thor.security.exception.JWTExpiredException;
 import com.thor.security.ext.annotation.JWTStrategyType;

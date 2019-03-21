@@ -1,7 +1,7 @@
 package com.thor.sys.dao.mapper;
 
 import com.thor.common.base.BaseMapper;
-import com.thor.sdk.common.result.resource.Resource;
+import com.thor.sdk.common.result.sys.resource.Resource;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

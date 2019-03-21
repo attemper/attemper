@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.thor.sys.dao.mapper.TagMapper">
 
-    <select id="get" parameterType="map" resultType="com.thor.sdk.common.result.tag.Tag">
+    <select id="get" parameterType="map" resultType="com.thor.sdk.common.result.sys.tag.Tag">
         select * from ${tablePrefix}tag t
         <where>
             <include refid="condTagName"/>
@@ -11,7 +11,7 @@
         </where>
     </select>
 
-    <insert id="add" parameterType="com.thor.sdk.common.result.tag.Tag">
+    <insert id="add" parameterType="com.thor.sdk.common.result.sys.tag.Tag">
         INSERT INTO ${tablePrefix}tag (
         `TAG_NAME`,
         `DISPLAY_NAME`,
@@ -33,7 +33,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.thor.sdk.common.result.tag.Tag">
+    <update id="update" parameterType="com.thor.sdk.common.result.sys.tag.Tag">
         UPDATE ${tablePrefix}tag t
         SET
         <if test="displayName != null">
@@ -66,7 +66,7 @@
         </where>
     </delete>
 
-    <select id="list" parameterType="map" resultType="com.thor.sdk.common.result.tag.Tag">
+    <select id="list" parameterType="map" resultType="com.thor.sdk.common.result.sys.tag.Tag">
         select * from ${tablePrefix}tag t
         <where>
             <if test="tagName != null">
@@ -94,7 +94,7 @@
         </choose>
     </select>
 
-    <select id="getUsers" parameterType="map" resultType="com.thor.sdk.common.result.user.User">
+    <select id="getUsers" parameterType="map" resultType="com.thor.sdk.common.result.sys.user.User">
       select u.*
       from ${tablePrefix}user u
       join ${tablePrefix}tag_user tu
@@ -143,7 +143,7 @@
         </foreach>
     </insert>
 
-    <select id="getResources" parameterType="map" resultType="com.thor.sdk.common.result.resource.Resource">
+    <select id="getResources" parameterType="map" resultType="com.thor.sdk.common.result.sys.resource.Resource">
         select r.*
         from ${tablePrefix}resource r
         join ${tablePrefix}tag_resource tr

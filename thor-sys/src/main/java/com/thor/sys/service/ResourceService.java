@@ -2,9 +2,9 @@ package com.thor.sys.service;
 
 import com.thor.sdk.common.exception.RTException;
 import com.thor.sdk.common.param.CommonParam;
-import com.thor.sdk.common.param.resource.ResourceRemoveParam;
-import com.thor.sdk.common.param.resource.ResourceSaveParam;
-import com.thor.sdk.common.result.resource.Resource;
+import com.thor.sdk.common.param.sys.resource.ResourceRemoveParam;
+import com.thor.sdk.common.param.sys.resource.ResourceSaveParam;
+import com.thor.sdk.common.result.sys.resource.Resource;
 import com.thor.sys.dao.mapper.ResourceMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

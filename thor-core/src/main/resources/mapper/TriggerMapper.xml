@@ -5,7 +5,7 @@
 <mapper namespace="com.thor.core.dao.mapper.job.TriggerMapper">
 
     <select id="getCronTriggers" parameterType="map"
-            resultType="com.thor.sdk.common.result.job.trigger.CronTriggerResult">
+            resultType="com.thor.sdk.common.result.dispatch.trigger.sub.CronTriggerResult">
         SELECT *
         FROM ${tablePrefix}job_triggers jt
         JOIN ${tablePrefix}triggers t
@@ -38,6 +38,7 @@
         (
         TRIGGER_NAME,
         EXPRESSION,
+        TIME_ZONE_ID,
         TENANT_ID
         )
         values
@@ -45,13 +46,14 @@
             (
             #{item.triggerName, jdbcType=VARCHAR},
             #{item.expression, jdbcType=VARCHAR},
+            #{item.timeZoneId, jdbcType=VARCHAR},
             #{item.tenantId, jdbcType=VARCHAR}
             )
         </foreach>
     </insert>
 
     <select id="getCalendarOffsetTriggers" parameterType="map"
-            resultType="com.thor.sdk.common.result.job.trigger.CalendarOffsetTriggerResult">
+            resultType="com.thor.sdk.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult">
         SELECT *
         FROM ${tablePrefix}job_triggers jt
         JOIN ${tablePrefix}triggers t
@@ -107,7 +109,7 @@
     </insert>
 
     <select id="getDailyIntervalTriggers" parameterType="map"
-            resultType="com.thor.sdk.common.result.job.trigger.DailyIntervalTriggerResult">
+            resultType="com.thor.sdk.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult">
         SELECT *
         FROM ${tablePrefix}job_triggers jt
         JOIN ${tablePrefix}triggers t
@@ -163,7 +165,7 @@
     </insert>
 
     <select id="getCalendarIntervalTriggers" parameterType="map"
-            resultType="com.thor.sdk.common.result.job.trigger.CalendarIntervalTriggerResult">
+            resultType="com.thor.sdk.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult">
         SELECT *
         FROM ${tablePrefix}job_triggers jt
         JOIN ${tablePrefix}triggers t
@@ -198,6 +200,7 @@
         `TIME_UNIT`,
         `INTERVAL`,
         `REPEAT_COUNT`,
+        `TIME_ZONE_ID`,
         `PRESERVE_DAY_LIGHT`,
         `SKIP_DAY_IF_NO_HOUR`,
         `TENANT_ID`
@@ -209,6 +212,7 @@
             #{item.timeUnit, jdbcType=VARCHAR},
             #{item.interval, jdbcType=INTEGER},
             #{item.repeatCount, jdbcType=INTEGER},
+            #{item.timeZoneId, jdbcType=VARCHAR},
             #{item.preserveDayLight, jdbcType=BOOLEAN},
             #{item.skipDayIfNoHour, jdbcType=BOOLEAN},
             #{item.tenantId, jdbcType=VARCHAR}

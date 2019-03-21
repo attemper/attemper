@@ -2,8 +2,8 @@ package com.thor.sys.init;
 
 import com.thor.sdk.common.constant.ThorSdkCommonConstants;
 import com.thor.sdk.common.exception.RTException;
-import com.thor.sdk.common.param.tenant.TenantGetParam;
-import com.thor.sdk.common.result.tenant.Tenant;
+import com.thor.sdk.common.param.sys.tenant.TenantGetParam;
+import com.thor.sdk.common.result.sys.tenant.Tenant;
 import com.thor.sys.conf.CoreProperties;
 import com.thor.sys.service.TenantService;
 import org.apache.commons.lang.StringUtils;

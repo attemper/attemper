@@ -2,9 +2,9 @@ package com.thor.security.service;
 
 import com.thor.sdk.common.enums.UserStatus;
 import com.thor.sdk.common.exception.RTException;
-import com.thor.sdk.common.param.login.LoginParam;
-import com.thor.sdk.common.result.login.LoginResult;
-import com.thor.sdk.common.result.user.User;
+import com.thor.sdk.common.param.sys.login.LoginParam;
+import com.thor.sdk.common.result.sys.login.LoginResult;
+import com.thor.sdk.common.result.sys.user.User;
 import com.thor.security.ext.service.JWTService;
 import com.thor.sys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

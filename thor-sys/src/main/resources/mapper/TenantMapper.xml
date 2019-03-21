@@ -4,21 +4,21 @@
 
 <mapper namespace="com.thor.sys.dao.mapper.TenantMapper">
 
-    <select id="get" parameterType="string" resultType="com.thor.sdk.common.result.tenant.Tenant">
+    <select id="get" parameterType="string" resultType="com.thor.sdk.common.result.sys.tenant.Tenant">
         select * from ${tablePrefix}tenant t
         <where>
             and ID = #{1, jdbcType=VARCHAR}
         </where>
     </select>
 
-    <select id="getByAdmin" parameterType="string" resultType="com.thor.sdk.common.result.tenant.Tenant">
+    <select id="getByAdmin" parameterType="string" resultType="com.thor.sdk.common.result.sys.tenant.Tenant">
         select * from ${tablePrefix}tenant t
         <where>
             and `ADMIN` = #{1, jdbcType=VARCHAR}
         </where>
     </select>
 
-    <select id="list" parameterType="map" resultType="com.thor.sdk.common.result.tenant.Tenant">
+    <select id="list" parameterType="map" resultType="com.thor.sdk.common.result.sys.tenant.Tenant">
         select *
         from ${tablePrefix}tenant
         <where>

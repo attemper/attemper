@@ -2,8 +2,12 @@ package com.thor.core.conf;
 
 import com.thor.core.controller.arg.ArgController;
 import com.thor.core.controller.job.BaseJobController;
+import com.thor.core.controller.job.TriggerController;
+import com.thor.core.controller.tool.ToolController;
 import com.thor.core.service.arg.ArgService;
 import com.thor.core.service.job.BaseJobService;
+import com.thor.core.service.job.TriggerService;
+import com.thor.core.service.tool.ToolService;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,10 +24,14 @@ import javax.validation.ValidatorFactory;
         //service
         BaseJobService.class,
         ArgService.class,
+        TriggerService.class,
+        ToolService.class,
 
         //controller
         BaseJobController.class,
-        ArgController.class
+        ArgController.class,
+        TriggerController.class,
+        ToolController.class
 })
 public class CoreConfiguration {
 

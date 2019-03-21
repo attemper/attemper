@@ -1,6 +1,6 @@
 package com.thor.security.service;
 
-import com.thor.sdk.common.result.user.User;
+import com.thor.sdk.common.result.sys.user.User;
 import com.thor.sys.service.BaseServiceAdapter;
 import org.apache.shiro.SecurityUtils;
 

@@ -268,6 +268,7 @@ export default {
         skipDayIfNoHour: 'Skip Day if no Hour',
         triggerName: 'Trigger Name',
         expression: 'Expression',
+        timeZone: 'Time Zone',
         timeUnit: 'Time Unit',
         timeRange: 'Time Range',
         timeRangeOfDay: 'Time Range Of Day',

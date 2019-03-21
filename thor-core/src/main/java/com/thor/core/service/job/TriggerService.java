@@ -2,19 +2,20 @@ package com.thor.core.service.job;
 
 import com.thor.core.dao.mapper.job.TriggerMapper;
 import com.thor.sdk.common.constant.ThorSdkCommonConstants;
-import com.thor.sdk.common.param.job.TriggerGetParam;
-import com.thor.sdk.common.param.job.TriggerUpdateParam;
-import com.thor.sdk.common.param.job.trigger.CalendarIntervalTriggerParam;
-import com.thor.sdk.common.param.job.trigger.CalendarOffsetTriggerParam;
-import com.thor.sdk.common.param.job.trigger.CronTriggerParam;
-import com.thor.sdk.common.param.job.trigger.DailyIntervalTriggerParam;
-import com.thor.sdk.common.result.job.TriggerResult;
-import com.thor.sdk.common.result.job.trigger.CalendarIntervalTriggerResult;
-import com.thor.sdk.common.result.job.trigger.CalendarOffsetTriggerResult;
-import com.thor.sdk.common.result.job.trigger.CronTriggerResult;
-import com.thor.sdk.common.result.job.trigger.DailyIntervalTriggerResult;
+import com.thor.sdk.common.param.dispatch.trigger.TriggerGetParam;
+import com.thor.sdk.common.param.dispatch.trigger.TriggerUpdateParam;
+import com.thor.sdk.common.param.dispatch.trigger.sub.CalendarIntervalTriggerParam;
+import com.thor.sdk.common.param.dispatch.trigger.sub.CalendarOffsetTriggerParam;
+import com.thor.sdk.common.param.dispatch.trigger.sub.CronTriggerParam;
+import com.thor.sdk.common.param.dispatch.trigger.sub.DailyIntervalTriggerParam;
+import com.thor.sdk.common.result.dispatch.trigger.TriggerResult;
+import com.thor.sdk.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
+import com.thor.sdk.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult;
+import com.thor.sdk.common.result.dispatch.trigger.sub.CronTriggerResult;
+import com.thor.sdk.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult;
 import com.thor.sys.service.BaseServiceAdapter;
 import com.xiaoleilu.hutool.bean.BeanUtil;
+import org.apache.commons.lang.StringUtils;
 import org.quartz.DateBuilder;
 import org.quartz.impl.jdbcjobstore.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * @author ldang
@@ -73,12 +75,16 @@ public class TriggerService extends BaseServiceAdapter {
         List<CronTriggerParam> timeTriggers = saveParam.getCronTriggers();
         if (timeTriggers != null && timeTriggers.size() > 0) {
             List<Map<String, Object>> mapList = new ArrayList<>(timeTriggers.size());
-            timeTriggers.forEach(item -> {
-                item.setTriggerType(Constants.TTYPE_CRON);
-                Map<String, Object> map = BeanUtil.beanToMap(item);
-                map.put(ThorSdkCommonConstants.jobName, saveParam.getJobName());
-                mapList.add(injectAdminedTenantIdToMap(map));
-            });
+            timeTriggers.forEach(
+                    item -> {
+                        item.setTriggerType(Constants.TTYPE_CRON);
+                        if (StringUtils.isBlank(item.getTimeZoneId()) || TimeZone.getTimeZone(item.getTimeZoneId()) == null) {
+                            item.setTimeZoneId(TimeZone.getDefault().getID());
+                        }
+                        Map<String, Object> map = BeanUtil.beanToMap(item);
+                        map.put(ThorSdkCommonConstants.jobName, saveParam.getJobName());
+                        mapList.add(injectAdminedTenantIdToMap(map));
+                    });
             mapper.saveCronTriggers(mapList);
         }
     }
@@ -124,6 +130,9 @@ public class TriggerService extends BaseServiceAdapter {
             List<Map<String, Object>> mapList = new ArrayList<>(timeTriggers.size());
             timeTriggers.forEach(item -> {
                 item.setTriggerType(Constants.TTYPE_CAL_INT);
+                if (StringUtils.isBlank(item.getTimeZoneId()) || TimeZone.getTimeZone(item.getTimeZoneId()) == null) {
+                    item.setTimeZoneId(TimeZone.getDefault().getID());
+                }
                 Map<String, Object> map = BeanUtil.beanToMap(item);
                 map.put(ThorSdkCommonConstants.jobName, saveParam.getJobName());
                 mapList.add(injectAdminedTenantIdToMap(map));

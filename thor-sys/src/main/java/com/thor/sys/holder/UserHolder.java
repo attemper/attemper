@@ -1,6 +1,6 @@
 package com.thor.sys.holder;
 
-import com.thor.sdk.common.result.user.User;
+import com.thor.sdk.common.result.sys.user.User;
 
 /**
  * 用户线程池

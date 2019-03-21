@@ -1,6 +1,6 @@
 package com.thor.security.ext.jwt;
 
-import com.thor.sdk.common.result.user.User;
+import com.thor.sdk.common.result.sys.user.User;
 import com.thor.security.exception.JWTDecodedException;
 import com.thor.security.exception.JWTExpiredException;
 import org.apache.commons.lang.StringUtils;

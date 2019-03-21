@@ -2,8 +2,8 @@ package com.thor.sys.service;
 
 import com.thor.config.util.ServletUtil;
 import com.thor.sdk.common.constant.ThorSdkCommonConstants;
-import com.thor.sdk.common.result.tenant.Tenant;
-import com.thor.sdk.common.result.user.User;
+import com.thor.sdk.common.result.sys.tenant.Tenant;
+import com.thor.sdk.common.result.sys.user.User;
 import com.thor.sys.holder.TenantHolder;
 import com.thor.sys.holder.UserHolder;
 import com.xiaoleilu.hutool.bean.BeanUtil;

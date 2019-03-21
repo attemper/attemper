@@ -1,7 +1,7 @@
 package com.thor.core.dao.mapper.job;
 
 import com.thor.common.base.BaseMapper;
-import com.thor.sdk.common.result.job.BaseJob;
+import com.thor.sdk.common.result.dispatch.job.BaseJob;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -216,7 +216,6 @@
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"/>
                           </el-col>
-                          <el-col :span="1">&nbsp;-</el-col>
                           <el-col :span="11">
                             <el-date-picker
                               v-model="item.endTime"
@@ -224,6 +223,15 @@
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"/>
                           </el-col>
+                        </el-form-item>
+                        <el-form-item :label="$t('job.trigger.title.timeZone')">
+                          <el-select v-model="item.timeZoneId" filterable>
+                            <el-option
+                              v-for="ele in timeZones"
+                              :key="ele"
+                              :label="ele"
+                              :value="ele"/>
+                          </el-select>
                         </el-form-item>
                       </el-form>
                     </el-col>
@@ -251,7 +259,6 @@
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"/>
                           </el-col>
-                          <el-col :span="1">&nbsp;-</el-col>
                           <el-col :span="11">
                             <el-date-picker
                               v-model="item.endTime"
@@ -322,7 +329,6 @@
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"/>
                           </el-col>
-                          <el-col :span="1">&nbsp;-</el-col>
                           <el-col :span="11">
                             <el-date-picker
                               v-model="item.endTime"
@@ -338,7 +344,6 @@
                               v-model="item.startTimeOfDay"
                               value-format="HH:mm:ss"/>
                           </el-col>
-                          <el-col :span="1">&nbsp;-</el-col>
                           <el-col :span="11">
                             <el-time-picker
                               :placeholder="$t('job.trigger.placeholder.endTimeOfDay')"
@@ -405,7 +410,6 @@
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"/>
                           </el-col>
-                          <el-col :span="1">&nbsp;-</el-col>
                           <el-col :span="11">
                             <el-date-picker
                               v-model="item.endTime"
@@ -434,6 +438,15 @@
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.skipDayIfNoHour')">
                           <el-switch v-model="item.skipDayIfNoHour"/>
+                        </el-form-item>
+                        <el-form-item :label="$t('job.trigger.title.timeZone')">
+                          <el-select v-model="item.timeZoneId" filterable>
+                            <el-option
+                              v-for="ele in timeZones"
+                              :key="ele"
+                              :label="ele"
+                              :value="ele"/>
+                          </el-select>
                         </el-form-item>
                       </el-form>
                     </el-col>
@@ -466,6 +479,7 @@
 <script>
 import { listReq, removeReq, addReq, updateReq } from '@/api/job/baseJob'
 import * as triggerApi from '@/api/job/trigger'
+import * as toolApi from '@/api/sys/tool'
 import waves from '@/directive/waves' // Waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -478,7 +492,8 @@ const CRON_OBJ = {
   triggerName: '',
   expression: DEFAULT_CRON_EXPRESSION,
   startTime: null,
-  endTime: null
+  endTime: null,
+  timeZoneId: null
 }
 const CALENDAR_OFFSET_OBJ = {
   triggerName: '',
@@ -511,7 +526,8 @@ const CALENDAR_INTERVAL_OBJ = {
   timeUnit: 'DAY',
   repeatCount: -1,
   preserveDayLight: false,
-  skipDayIfNoHour: false
+  skipDayIfNoHour: false,
+  timeZoneId: null
 }
 
 export default {
@@ -589,13 +605,15 @@ export default {
         calendarOffsetTriggers: [],
         dailyIntervalTriggers: [],
         calendarIntervalTriggers: []
-      }
+      },
+      timeZones: []
     }
   },
   created() {
     this.loadConst()
     this.setFormRules()
     this.search()
+    this.initTimeZones()
   },
   methods: {
     setFormRules() {
@@ -919,6 +937,11 @@ export default {
     },
     removeCalendarIntervalRow(index) {
       this.trigger.calendarIntervalTriggers.splice(index, 1)
+    },
+    initTimeZones() {
+      toolApi.listTimeZoneReq().then(res => {
+        this.timeZones = res.data.result
+      })
     }
   }
 }

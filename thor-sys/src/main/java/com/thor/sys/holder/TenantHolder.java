@@ -1,6 +1,6 @@
 package com.thor.sys.holder;
 
-import com.thor.sdk.common.result.tenant.Tenant;
+import com.thor.sdk.common.result.sys.tenant.Tenant;
 
 /**
  * the tenant which user admin it

@@ -1,7 +1,7 @@
 package com.thor.sys.service;
 
-import com.thor.sdk.common.result.tenant.Tenant;
-import com.thor.sdk.common.result.user.User;
+import com.thor.sdk.common.result.sys.tenant.Tenant;
+import com.thor.sdk.common.result.sys.user.User;
 
 public interface BaseService {
 

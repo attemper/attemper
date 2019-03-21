@@ -1,7 +1,7 @@
 package com.thor.core.dao.mapper.arg;
 
 import com.thor.common.base.BaseMapper;
-import com.thor.sdk.common.result.arg.Arg;
+import com.thor.sdk.common.result.dispatch.arg.Arg;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

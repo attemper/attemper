@@ -2,9 +2,9 @@ package com.thor.security.shiro;
 
 import com.thor.config.bean.ContextBeanAware;
 import com.thor.sdk.common.exception.RTException;
-import com.thor.sdk.common.param.user.UserGetParam;
-import com.thor.sdk.common.result.resource.Resource;
-import com.thor.sdk.common.result.user.User;
+import com.thor.sdk.common.param.sys.user.UserGetParam;
+import com.thor.sdk.common.result.sys.resource.Resource;
+import com.thor.sdk.common.result.sys.user.User;
 import com.thor.security.ext.service.JWTService;
 import com.thor.security.model.JWTToken;
 import com.thor.sys.holder.TenantHolder;

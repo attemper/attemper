@@ -52,8 +52,8 @@ public class ShiroConfig {
         bean.setFilters(filters);
 
         Map<String, String> filterMap = new LinkedHashMap<>();
-        filterMap.put(ThorAPIPath.Login.LOGIN_BY_USERNAME_PWD, "anon");  //登录
-        filterMap.put(ThorAPIPath.Token.REFRESH, "anon");  //刷新令牌
+        filterMap.put(ThorAPIPath.LoginPath.LOGIN_BY_USERNAME_PWD, "anon");  //登录
+        filterMap.put(ThorAPIPath.TokenPath.REFRESH, "anon");  //刷新令牌
         filterMap.put("/doc.html", "anon");  //swagger2-bootstrap-ui主页
         filterMap.put("/webjars/**", "anon");  //swagger2-bootstrap-ui资源
         filterMap.put("/swagger-resources", "anon");  //swagger2元信息

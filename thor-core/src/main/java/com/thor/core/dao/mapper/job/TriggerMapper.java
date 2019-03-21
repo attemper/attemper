@@ -1,10 +1,10 @@
 package com.thor.core.dao.mapper.job;
 
 import com.thor.common.base.BaseMapper;
-import com.thor.sdk.common.result.job.trigger.CalendarIntervalTriggerResult;
-import com.thor.sdk.common.result.job.trigger.CalendarOffsetTriggerResult;
-import com.thor.sdk.common.result.job.trigger.CronTriggerResult;
-import com.thor.sdk.common.result.job.trigger.DailyIntervalTriggerResult;
+import com.thor.sdk.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
+import com.thor.sdk.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult;
+import com.thor.sdk.common.result.dispatch.trigger.sub.CronTriggerResult;
+import com.thor.sdk.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
