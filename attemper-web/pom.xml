@@ -12,7 +12,7 @@
     <artifactId>attemper-web</artifactId>
     <dependencies>
         <dependency>
-            <groupId>com.sse.attemper</groupId>
+            <groupId>${groupId}</groupId>
             <artifactId>attemper-security</artifactId>
         </dependency>
         <dependency>

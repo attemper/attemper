@@ -12,8 +12,10 @@
 		<module>attemper-sys</module>
 		<module>attemper-core</module>
 		<module>attemper-security</module>
-		<module>attemper-scheduler</module>
 		<module>attemper-web</module>
+		<module>attemper-scheduler</module>
+		<module>attemper-executor</module>
+		<module>attemper-grpc</module>
 	</modules>
 	<packaging>pom</packaging>
 
@@ -30,11 +32,17 @@
 
 		<attemper.sdk.version>1.0.0-SNAPSHOT</attemper.sdk.version>
 
+		<grpc.version>1.19.0</grpc.version>
+		<os.plugin.version>1.5.0.Final</os.plugin.version>
+		<protobuf.plugin.version>0.5.0</protobuf.plugin.version>
+		<protoc.version>3.5.1</protoc.version>
+
 		<mysql.version>5.1.27</mysql.version>
 		<redis.spring.boot.version>2.0.5.RELEASE</redis.spring.boot.version>
 		<mybatis.spring.boot.version>2.0.0</mybatis.spring.boot.version>
 		<pagehelper.spring.boot.version>1.2.7</pagehelper.spring.boot.version>
-		<quartz.version>2.3.0</quartz.version>
+		<quartz.spring.boot.version>0.0.1-SNAPSHOT</quartz.spring.boot.version>
+		<quartz.version>3.0.0</quartz.version>
 		<httpclient.version>4.5.5</httpclient.version>
 		<commons.lang.version>2.6</commons.lang.version>
 		<commons.io.version>2.5</commons.io.version>
@@ -53,6 +61,7 @@
 		<reflections.version>0.9.10</reflections.version>
 		<junit.version>4.12</junit.version>
 		<servlet.api.version>2.5</servlet.api.version>
+
 	</properties>
 
 	<dependencyManagement>
@@ -64,46 +73,6 @@
 				<version>${spring.boot.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-web</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-aop</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-data-jpa</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-actuator</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-configuration-processor</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-jdbc</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-autoconfigure</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-data-redis</artifactId>
-				<version>${redis.spring.boot.version}</version>
 			</dependency>
 			<!-- 服务注册所需环境 -->
 			<dependency>
@@ -224,28 +193,33 @@
 
 			<!-- modules -->
 			<dependency>
-				<groupId>com.sse.attemper</groupId>
+				<groupId>${groupId}</groupId>
 				<artifactId>attemper-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.sse.attemper</groupId>
+				<groupId>${groupId}</groupId>
 				<artifactId>attemper-config</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.sse.attemper</groupId>
+				<groupId>${groupId}</groupId>
 				<artifactId>attemper-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.sse.attemper</groupId>
+				<groupId>${groupId}</groupId>
 				<artifactId>attemper-sys</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.sse.attemper</groupId>
+				<groupId>${groupId}</groupId>
 				<artifactId>attemper-security</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${groupId}</groupId>
+				<artifactId>attemper-grpc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- 其他jar包 -->
@@ -268,9 +242,36 @@
 
 			<!-- attemper sdk -->
 			<dependency>
-				<groupId>com.sse.attemper</groupId>
+				<groupId>${groupId}</groupId>
 				<artifactId>attemper-sdk-common</artifactId>
 				<version>${attemper.sdk.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-netty</artifactId>
+				<version>${grpc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-protobuf</artifactId>
+				<version>${grpc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-stub</artifactId>
+				<version>${grpc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sse.quartz</groupId>
+				<artifactId>quartz-spring-boot-starter</artifactId>
+				<version>${quartz.spring.boot.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sse.quartz</groupId>
+				<artifactId>quartz-plugins</artifactId>
+				<version>${quartz.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

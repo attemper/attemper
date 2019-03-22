@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.sse.attemper</groupId>
+            <groupId>${groupId}</groupId>
             <artifactId>attemper-sys</artifactId>
         </dependency>
         <dependency>
