@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sse.attemper.sys.dao.mapper.ResourceMapper">
+
+    <select id="getAll" parameterType="map" resultType="com.sse.attemper.sdk.common.result.sys.resource.Resource">
+        select * from ${tablePrefix}resource r
+        <where>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="map">
+        <selectKey keyProperty="count" resultType="int" order="BEFORE">
+            select count(*)
+            from ${tablePrefix}resource
+            where RESOURCE_NAME = #{resourceName, jdbcType=VARCHAR}
+              and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </selectKey>
+        <choose>
+            <when test="count == 0">
+                INSERT INTO ${tablePrefix}resource (
+                    `RESOURCE_NAME`,
+                    `PARENT_RESOURCE_NAME`,
+                    `DISPLAY_NAME`,
+                    `RESOURCE_TYPE`,
+                    `URI`,
+                    `ICON`,
+                    `POSITION`,
+                    `CREATE_TIME`,
+                    `UPDATE_TIME`,
+                    `EXT_ATTR`,
+                    `TENANT_ID`
+                )
+                VALUES
+                (
+                    #{resourceName, jdbcType=VARCHAR},
+                    #{parentResourceName, jdbcType=VARCHAR},
+                    #{displayName, jdbcType=VARCHAR},
+                    #{resourceType, jdbcType=INTEGER},
+                    #{uri, jdbcType=VARCHAR},
+                    #{icon, jdbcType=VARCHAR},
+                    #{position, jdbcType=INTEGER},
+                    #{createTime, jdbcType=TIMESTAMP},
+                    #{updateTime, jdbcType=TIMESTAMP},
+                    #{extAttr, jdbcType=VARCHAR},
+                    #{tenantId, jdbcType=VARCHAR}
+                )
+            </when>
+            <otherwise>
+                UPDATE
+                  ${tablePrefix}resource
+                SET
+                    `PARENT_RESOURCE_NAME` = #{parentResourceName, jdbcType=VARCHAR},
+                    `DISPLAY_NAME` = #{displayName, jdbcType=VARCHAR},
+                    `RESOURCE_TYPE` = #{resourceType, jdbcType=INTEGER},
+                    `URI` = #{uri, jdbcType=VARCHAR},
+                    `ICON` = #{icon, jdbcType=VARCHAR},
+                    `POSITION` = #{position, jdbcType=INTEGER},
+                    `UPDATE_TIME` = #{updateTime, jdbcType=TIMESTAMP},
+                    `EXT_ATTR` = #{extAttr, jdbcType=VARCHAR}
+                WHERE `RESOURCE_NAME` = #{resourceName, jdbcType=VARCHAR}
+                AND `TENANT_ID` = #{tenantId, jdbcType=VARCHAR}
+            </otherwise>
+        </choose>
+    </insert>
+
+    <delete id="delete" parameterType="map">
+        delete from ${tablePrefix}resource
+        <where>
+            <if test="resourceNames != null">
+                RESOURCE_NAME in
+                <foreach item="resourceName" collection="resourceNames" open="(" separator="," close=")">
+                    #{resourceName}
+                </foreach>
+            </if>
+            <if test="resourceType != null">
+                and RESOURCE_TYPE = #{resourceType, jdbcType = INTEGER}
+            </if>
+            <if test="tenantId != null">
+                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </delete>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and r.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+</mapper>

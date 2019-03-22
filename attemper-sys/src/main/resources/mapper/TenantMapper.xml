@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sse.attemper.sys.dao.mapper.TenantMapper">
+
+    <select id="get" parameterType="string" resultType="com.sse.attemper.sdk.common.result.sys.tenant.Tenant">
+        select * from ${tablePrefix}tenant t
+        <where>
+            and ID = #{1, jdbcType=VARCHAR}
+        </where>
+    </select>
+
+    <select id="getByAdmin" parameterType="string" resultType="com.sse.attemper.sdk.common.result.sys.tenant.Tenant">
+        select * from ${tablePrefix}tenant t
+        <where>
+            and `ADMIN` = #{1, jdbcType=VARCHAR}
+        </where>
+    </select>
+
+    <select id="list" parameterType="map" resultType="com.sse.attemper.sdk.common.result.sys.tenant.Tenant">
+        select *
+        from ${tablePrefix}tenant
+        <where>
+            <if test="id != null">
+                and lower(ID) like concat('%', lower(#{id, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="name != null">
+                and lower(`NAME`) like concat('%', lower(#{name, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="matchAdmin != null">
+                and ADMIN = #{matchAdmin, jdbcType=VARCHAR}
+            </if>
+        </where>
+        <choose>
+            <when test="sort == null">
+                order by ID ${direction}
+            </when>
+            <otherwise>
+                order by ${sort} ${direction}
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="save" parameterType="map">
+        <selectKey keyProperty="count" resultType="int" order="BEFORE">
+            select count(*)
+            from ${tablePrefix}tenant
+            where ID = #{id, jdbcType=VARCHAR}
+        </selectKey>
+        <choose>
+            <when test="count == 0">
+                INSERT INTO ${tablePrefix}tenant (
+                `ID`,
+                `NAME`,
+                `SIGN`,
+                `ADMIN`,
+                `CREATE_TIME`,
+                `UPDATE_TIME`
+                )
+                VALUES
+                (
+                #{id, jdbcType=VARCHAR},
+                #{name, jdbcType=VARCHAR},
+                #{sign, jdbcType=VARCHAR},
+                #{admin, jdbcType=VARCHAR},
+                #{createTime, jdbcType=TIMESTAMP},
+                #{updateTime, jdbcType=TIMESTAMP}
+                )
+            </when>
+            <otherwise>
+                UPDATE
+                ${tablePrefix}tenant
+                SET
+                `NAME` = #{name, jdbcType=VARCHAR},
+                `SIGN` = #{sign, jdbcType=VARCHAR},
+                `ADMIN` = #{admin, jdbcType=VARCHAR},
+                `UPDATE_TIME` = #{updateTime, jdbcType=TIMESTAMP}
+                WHERE `ID` = #{id, jdbcType=VARCHAR}
+            </otherwise>
+        </choose>
+    </insert>
+
+    <delete id="delete">
+        delete from ${tablePrefix}tenant
+        <where>
+            ID in
+            <foreach item="id" collection="array" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </where>
+    </delete>
+</mapper>

@@ -2,17 +2,18 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.thor</groupId>
-	<artifactId>thor</artifactId>
+	<groupId>com.sse.attemper</groupId>
+	<artifactId>attemper</artifactId>
 	<version>1.0.0</version>
 	<modules>
-		<module>thor-admin</module>
-		<module>thor-common</module>
-		<module>thor-config</module>
-		<module>thor-core</module>
-		<module>thor-security</module>
-		<module>thor-web</module>
-		<module>thor-sys</module>
+		<module>attemper-admin</module>
+		<module>attemper-common</module>
+		<module>attemper-config</module>
+		<module>attemper-sys</module>
+		<module>attemper-core</module>
+		<module>attemper-security</module>
+		<module>attemper-scheduler</module>
+		<module>attemper-web</module>
 	</modules>
 	<packaging>pom</packaging>
 
@@ -23,11 +24,11 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
-		<spring.boot.version>2.1.1.RELEASE</spring.boot.version>
+		<spring.boot.version>2.1.3.RELEASE</spring.boot.version>
 		<spring.cloud.version>2.0.2.RELEASE</spring.cloud.version>
 		<camunda.spring.boot.version>3.2.0</camunda.spring.boot.version>
 
-		<thor.sdk.version>1.0.0-SNAPSHOT</thor.sdk.version>
+		<attemper.sdk.version>1.0.0-SNAPSHOT</attemper.sdk.version>
 
 		<mysql.version>5.1.27</mysql.version>
 		<redis.spring.boot.version>2.0.5.RELEASE</redis.spring.boot.version>
@@ -56,6 +57,14 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- spring boot dependencies -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring.boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-web</artifactId>
@@ -215,28 +224,28 @@
 
 			<!-- modules -->
 			<dependency>
-				<groupId>com.thor</groupId>
-				<artifactId>thor-common</artifactId>
+				<groupId>com.sse.attemper</groupId>
+				<artifactId>attemper-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.thor</groupId>
-				<artifactId>thor-config</artifactId>
+				<groupId>com.sse.attemper</groupId>
+				<artifactId>attemper-config</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.thor</groupId>
-				<artifactId>thor-core</artifactId>
+				<groupId>com.sse.attemper</groupId>
+				<artifactId>attemper-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.thor</groupId>
-				<artifactId>thor-sys</artifactId>
+				<groupId>com.sse.attemper</groupId>
+				<artifactId>attemper-sys</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.thor</groupId>
-				<artifactId>thor-security</artifactId>
+				<groupId>com.sse.attemper</groupId>
+				<artifactId>attemper-security</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- 其他jar包 -->
@@ -257,11 +266,11 @@
 				<version>${servlet.api.version}</version>
 			</dependency>
 
-			<!-- thor sdk -->
+			<!-- attemper sdk -->
 			<dependency>
-				<groupId>com.thor</groupId>
-				<artifactId>thor-sdk-common</artifactId>
-				<version>${thor.sdk.version}</version>
+				<groupId>com.sse.attemper</groupId>
+				<artifactId>attemper-sdk-common</artifactId>
+				<version>${attemper.sdk.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

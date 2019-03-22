@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sse.attemper.sys.dao.mapper.TagMapper">
+
+    <select id="get" parameterType="map" resultType="com.sse.attemper.sdk.common.result.sys.tag.Tag">
+        select * from ${tablePrefix}tag t
+        <where>
+            <include refid="condTagName"/>
+            <include refid="condTagType"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <insert id="add" parameterType="com.sse.attemper.sdk.common.result.sys.tag.Tag">
+        INSERT INTO ${tablePrefix}tag (
+        `TAG_NAME`,
+        `DISPLAY_NAME`,
+        `TAG_TYPE`,
+        `CREATE_TIME`,
+        `UPDATE_TIME`,
+        `REMARK`,
+        `TENANT_ID`
+        )
+        VALUES
+        (
+        #{tagName, jdbcType=VARCHAR},
+        #{displayName, jdbcType=VARCHAR},
+        #{tagType, jdbcType=INTEGER},
+        #{createTime, jdbcType=TIMESTAMP},
+        #{updateTime, jdbcType=TIMESTAMP},
+        #{remark, jdbcType=VARCHAR},
+        #{tenantId, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.sse.attemper.sdk.common.result.sys.tag.Tag">
+        UPDATE ${tablePrefix}tag t
+        SET
+        <if test="displayName != null">
+            `DISPLAY_NAME` = #{displayName, jdbcType=VARCHAR},
+        </if>
+        UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+        REMARK = #{remark, jdbcType=VARCHAR}
+        <where>
+            <include refid="condTagName"/>
+            <include refid="condTagType"/>
+            <include refid="condTenantId"/>
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="map">
+        delete from ${tablePrefix}tag
+        <where>
+            <if test="tagNames != null">
+                TAG_NAME in
+                <foreach item="tagName" collection="tagNames" open="(" separator="," close=")">
+                    #{tagName}
+                </foreach>
+            </if>
+            <if test="tagType != null">
+                and TAG_TYPE = #{tagType, jdbcType = INTEGER}
+            </if>
+            <if test="tenantId != null">
+                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </delete>
+
+    <select id="list" parameterType="map" resultType="com.sse.attemper.sdk.common.result.sys.tag.Tag">
+        select * from ${tablePrefix}tag t
+        <where>
+            <if test="tagName != null">
+                and lower(TAG_NAME) like concat('%', lower(#{tagName, jdbcType=VARCHAR}), '%')
+            </if>
+            <include refid="condTagType"/>
+            <include refid="condTenantId"/>
+            <if test="displayName != null">
+                and lower(DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="email != null">
+                and lower(EMAIL) like concat('%', lower(#{email, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="remark != null">
+                and lower(REMARK) like concat('%', lower(#{remark, jdbcType=VARCHAR}), '%')
+            </if>
+        </where>
+        <choose>
+            <when test="sort == null">
+                order by TAG_NAME ${direction}
+            </when>
+            <otherwise>
+                order by ${sort} ${direction}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="getUsers" parameterType="map" resultType="com.sse.attemper.sdk.common.result.sys.user.User">
+      select u.*
+      from ${tablePrefix}user u
+      join ${tablePrefix}tag_user tu
+        on u.USER_NAME = tu.USER_NAME and u.TENANT_ID = tu.TENANT_ID
+      join ${tablePrefix}tag t
+        on tu.TAG_NAME = t.TAG_NAME and tu.TAG_TYPE = t.TAG_TYPE and tu.TENANT_ID = t.TENANT_ID
+      <where>
+        <include refid="condTagName"/>
+        <include refid="condTagType"/>
+        <include refid="condTenantId"/>
+      </where>
+        order by u.USER_NAME
+    </select>
+
+    <delete id="deleteTagUsers" parameterType="map" >
+        DELETE FROM ${tablePrefix}tag_user
+        <where>
+            <if test="tagName != null">
+                and TAG_NAME = #{tagName, jdbcType = VARCHAR}
+            </if>
+            <if test="tagType != null">
+                and TAG_TYPE = #{tagType, jdbcType = INTEGER}
+            </if>
+            <if test="tenantId != null">
+                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </delete>
+
+    <insert id="saveTagUsers">
+        insert into ${tablePrefix}tag_user
+            (
+              USER_NAME,
+              TAG_NAME,
+              TAG_TYPE,
+              TENANT_ID
+            )
+        values
+        <foreach item="userName" collection="userNames" separator=",">
+            (
+              #{userName, jdbcType=VARCHAR},
+              #{tagName, jdbcType=VARCHAR},
+              #{tagType, jdbcType=INTEGER},
+              #{tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getResources" parameterType="map" resultType="com.sse.attemper.sdk.common.result.sys.resource.Resource">
+        select r.*
+        from ${tablePrefix}resource r
+        join ${tablePrefix}tag_resource tr
+          on r.`RESOURCE_NAME` = tr.`RESOURCE_NAME` and r.TENANT_ID = tr.TENANT_ID
+        join ${tablePrefix}tag t
+          on t.`TAG_NAME` = tr.`TAG_NAME` AND t.`TAG_TYPE` = tr.`TAG_TYPE` AND t.`TENANT_ID` = tr.`TENANT_ID`
+        <where>
+            <include refid="condTagName"/>
+            <include refid="condTagType"/>
+            <include refid="condTenantId"/>
+        </where>
+        order by r.RESOURCE_NAME
+    </select>
+
+    <delete id="deleteTagResources" parameterType="map" >
+        DELETE FROM ${tablePrefix}tag_resource
+        <where>
+            <if test="tagName != null">
+                and TAG_NAME = #{tagName, jdbcType = VARCHAR}
+            </if>
+            <if test="tagType != null">
+                and TAG_TYPE = #{tagType, jdbcType = INTEGER}
+            </if>
+            <if test="tenantId != null">
+                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </delete>
+
+    <insert id="saveTagResources">
+        insert into ${tablePrefix}tag_resource
+        (
+        `TAG_NAME`,
+        `TAG_TYPE`,
+        `RESOURCE_NAME`,
+        `TENANT_ID`
+        )
+        values
+        <foreach item="resourceName" collection="resourceNames" separator=",">
+            (
+            #{tagName, jdbcType=VARCHAR},
+            #{tagType, jdbcType=INTEGER},
+            #{resourceName, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <sql id="condTagName">
+        <if test="tagName != null">
+            and t.TAG_NAME = #{tagName, jdbcType = VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTagType">
+        <if test="tagType != null">
+            and t.TAG_TYPE = #{tagType, jdbcType = INTEGER}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and t.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+</mapper>
