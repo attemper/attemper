@@ -4,5 +4,5 @@ import io.grpc.Channel;
 
 public interface ChannelFactory {
 
-  Channel create(String name);
+    Channel create(String name);
 }

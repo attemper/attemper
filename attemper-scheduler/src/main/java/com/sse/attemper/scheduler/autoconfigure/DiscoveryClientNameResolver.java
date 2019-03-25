@@ -12,37 +12,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiscoveryClientNameResolver extends NameResolver {
-	private final String name;
-	private final DiscoveryClient client;
-	private Listener listener;
+    private final String name;
+    private final DiscoveryClient client;
+    private Listener listener;
 
-	public DiscoveryClientNameResolver(String name, DiscoveryClient client) {
-		this.name = name;
-		this.client = client;
-	}
-	@Override
-	public String getServiceAuthority() {
-		return name;
-	}
+    public DiscoveryClientNameResolver(String name, DiscoveryClient client) {
+        this.name = name;
+        this.client = client;
+    }
 
-	@Override
-	public void start(Listener listener) {
-		this.listener = listener;
-		refresh();
-	}
+    @Override
+    public String getServiceAuthority() {
+        return name;
+    }
 
-	@Override
-	public void refresh() {
-		List<SocketAddress> socketAddresses = new ArrayList<>();
-		for (ServiceInstance serviceInstance : client.getInstances(name)) {
-			socketAddresses.add(new InetSocketAddress(serviceInstance.getHost(), serviceInstance.getPort() + 1));
-		}
-		List<EquivalentAddressGroup> equivalentAddressGroups = new ArrayList<>();
-		equivalentAddressGroups.add(new EquivalentAddressGroup(socketAddresses));
-		this.listener.onAddresses(equivalentAddressGroups, Attributes.EMPTY);
-	}
+    @Override
+    public void start(Listener listener) {
+        this.listener = listener;
+        refresh();
+    }
 
-	@Override
-	public void shutdown() {
-	}
+    @Override
+    public void refresh() {
+        List<SocketAddress> socketAddresses = new ArrayList<>();
+        for (ServiceInstance serviceInstance : client.getInstances(name)) {
+            socketAddresses.add(new InetSocketAddress(serviceInstance.getHost(), serviceInstance.getPort() + 1));
+        }
+        List<EquivalentAddressGroup> equivalentAddressGroups = new ArrayList<>();
+        equivalentAddressGroups.add(new EquivalentAddressGroup(socketAddresses));
+        this.listener.onAddresses(equivalentAddressGroups, Attributes.EMPTY);
+    }
+
+    @Override
+    public void shutdown() {
+    }
 }
