@@ -5,7 +5,6 @@ import com.sse.atemper.grpc.invoking.JobInvokingServiceGrpc;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,18 +15,15 @@ import javax.annotation.PostConstruct;
 @Component
 public class ServerInitializer {
 
-    @Value("${server.port}")
-    private int port;
-
     @PostConstruct
     public void initGrpcServer() throws Exception {
-        Server server = ServerBuilder.forPort(port)
+        Server server = ServerBuilder.forPort(5231)
                 .addService(new JobInvokingServiceImpl()).build();
 
         System.out.println("Starting server...");
         server.start();
         System.out.println("Server started!");
-        server.awaitTermination();
+        //server.awaitTermination();
     }
 
     public static class JobInvokingServiceImpl extends JobInvokingServiceGrpc.JobInvokingServiceImplBase {

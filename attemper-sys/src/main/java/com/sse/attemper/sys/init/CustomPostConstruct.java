@@ -4,7 +4,7 @@ import com.sse.attemper.sdk.common.constant.SdkCommonConstants;
 import com.sse.attemper.sdk.common.exception.RTException;
 import com.sse.attemper.sdk.common.param.sys.tenant.TenantGetParam;
 import com.sse.attemper.sdk.common.result.sys.tenant.Tenant;
-import com.sse.attemper.sys.conf.CoreProperties;
+import com.sse.attemper.sys.conf.SysProperties;
 import com.sse.attemper.sys.service.TenantService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +20,14 @@ import javax.annotation.PostConstruct;
 public class CustomPostConstruct {
 
     private @Autowired
-    CoreProperties coreProperties;
+    SysProperties sysProperties;
 
     private @Autowired
     TenantService tenantService;
 
     @PostConstruct
     public void loadSuperTenantFromDB() {
-        String id = coreProperties.getSuperTenant().getId();
+        String id = sysProperties.getSuperTenant().getId();
         if(StringUtils.isBlank(id)){
             throw new RTException(SdkCommonConstants.INTERNAL_SERVER_ERROR, "The super tenant id is missing");  //必须配置超管租户的租户编号
         }
@@ -35,7 +35,7 @@ public class CustomPostConstruct {
         if(tenant == null){
             throw new RTException(SdkCommonConstants.INTERNAL_SERVER_ERROR, "Can not find the tenant in database");  //如果使用多租户，则数据库必须配置超管租户
         }
-        coreProperties.setSuperTenant(tenant);
+        sysProperties.setSuperTenant(tenant);
     }
 }
 

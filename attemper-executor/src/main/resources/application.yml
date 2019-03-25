@@ -65,7 +65,7 @@ mybatis:
       map-underscore-to-camel-case: true
       variables:
         tablePrefix: attemper_
-# eureka        
+# eureka
 eureka:
   instance:
     metadataMap:
@@ -76,5 +76,8 @@ eureka:
     fetchRegistry: true
     region: default
     availabilityZones:
-      default: devZone
+      default: defaultZone
     preferSameZone: false
+
+superTenant:
+  id: attemper

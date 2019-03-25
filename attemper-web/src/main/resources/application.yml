@@ -76,7 +76,7 @@ eureka:
     fetchRegistry: true
     region: default
     availabilityZones:
-      default: devZone
+      default: defaultZone
     preferSameZone: false
 
 superTenant:

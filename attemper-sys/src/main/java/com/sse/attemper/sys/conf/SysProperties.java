@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties
 @Getter
 @Setter
-public class CoreProperties {
+public class SysProperties {
 
     @NestedConfigurationProperty
     private Tenant superTenant;

@@ -19,7 +19,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 @Configuration
-//@EnableConfigurationProperties(CoreProperties.class)
+//@EnableConfigurationProperties(SysProperties.class)
 @ComponentScan(basePackageClasses = {
         //service
         BaseJobService.class,

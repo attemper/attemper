@@ -8,7 +8,7 @@ import com.sse.attemper.sdk.common.param.sys.tenant.TenantListParam;
 import com.sse.attemper.sdk.common.param.sys.tenant.TenantRemoveParam;
 import com.sse.attemper.sdk.common.param.sys.tenant.TenantSaveParam;
 import com.sse.attemper.sdk.common.result.sys.tenant.Tenant;
-import com.sse.attemper.sys.conf.CoreProperties;
+import com.sse.attemper.sys.conf.SysProperties;
 import com.sse.attemper.sys.dao.mapper.TenantMapper;
 import com.sse.attemper.sys.ext.service.SecretService;
 import com.sse.attemper.sys.util.PageUtil;
@@ -36,7 +36,7 @@ public class TenantService extends BaseServiceAdapter {
     private SecretService secretService;
 
     @Autowired
-    private CoreProperties coreProperties;
+    private SysProperties sysProperties;
 
     /**
      * 根据id查询租户
@@ -58,7 +58,7 @@ public class TenantService extends BaseServiceAdapter {
      */
     public Map<String, Object> list(TenantListParam listParam) {
         Map<String, Object> paramMap = injectTenantIdToMap(listParam);
-        if (!injectUser().getUserName().equals(coreProperties.getSuperTenant().getAdmin())) {
+        if (!injectUser().getUserName().equals(sysProperties.getSuperTenant().getAdmin())) {
             //非超管，仅查出当前租户
             paramMap.put("matchAdmin", injectUser().getUserName());
         }
@@ -118,7 +118,7 @@ public class TenantService extends BaseServiceAdapter {
      */
     public void remove(TenantRemoveParam removeParam) {
         for (String id : removeParam.getIds()) {
-            if (StringUtils.equals(id, coreProperties.getSuperTenant().getId())) {
+            if (StringUtils.equals(id, sysProperties.getSuperTenant().getId())) {
                 throw new RTException(5115, id);
             }
         }
