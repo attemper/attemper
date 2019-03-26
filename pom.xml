@@ -17,6 +17,7 @@
 		<module>attemper-executor</module>
 		<module>attemper-grpc</module>
 		<module>attemper-eureka-server</module>
+		<module>attemper-grpc-autoconfigure</module>
 	</modules>
 	<packaging>pom</packaging>
 
@@ -223,6 +224,11 @@
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>attemper-grpc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${groupId}</groupId>
+				<artifactId>attemper-grpc-autoconfigure</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- 其他jar包 -->

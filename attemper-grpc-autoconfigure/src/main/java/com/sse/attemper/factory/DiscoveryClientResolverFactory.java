@@ -1,5 +1,6 @@
-package com.sse.attemper.scheduler.autoconfigure;
+package com.sse.attemper.factory;
 
+import com.sse.attemper.properties.GrpcClientProperties;
 import io.grpc.NameResolver;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
@@ -9,19 +10,21 @@ import java.net.URI;
 public class DiscoveryClientResolverFactory extends NameResolver.Factory {
 
     private final DiscoveryClient client;
+    private final GrpcClientProperties properties;
 
-    public DiscoveryClientResolverFactory(DiscoveryClient client) {
+    public DiscoveryClientResolverFactory(DiscoveryClient client, GrpcClientProperties properties) {
         this.client = client;
+        this.properties = properties;
     }
 
     @Nullable
     @Override
     public NameResolver newNameResolver(URI uri, NameResolver.Helper helper) {
-        return new DiscoveryClientNameResolver(uri.toString(), client);
+        return new DiscoveryClientNameResolver(uri.toString(), client, properties);
     }
 
     @Override
     public String getDefaultScheme() {
-        return null;
+        return properties.getServer() != null ? properties.getServer().getName() : null;
     }
 }

@@ -1,16 +1,13 @@
 package com.sse.attemper.scheduler.conf;
 
-import com.sse.attemper.scheduler.autoconfigure.DiscoveryClientChannelFactory;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.context.annotation.Bean;
+import com.sse.attemper.autoconfigure.GrpcClientConfiguration;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
+@Import(
+        GrpcClientConfiguration.class
+)
 @Configuration
 public class SchedulerConfiguration {
-
-    @Bean
-    public DiscoveryClientChannelFactory channelFactory(DiscoveryClient client) {
-        return new DiscoveryClientChannelFactory(client);
-    }
 
 }

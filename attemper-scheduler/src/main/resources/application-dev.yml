@@ -31,4 +31,10 @@ logging:
         com.sse.attemper.core.dao.mapper: debug
 
 
+attemper:
+  grpc:
+    server:
+      name: executor
+      port: 5231
+
 

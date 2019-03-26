@@ -21,6 +21,10 @@
             <artifactId>attemper-grpc</artifactId>
         </dependency>
         <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>attemper-grpc-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.sse.quartz</groupId>
             <artifactId>quartz-spring-boot-starter</artifactId>
         </dependency>
