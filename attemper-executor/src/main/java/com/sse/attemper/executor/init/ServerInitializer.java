@@ -1,10 +1,8 @@
 package com.sse.attemper.executor.init;
 
-import com.sse.atemper.grpc.invoking.JobInvokingProto;
-import com.sse.atemper.grpc.invoking.JobInvokingServiceGrpc;
 import io.grpc.Server;
-import io.grpc.ServerBuilder;
-import io.grpc.stub.StreamObserver;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -12,34 +10,24 @@ import javax.annotation.PostConstruct;
 /**
  * @author ldang
  */
+@Slf4j
 @Component
 public class ServerInitializer {
 
+    @Autowired
+    private Server server;
+
     @PostConstruct
     public void initGrpcServer() throws Exception {
-        Server server = ServerBuilder.forPort(5231)
-                .addService(new JobInvokingServiceImpl()).build();
-
-        System.out.println("Starting server...");
+        if (log.isDebugEnabled()) {
+            log.debug("GRPC server starting...");
+        }
         server.start();
-        System.out.println("Server started!");
-        //server.awaitTermination();
-    }
-
-    public static class JobInvokingServiceImpl extends JobInvokingServiceGrpc.JobInvokingServiceImplBase {
-
-        @Override
-        public void invoking(JobInvokingProto.JobInvokingRequest request, StreamObserver<JobInvokingProto.JobInvokingResponse> responseObserver) {
-            System.out.println(request);
-
-            String msg = "Job Name: " + request.getJobName();
-
-            JobInvokingProto.JobInvokingResponse response = JobInvokingProto.JobInvokingResponse.newBuilder().setCode(200).setMsg(msg).build();
-
-            responseObserver.onNext(response);
-            responseObserver.onCompleted();
+        if (log.isDebugEnabled()) {
+            log.debug("GRPC server started...");
         }
     }
+
 }
 
 

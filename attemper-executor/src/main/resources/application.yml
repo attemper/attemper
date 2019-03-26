@@ -81,3 +81,8 @@ eureka:
 
 superTenant:
   id: attemper
+
+management:
+  endpoint:
+    shutdown:
+      enabled: true

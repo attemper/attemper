@@ -35,5 +35,5 @@ message JobInvokingResponse {
  */
 service JobInvokingService {
 
-    rpc invoking(JobInvokingRequest) returns (JobInvokingResponse);
+    rpc invoke (JobInvokingRequest) returns (JobInvokingResponse);
 }
