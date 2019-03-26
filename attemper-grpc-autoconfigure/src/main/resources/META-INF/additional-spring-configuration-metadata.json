@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "attemper.grpc.server.name",
+      "description": "server endpoint discovery client's name"
+    },
+    {
+      "name": "attemper.grpc.server.port",
+      "type": "java.lang.Integer",
+      "description": "server endpoint rpc service's port"
+    }
+  ]
+}
+
