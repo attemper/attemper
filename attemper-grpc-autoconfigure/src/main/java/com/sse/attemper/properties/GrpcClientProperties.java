@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * properties
  */
-@ConfigurationProperties(prefix = "attemper.grpc")
+@ConfigurationProperties(prefix = "grpc")
 public class GrpcClientProperties {
 
     @NestedConfigurationProperty

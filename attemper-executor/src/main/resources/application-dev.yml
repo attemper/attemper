@@ -26,8 +26,7 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
 
-attemper:
-  grpc:
+grpc:
     server:
       port: 5231
 
