@@ -8,6 +8,7 @@
         INSERT INTO ${tablePrefix}job (
             `JOB_NAME`,
             `STATUS`,
+            `MAX_REVERSION`,
             `CREATE_TIME`,
             `REMARK`,
             `TENANT_ID`
@@ -16,14 +17,15 @@
         (
             #{jobName, jdbcType=VARCHAR},
             #{status, jdbcType=INTEGER},
+            #{maxReversion, jdbcType=INTEGER},
             #{createTime, jdbcType=TIMESTAMP},
             #{remark, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
         )
     </insert>
 
-    <insert id="addHistory" parameterType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
-        INSERT INTO ${tablePrefix}job_history (
+    <insert id="addInfo" parameterType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
+        INSERT INTO ${tablePrefix}job_info (
             `JOB_NAME`,
             `DISPLAY_NAME`,
             `JOB_CONTENT`,
@@ -48,6 +50,8 @@
         UPDATE ${tablePrefix}job j
         SET
         STATUS = #{status, jdbcType=INTEGER},
+        MAX_REVERSION = #{maxReversion, jdbcType=INTEGER},
+        MAX_VERSION = #{maxVersion, jdbcType=INTEGER},
         REMARK = #{remark, jdbcType=VARCHAR}
         <where>
             <include refid="condJobName"/>
@@ -55,10 +59,25 @@
         </where>
     </update>
 
+    <update id="updateInfo" parameterType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
+        UPDATE ${tablePrefix}job_info j
+        SET
+        `VERSION` = #{version, jdbcType=INTEGER},
+        UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+        DEPLOYMENT_TIME = #{deploymentTime, jdbcType=TIMESTAMP}
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+            and REVERSION = #{reversion, jdbcType=INTEGER}
+        </where>
+    </update>
+
     <select id="get" parameterType="map" resultType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
-        select jh.*, j.`STATUS`, j.`CREATE_TIME`, j.REMARK
+        SELECT ji.`JOB_NAME`, ji.`DISPLAY_NAME`, ji.`JOB_CONTENT`, ji.`UPDATE_TIME`, ji.`DEPLOYMENT_TIME`,
+        ji.`TENANT_ID`, j.MAX_REVERSION, ji.REVERSION, j.MAX_VERSION, ji.`VERSION`, j.`STATUS`, j.`CREATE_TIME`,
+        j.REMARK
         from ${tablePrefix}job j
-        join ${tablePrefix}job_history jh
+        join ${tablePrefix}job_info ji
         using(JOB_NAME, TENANT_ID)
         <where>
             <include refid="condJobName"/>
@@ -73,16 +92,33 @@
     </select>
 
     <select id="list" parameterType="map" resultType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
-        SELECT jh.*, j.`STATUS`, j.`CREATE_TIME`, j.REMARK
-        FROM ${tablePrefix}job j
-        JOIN ${tablePrefix}job_history jh
-        USING(JOB_NAME, TENANT_ID)
-        JOIN (SELECT JOB_NAME, TENANT_ID, MAX(REVERSION) AS REVERSION FROM ${tablePrefix}job_history GROUP BY JOB_NAME,
-        TENANT_ID) jh_m
-        USING(JOB_NAME, TENANT_ID, REVERSION)
+        SELECT * FROM (
+        SELECT ji.`JOB_NAME`, ji.`DISPLAY_NAME`, ji.`JOB_CONTENT`, ji.`UPDATE_TIME`, ji.`DEPLOYMENT_TIME`,
+        ji.`TENANT_ID`, j.MAX_REVERSION, ji.REVERSION, j.MAX_VERSION, ji.`VERSION`, j.`STATUS`, j.`CREATE_TIME`,
+        j.REMARK
+        FROM
+        ${tablePrefix}job j
+        JOIN ${tablePrefix}job_info ji USING (JOB_NAME, TENANT_ID)
+        JOIN
+        (SELECT JOB_NAME, TENANT_ID, MAX(`VERSION`) AS `VERSION` FROM ${tablePrefix}job_info GROUP BY JOB_NAME,
+        TENANT_ID) ji_m
+        USING (JOB_NAME, TENANT_ID, `VERSION`)
+        WHERE j.MAX_VERSION IS NOT NULL
+        UNION
+        SELECT ji.`JOB_NAME`, ji.`DISPLAY_NAME`, ji.`JOB_CONTENT`, ji.`UPDATE_TIME`, ji.`DEPLOYMENT_TIME`,
+        ji.`TENANT_ID`, j.MAX_REVERSION, ji.REVERSION, j.MAX_VERSION, ji.`VERSION`, j.`STATUS`, j.`CREATE_TIME`,
+        j.REMARK
+        FROM
+        ${tablePrefix}job j
+        JOIN ${tablePrefix}job_info ji USING (JOB_NAME, TENANT_ID)
+        JOIN (SELECT JOB_NAME, TENANT_ID, MAX(`REVERSION`) AS `REVERSION` FROM ${tablePrefix}job_info GROUP BY JOB_NAME,
+        TENANT_ID) ji_m
+        USING (JOB_NAME, TENANT_ID, `REVERSION` )
+        WHERE j.MAX_VERSION IS NULL
+        ) job
         <where>
             <if test="jobName != null">
-                and lower(j.JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
+                and lower(JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
             </if>
             <if test="displayName != null">
                 and lower(DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
@@ -93,14 +129,16 @@
                     #{item, jdbcType=INTEGER}
                 </foreach>
             </if>
-            <include refid="condTenantId"/>
+            <if test="tenantId != null">
+                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            </if>
         </where>
         <choose>
             <when test="sort == null">
-                order by j.JOB_NAME
+                order by JOB_NAME
             </when>
             <otherwise>
-                order by j.${sort}
+                order by ${sort}
             </otherwise>
         </choose>
     </select>

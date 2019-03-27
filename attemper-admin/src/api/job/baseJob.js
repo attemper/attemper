@@ -43,3 +43,11 @@ export const getReq = (params) => {
     params: params
   })
 }
+
+export const publishReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + '/publish',
+    method: 'put',
+    data: data
+  })
+}

@@ -3,14 +3,14 @@ package com.sse.attemper.core.service.job;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
-import com.sse.attemper.sdk.common.param.dispatch.job.BaseJobGetParam;
-import com.sse.attemper.sdk.common.param.dispatch.job.BaseJobListParam;
-import com.sse.attemper.sdk.common.param.dispatch.job.BaseJobRemoveParam;
-import com.sse.attemper.sdk.common.param.dispatch.job.BaseJobSaveParam;
+import com.sse.attemper.sdk.common.exception.RTException;
+import com.sse.attemper.sdk.common.param.dispatch.job.*;
 import com.sse.attemper.sdk.common.result.dispatch.job.BaseJob;
 import com.sse.attemper.sys.service.BaseServiceAdapter;
 import com.sse.attemper.sys.util.PageUtil;
 import org.apache.commons.lang.StringUtils;
+import org.camunda.bpm.engine.RepositoryService;
+import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +32,9 @@ public class BaseJobService extends BaseServiceAdapter {
 
     @Autowired
     private BaseJobMapper mapper;
+
+    @Autowired
+    private RepositoryService repositoryService;
 
     /**
      * 根据id查询租户
@@ -65,9 +70,10 @@ public class BaseJobService extends BaseServiceAdapter {
         }
         baseJob = toBaseJob(saveParam);
         Date now = new Date();
-        baseJob.setCreateTime(now);
-        baseJob.setUpdateTime(now);
-        baseJob.setReversion(1);
+        baseJob.setCreateTime(now)
+                .setUpdateTime(now)
+                .setMaxReversion(1)
+                .setReversion(1);
         if (saveParam.getJobContent() == null) {
             BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(baseJob.getJobName())
                     .name(baseJob.getDisplayName())
@@ -79,35 +85,81 @@ public class BaseJobService extends BaseServiceAdapter {
             baseJob.setJobContent(saveParam.getJobContent());
         }
         mapper.add(baseJob);
-        mapper.addHistory(baseJob);
+        mapper.addInfo(baseJob);
         return baseJob;
     }
 
     /**
-     * 更新
+     * update model
      * @param saveParam
      * @return
      */
     public BaseJob update(BaseJobSaveParam saveParam) {
         BaseJob baseJob = get(new BaseJobGetParam().setJobName(saveParam.getJobName()));
         if (baseJob == null) {
-            return add(saveParam); //相当于复制后修改
+            return add(saveParam); // Equivalent to copy then add
+        }
+        if (!StringUtils.equals(saveParam.getDisplayName(), baseJob.getDisplayName())) {
+            throw new RTException(6080);
         }
         BaseJob updatedJob = toBaseJob(saveParam);
-        if (saveParam.getJobContent() != null) {
-            updatedJob.setJobContent(saveParam.getJobContent());
+        updatedJob.setCreateTime(baseJob.getCreateTime())
+                .setMaxVersion(baseJob.getMaxVersion());
+        if (checkNeedSave(baseJob, updatedJob)) {  // status remark
+            updatedJob.setMaxReversion(baseJob.getMaxReversion());
+        } else {  //job content
+            if (StringUtils.equals(saveParam.getJobContent(), baseJob.getJobContent())) {
+                throw new RTException(6056);
+            }
+            updatedJob.setMaxReversion(baseJob.getReversion() + 1)
+                    .setUpdateTime(new Date())
+                    .setReversion(baseJob.getReversion() + 1)
+                    .setVersion(null)
+                    .setDeploymentTime(null);
+            mapper.addInfo(updatedJob);
         }
-        updatedJob.setCreateTime(baseJob.getCreateTime());
-        updatedJob.setUpdateTime(new Date());
-        if (checkNeedUpgradeReversion(baseJob, updatedJob)) { //need upgrade
-            updatedJob.setReversion(baseJob.getReversion() + 1);
-            mapper.addHistory(updatedJob);
-        } else {
-            mapper.update(updatedJob);
-        }
+        mapper.update(updatedJob);
         return updatedJob;
     }
 
+    /**
+     * 删除
+     *
+     * @param removeParam
+     * @return
+     */
+    public Void remove(BaseJobRemoveParam removeParam) {
+        Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
+        mapper.delete(paramMap);
+        return null;
+    }
+
+    /**
+     * publish a job to camunda engine
+     *
+     * @param param
+     * @return
+     */
+    public Void publish(BaseJobPublishParam param) {
+        List<String> jobNames = param.getJobNames();
+        jobNames.forEach(jobName -> {
+            BaseJob baseJob = validateAndGet(jobName);  //the newest reversion job
+            Deployment deployment = repositoryService.createDeployment()
+                    .addModelInstance(jobName + ".bpmn20.xml", Bpmn.readModelFromStream(new ByteArrayInputStream(baseJob.getJobContent().getBytes())))
+                    .name(baseJob.getDisplayName())
+                    .tenantId(injectAdminedTenant().getId())
+                    .deploy();
+            int maxVersion = baseJob.getMaxVersion() == null ? 1 : baseJob.getMaxVersion() + 1;
+            baseJob.setUpdateTime(deployment.getDeploymentTime())
+                    .setDeploymentTime(deployment.getDeploymentTime())
+                    .setVersion(maxVersion)
+                    .setMaxReversion(baseJob.getMaxReversion())
+                    .setMaxVersion(maxVersion);
+            mapper.update(baseJob);
+            mapper.updateInfo(baseJob);
+        });
+        return null;
+    }
     /**
      * 判断是否需要更新模型版本
      *
@@ -115,19 +167,8 @@ public class BaseJobService extends BaseServiceAdapter {
      * @param updatedJob
      * @return
      */
-    private boolean checkNeedUpgradeReversion(BaseJob baseJob, BaseJob updatedJob) {
-        return !StringUtils.equals(baseJob.getDisplayName(), updatedJob.getDisplayName())
-                || !StringUtils.equals(baseJob.getJobContent(), updatedJob.getJobContent());
-    }
-
-    /**
-     * 删除
-     * @param removeParam
-     * @return
-     */
-    public void remove(BaseJobRemoveParam removeParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
-        mapper.delete(paramMap);
+    private boolean checkNeedSave(BaseJob baseJob, BaseJob updatedJob) {
+        return baseJob.getStatus() != updatedJob.getStatus() || !StringUtils.equals(baseJob.getRemark(), updatedJob.getRemark());
     }
 
     private BaseJob toBaseJob(BaseJobSaveParam saveParam) {
@@ -139,5 +180,17 @@ public class BaseJobService extends BaseServiceAdapter {
                 .remark(saveParam.getRemark())
                 .tenantId(injectAdminedTenant().getId())
                 .build();
+    }
+
+    private BaseJob validateAndGet(String jobName) {
+        BaseJobGetParam baseJobGetParam = BaseJobGetParam.builder().jobName(jobName).build();
+        BaseJob baseJob = get(baseJobGetParam);
+        if (baseJob == null) {
+            throw new RTException(6050, jobName);
+        }
+        if (StringUtils.isBlank(baseJob.getJobContent())) {
+            throw new RTException(6053, jobName);
+        }
+        return baseJob;
     }
 }

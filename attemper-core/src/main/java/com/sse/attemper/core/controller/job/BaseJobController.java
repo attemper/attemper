@@ -3,10 +3,7 @@ package com.sse.attemper.core.controller.job;
 import com.sse.attemper.core.service.job.BaseJobService;
 import com.sse.attemper.sdk.common.constant.APIConst;
 import com.sse.attemper.sdk.common.constant.APIPath;
-import com.sse.attemper.sdk.common.param.dispatch.job.BaseJobGetParam;
-import com.sse.attemper.sdk.common.param.dispatch.job.BaseJobListParam;
-import com.sse.attemper.sdk.common.param.dispatch.job.BaseJobRemoveParam;
-import com.sse.attemper.sdk.common.param.dispatch.job.BaseJobSaveParam;
+import com.sse.attemper.sdk.common.param.dispatch.job.*;
 import com.sse.attemper.sdk.common.result.CommonResult;
 import com.sse.attemper.sdk.common.result.dispatch.job.BaseJob;
 import io.swagger.annotations.Api;
@@ -51,9 +48,8 @@ public class BaseJobController {
 	@ApiOperation(APIConst.APIOperation.JobTitle.BaseTitle.REMOVE)
 	@ApiImplicitParam(value = "被删除的主键数组", name = "removeParam", dataType = "BaseJobRemoveParam", required = true)
 	@DeleteMapping(APIPath.JobPath.BasePath.REMOVE)
-	public CommonResult remove(@RequestBody BaseJobRemoveParam removeParam) {
-        service.remove(removeParam);
-		return CommonResult.ok();
+	public CommonResult<Void> remove(@RequestBody BaseJobRemoveParam removeParam) {
+		return CommonResult.putResult(service.remove(removeParam));
 	}
 
 	@ApiOperation(APIConst.APIOperation.JobTitle.BaseTitle.GET)
@@ -63,4 +59,10 @@ public class BaseJobController {
 		return CommonResult.putResult(service.get(getParam));
 	}
 
+	@ApiOperation(APIConst.APIOperation.JobTitle.BaseTitle.PUBLISH)
+	@ApiImplicitParam(value = "任务名称列表", name = "param", dataType = "BaseJobPublishParam", required = true)
+	@PutMapping(APIPath.JobPath.BasePath.PUBLISH)
+	public CommonResult<Void> publish(@RequestBody BaseJobPublishParam param) {
+		return CommonResult.putResult(service.publish(param));
+	}
 }

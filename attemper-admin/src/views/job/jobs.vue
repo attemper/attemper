@@ -1,44 +1,19 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input
-        :placeholder="$t('job.columns.jobName')"
-        v-model="page.jobName"
-        style="width: 100px;"
-        class="filter-item"
-        @keyup.enter.native="search"/>
-      <el-input
-        :placeholder="$t('job.columns.displayName')"
-        v-model="page.displayName"
-        style="width: 100px;"
-        class="filter-item"
-        @keyup.enter.native="search"/>
-      <el-select
-        v-model="page.status"
-        :placeholder="$t('job.columns.status')"
-        multiple
-        clearable
-        collapse-tags
-        class="filter-item"
-        style="width: 160px">
+      <el-input :placeholder="$t('job.columns.jobName')" v-model="page.jobName" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
+      <el-input :placeholder="$t('job.columns.displayName')" v-model="page.displayName" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
+      <el-select v-model="page.status" :placeholder="$t('job.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
         <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>-->
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{
-      $t('actions.search') }}
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="add">{{
-      $t('actions.add') }}
-      </el-button>
-      <el-button
-        :disabled="!selections || !selections.length"
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="danger"
-        icon="el-icon-delete"
-        @click="remove">{{ $t('actions.remove') }}
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
+      <el-button class="filter-item table-external-button" type="success" icon="el-icon-plus" @click="add">{{ $t('actions.add') }}</el-button>
+      <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
+      <el-button v-waves :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="publish">
+        <svg-icon icon-class="publish"/> {{ $t('table.publish') }}
       </el-button>
       <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>
       <el-checkbox v-model="showCreateTime" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">{{ $t('job.columns.createTime') }}</el-checkbox>-->
@@ -90,7 +65,7 @@
           <el-popover trigger="hover" placement="top">
             <p>{{ $t('tip.clickToSeeDetail') }}</p>
             <div slot="reference" class="name-wrapper">
-              <el-button v-show="scope.row.version" type="primary" size="mini">{{ scope.row.version }}</el-button>
+              <el-button v-show="scope.row.maxVersion" type="primary" size="mini">{{ scope.row.maxVersion }}</el-button>
             </div>
           </el-popover>
         </template>
@@ -100,7 +75,7 @@
           <el-popover trigger="hover" placement="top">
             <p>{{ $t('tip.clickToSeeDetail') }}</p>
             <div slot="reference" class="name-wrapper">
-              <el-button v-show="scope.row.reversion" type="primary" size="mini">{{ scope.row.reversion }}</el-button>
+              <el-button v-show="scope.row.maxReversion" type="primary" size="mini">{{ scope.row.maxReversion }}</el-button>
             </div>
           </el-popover>
         </template>
@@ -467,9 +442,11 @@
           <el-col :span="4" :offset="8">
             <el-button type="info" @click="editDialog.trigger.visible = false">{{ $t('actions.cancel') }}</el-button>
           </el-col>
-          <el-col :span="4" :offset="1">
-            <el-button type="success" @click="saveTrigger">{{ $t('actions.save') }}</el-button>
-          </el-col>
+          <el-tooltip :disabled="job.maxVersion" :content="this.$t('job.trigger.tip.jobNotPublished') " placement="right" effect="light">
+            <el-col :span="4" :offset="1">
+              <el-button :disabled="!job.maxVersion" type="success" @click="saveTrigger">{{ $t('actions.use') }}</el-button>
+            </el-col>
+          </el-tooltip>
         </el-row>
       </div>
     </el-dialog>
@@ -477,7 +454,7 @@
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq } from '@/api/job/baseJob'
+import { listReq, removeReq, addReq, updateReq, publishReq } from '@/api/job/baseJob'
 import * as triggerApi from '@/api/job/trigger'
 import * as toolApi from '@/api/sys/tool'
 import waves from '@/directive/waves' // Waves directive
@@ -694,6 +671,25 @@ export default {
           })
         }
       })
+    },
+    publish() {
+      const jobNames = []
+      if (this.selections.length) {
+        this.selections.forEach((sel) => {
+          jobNames.push(sel.jobName)
+        })
+      } else {
+        this.$message.warning(this.$t('tip.publish'))
+        return
+      }
+      const msg = '<p>' + this.$t('tip.publishConfirm') + ':<br><span style="color: red">' + jobNames.join('<br>') + '</span></p>'
+      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+        .then(() => {
+          publishReq({ jobNames: jobNames }).then(res => {
+            this.$message.success(res.data.msg)
+            this.search()
+          })
+        })
     },
     saveTrigger() {
       const trigger = { jobName: this.job.jobName }
@@ -947,40 +943,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
-  .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
-    margin-bottom: 8px;
-  }
-
-  .form {
-    &-layout {
-      width: 500px;
-      min-height: 350px;
-      margin-top: 20px;
-      margin-left: 50px;
-    }
-  }
-
-  .table-expand {
-    font-size: 0;
-  }
-
-  .table-expand label {
-    width: 150px;
-    color: #99a9bf;
-  }
-
-  .table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 25%;
-  }
-
-  .trigger{
-    &-row{
-      &-top{
-        margin-top: 5px;
-      }
-    }
-  }
+<style rel="stylesheet/scss" lang="scss">
+  @import "./styles/jobs.scss";
 </style>

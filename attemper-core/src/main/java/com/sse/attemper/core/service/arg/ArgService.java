@@ -22,7 +22,7 @@ import java.util.Map;
 @Service
 public class ArgService extends BaseServiceAdapter {
     @Autowired
-    private ArgMapper argMapper;
+    private ArgMapper mapper;
 
     /**
      * 添加新的参数
@@ -39,7 +39,7 @@ public class ArgService extends BaseServiceAdapter {
         arg.setTenantId(injectAdminedTenant().getId());
         arg.setCreateTime(new Date());
         arg.setUpdateTime(new Date());
-        argMapper.add(arg);
+        mapper.add(arg);
         return arg;
     }
 
@@ -51,7 +51,7 @@ public class ArgService extends BaseServiceAdapter {
      */
     public Arg get(ArgGetParam getParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(getParam);
-        return argMapper.get(paramMap);
+        return mapper.get(paramMap);
     }
 
     /**
@@ -63,7 +63,7 @@ public class ArgService extends BaseServiceAdapter {
     public Map<String, Object> list(ArgListParam listParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(listParam);
         PageHelper.startPage(listParam.getCurrentPage(), listParam.getPageSize());
-        Page<Arg> list = (Page<Arg>) argMapper.list(paramMap);
+        Page<Arg> list = (Page<Arg>) mapper.list(paramMap);
         return PageUtil.toResultMap(list);
     }
 
@@ -74,7 +74,7 @@ public class ArgService extends BaseServiceAdapter {
      */
     public void remove(ArgRemoveParam removeParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
-        argMapper.delete(paramMap);
+        mapper.delete(paramMap);
     }
 
     /**
@@ -92,7 +92,7 @@ public class ArgService extends BaseServiceAdapter {
         argNew.setTenantId(injectAdminedTenant().getId());
         argNew.setUpdateTime(new Date());
         argNew.setCreateTime(argOld.getCreateTime());
-        argMapper.update(argNew);
+        mapper.update(argNew);
         return argNew;
     }
 

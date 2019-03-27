@@ -88,7 +88,8 @@ export default {
     last: '上一个',
     next: '下一个',
     ok: '确定',
-    download: '下载'
+    download: '下载',
+    use: '使用'
   },
   tip: {
     search: '请输入查询关键字',
@@ -96,6 +97,8 @@ export default {
     confirm: '请确认',
     remove: '请选中删除的数据',
     removeConfirm: '确定删除？',
+    publish: '请选中要发布的任务',
+    publishConfirm: '确定发布？',
     saveConfirm: '确定保存？',
     clickToSeeDetail: '提示：点击按钮可查看详情'
   },
@@ -299,7 +302,8 @@ export default {
         noTrigger: '没有触发器需要保存',
         triggerNameNotBlank: '触发器名称不能为空',
         startAfterEndTime: '开始时间不能晚于结束时间',
-        cronExpressionInvalid: 'cron表达式格式非法'
+        cronExpressionInvalid: 'cron表达式格式非法',
+        jobNotPublished: '任务未被发布，无法使用触发器'
       }
     }
   },

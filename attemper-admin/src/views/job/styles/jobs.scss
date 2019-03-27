@@ -1,0 +1,43 @@
+.el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
+  margin-bottom: 8px;
+}
+
+.form {
+  &-layout {
+    width: 500px;
+    min-height: 350px;
+    margin-top: 20px;
+    margin-left: 50px;
+  }
+}
+
+.table-expand {
+  font-size: 0;
+}
+
+.table-expand label {
+  width: 150px;
+  color: #99a9bf;
+}
+
+.table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 25%;
+}
+
+.trigger{
+  &-row{
+    &-top{
+      margin-top: 5px;
+    }
+  }
+}
+
+.table {
+  &-external {
+    &-button {
+      margin-left: 10px;
+    }
+  }
+}
