@@ -160,6 +160,18 @@ public class BaseJobService extends BaseServiceAdapter {
         });
         return null;
     }
+
+    /**
+     * list all versions by a specified job name
+     *
+     * @param getParam
+     * @return
+     */
+    public List<BaseJob> versions(BaseJobGetParam getParam) {
+        Map<String, Object> paramMap = injectAdminedTenantIdToMap(getParam);
+        return mapper.versions(paramMap);
+    }
+
     /**
      * 判断是否需要更新模型版本
      *
@@ -192,5 +204,39 @@ public class BaseJobService extends BaseServiceAdapter {
             throw new RTException(6053, jobName);
         }
         return baseJob;
+    }
+
+    /**
+     * copy job with current reversion to another job(if the target was existent, will add its reversion)
+     *
+     * @param param
+     * @return
+     */
+    public BaseJob copy(BaseJobCopyParam param) {
+        BaseJobSaveParam targetJobParam = param.getTargetJobParam();
+        BaseJob sourceJob = get(BaseJobGetParam.builder().jobName(param.getJobName()).reversion(param.getReversion()).build());
+        BaseJob targetJob = get(BaseJobGetParam.builder().jobName(targetJobParam.getJobName()).build());
+        if (targetJob != null) { // add its reversion with new model
+            BaseJobSaveParam saveParam = BaseJobSaveParam.builder().jobName(targetJob.getJobName())
+                    .displayName(targetJob.getDisplayName()).status(targetJob.getStatus()).remark(targetJob.getRemark())
+                    .jobContent(sourceJob.getJobContent()).build();
+            return update(saveParam);
+        }
+        //add new model with reversion of 1
+        return add(targetJobParam.setJobContent(sourceJob.getJobContent()));
+    }
+
+    /**
+     * exchange current reversion to the latest
+     *
+     * @param param
+     * @return
+     */
+    public BaseJob exchange(BaseJobGetParam param) {
+        BaseJob oldReversionJob = get(param);
+        BaseJobSaveParam saveParam = BaseJobSaveParam.builder().jobName(oldReversionJob.getJobName())
+                .displayName(oldReversionJob.getDisplayName()).status(oldReversionJob.getStatus())
+                .remark(oldReversionJob.getRemark()).jobContent(oldReversionJob.getJobContent()).build();
+        return update(saveParam);
     }
 }

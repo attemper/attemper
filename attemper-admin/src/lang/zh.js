@@ -96,10 +96,10 @@ export default {
     batchRemove: '批量删除',
     confirm: '请确认',
     remove: '请选中删除的数据',
-    removeConfirm: '确定删除？',
+    removeConfirm: '确定删除',
     publish: '请选中要发布的任务',
-    publishConfirm: '确定发布？',
-    saveConfirm: '确定保存？',
+    publishConfirm: '确定发布',
+    saveConfirm: '确定保存',
     clickToSeeDetail: '提示：点击按钮可查看详情'
   },
   sys: {
@@ -229,7 +229,8 @@ export default {
       displayName: '中文名称',
       status: '状态',
       createTime: '创建时间',
-      updateTime: '上次修改时间',
+      updateTime: '最近修改时间',
+      deploymentTime: '最近发布时间',
       remark: '备注'
     },
     placeholder: {
@@ -251,6 +252,13 @@ export default {
       title: {
         xml: '以.xml(.bpmn)文件导出',
         svg: '以.svg文件导出'
+      },
+      tip: {
+        copy: '复制',
+        exchange: '将当前模型切换为最新的版本',
+        copyConfirm: '确定复制',
+        exchangeConfirm: '确定将当前模型切换为最新的版本',
+        jobNameNotChanged: '复制任务时，任务名称必须修改'
       }
     },
     trigger: {

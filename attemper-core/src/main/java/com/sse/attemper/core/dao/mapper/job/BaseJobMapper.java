@@ -28,4 +28,6 @@ public interface BaseJobMapper extends BaseMapper<BaseJob> {
     void update(BaseJob baseJob);
 
     void updateInfo(BaseJob baseJob);
+
+    List<BaseJob> versions(Map<String, Object> paramMap);
 }

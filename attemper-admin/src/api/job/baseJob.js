@@ -28,6 +28,14 @@ export const listReq = (params) => {
   })
 }
 
+export const versionsReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + '/versions',
+    method: 'get',
+    params: params
+  })
+}
+
 export const removeReq = (data) => {
   return request({
     url: APIPath.DISPATCH + SubPath + APIPath.REMOVE,
@@ -47,6 +55,22 @@ export const getReq = (params) => {
 export const publishReq = (data) => {
   return request({
     url: APIPath.DISPATCH + SubPath + '/publish',
+    method: 'put',
+    data: data
+  })
+}
+
+export const copyReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + '/copy',
+    method: 'put',
+    data: data
+  })
+}
+
+export const exchangeReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + '/exchange',
     method: 'put',
     data: data
   })

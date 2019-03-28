@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,9 +61,30 @@ public class BaseJobController {
 	}
 
 	@ApiOperation(APIConst.APIOperation.JobTitle.BaseTitle.PUBLISH)
-	@ApiImplicitParam(value = "任务名称列表", name = "param", dataType = "BaseJobPublishParam", required = true)
+	@ApiImplicitParam(value = "任务名称列表参数", name = "param", dataType = "BaseJobPublishParam", required = true)
 	@PutMapping(APIPath.JobPath.BasePath.PUBLISH)
 	public CommonResult<Void> publish(@RequestBody BaseJobPublishParam param) {
 		return CommonResult.putResult(service.publish(param));
+	}
+
+	@ApiOperation(APIConst.APIOperation.JobTitle.BaseTitle.COPY)
+	@ApiImplicitParam(value = "任务名称参数", name = "param", dataType = "BaseJobGetParam", required = true)
+	@PutMapping(APIPath.JobPath.BasePath.COPY)
+	public CommonResult<BaseJob> copy(@RequestBody BaseJobCopyParam param) {
+		return CommonResult.putResult(service.copy(param));
+	}
+
+	@ApiOperation(APIConst.APIOperation.JobTitle.BaseTitle.EXCHANGE)
+	@ApiImplicitParam(value = "任务名称参数", name = "param", dataType = "BaseJobGetParam", required = true)
+	@PutMapping(APIPath.JobPath.BasePath.EXCHANGE)
+	public CommonResult<BaseJob> exchange(@RequestBody BaseJobGetParam param) {
+		return CommonResult.putResult(service.exchange(param));
+	}
+
+	@ApiOperation(APIConst.APIOperation.JobTitle.BaseTitle.VERSIONS)
+	@ApiImplicitParam(value = "任务名称参数", name = "getParam", dataType = "BaseJobGetParam", required = true)
+	@GetMapping(APIPath.JobPath.BasePath.VERSIONS)
+	public CommonResult<List<BaseJob>> listVersions(BaseJobGetParam getParam) {
+		return CommonResult.putResult(service.versions(getParam));
 	}
 }

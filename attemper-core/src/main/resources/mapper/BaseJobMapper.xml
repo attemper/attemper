@@ -143,6 +143,20 @@
         </choose>
     </select>
 
+    <select id="versions" parameterType="map" resultType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
+        <!-- tip: do not return job content here because the column may be too big -->
+        SELECT
+        ji.`JOB_NAME`,ji.`DISPLAY_NAME`, ji.`UPDATE_TIME`, ji.`DEPLOYMENT_TIME`, ji.`TENANT_ID`,
+        j.MAX_REVERSION, j.MAX_VERSION, ji.`REVERSION`, ji.`VERSION`, j.`STATUS`, j.`CREATE_TIME`, j.REMARK
+        FROM
+        ${tablePrefix}job j JOIN ${tablePrefix}job_info ji USING (JOB_NAME, TENANT_ID)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+        ORDER BY ji.`REVERSION` DESC
+    </select>
+
     <delete id="delete" parameterType="map">
         delete from ${tablePrefix}job
         <where>

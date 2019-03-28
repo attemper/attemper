@@ -1,18 +1,18 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('job.columns.jobName')" v-model="page.jobName" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
-      <el-input :placeholder="$t('job.columns.displayName')" v-model="page.displayName" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
-      <el-select v-model="page.status" :placeholder="$t('job.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
+      <el-input :placeholder="$t('job.columns.jobName')" v-model="page.jobName" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search"/>
+      <el-input :placeholder="$t('job.columns.displayName')" v-model="page.displayName" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search"/>
+      <el-select v-model="page.status" :placeholder="$t('job.columns.status')" multiple clearable collapse-tags class="filter-item" size="mini" style="width: 160px">
         <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>-->
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
-      <el-button class="filter-item table-external-button" type="success" icon="el-icon-plus" @click="add">{{ $t('actions.add') }}</el-button>
-      <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
-      <el-button v-waves :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="publish">
+      <el-button v-waves class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
+      <el-button class="filter-item table-external-button" size="mini" type="success" icon="el-icon-plus" @click="add">{{ $t('actions.add') }}</el-button>
+      <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" size="mini" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
+      <el-button v-waves :disabled="!selections || !selections.length" class="filter-item table-external-button" size="mini" type="primary" @click="publish">
         <svg-icon icon-class="publish"/> {{ $t('table.publish') }}
       </el-button>
       <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>
@@ -39,12 +39,25 @@
             <el-form-item :label="$t('job.columns.updateTime')">
               <span>{{ props.row.updateTime }}</span>
             </el-form-item>
+            <el-form-item :label="$t('job.columns.deploymentTime')">
+              <span>{{ props.row.deploymentTime }}</span>
+            </el-form-item>
           </el-form>
         </template>
       </el-table-column>
       <el-table-column
         type="selection"
         width="40"/>
+      <el-table-column :label="$t('job.columns.version')" align="center" width="80px">
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            <p>{{ $t('tip.clickToSeeDetail') }}</p>
+            <div slot="reference" class="name-wrapper">
+              <el-button v-show="scope.row.maxVersion" type="success" size="mini">{{ scope.row.maxVersion }}</el-button>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column
         :label="$t('job.columns.jobName')"
         prop="jobName"
@@ -58,26 +71,6 @@
       <el-table-column :label="$t('job.columns.displayName')" min-width="150px">
         <template slot-scope="scope">
           <span>{{ scope.row.displayName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('job.columns.version')" sortable="custom" align="center" min-width="70px">
-        <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
-            <p>{{ $t('tip.clickToSeeDetail') }}</p>
-            <div slot="reference" class="name-wrapper">
-              <el-button v-show="scope.row.maxVersion" type="primary" size="mini">{{ scope.row.maxVersion }}</el-button>
-            </div>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('job.columns.reversion')" sortable="custom" align="center" min-width="70px">
-        <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
-            <p>{{ $t('tip.clickToSeeDetail') }}</p>
-            <div slot="reference" class="name-wrapper">
-              <el-button v-show="scope.row.maxReversion" type="primary" size="mini">{{ scope.row.maxReversion }}</el-button>
-            </div>
-          </el-popover>
         </template>
       </el-table-column>
       <el-table-column :label="$t('job.columns.status')" align="center" class-name="status-col" width="100">
@@ -130,36 +123,7 @@
       :close-on-press-escape="false"
       :before-close="close">
       <div v-show="editDialog.base.visible">
-        <el-form
-          ref="baseForm"
-          :rules="rules.baseRules"
-          :model="job"
-          label-position="left"
-          label-width="150px"
-          class="form-layout">
-          <el-form-item :label="$t('job.columns.jobName')" prop="jobName">
-            <el-input v-model="job.jobName" :placeholder="$t('job.placeholder.jobName')"/>
-          </el-form-item>
-          <el-form-item :label="$t('job.columns.displayName')" prop="displayName">
-            <el-input v-model="job.displayName" :placeholder="$t('job.placeholder.displayName')"/>
-          </el-form-item>
-          <el-form-item :label="$t('job.columns.status')" prop="status">
-            <el-select v-model="job.status" :placeholder="$t('job.placeholder.status')" class="filter-item">
-              <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
-            </el-select>
-          </el-form-item>
-          <el-form-item :label="$t('job.columns.remark')">
-            <el-input
-              :autosize="{ minRows: 2, maxRows: 4}"
-              v-model="job.remark"
-              :placeholder="$t('job.placeholder.remark')"
-              type="textarea"/>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="info" @click="editDialog.base.visible = false">{{ $t('actions.cancel') }}</el-button>
-            <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
-          </el-form-item>
-        </el-form>
+        <job-info-form ref="jobInfoForm" :job="job" @save="save" @cancel="editDialog.base.visible = false"/>
       </div>
       <div v-show="editDialog.trigger.visible">
         <el-tabs type="border-card">
@@ -464,6 +428,7 @@ import { load } from '@/constant'
 import CronInput from 'vue-cron-generator/src/components/cron-input'
 import { DEFAULT_CRON_EXPRESSION } from 'vue-cron-generator/src/constant/filed'
 import { isBlank, startAfterEndTime } from './scripts/support'
+import JobInfoForm from './components/jobInfoForm'
 
 const CRON_OBJ = {
   triggerName: '',
@@ -511,7 +476,8 @@ export default {
   name: 'Jobs',
   components: {
     Pagination,
-    CronInput
+    CronInput,
+    JobInfoForm
   },
   directives: { waves },
   filters: {
@@ -567,13 +533,6 @@ export default {
           visible: false
         }
       },
-      rules: {
-        baseRules: {
-          jobName: [{ required: true, trigger: 'blur' }],
-          displayName: [{ required: true, trigger: 'blur' }],
-          status: [{ required: true, trigger: 'blur' }]
-        }
-      },
       downloadLoading: false,
       selections: [],
       // calendars: [],
@@ -588,16 +547,10 @@ export default {
   },
   created() {
     this.loadConst()
-    this.setFormRules()
     this.search()
     this.initTimeZones()
   },
   methods: {
-    setFormRules() {
-      this.rules.baseRules.jobName[0].message = this.$t('job.rules.jobName')
-      this.rules.baseRules.displayName[0].message = this.$t('job.rules.displayName')
-      this.rules.baseRules.status[0].message = this.$t('job.rules.status')
-    },
     search() {
       this.listLoading = true
       listReq(this.page).then(response => {
@@ -624,7 +577,7 @@ export default {
       this.search()
     },
     reset() {
-      if (!this.selections || !this.selections.length || !this.selections[0].jobName) {
+      if (this.editDialog.oper !== 'update' && (!this.selections || !this.selections.length || !this.selections[0].jobName)) {
         this.job = {
           jobName: undefined,
           displayName: '',
@@ -632,7 +585,7 @@ export default {
           remark: ''
         }
       } else {
-        this.job = this.selections[0]
+        this.job = Object.assign({}, this.selections[0])
       }
     },
     close() {
@@ -645,31 +598,29 @@ export default {
       this.selectRow(null)
       this.editDialog.title = this.$t('actions.add')
       this.editDialog.base.visible = true
-      this.$nextTick(() => {
+      /* this.$nextTick(() => {
         this.$refs['baseForm'].clearValidate()
-      })
+      })*/
+      this.$refs.jobInfoForm.clearValidate()
     },
     update(row) {
-      this.selectRow(row)
       this.editDialog.oper = 'update'
+      this.selectRow(row)
       // this.job = Object.assign({}, row) // copy obj
       this.editDialog.title = this.$t('actions.update')
       this.editDialog.base.visible = true
-      this.$nextTick(() => {
+      /* this.$nextTick(() => {
         this.$refs['baseForm'].clearValidate()
-      })
+      })*/
+      this.$refs.jobInfoForm.clearValidate()
     },
-    save() {
-      this.$refs.baseForm.validate((valid) => {
-        if (valid) {
-          const request = (this.editDialog.oper === 'add' ? addReq(this.job) : updateReq(this.job))
-          // this.job.jobContent = JSON.stringify(this.httpJobConfig)
-          request.then(res => {
-            this.$message.success(res.data.msg)
-            this.editDialog.base.visible = false
-            this.search()
-          })
-        }
+    save(job) {
+      this.job = job
+      const request = (this.editDialog.oper === 'add' ? addReq(this.job) : updateReq(this.job))
+      request.then(res => {
+        this.$message.success(res.data.msg)
+        this.editDialog.base.visible = false
+        this.search()
       })
     },
     publish() {
@@ -836,7 +787,7 @@ export default {
     },
     selectRow(row) {
       this.$refs.tables.clearSelection()
-      if (row && row.jobName) {
+      if (row && (this.editDialog.oper === 'update' || row.jobName)) {
         this.$refs.tables.toggleRowSelection(row, true)
       }
       this.reset() // get the newest or reset to origin

@@ -11,19 +11,57 @@
         <a ref="exportSvg" :title="$t('job.flowJob.title.svg')" href="javascript:">{{ $t('job.flowJob.btn.svg') }}</a>
       </li>
     </ul>
-    <div class="custom-buttons">
-      <el-button type="info" size="mini" @click="refresh">
-        {{ $t('actions.refresh') }}
-      </el-button>
-      <el-button type="success" size="mini" @click="save">
-        {{ $t('actions.save') }}
-      </el-button>
+    <div class="custom-bottom">
+      <el-select
+        v-model="currentReversion"
+        :placeholder="$t('job.columns.reversion') + '-' + $t('job.columns.version')"
+        class="filter-item"
+        size="mini"
+        style="width: 160px"
+        @change="changeJob">
+        <el-option v-for="item in jobWithVersions" :key="item.reversion" :label="createVersionLabel(item)" :value="item.reversion">
+          <span style="float: left; font-size: 13px">{{ createVersionLabel(item) }}</span>
+          <span style="float: right; color: #8492a6; margin-left: 20px;">{{ item.updateTime }}</span>
+        </el-option>
+      </el-select>
+      <span style="margin-left: 40px;">
+        <el-tooltip :content="$t('actions.save')" effect="dark" placement="top-start">
+          <span>
+            <el-button :disabled="job.maxReversion !== currentReversion" icon="el-icon-check" type="success" size="mini" @click="save"/>
+          </span>
+        </el-tooltip>
+        <el-tooltip :content="$t('job.flowJob.tip.exchange')" effect="dark" placement="top">
+          <span style="margin-left: 10px;">
+            <el-button :disabled="job.maxReversion === currentReversion" type="info" size="mini" @click="exchange">
+              <svg-icon icon-class="exchange"/>
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip :content="$t('job.flowJob.tip.copy')" effect="dark" placement="top-start">
+          <span style="margin-left: 10px;">
+            <el-button type="primary" size="mini" @click="openCopyDialog">
+              <svg-icon icon-class="copy"/>
+            </el-button>
+          </span>
+        </el-tooltip>
+      </span>
     </div>
+
+    <!-- dialog -->
+    <el-dialog
+      :title="editDialog.title"
+      :visible.sync="editDialog.visible"
+      :center="true"
+      :modal="true"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false">
+      <job-info-form :job="targetJobParam" @save="copy" @cancel="editDialog.visible = false"/>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getReq, updateReq } from '@/api/job/baseJob'
+import { getReq, updateReq, versionsReq, copyReq, exchangeReq } from '@/api/job/baseJob'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import propertiesPanelModule from 'bpmn-js-properties-panel'
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
@@ -32,24 +70,32 @@ import minimapModule from 'diagram-js-minimap'
 // import { diff } from 'bpmn-js-differ' // https://github.com/bpmn-io/bpmn-js-differ
 import prioritiesModule from 'bpmn-js-task-priorities/lib/priorities'
 import customTranslate from '@/utils/customTranslate'
+import JobInfoForm from './components/jobInfoForm'
 import {
   getTimeStr
 } from './scripts/support'
 
 export default {
+  components: {
+    JobInfoForm
+  },
   data() {
     return {
-      job: null,
-      bpmnModeler: null
+      job: {},
+      currentReversion: 1,
+      bpmnModeler: null,
+      jobWithVersions: [],
+      editDialog: {
+        title: undefined,
+        visible: false
+      },
+      targetJobParam: {}
     }
   },
-  mounted() {
-    this.bindBpmn()
+  created() {
+    this.initJobWithVersions()
   },
   methods: {
-    refresh() {
-      // TODO
-    },
     bindBpmn() {
       const canvas = this.$refs.canvas
       const customTranslateModule = {
@@ -94,21 +140,111 @@ export default {
           }
         })
       })
-
       this.initWidget()
-      this.initData()
     },
     openDiagram(xml) {
+      const self = this
       this.bpmnModeler.importXML(xml, function(err) {
         if (err) {
           console.error(err)
+        } else {
+          self.bpmnModeler.get('canvas').zoom('fit-viewport')
         }
       })
     },
     save() {
-      updateReq(this.job).then(res => {
-        this.$message.success(res.data.msg)
+      const msg = '<p>' + this.$t('tip.saveConfirm') + '?</p>'
+      this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
+        .then(() => {
+          updateReq(this.job).then(res => {
+            this.$message.success(res.data.msg)
+          })
+        })
+    },
+    changeJob() {
+      this.resolveJob({ jobName: this.job.jobName, reversion: this.currentReversion })
+    },
+    initJobWithVersions() {
+      versionsReq({ jobName: this.$route.params.id }).then(res => {
+        this.bindBpmn()
+        this.jobWithVersions = res.data.result
+        for (let i = 0; i < this.jobWithVersions.length; i++) {
+          const item = this.jobWithVersions[i]
+          if (!item.maxVersion) {
+            this.currentReversion = item.maxReversion
+            this.resolveJob(item)
+            break
+          } else if (item.version === item.maxVersion) {
+            this.currentReversion = item.reversion
+            this.resolveJob(item)
+            break
+          }
+        }
       })
+    },
+    resolveJob(item) {
+      getReq({ jobName: item.jobName, reversion: item.reversion }).then(res => {
+        this.job = res.data.result
+        this.openDiagram(this.job.jobContent) // open the job content
+      })
+    },
+    openCopyDialog() {
+      this.editDialog.title = this.$t('job.flowJob.tip.copy')
+      this.editDialog.visible = true
+      this.targetJobParam = Object.assign({}, this.job)
+    },
+    // copy job with current reversion to another job(if the target was existent, will add its reversion)
+    copy() {
+      if (this.job.jobName === this.targetJobParam.jobName) {
+        this.$message.error(this.$t('job.flowJob.tip.jobNameNotChanged'))
+        return
+      }
+      const msg = '<p>' + this.$t('job.flowJob.tip.copyConfirm') + '?</p>'
+      this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
+        .then(() => {
+          const data = {
+            jobName: this.job.jobName,
+            reversion: this.currentReversion,
+            targetJobParam: this.targetJobParam
+          }
+          copyReq(data).then(res => {
+            this.$message.success(res.data.msg)
+            this.editDialog.visible = false
+            setTimeout(() => {
+              this.openNewJobPag(this.targetJobParam.jobName) // open new route
+            }, 200)
+          })
+        })
+    },
+    // exchange current reversion to the latest
+    exchange() {
+      const msg = '<p>' + this.$t('job.flowJob.tip.exchangeConfirm') + '?</p>'
+      this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
+        .then(() => {
+          exchangeReq(this.job).then(res => {
+            this.$message.success(res.data.msg)
+            this.openNewJobPag(this.job.jobName)
+            setTimeout(() => {
+              this.currentReversion = this.job.maxReversion
+            }, 300)
+          })
+        })
+    },
+    openNewJobPag(id) {
+      const route = {
+        name: 'flow',
+        params: {
+          id: id
+        }
+      }
+      this.$router.push(route)
+    },
+    createVersionLabel(item) {
+      let label = item.reversion
+      if (item.version) {
+        label += ' - ' + item.version
+      }
+      return label
     },
     exportSvg(done) {
       this.bpmnModeler.saveSVG(done)
@@ -134,38 +270,24 @@ export default {
         done(err, xml)
       })
     },
-    initData() {
-      getReq({ jobName: this.$route.params.id }).then(res => {
-        this.job = res.data.result
-        this.openDiagram(this.job.jobContent) // open the job content
-      })
-    },
     initWidget() {
       const self = this
       function registerFileDrop(container, callback) {
         function handleFileSelect(e) {
           e.stopPropagation()
           e.preventDefault()
-
           var files = e.dataTransfer.files
-
           var file = files[0]
-
           var reader = new FileReader()
-
           reader.onload = function(e) {
             var xml = e.target.result
-
             callback(xml)
           }
-
           reader.readAsText(file)
         }
-
         function handleDragOver(e) {
           e.stopPropagation()
           e.preventDefault()
-
           e.dataTransfer.dropEffect = 'copy' // Explicitly show this is a copy.
         }
         container.ondragover = handleDragOver
