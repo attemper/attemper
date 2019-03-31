@@ -9,6 +9,8 @@ import com.sse.attemper.executor.disruptor.producer.RequestProducer;
 import com.sse.attemper.executor.rpc.JobInvokingServiceImpl;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import org.camunda.bpm.engine.impl.cfg.IdGenerator;
+import org.camunda.bpm.engine.impl.db.DbIdGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,11 @@ public class ExecutorConfiguration {
         return ServerBuilder.forPort(rpcPort)
                 .addService(new JobInvokingServiceImpl())
                 .build();
+    }
+
+    @Bean
+    public IdGenerator idGenerator() {
+        return new DbIdGenerator();
     }
 
     @Bean

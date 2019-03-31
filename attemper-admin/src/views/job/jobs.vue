@@ -50,12 +50,7 @@
         width="40"/>
       <el-table-column :label="$t('job.columns.version')" align="center" width="80px">
         <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
-            <p>{{ $t('tip.clickToSeeDetail') }}</p>
-            <div slot="reference" class="name-wrapper">
-              <el-button v-show="scope.row.maxVersion" type="success" size="mini">{{ scope.row.maxVersion }}</el-button>
-            </div>
-          </el-popover>
+          <el-button :type="scope.row.maxVersion ? 'success' : 'info'" size="mini" @click="openDesignDialog(scope.row)">{{ scope.row.maxVersion || '-' }}</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -65,7 +60,8 @@
         align="center"
         min-width="100px">
         <template slot-scope="scope">
-          <span>{{ scope.row.jobName }}</span>
+          <el-tag type="primary" @click="update(scope.row)">{{ scope.row.jobName || '-' }}</el-tag>
+          <!--<span><a @click="update(scope.row)">{{ scope.row.jobName }}</a></span>-->
         </template>
       </el-table-column>
       <el-table-column :label="$t('job.columns.displayName')" min-width="150px">
@@ -85,20 +81,12 @@
       </el-table-column>-->
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <div>
-            <el-button type="primary" size="mini" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
-            <el-button
-              style="background-color:	#3CB371; border-color:	#3CB371; color: #fff;"
-              size="mini"
-              @click="openDesignDialog(scope.row)">{{ $t('job.actions.design') }}
-            </el-button>
-          </div>
           <div style="padding-top: 6px;">
-            <el-button style="background-color:	#A4D3EE; border-color:	#A4D3EE; color: #fff;" size="mini">{{
+            <el-button type="primary" size="mini">{{
             $t('job.actions.param') }}
             </el-button>
             <el-button
-              style="background-color:	#FFBBFF; border-color:	#FFBBFF; color: #fff;"
+              type="success"
               size="mini"
               @click="openTriggerDialog(scope.row)">{{ $t('job.actions.trigger') }}
             </el-button>
@@ -601,7 +589,7 @@ export default {
       /* this.$nextTick(() => {
         this.$refs['baseForm'].clearValidate()
       })*/
-      this.$refs.jobInfoForm.clearValidate()
+      // this.$refs.jobInfoForm.clearValidate()
     },
     update(row) {
       this.editDialog.oper = 'update'
@@ -612,7 +600,7 @@ export default {
       /* this.$nextTick(() => {
         this.$refs['baseForm'].clearValidate()
       })*/
-      this.$refs.jobInfoForm.clearValidate()
+      // this.$refs.jobInfoForm.clearValidate()
     },
     save(job) {
       this.job = job
@@ -812,7 +800,7 @@ export default {
       this.openDesignJobFlow()
     },
     openTriggerDialog(row) {
-      // this.editDialog.title = this.$t('job.actions.design')
+      this.editDialog.title = this.$t('job.actions.trigger')
       this.selectRow(row)
       this.editDialog.trigger.visible = true
       triggerApi.getReq({ jobName: this.job.jobName }).then(res => {

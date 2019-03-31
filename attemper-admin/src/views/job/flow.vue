@@ -74,6 +74,7 @@ import JobInfoForm from './components/jobInfoForm'
 import {
   getTimeStr
 } from './scripts/support'
+import customElementTemplate from './element-templates/custom'
 
 export default {
   components: {
@@ -113,6 +114,7 @@ export default {
           prioritiesModule,
           customTranslateModule
         ],
+        elementTemplates: customElementTemplate,
         moddleExtensions: {
           camunda: camundaModdleDescriptor
         },
