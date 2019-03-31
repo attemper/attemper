@@ -1,18 +1,21 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+
+Vue.use(Router)
+
 /* Layout */
-import Layout from '@/views/layout/Layout'
+import Layout from '@/layout/Layout'
+
 /* Router Modules */
 import componentsRouter from './modules/components'
 import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
+import treeTableRouter from './modules/tree-table'
 import nestedRouter from './modules/nested'
 import sysRouter from './modules/sys'
 import jobRouter from './modules/job'
 
-Vue.use(Router)
-
-/** note: Submenu only appear when children.length>=1
+/** note: sub-menu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
  **/
 
@@ -25,15 +28,21 @@ Vue.use(Router)
 * name:'router-name'             the name is used by <keep-alive> (must set!!!)
 * meta : {
     roles: ['admin','editor']    will control the page roles (you can set multiple roles)
-    title: 'title'               the name show in submenu and breadcrumb (recommend set)
+    title: 'title'               the name show in sub-menu and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar
     noCache: true                if true, the page will no be cached(default is false)
     breadcrumb: false            if false, the item will hidden in breadcrumb(default is true)
+    affix: true                  if true, the tag will affix in the tags-view
   }
 **/
+
+/**
+ * constantRouterMap
+ * a base page that does not have permission requirements
+ * all roles can be accessed
+ * */
 export const constantRouterMap = [
   {
-    name: 'redirect',
     path: '/redirect',
     component: Layout,
     hidden: true,
@@ -46,7 +55,6 @@ export const constantRouterMap = [
     ]
   },
   {
-    name: 'login',
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true,
@@ -55,25 +63,21 @@ export const constantRouterMap = [
     }
   },
   {
-    name: 'auth-redirect',
     path: '/auth-redirect',
     component: () => import('@/views/login/authredirect'),
     hidden: true
   },
   {
-    name: '404',
     path: '/404',
     component: () => import('@/views/errorPage/404'),
     hidden: true
   },
   {
-    name: '401',
     path: '/401',
     component: () => import('@/views/errorPage/401'),
     hidden: true
   },
   {
-    name: 'dashboard',
     path: '',
     component: Layout,
     redirect: 'dashboard',
@@ -82,7 +86,7 @@ export const constantRouterMap = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', noCache: true, notMenu: true }
+        meta: { title: 'dashboard', icon: 'dashboard', noCache: true, notMenu: true, affix: true }
       }
     ],
     meta: {
@@ -90,10 +94,8 @@ export const constantRouterMap = [
     }
   },
   {
-    name: 'documentation',
     path: '/documentation',
     component: Layout,
-    redirect: '/documentation/index',
     children: [
       {
         path: 'index',
@@ -131,7 +133,6 @@ export default new Router({
  */
 export const devRouterMap = [
   {
-    name: 'permission',
     path: '/permission',
     component: Layout,
     redirect: '/permission/index',
@@ -159,11 +160,19 @@ export const devRouterMap = [
           title: 'directivePermission'
           // if do not set roles, means: this page does not require permission
         }
+      },
+      {
+        path: 'role',
+        component: () => import('@/views/permission/role'),
+        name: 'RolePermission',
+        meta: {
+          title: 'rolePermission',
+          roles: ['admin']
+        }
       }
     ]
   },
   {
-    name: 'icon',
     path: '/icon',
     component: Layout,
     children: [
@@ -176,17 +185,18 @@ export const devRouterMap = [
     ]
   },
 
-  /** When your routing table is too long, you can split it into small modules**/
+  /** when your routing map is too long, you can split it into small modules **/
   componentsRouter,
   chartsRouter,
   nestedRouter,
   tableRouter,
+  treeTableRouter,
 
   {
-    name: 'Example',
     path: '/example',
     component: Layout,
     redirect: '/example/list',
+    name: 'Example',
     meta: {
       title: 'example',
       icon: 'example'
@@ -215,7 +225,6 @@ export const devRouterMap = [
   },
 
   {
-    name: 'tab',
     path: '/tab',
     component: Layout,
     children: [
@@ -229,10 +238,10 @@ export const devRouterMap = [
   },
 
   {
-    name: 'ErrorPages',
     path: '/error',
     component: Layout,
     redirect: 'noredirect',
+    name: 'ErrorPages',
     meta: {
       title: 'errorPages',
       icon: '404'
@@ -254,7 +263,6 @@ export const devRouterMap = [
   },
 
   {
-    name: 'error-log',
     path: '/error-log',
     component: Layout,
     redirect: 'noredirect',
@@ -269,10 +277,10 @@ export const devRouterMap = [
   },
 
   {
-    name: 'Excel',
     path: '/excel',
     component: Layout,
     redirect: '/excel/export-excel',
+    name: 'Excel',
     meta: {
       title: 'excel',
       icon: 'excel'
@@ -291,6 +299,12 @@ export const devRouterMap = [
         meta: { title: 'selectExcel' }
       },
       {
+        path: 'export-merge-header',
+        component: () => import('@/views/excel/mergeHeader'),
+        name: 'MergeHeader',
+        meta: { title: 'mergeHeader' }
+      },
+      {
         path: 'upload-excel',
         component: () => import('@/views/excel/uploadExcel'),
         name: 'UploadExcel',
@@ -300,7 +314,6 @@ export const devRouterMap = [
   },
 
   {
-    name: 'zip',
     path: '/zip',
     component: Layout,
     redirect: '/zip/download',
@@ -317,29 +330,25 @@ export const devRouterMap = [
   },
 
   {
-    name: 'pdf',
     path: '/pdf',
     component: Layout,
     redirect: '/pdf/index',
-    meta: { title: 'PDF', icon: 'pdf' },
     children: [
       {
         path: 'index',
         component: () => import('@/views/pdf/index'),
         name: 'PDF',
-        meta: { title: 'PDF' }
+        meta: { title: 'pdf', icon: 'pdf' }
       }
     ]
   },
   {
-    name: 'pdf-download',
     path: '/pdf/download',
     component: () => import('@/views/pdf/download'),
     hidden: true
   },
 
   {
-    name: 'theme',
     path: '/theme',
     component: Layout,
     redirect: 'noredirect',
@@ -354,7 +363,6 @@ export const devRouterMap = [
   },
 
   {
-    name: 'clipboard',
     path: '/clipboard',
     component: Layout,
     redirect: 'noredirect',
@@ -383,7 +391,6 @@ export const devRouterMap = [
   },
 
   {
-    name: 'external-link',
     path: 'external-link',
     component: Layout,
     children: [
@@ -398,5 +405,6 @@ export const devRouterMap = [
 export const asyncRouterMap = [
   sysRouter,
   jobRouter,
-  { name: '404', path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true }
 ]
+

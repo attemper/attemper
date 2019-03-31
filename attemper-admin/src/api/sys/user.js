@@ -4,7 +4,26 @@ import config from '@/config'
 const { APIPath } = config
 const SubPath = '/user'
 
-export function getUserInfo() {
+export function login(userName, password) {
+  const data = {
+    userName,
+    password
+  }
+  return request({
+    url: APIPath.SYS + '/login',
+    data,
+    method: 'post'
+  })
+}
+
+export function logout() {
+  return request({
+    url: APIPath.SYS + '/logout',
+    method: 'post'
+  })
+}
+
+export function getInfo() {
   return request({
     url: APIPath.SYS + SubPath + '/info',
     params: {},

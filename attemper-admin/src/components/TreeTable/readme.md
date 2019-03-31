@@ -1,89 +1,220 @@
+
+- [Enlgish](#Brief)
+
+# 中文
+
 ## 写在前面
-此组件仅提供一个创建TreeTable的解决思路
 
-## prop说明
-#### *data*
-  **必填**
+此组件仅提供一个创建 `TreeTable` 的解决思路。它基于`element-ui`的 table 组件实现，通过`el-table`的`row-style`方法，在里面判断元素是否需要隐藏或者显示，从而实现`TreeTable`的展开与收起。
 
-  原始数据,要求是一个数组或者对象
-  ```javascript
-    [{
-      key1: value1,
-      key2: value2,
-      children: [{
-        key1: value1
+并且本组件充分利用 `vue` 插槽的特性来方便用户自定义。
+
+`evel.js` 里面，`addAttrs` 方法会给数据添加几个属性，`treeTotable` 会对数组扁平化。这些操作都不会破坏源数据，只是会新增属性。
+
+## Props 说明
+
+|    Attribute     | Description                        |  Type   | Default  |
+| :--------------: | :--------------------------------- | :-----: | :------: |
+|       data       | 原始展示数据                       |  Array  |    []    |
+|     columns      | 列属性                             |  Array  |    []    |
+| defaultExpandAll | 默认是否全部展开                   | Boolean |  false   |
+| defaultChildren  | 指定子树为节点对象的某个属性值     | String  | children |  |
+|      indent      | 相邻级节点间的水平缩进，单位为像素 | Number  |    50    |
+
+> 任何 `el-table` 的属性都支持，例如`border`、`fit`、`size`或者`@select`、`@cell-click`等方法。详情属性见`el-table`文档。
+
+---
+
+### 代码示例
+
+```html
+<tree-table :data="data" :columns="columns" border>
+```
+
+#### data(**必填**)
+
+```js
+const data = [
+  {
+    name:'1'
+    children: [
+      {
+        name: '1-1'
       },
       {
-        key1: value1
-      }]
-    },
-    {
-      key1: value1
-    }]
-  ```
-  或者
- ```javascript
-    {
-      key1: value1,
-      key2: value2,
-      children: [{
-        key1: value1
+        name: '1-2'
+      }
+    ]
+  },
+  {
+    name: `2`
+  }
+]
+```
+
+#### columns(**必填**)
+
+- label: 显示在表头的文字
+- key: 对应 data 的 key。treeTable 将显示相应的 value
+- expand: `true` or `false`。若为 true，则在该列显示展开收起图标
+- checkbox: `true` or `false`。若为 true，则在该列显示`checkbox`
+- width: 每列的宽度，为一个数字(可选)。例如`200`
+- align: 对齐方式 `left/center/right`
+- header-align: 表头对齐方式 `left/center/right`
+
+```javascript
+const columns = [
+  {
+    label: 'Checkbox',
+    checkbox: true
+  },
+  {
+    label: '',
+    key: 'id',
+    expand: true
+  },
+  {
+    label: 'Event',
+    key: 'event',
+    width: 200,
+    align: 'left'
+  },
+  {
+    label: 'Scope',
+    key: 'scope'
+  }
+]
+```
+
+> 树表组件将会根据 columns 的 key 属性生成具名插槽，如果你需要对列数据进行自定义，通过插槽即可实现
+
+```html
+<template slot="your key" slot-scope="{scope}">
+  <el-tag>level: {{ scope.row._level }}</el-tag>
+  <el-tag>expand: {{ scope.row._expand }}</el-tag>
+  <el-tag>select: {{ scope.row._select }}</el-tag>
+</template>
+```
+
+## Events
+
+目前提供了几个方法，不过只是`beta`版本，之后很可能会修改。
+
+```js
+this.$refs.TreeTable.addChild(row, data) //添加子元素
+this.$refs.TreeTable.addBrother(row, data) //添加兄弟元素
+this.$refs.TreeTable.delete(row) //删除该元素
+```
+
+## 其他
+
+如果有其他的需求，请参考[el-table](http://element-cn.eleme.io/#/en-US/component/table)的 api 自行修改 index.vue
+
+# English
+
+## Brief
+
+This component only provides a solution for creating `TreeTable`. It is based on the `element-ui` table component. It uses the `row-style` method of `el-table` to determine whether the element needs to be hidden or displayed.
+
+And this component makes full use of the features of the `vue` slot to make it user-friendly.
+
+In `evel.js`, the `addAttrs` method adds several properties to the data, and `treeTotable` flattens the array. None of these operations will destroy the source data, just add properties.
+
+## Props
+
+|    Attribute     | Description                                                  |  Type   | Default  |
+| :--------------: | :----------------------------------------------------------- | :-----: | :------: |
+|       data       | original display data                                        |  Array  |    []    |
+|     columns      | column attribute                                             |  Array  |    []    |
+| defaultExpandAll | whether to expand all nodes by default                       | Boolean |  false   |
+| defaultChildren  | specify which node object is used as the node's subtree      | String  | children |  |
+|      indent      | horizontal indentation of nodes in adjacent levels in pixels | Number  |    50    |
+
+> Any of the `el-table` properties are supported, such as `border`, `fit`, `size` or `@select`, `@cell-click`. See the ʻel-table` documentation for details.
+
+---
+
+### Example
+
+```html
+<tree-table :data="data" :columns="columns" border>
+```
+
+#### data(**Required**)
+
+```js
+const data = [
+  {
+    name:'1'
+    children: [
+      {
+        name: '1-1'
       },
       {
-        key1: value1
-      }]
-    }
-  ```
+        name: '1-2'
+      }
+    ]
+  },
+  {
+    name: `2`
+  }
+]
+```
 
-#### columns
-  列属性,要求是一个数组
+#### columns(**Required**)
 
-  1. text: 显示在表头的文字
-  2. value: 对应data的key。treeTable将显示相应的value
-  3. width: 每列的宽度，为一个数字(可选)
+- label: text displayed in the header
+- key: data.key will show in column
+- expand: `true` or `false`
+- checkbox: `true` or `false`
+- width: column width 。such as `200`
+- align: alignment `left/center/right`
+- header-align: alignment of the table header `left/center/right`
 
-  如果你想要每个字段都有自定义的样式或者嵌套其他组件，columns可不提供，直接像在el-table一样写即可，如果没有自定义内容，提供columns将更加的便捷方便
+```javascript
+const columns = [
+  {
+    label: 'Checkbox',
+    checkbox: true
+  },
+  {
+    label: '',
+    key: 'id',
+    expand: true
+  },
+  {
+    label: 'Event',
+    key: 'event',
+    width: 200,
+    align: 'left'
+  },
+  {
+    label: 'Scope',
+    key: 'scope'
+  }
+]
+```
 
-  如果你有几个字段是需要自定义的，几个不需要，那么可以将不需要自定义的字段放入columns，将需要自定义的内容放入到slot中，详情见后文
-  ```javascript
-  [{
-    value:string,
-    text:string,
-    width:number
-  },{
-    value:string,
-    text:string,
-    width:number
-  }]
-  ```
+> The tree table component will generate a named slot based on the key property of columns. If you need to customize the column data, you can do it through the slot.
 
-#### expandAll
-  是否默认全部展开，boolean值，默认为false
+```html
+<template slot="your key" slot-scope="{scope}">
+  <el-tag>level: {{ scope.row._level }}</el-tag>
+  <el-tag>expand: {{ scope.row._expand }}</el-tag>
+  <el-tag>select: {{ scope.row._select }}</el-tag>
+</template>
+```
 
-#### evalFunc
-  解析函数，function，非必须
+## Events
 
-  如果不提供，将使用默认的[evalFunc](./eval.js)
+Several methods are currently available, but only the `beta` version, which is likely to be modified later.
 
-  如果提供了evalFunc,那么会用提供的evalFunc去解析data，并返回treeTable渲染所需要的值。如何编写一个evalFunc，请参考[*eval.js*](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/components/TreeTable/eval.js)或[*customEval.js*](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/treeTable/customEval.js)
+```js
+this.$refs.TreeTable.addChild(row, data) //Add child elements
+this.$refs.TreeTable.addBrother(row, data) //Add a sibling element
+this.$refs.TreeTable.delete(row) //Delete the element
+```
 
-#### evalArgs
-  解析函数的参数，是一个数组
+## Other
 
-  **请注意，自定义的解析函数参数第一个为this.data，第二个参数为， this.expandAll,你不需要在evalArgs填写。一定记住，这两个参数是强制性的，并且位置不可颠倒** *this.data为需要解析的数据，this.expandAll为是否默认展开*
-
-  如你的解析函数需要的参数为`(this.data, this.expandAll,1,2,3,4)`，那么你只需要将`[1,2,3,4]`赋值给`evalArgs`就可以了
-
-  如果你的解析函数参数只有`(this.data, this.expandAll)`,那么就可以不用填写evalArgs了
-
-  具体可参考[*customEval.js*](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/treeTable/customEval.js)的函数参数和[customTreeTable](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/treeTable/customTreeTable.vue)的`evalArgs`属性值
-
- ## slot
- 这是一个自定义列的插槽。
-
- 默认情况下，treeTable只有一行行展示数据的功能。但是一般情况下，我们会要给行加上一个操作按钮或者根据当行数据展示不同的样式，这时我们就需要自定义列了。请参考[customTreeTable](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/treeTable/customTreeTable.vue)，[实例效果](https://panjiachen.github.io/vue-element-admin/#/table/tree-table)
-
- `slot`和`columns属性`可同时存在,columns里面的数据列会在slot自定义列的左边展示
-
- ## 其他
-  如果有其他的需求，请参考[el-table](http://element-cn.eleme.io/#/en-US/component/table)的api自行修改index.vue
+If you have other requirements, please refer to the [el-table](http://element-cn.eleme.io/#/en-US/component/table) api to modify the index.vue

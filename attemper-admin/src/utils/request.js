@@ -7,7 +7,8 @@ import config from '@/config'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.BASE_API, // api 的 base_url
+  baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
+  withCredentials: true, // 跨域请求时发送 cookies
   timeout: 5000 // request timeout
 })
 const { tenantId, sign } = config
@@ -85,7 +86,7 @@ service.interceptors.response.use(
   //         cancelButtonText: '取消',
   //         type: 'warning'
   //       }).then(() => {
-  //         store.dispatch('FedLogOut').then(() => {
+  //         store.dispatch('user/resetToken').then(() => {
   //           location.reload() // 为了重新实例化vue-router对象 避免bug
   //         })
   //       })

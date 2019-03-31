@@ -1,6 +1,6 @@
 /** When your routing job is too long, you can split it into small modules**/
 
-import Layout from '@/views/layout/Layout'
+import Layout from '@/layout/Layout'
 
 const jobRouter = {
   name: 'job',

@@ -5,6 +5,7 @@ export default {
     documentation: 'Documentación',
     guide: 'Guía',
     permission: 'Permisos',
+    rolePermission: 'Permisos de rol',
     pagePermission: 'Permisos de la página',
     directivePermission: 'Permisos de la directiva',
     icons: 'Iconos',
@@ -56,8 +57,10 @@ export default {
     excel: 'Excel',
     exportExcel: 'Exportar a Excel',
     selectExcel: 'Export seleccionado',
+    mergeHeader: 'Merge Header',
     uploadExcel: 'Subir Excel',
     zip: 'Zip',
+    pdf: 'PDF',
     exportZip: 'Exportar a Zip',
     theme: 'Tema',
     clipboardDemo: 'Clipboard',
@@ -68,14 +71,13 @@ export default {
     logOut: 'Salir',
     dashboard: 'Panel de control',
     github: 'Github',
-    screenfull: 'Pantalla completa',
     theme: 'Tema',
     size: 'Tamaño global'
   },
   login: {
     title: 'Formulario de acceso',
     logIn: 'Acceso',
-    userName: 'Usuario',
+    username: 'Usuario',
     password: 'Contraseña',
     any: 'nada',
     thirdparty: 'Conectar con',
@@ -86,9 +88,14 @@ export default {
     github: 'Repositorio Github'
   },
   permission: {
+    addRole: 'Nuevo rol',
+    editPermission: 'Permiso de edición',
     roles: 'Tus permisos',
     switchRoles: 'Cambiar permisos',
-    tips: 'In some cases it is not suitable to use v-permission, such as element Tab component or el-table-column and other asynchronous rendering dom cases which can only be achieved by manually setting the v-if.'
+    tips: 'In some cases it is not suitable to use v-permission, such as element Tab component or el-table-column and other asynchronous rendering dom cases which can only be achieved by manually setting the v-if.',
+    delete: 'Borrar',
+    confirm: 'Confirmar',
+    cancel: 'Cancelar'
   },
   guide: {
     description: 'The guide page is useful for some people who entered the project for the first time. You can briefly introduce the features of the project. Demo is based on ',
@@ -156,5 +163,12 @@ export default {
     close: 'Cerrar',
     closeOthers: 'Cerrar otros',
     closeAll: 'Cerrar todos'
+  },
+  settings: {
+    title: 'Page style setting',
+    theme: 'Theme Color',
+    tagsView: 'Open Tags-View',
+    fixedHeader: 'Fixed Header',
+    sidebarLogo: 'Sidebar Logo'
   }
 }

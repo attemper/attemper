@@ -6,11 +6,8 @@ import { asyncRouterMap, devRouterMap, constantRouterMap } from '@/router'
  * @param route
  */
 function hasPermission(resourceNames, route) {
-  if (!route.name) {
-    console.error('the route name must exist:{}', route.path)
-  }
   if (route.meta && !route.meta.notMenu) { // 是菜单
-    return resourceNames.some(resourceName => route.name === resourceName)
+    return resourceNames.some(resourceName => (route.name || route.path.substring(1)) === resourceName)
   } else {
     return true
   }
@@ -21,14 +18,14 @@ function hasPermission(resourceNames, route) {
  * @param routes asyncRouterMap
  * @param roles
  */
-function filterAsyncRouter(routes, resourceNames) {
+function filterAsyncRoutes(routes, resourceNames) {
   const res = []
 
   routes.forEach(route => {
     const tmp = { ...route }
     if (hasPermission(resourceNames, tmp)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRouter(tmp.children, resourceNames)
+        tmp.children = filterAsyncRoutes(tmp.children, resourceNames)
       }
       res.push(tmp)
     }
@@ -37,42 +34,38 @@ function filterAsyncRouter(routes, resourceNames) {
   return res
 }
 
-const permission = {
-  state: {
-    routers: constantRouterMap,
-    addRouters: []
-  },
-  mutations: {
-    SET_ROUTERS: (state, routers) => {
-      state.addRouters = routers
-      state.routers = constantRouterMap.concat(routers)
-    }
-  },
-  actions: {
-    GenerateRoutes({ commit }) {
-      return new Promise(resolve => {
-        const roleNames = JSON.parse(sessionStorage.roleNames)
-        const resourceNames = JSON.parse(sessionStorage.resourceNames)
-        let accessedRouters
-        if (roleNames.includes('admin')) {
-          accessedRouters = asyncRouterMap.concat(devRouterMap)
-        } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, resourceNames)
-        }
-        commit('SET_ROUTERS', accessedRouters)
-        resolve()
-        /* const { roles } = data
-        let accessedRouters
-        if (roles.includes('admin')) {
-          accessedRouters = asyncRouterMap
-        } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-        }
-        commit('SET_ROUTERS', accessedRouters)
-        resolve()*/
-      })
-    }
+const state = {
+  routes: constantRouterMap,
+  addRoutes: []
+}
+const mutations = {
+  SET_ROUTES: (state, routes) => {
+    state.addRoutes = routes
+    state.routes = constantRouterMap.concat(routes)
+  }
+}
+const actions = {
+  generateRoutes({ commit }) {
+    return new Promise(resolve => {
+      const roleNames = JSON.parse(sessionStorage.roleNames)
+      const resourceNames = JSON.parse(sessionStorage.resourceNames)
+      let accessedRouter
+      if (roleNames.includes('admin')) {
+        accessedRouter = asyncRouterMap.concat(devRouterMap)
+      } else {
+        accessedRouter = filterAsyncRoutes(asyncRouterMap, resourceNames)
+      }
+      commit('SET_ROUTES', accessedRouter)
+      resolve(constantRouterMap.concat(accessedRouter))
+    })
   }
 }
 
-export default permission
+export default {
+  namespaced: true,
+  state,
+  mutations,
+  actions
+}
+
+

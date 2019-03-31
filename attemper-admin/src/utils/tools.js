@@ -1,3 +1,5 @@
+import store from '@/store'
+
 /**
  * @param {String|Number} value 要验证的字符串或数值
  * @param {*} validList 用来验证的列表
@@ -35,4 +37,8 @@ export const canAccess = (value) => {
     }
   }
   return isExist
+}
+
+export const closeAllTabs = () => {
+  store.dispatch('tagsView/delAllViews').then()
 }
