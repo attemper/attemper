@@ -17,6 +17,10 @@
             <artifactId>attemper-sys</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.sse.quartz</groupId>
+            <artifactId>quartz-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <exclusions>

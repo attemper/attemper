@@ -9,6 +9,9 @@ import com.sse.attemper.core.service.job.BaseJobService;
 import com.sse.attemper.core.service.job.TriggerService;
 import com.sse.attemper.core.service.tool.ToolService;
 import org.hibernate.validator.HibernateValidator;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -49,5 +52,16 @@ public class CoreConfiguration {
         MethodValidationPostProcessor postProcessor = new MethodValidationPostProcessor();
         postProcessor.setValidator(validator());
         return postProcessor;
+    }
+
+    /**
+     * use it to operate job&trigger with database, you can not start it
+     * @param schedulerFactory
+     * @return
+     * @throws SchedulerException
+     */
+    @Bean
+    public Scheduler scheduler(SchedulerFactory schedulerFactory) throws SchedulerException {
+        return schedulerFactory.getScheduler();
     }
 }
