@@ -3,6 +3,7 @@ package com.sse.attemper.core.dao.mapper.job;
 import com.sse.attemper.common.base.BaseMapper;
 import com.sse.attemper.sdk.common.result.dispatch.job.BaseJob;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
  * @author ldang
  */
 @Mapper
+@Repository
 public interface BaseJobMapper extends BaseMapper<BaseJob> {
 
     List<BaseJob> list(Map<String, Object> paramMap);

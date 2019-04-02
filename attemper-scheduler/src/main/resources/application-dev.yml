@@ -31,8 +31,3 @@ grpc:
       name: executor
       port: 5231
 
-org:
-  quartz:
-    jobStore:
-      class: org.quartz.impl.jdbcjobstore.JobStoreTX
-

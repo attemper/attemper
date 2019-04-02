@@ -6,6 +6,7 @@ import com.sse.attemper.sdk.common.result.dispatch.trigger.sub.CalendarOffsetTri
 import com.sse.attemper.sdk.common.result.dispatch.trigger.sub.CronTriggerResult;
 import com.sse.attemper.sdk.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
  * @author ldang
  */
 @Mapper
+@Repository
 public interface TriggerMapper extends BaseMapper<Object> {
 
     List<CronTriggerResult> getCronTriggers(Map<String, Object> paramMap);

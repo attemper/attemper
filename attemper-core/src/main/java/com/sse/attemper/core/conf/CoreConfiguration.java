@@ -4,6 +4,8 @@ import com.sse.attemper.core.controller.arg.ArgController;
 import com.sse.attemper.core.controller.job.BaseJobController;
 import com.sse.attemper.core.controller.job.TriggerController;
 import com.sse.attemper.core.controller.tool.ToolController;
+import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
+import com.sse.attemper.core.dao.mapper.job.TriggerMapper;
 import com.sse.attemper.core.service.arg.ArgService;
 import com.sse.attemper.core.service.job.BaseJobService;
 import com.sse.attemper.core.service.job.TriggerService;
@@ -34,7 +36,10 @@ import javax.validation.ValidatorFactory;
         BaseJobController.class,
         ArgController.class,
         TriggerController.class,
-        ToolController.class
+        ToolController.class,
+
+        BaseJobMapper.class,
+        TriggerMapper.class
 })
 public class CoreConfiguration {
 

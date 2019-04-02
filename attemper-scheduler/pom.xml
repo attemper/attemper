@@ -17,20 +17,16 @@
             <artifactId>attemper-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>${groupId}</groupId>
-            <artifactId>attemper-grpc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${groupId}</groupId>
-            <artifactId>attemper-grpc-autoconfigure</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>com.sse.quartz</groupId>
             <artifactId>quartz-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sse.quartz</groupId>
+            <artifactId>quartz-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.sse.quartz</groupId>

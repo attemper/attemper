@@ -9,8 +9,8 @@ public class TenantHolder {
     
     private static final ThreadLocal<Tenant> contextHolder = new ThreadLocal<Tenant>();
 
-    public static void set(Tenant Tenant) {
-        contextHolder.set(Tenant);
+    public static void set(Tenant tenant) {
+        contextHolder.set(tenant);
     }
 
     public static Tenant get() {

@@ -3,6 +3,7 @@ package com.sse.attemper.core.service.job;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
+import com.sse.attemper.core.ext.job.factory.JobDetailFactory;
 import com.sse.attemper.sdk.common.exception.RTException;
 import com.sse.attemper.sdk.common.param.dispatch.job.*;
 import com.sse.attemper.sdk.common.result.dispatch.job.BaseJob;
@@ -13,6 +14,10 @@ import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -35,6 +40,9 @@ public class BaseJobService extends BaseServiceAdapter {
 
     @Autowired
     private RepositoryService repositoryService;
+
+    @Autowired
+    private Scheduler scheduler;
 
     /**
      * 根据id查询租户
@@ -131,6 +139,13 @@ public class BaseJobService extends BaseServiceAdapter {
     public Void remove(BaseJobRemoveParam removeParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
         mapper.delete(paramMap);
+        removeParam.getJobNames().forEach(jobName -> {
+            try {
+                scheduler.deleteJob(new JobKey(jobName, injectAdminedTenant().getId()));
+            } catch (SchedulerException e) {
+                throw new RTException(3001, e);
+            }
+        });
         return null;
     }
 
@@ -157,6 +172,12 @@ public class BaseJobService extends BaseServiceAdapter {
                     .setMaxVersion(maxVersion);
             mapper.update(baseJob);
             mapper.updateInfo(baseJob);
+            try {
+                JobDetail jobDetail = JobDetailFactory.getJobDetail(baseJob.getJobName(), baseJob.getTenantId());
+                scheduler.addJob(jobDetail, true, true);
+            } catch (SchedulerException e) {
+                throw new RTException(3000, e);
+            }
         });
         return null;
     }
