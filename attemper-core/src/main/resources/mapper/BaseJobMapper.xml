@@ -158,7 +158,11 @@
     </select>
 
     <delete id="delete" parameterType="map">
-        delete from ${tablePrefix}job
+        DELETE FROM
+        j, ji USING
+        ${tablePrefix}job j
+        JOIN ${tablePrefix}job_info ji
+        USING (job_name, tenant_id)
         <where>
             <if test="jobNames != null">
                 JOB_NAME in
@@ -166,9 +170,7 @@
                     #{jobName}
                 </foreach>
             </if>
-            <if test="tenantId != null">
-                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
-            </if>
+            <include refid="condTenantId"/>
         </where>
     </delete>
 

@@ -14,6 +14,7 @@ import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.Process;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +92,13 @@ public class BaseJobService extends BaseServiceAdapter {
                     .done();
             baseJob.setJobContent(Bpmn.convertToString(modelInstance));
         } else {
-            baseJob.setJobContent(saveParam.getJobContent());
+            BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(saveParam.getJobContent().getBytes()));
+            Collection<Process> modelElements = bpmnModelInstance.getModelElementsByType(Process.class);
+            for (Process process : modelElements) {
+                process.builder().id(saveParam.getJobName()).name(saveParam.getDisplayName());
+                break;
+            }
+            baseJob.setJobContent(Bpmn.convertToString(bpmnModelInstance));
         }
         mapper.add(baseJob);
         mapper.addInfo(baseJob);
