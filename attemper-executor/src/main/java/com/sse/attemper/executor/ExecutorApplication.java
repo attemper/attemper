@@ -2,7 +2,6 @@ package com.sse.attemper.executor;
 
 import com.sse.attemper.common.constant.GlobalConstants;
 import com.sse.attemper.config.conf.ConfigConfiguration;
-import com.sse.attemper.core.conf.CoreConfiguration;
 import com.sse.attemper.sys.conf.SysConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -15,8 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Import({
         ConfigConfiguration.class,
-        SysConfiguration.class,
-        CoreConfiguration.class
+        SysConfiguration.class
 })
 @EnableDiscoveryClient
 @EnableTransactionManagement  //开启事务

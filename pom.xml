@@ -57,6 +57,7 @@
 		<hutool.version>3.3.2</hutool.version>
 		<reflections.version>0.9.10</reflections.version>
 		<junit.version>4.12</junit.version>
+		<groovy.version>2.5.6</groovy.version>
 
 		<!-- plugin version -->
 		<os.plugin.version>1.5.0.Final</os.plugin.version>
@@ -279,6 +280,12 @@
 				<groupId>com.lmax</groupId>
 				<artifactId>disruptor</artifactId>
 				<version>${disruptor.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.codehaus.groovy</groupId>
+				<artifactId>groovy-all</artifactId>
+				<version>${groovy.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
