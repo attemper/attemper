@@ -9,10 +9,7 @@ import com.sse.attemper.sdk.common.result.dispatch.trigger.sub.DailyIntervalTrig
 import com.sse.attemper.sys.holder.TenantHolder;
 import com.xiaoleilu.hutool.bean.BeanUtil;
 import org.apache.commons.lang.StringUtils;
-import org.quartz.DailyTimeIntervalScheduleBuilder;
-import org.quartz.DateBuilder;
-import org.quartz.TimeOfDay;
-import org.quartz.Trigger;
+import org.quartz.*;
 import org.quartz.impl.jdbcjobstore.Constants;
 
 import java.util.*;
@@ -51,19 +48,27 @@ public class DailyIntervalTriggerHandler implements TriggerHandler<DailyInterval
         Set<Trigger> quartzTriggers = new HashSet(paramOfTriggers.size());
         paramOfTriggers.forEach(
                 item -> {
-                    DailyTimeIntervalScheduleBuilder builder = DailyTimeIntervalScheduleBuilder.dailyTimeIntervalSchedule()
-                            .withInterval(item.getInterval(), DateBuilder.IntervalUnit.valueOf(item.getTimeUnit()))
-                            .endingDailyAt(TimeUtils.toTime(item.getEndTimeOfDay()))
-                            .withRepeatCount(item.getRepeatCount());
-                    TimeOfDay startTimeOfDay = TimeUtils.toTime(item.getStartTimeOfDay());
-                    Set<Integer> days = toDaysOfTheWeek(item.getDaysOfWeek());
-                    if (startTimeOfDay != null) {
-                        builder.startingDailyAt(startTimeOfDay);
+                    Trigger trigger;
+                    if (Constants.TTYPE_SIMPLE.equals(item.getTriggerType())) {
+                        SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule()
+                                .withRepeatCount(item.getRepeatCount())
+                                .withIntervalInMilliseconds(item.getInterval());
+                        trigger = triggerBuilder(item).withSchedule(builder).build();
+                    } else {
+                        DailyTimeIntervalScheduleBuilder builder = DailyTimeIntervalScheduleBuilder.dailyTimeIntervalSchedule()
+                                .withInterval(item.getInterval(), DateBuilder.IntervalUnit.valueOf(item.getTimeUnit()))
+                                .endingDailyAt(TimeUtils.toTime(item.getEndTimeOfDay()))
+                                .withRepeatCount(item.getRepeatCount());
+                        TimeOfDay startTimeOfDay = TimeUtils.toTime(item.getStartTimeOfDay());
+                        Set<Integer> days = toDaysOfTheWeek(item.getDaysOfWeek());
+                        if (startTimeOfDay != null) {
+                            builder.startingDailyAt(startTimeOfDay);
+                        }
+                        if (days != null) {
+                            builder.onDaysOfTheWeek(days);
+                        }
+                        trigger = triggerBuilder(item).withSchedule(builder).build();
                     }
-                    if (days != null) {
-                        builder.onDaysOfTheWeek(days);
-                    }
-                    Trigger trigger = triggerBuilder(item).withSchedule(builder).build();
                     quartzTriggers.add(trigger);
                 });
         return quartzTriggers;
