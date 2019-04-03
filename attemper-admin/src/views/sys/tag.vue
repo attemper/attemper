@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('sys.tag.columns.tagName')" v-model="page.tagName" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
-      <el-input :placeholder="$t('sys.tag.columns.displayName')" v-model="page.displayName" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
+      <el-input v-model="page.tagName" :placeholder="$t('sys.tag.columns.tagName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('sys.tag.columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
       <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
@@ -10,19 +10,21 @@
     </div>
 
     <el-table
-      v-loading="listLoading"
       ref="tables"
       :key="tableKey"
+      v-loading="listLoading"
       :data="list"
       border
       fit
       highlight-current-row
       style="width: 100%;"
       @selection-change="handleSelectionChange"
-      @sort-change="sortChange">
+      @sort-change="sortChange"
+    >
       <el-table-column
         type="selection"
-        width="40"/>
+        width="40"
+      />
       <el-table-column :label="$t('sys.tag.columns.tagName')" prop="id" sortable="custom" align="center" min-width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.tagName }}</span>
@@ -53,18 +55,18 @@
       <div v-show="editDialog.base.visible">
         <el-form ref="form" :rules="formRules" :model="tag" label-position="right" label-width="150px" class="form-layout">
           <el-form-item :label="$t('sys.tag.columns.tagName')" prop="tagName">
-            <el-input v-model="tag.tagName" :placeholder="$t('sys.tag.placeholder.tagName')"/>
+            <el-input v-model="tag.tagName" :placeholder="$t('sys.tag.placeholder.tagName')" />
           </el-form-item>
           <el-form-item :label="$t('sys.tag.columns.displayName')" prop="displayName">
-            <el-input v-model="tag.displayName" :placeholder="$t('sys.tag.placeholder.displayName')"/>
+            <el-input v-model="tag.displayName" :placeholder="$t('sys.tag.placeholder.displayName')" />
           </el-form-item>
           <el-form-item :label="$t('sys.tag.columns.tagType')">
             <el-select v-model="tag.tagType">
-              <el-option v-for="item in tagTypes" :value="item.value" :key="item.label" :label="item.label"/>
+              <el-option v-for="item in tagTypes" :key="item.label" :value="item.value" :label="item.label" />
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('sys.tag.columns.remark')">
-            <el-input :autosize="{ minRows: 1, maxRows: 4}" v-model="tag.remark" :placeholder="$t('sys.tag.placeholder.remark')" type="textarea"/>
+            <el-input v-model="tag.remark" :autosize="{ minRows: 1, maxRows: 4}" :placeholder="$t('sys.tag.placeholder.remark')" type="textarea" />
           </el-form-item>
           <el-form-item>
             <el-button type="info" @click="editDialog.visible = false">{{ $t('actions.cancel') }}</el-button>
@@ -85,7 +87,8 @@
           class="transfer-class"
           style="text-align: left; display: inline-block;"
           filterable
-          @change="handleChange">
+          @change="handleChange"
+        >
           <el-button slot="left-footer" class="transfer-footer" size="small" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
           <el-button slot="right-footer" class="transfer-footer" size="small" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
         </el-transfer>
@@ -101,11 +104,12 @@
             show-checkbox
             check-on-click-node
             check-strictly
-            node-key="resourceName">
+            node-key="resourceName"
+          >
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span>
-                <i v-if="data.icon && data.icon.indexOf('el-') === 0" :class="data.icon"/>
-                <svg-icon v-if="data.icon && data.icon.indexOf('el-') !== 0" :icon-class="data.icon" style="margin-right: 3px;"/>
+                <i v-if="data.icon && data.icon.indexOf('el-') === 0" :class="data.icon" />
+                <svg-icon v-if="data.icon && data.icon.indexOf('el-') !== 0" :icon-class="data.icon" style="margin-right: 3px;" />
                 {{ data.displayName }}
               </span>
             </span>
@@ -129,6 +133,7 @@ import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 // import { parseTime } from '@/utils'
+import Cookies from 'js-cookie'
 
 export default {
   name: 'Tag',
@@ -439,7 +444,7 @@ export default {
       )
     },
     loadConst() {
-      load(`./array/${this.$store.state.app.language}.js`).then((array) => {
+      load(`./array/${Cookies.get('language')}.js`).then((array) => {
         this.tagTypes = array.tagTypes
         this.transferTitles = array.transferTitles
         this.allocateTitles = array.allocateTitles

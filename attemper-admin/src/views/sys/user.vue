@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('sys.user.columns.userName')" v-model="page.userName" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
-      <el-input :placeholder="$t('sys.user.columns.displayName')" v-model="page.displayName" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
+      <el-input v-model="page.userName" :placeholder="$t('sys.user.columns.userName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('sys.user.columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
       <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
@@ -10,19 +10,21 @@
     </div>
 
     <el-table
-      v-loading="listLoading"
       ref="tables"
       :key="tableKey"
+      v-loading="listLoading"
       :data="list"
       border
       fit
       highlight-current-row
       style="width: 100%;"
       @selection-change="handleSelectionChange"
-      @sort-change="sortChange">
+      @sort-change="sortChange"
+    >
       <el-table-column
         type="selection"
-        width="40"/>
+        width="40"
+      />
       <el-table-column :label="$t('sys.user.columns.userName')" prop="id" sortable="custom" align="center" min-width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.userName }}</span>
@@ -62,23 +64,23 @@
       <div v-show="editDialog.base.visible">
         <el-form ref="form" :rules="formRules" :model="user" label-position="right" label-width="150px" class="form-layout">
           <el-form-item :label="$t('sys.user.columns.userName')" prop="userName">
-            <el-input v-model="user.userName" :placeholder="$t('sys.user.placeholder.userName')"/>
+            <el-input v-model="user.userName" :placeholder="$t('sys.user.placeholder.userName')" />
           </el-form-item>
           <el-form-item :label="$t('sys.user.columns.displayName')" prop="displayName">
-            <el-input v-model="user.displayName" :placeholder="$t('sys.user.placeholder.displayName')"/>
+            <el-input v-model="user.displayName" :placeholder="$t('sys.user.placeholder.displayName')" />
           </el-form-item>
           <el-form-item :label="$t('sys.user.columns.password')">
-            <el-input v-model="user.password" :placeholder="$t('sys.user.placeholder.password')" type="password"/>
+            <el-input v-model="user.password" :placeholder="$t('sys.user.placeholder.password')" type="password" />
           </el-form-item>
           <el-form-item :label="$t('sys.user.columns.email')" prop="email">
-            <el-input v-model="user.email" :placeholder="$t('sys.user.placeholder.email')"/>
+            <el-input v-model="user.email" :placeholder="$t('sys.user.placeholder.email')" />
           </el-form-item>
           <el-form-item :label="$t('sys.user.columns.mobile')" prop="mobile">
-            <el-input v-model="user.mobile" :placeholder="$t('sys.user.placeholder.mobile')"/>
+            <el-input v-model="user.mobile" :placeholder="$t('sys.user.placeholder.mobile')" />
           </el-form-item>
           <el-form-item :label="$t('sys.user.columns.status')">
             <el-select v-model="user.status">
-              <el-option v-for="item in statuses" :value="item.value" :key="item.label" :label="item.label"/>
+              <el-option v-for="item in statuses" :key="item.label" :value="item.value" :label="item.label" />
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -100,7 +102,8 @@
           class="transfer-class"
           style="text-align: left; display: inline-block;"
           filterable
-          @change="handleChange">
+          @change="handleChange"
+        >
           <el-button slot="left-footer" class="transfer-footer" size="small" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
           <el-button slot="right-footer" class="transfer-footer" size="small" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
         </el-transfer>
@@ -116,6 +119,7 @@ import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 // import { parseTime } from '@/utils'
+import Cookies from 'js-cookie'
 
 export default {
   name: 'User',
@@ -385,7 +389,7 @@ export default {
       )
     },
     loadConst() {
-      load(`./array/${this.$store.state.app.language}.js`).then((array) => {
+      load(`./array/${Cookies.get('language')}.js`).then((array) => {
         this.statuses = array.statuses
         this.transferTitles = array.transferTitles
         this.allocateTitles = array.allocateTitles

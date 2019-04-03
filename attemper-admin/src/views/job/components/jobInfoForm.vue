@@ -5,16 +5,17 @@
     :model="job"
     label-position="left"
     label-width="150px"
-    class="form-layout">
+    class="form-layout"
+  >
     <el-form-item :label="$t('job.columns.jobName')" prop="jobName">
-      <el-input v-model="job.jobName" :placeholder="$t('job.placeholder.jobName')"/>
+      <el-input v-model="job.jobName" :placeholder="$t('job.placeholder.jobName')" />
     </el-form-item>
     <el-form-item :label="$t('job.columns.displayName')" prop="displayName">
-      <el-input v-model="job.displayName" :placeholder="$t('job.placeholder.displayName')"/>
+      <el-input v-model="job.displayName" :placeholder="$t('job.placeholder.displayName')" />
     </el-form-item>
     <el-form-item :label="$t('job.columns.status')" prop="status">
       <el-select v-model="job.status" :placeholder="$t('job.placeholder.status')" class="filter-item">
-        <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
+        <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value" />
       </el-select>
     </el-form-item>
     <el-form-item :label="$t('job.columns.remark')">
@@ -22,7 +23,8 @@
         v-model="job.remark"
         :autosize="{ minRows: 2, maxRows: 4}"
         :placeholder="$t('job.placeholder.remark')"
-        type="textarea"/>
+        type="textarea"
+      />
     </el-form-item>
     <el-form-item>
       <el-button type="info" @click="cancel">{{ $t('actions.cancel') }}</el-button>
@@ -33,6 +35,8 @@
 
 <script>
 import { load } from '@/constant'
+import Cookies from 'js-cookie'
+
 export default {
   name: 'JobInfoForm',
   props: {
@@ -77,7 +81,7 @@ export default {
       })
     },
     loadConst() {
-      load(`./array/${this.$store.state.app.language}.js`).then((array) => {
+      load(`./array/${Cookies.get('language')}.js`).then((array) => {
         this.jobStatuses = array.jobStatuses
       })
     }

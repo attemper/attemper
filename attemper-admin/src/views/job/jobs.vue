@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('job.columns.jobName')" v-model="page.jobName" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search"/>
-      <el-input :placeholder="$t('job.columns.displayName')" v-model="page.displayName" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search"/>
+      <el-input v-model="page.jobName" :placeholder="$t('job.columns.jobName')" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('job.columns.displayName')" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search" />
       <el-select v-model="page.status" :placeholder="$t('job.columns.status')" multiple clearable collapse-tags class="filter-item" size="mini" style="width: 160px">
-        <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value"/>
+        <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value" />
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
@@ -13,23 +13,24 @@
       <el-button class="filter-item table-external-button" size="mini" type="success" icon="el-icon-plus" @click="add">{{ $t('actions.add') }}</el-button>
       <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" size="mini" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
       <el-button v-waves :disabled="!selections || !selections.length" class="filter-item table-external-button" size="mini" type="primary" @click="publish">
-        <svg-icon icon-class="publish"/> {{ $t('table.publish') }}
+        <svg-icon icon-class="publish" /> {{ $t('table.publish') }}
       </el-button>
       <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>
       <el-checkbox v-model="showCreateTime" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">{{ $t('job.columns.createTime') }}</el-checkbox>-->
     </div>
 
     <el-table
-      v-loading="listLoading"
       ref="tables"
       :key="tableKey"
+      v-loading="listLoading"
       :data="list"
       border
       fit
       highlight-current-row
       style="width: 100%;"
       @selection-change="handleSelectionChange"
-      @sort-change="sortChange">
+      @sort-change="sortChange"
+    >
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
@@ -47,7 +48,8 @@
       </el-table-column>
       <el-table-column
         type="selection"
-        width="40"/>
+        width="40"
+      />
       <el-table-column :label="$t('job.columns.version')" align="center" width="80px">
         <template slot-scope="scope">
           <el-button :type="scope.row.maxVersion ? 'success' : 'info'" size="mini" @click="openDesignDialog(scope.row)">{{ scope.row.maxVersion || '-' }}</el-button>
@@ -58,7 +60,8 @@
         prop="jobName"
         sortable="custom"
         align="center"
-        min-width="100px">
+        min-width="100px"
+      >
         <template slot-scope="scope">
           <el-tag type="primary" @click="update(scope.row)">{{ scope.row.jobName || '-' }}</el-tag>
           <!--<span><a @click="update(scope.row)">{{ scope.row.jobName }}</a></span>-->
@@ -83,12 +86,13 @@
         <template slot-scope="scope">
           <div style="padding-top: 6px;">
             <el-button type="primary" size="mini">{{
-            $t('job.actions.param') }}
+              $t('job.actions.param') }}
             </el-button>
             <el-button
               type="success"
               size="mini"
-              @click="openTriggerDialog(scope.row)">{{ $t('job.actions.trigger') }}
+              @click="openTriggerDialog(scope.row)"
+            >{{ $t('job.actions.trigger') }}
             </el-button>
           </div>
         </template>
@@ -100,7 +104,8 @@
       :total="page.total"
       :page.sync="page.currentPage"
       :limit.sync="page.pageSize"
-      @pagination="search"/>
+      @pagination="search"
+    />
 
     <el-dialog
       :title="editDialog.title"
@@ -109,31 +114,32 @@
       :modal="true"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      :before-close="close">
+      :before-close="close"
+    >
       <div v-show="editDialog.base.visible">
-        <job-info-form ref="jobInfoForm" :job="job" @save="save" @cancel="editDialog.base.visible = false"/>
+        <job-info-form ref="jobInfoForm" :job="job" @save="save" @cancel="editDialog.base.visible = false" />
       </div>
       <div v-show="editDialog.trigger.visible">
         <el-tabs type="border-card">
           <el-tab-pane>
             <span slot="label">
-              <svg-icon icon-class="time"/> {{ $t('job.trigger.tab.time.title') }}
+              <svg-icon icon-class="time" /> {{ $t('job.trigger.tab.time.title') }}
             </span>
             <el-tabs tab-position="left">
               <el-tab-pane :label="$t('job.trigger.tab.time.cron')">
                 <div v-for="(item,index) in trigger.cronTriggers" :key="index" style="margin-bottom: 10px;">
                   <el-row>
                     <el-col :span="4">
-                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addCronRow"/>
-                      <el-button v-show="trigger.cronTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCronRow(index)"/>
+                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addCronRow" />
+                      <el-button v-show="trigger.cronTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCronRow(index)" />
                     </el-col>
                     <el-col :span="20">
                       <el-form :model="item" label-width="150px" label-position="left" size="mini">
                         <el-form-item :label="$t('job.trigger.title.triggerName')">
-                          <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')" size="mini"/>
+                          <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')" size="mini" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.expression')">
-                          <cron-input v-model="item.expression" @change="changeCron($event, index)" @reset="resetCron($event, index)"/>
+                          <cron-input v-model="item.expression" @change="changeCron($event, index)" @reset="resetCron($event, index)" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.timeRange')">
                           <el-col :span="11">
@@ -141,14 +147,16 @@
                               v-model="item.startTime"
                               :placeholder="$t('job.trigger.placeholder.startTime')"
                               type="datetime"
-                              value-format="yyyy-MM-dd HH:mm:ss"/>
+                              value-format="yyyy-MM-dd HH:mm:ss"
+                            />
                           </el-col>
                           <el-col :span="11" :offset="1">
                             <el-date-picker
                               v-model="item.endTime"
                               :placeholder="$t('job.trigger.placeholder.endTime')"
                               type="datetime"
-                              value-format="yyyy-MM-dd HH:mm:ss"/>
+                              value-format="yyyy-MM-dd HH:mm:ss"
+                            />
                           </el-col>
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.timeZone')">
@@ -157,26 +165,27 @@
                               v-for="ele in timeZones"
                               :key="ele"
                               :label="ele"
-                              :value="ele"/>
+                              :value="ele"
+                            />
                           </el-select>
                         </el-form-item>
                       </el-form>
                     </el-col>
                   </el-row>
-                  <hr style="border: 1px dashed #E4E7ED;" color ="#E4E7ED" size = "1">
+                  <hr style="border: 1px dashed #E4E7ED;" color="#E4E7ED" size="1">
                 </div>
               </el-tab-pane>
               <el-tab-pane :label="$t('job.trigger.tab.time.calendarOffset')">
                 <div v-for="(item,index) in trigger.calendarOffsetTriggers" :key="index" style="margin-bottom: 10px;">
                   <el-row>
                     <el-col :span="4">
-                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addCalendarOffsetRow"/>
-                      <el-button v-show="trigger.calendarOffsetTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCalendarOffsetRow(index)"/>
+                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addCalendarOffsetRow" />
+                      <el-button v-show="trigger.calendarOffsetTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCalendarOffsetRow(index)" />
                     </el-col>
                     <el-col :span="20">
                       <el-form :model="item" label-width="150px" label-position="left" size="mini">
                         <el-form-item :label="$t('job.trigger.title.triggerName')">
-                          <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')"/>
+                          <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.timeRange')">
                           <el-col :span="11">
@@ -184,21 +193,24 @@
                               v-model="item.startTime"
                               :placeholder="$t('job.trigger.placeholder.startTime')"
                               type="datetime"
-                              value-format="yyyy-MM-dd HH:mm:ss"/>
+                              value-format="yyyy-MM-dd HH:mm:ss"
+                            />
                           </el-col>
                           <el-col :span="11" :offset="1">
                             <el-date-picker
                               v-model="item.endTime"
                               :placeholder="$t('job.trigger.placeholder.endTime')"
                               type="datetime"
-                              value-format="yyyy-MM-dd HH:mm:ss"/>
+                              value-format="yyyy-MM-dd HH:mm:ss"
+                            />
                           </el-col>
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.startTimeOfDay')">
                           <el-time-picker
-                            :placeholder="$t('job.trigger.placeholder.startTimeOfDay')"
                             v-model="item.startTimeOfDay"
-                            value-format="HH:mm:ss"/>
+                            :placeholder="$t('job.trigger.placeholder.startTimeOfDay')"
+                            value-format="HH:mm:ss"
+                          />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.timeUnit')">
                           <el-select v-model="item.timeUnit" :placeholder="$t('job.trigger.placeholder.timeUnit')" filterable>
@@ -206,38 +218,39 @@
                               v-for="ele in overDayTimeUnits"
                               :key="ele.value"
                               :label="ele.label"
-                              :value="ele.value"/>
+                              :value="ele.value"
+                            />
                           </el-select>
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.repeatCount')">
-                          <el-input-number v-model="item.repeatCount" :placeholder="$t('job.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right"/>
+                          <el-input-number v-model="item.repeatCount" :placeholder="$t('job.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.reversed')">
-                          <el-switch v-model="item.reversed"/>
+                          <el-switch v-model="item.reversed" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.innerOffset')">
-                          <el-input-number v-model="item.innerOffset" :placeholder="$t('job.trigger.placeholder.innerOffset')" :precision="0" :min="0" :step="1" controls-position="right"/>
+                          <el-input-number v-model="item.innerOffset" :placeholder="$t('job.trigger.placeholder.innerOffset')" :precision="0" :min="0" :step="1" controls-position="right" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.outerOffset')">
-                          <el-input-number v-model="item.outerOffset" :placeholder="$t('job.trigger.placeholder.outerOffset')" :precision="0" :min="0" :step="1" controls-position="right"/>
+                          <el-input-number v-model="item.outerOffset" :placeholder="$t('job.trigger.placeholder.outerOffset')" :precision="0" :min="0" :step="1" controls-position="right" />
                         </el-form-item>
                       </el-form>
                     </el-col>
                   </el-row>
-                  <hr style="border: 1px dashed #E4E7ED;" color ="#E4E7ED" size = "1">
+                  <hr style="border: 1px dashed #E4E7ED;" color="#E4E7ED" size="1">
                 </div>
               </el-tab-pane>
               <el-tab-pane :label="$t('job.trigger.tab.time.dailyInterval')">
                 <div v-for="(item,index) in trigger.dailyIntervalTriggers" :key="index" style="margin-bottom: 10px;">
                   <el-row>
                     <el-col :span="4">
-                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addDailyIntervalRow"/>
-                      <el-button v-show="trigger.dailyIntervalTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeDailyIntervalRow(index)"/>
+                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addDailyIntervalRow" />
+                      <el-button v-show="trigger.dailyIntervalTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeDailyIntervalRow(index)" />
                     </el-col>
                     <el-col :span="20">
                       <el-form :model="item" label-width="150px" label-position="left" size="mini">
                         <el-form-item :label="$t('job.trigger.title.triggerName')">
-                          <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')"/>
+                          <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')" />
                           <!--<el-col :span="10" :offset="2">
                             <el-select v-model="item.calendar" :placeholder="$t('job.trigger.placeholder.calendar')">
                               <el-option
@@ -254,32 +267,36 @@
                               v-model="item.startTime"
                               :placeholder="$t('job.trigger.placeholder.startTime')"
                               type="datetime"
-                              value-format="yyyy-MM-dd HH:mm:ss"/>
+                              value-format="yyyy-MM-dd HH:mm:ss"
+                            />
                           </el-col>
                           <el-col :span="11" :offset="1">
                             <el-date-picker
                               v-model="item.endTime"
                               :placeholder="$t('job.trigger.placeholder.endTime')"
                               type="datetime"
-                              value-format="yyyy-MM-dd HH:mm:ss"/>
+                              value-format="yyyy-MM-dd HH:mm:ss"
+                            />
                           </el-col>
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.timeRangeOfDay')">
                           <el-col :span="11">
                             <el-time-picker
-                              :placeholder="$t('job.trigger.placeholder.startTimeOfDay')"
                               v-model="item.startTimeOfDay"
-                              value-format="HH:mm:ss"/>
+                              :placeholder="$t('job.trigger.placeholder.startTimeOfDay')"
+                              value-format="HH:mm:ss"
+                            />
                           </el-col>
                           <el-col :span="11" :offset="1">
                             <el-time-picker
-                              :placeholder="$t('job.trigger.placeholder.endTimeOfDay')"
                               v-model="item.endTimeOfDay"
-                              value-format="HH:mm:ss"/>
+                              :placeholder="$t('job.trigger.placeholder.endTimeOfDay')"
+                              value-format="HH:mm:ss"
+                            />
                           </el-col>
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.interval')">
-                          <el-input-number v-model="item.interval" :placeholder="$t('job.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right"/>
+                          <el-input-number v-model="item.interval" :placeholder="$t('job.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.timeUnit')">
                           <el-select v-model="item.timeUnit" :placeholder="$t('job.trigger.placeholder.timeUnit')" filterable>
@@ -287,11 +304,12 @@
                               v-for="ele in milliSecondTimeUnits.concat(inDayTimeUnits)"
                               :key="ele.value"
                               :label="ele.label"
-                              :value="ele.value"/>
+                              :value="ele.value"
+                            />
                           </el-select>
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.repeatCount')">
-                          <el-input-number v-model="item.repeatCount" :placeholder="$t('job.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right"/>
+                          <el-input-number v-model="item.repeatCount" :placeholder="$t('job.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.daysOfWeek')">
                           <el-select v-model="item.daysOfWeekArr" :placeholder="$t('job.trigger.placeholder.daysOfWeek')" multiple filterable collapse-tags style="width: 160px;">
@@ -299,26 +317,27 @@
                               v-for="ele in daysOfWeek"
                               :key="ele.value"
                               :label="ele.label"
-                              :value="ele.value"/>
+                              :value="ele.value"
+                            />
                           </el-select>
                         </el-form-item>
                       </el-form>
                     </el-col>
                   </el-row>
-                  <hr style="border: 1px dashed #E4E7ED;" color ="#E4E7ED" size = "1">
+                  <hr style="border: 1px dashed #E4E7ED;" color="#E4E7ED" size="1">
                 </div>
               </el-tab-pane>
               <el-tab-pane :label="$t('job.trigger.tab.time.calendarInterval')">
                 <div v-for="(item,index) in trigger.calendarIntervalTriggers" :key="index" style="margin-bottom: 10px;">
                   <el-row>
                     <el-col :span="4">
-                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addCalendarIntervalRow"/>
-                      <el-button v-show="trigger.calendarIntervalTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCalendarIntervalRow(index)"/>
+                      <el-button icon="el-icon-plus" type="success" size="mini" @click="addCalendarIntervalRow" />
+                      <el-button v-show="trigger.calendarIntervalTriggers.length>1" icon="el-icon-minus" type="danger" size="mini" @click="removeCalendarIntervalRow(index)" />
                     </el-col>
                     <el-col :span="20">
                       <el-form :model="item" label-width="150px" label-position="left" size="mini">
                         <el-form-item :label="$t('job.trigger.title.triggerName')">
-                          <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')"/>
+                          <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')" />
                           <!--<el-col :span="10" :offset="2">
                             <el-select v-model="item.calendar" :placeholder="$t('job.trigger.placeholder.calendar')">
                               <el-option
@@ -335,18 +354,20 @@
                               v-model="item.startTime"
                               :placeholder="$t('job.trigger.placeholder.startTime')"
                               type="datetime"
-                              value-format="yyyy-MM-dd HH:mm:ss"/>
+                              value-format="yyyy-MM-dd HH:mm:ss"
+                            />
                           </el-col>
                           <el-col :span="11" :offset="1">
                             <el-date-picker
                               v-model="item.endTime"
                               :placeholder="$t('job.trigger.placeholder.endTime')"
                               type="datetime"
-                              value-format="yyyy-MM-dd HH:mm:ss"/>
+                              value-format="yyyy-MM-dd HH:mm:ss"
+                            />
                           </el-col>
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.interval')">
-                          <el-input-number v-model="item.interval" :placeholder="$t('job.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right"/>
+                          <el-input-number v-model="item.interval" :placeholder="$t('job.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.timeUnit')">
                           <el-select v-model="item.timeUnit" :placeholder="$t('job.trigger.placeholder.timeUnit')">
@@ -354,17 +375,18 @@
                               v-for="ele in inDayTimeUnits.concat(dayTimeUnit).concat(overDayTimeUnits)"
                               :key="ele.value"
                               :label="ele.label"
-                              :value="ele.value"/>
+                              :value="ele.value"
+                            />
                           </el-select>
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.repeatCount')">
-                          <el-input-number v-model="item.repeatCount" :placeholder="$t('job.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right"/>
+                          <el-input-number v-model="item.repeatCount" :placeholder="$t('job.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.preserveDayLight')">
-                          <el-switch v-model="item.preserveDayLight"/>
+                          <el-switch v-model="item.preserveDayLight" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.skipDayIfNoHour')">
-                          <el-switch v-model="item.skipDayIfNoHour"/>
+                          <el-switch v-model="item.skipDayIfNoHour" />
                         </el-form-item>
                         <el-form-item :label="$t('job.trigger.title.timeZone')">
                           <el-select v-model="item.timeZoneId" filterable>
@@ -372,20 +394,21 @@
                               v-for="ele in timeZones"
                               :key="ele"
                               :label="ele"
-                              :value="ele"/>
+                              :value="ele"
+                            />
                           </el-select>
                         </el-form-item>
                       </el-form>
                     </el-col>
                   </el-row>
-                  <hr style="border: 1px dashed #E4E7ED;" color ="#E4E7ED" size = "1">
+                  <hr style="border: 1px dashed #E4E7ED;" color="#E4E7ED" size="1">
                 </div>
               </el-tab-pane>
             </el-tabs>
           </el-tab-pane>
           <el-tab-pane>
             <span slot="label">
-              <svg-icon icon-class="event"/> {{ $t('job.trigger.tab.event.title') }}
+              <svg-icon icon-class="event" /> {{ $t('job.trigger.tab.event.title') }}
             </span>
             event
           </el-tab-pane>
@@ -417,6 +440,7 @@ import CronInput from 'vue-cron-generator/src/components/cron-input'
 import { DEFAULT_CRON_EXPRESSION } from 'vue-cron-generator/src/constant/filed'
 import { isBlank, startAfterEndTime } from './scripts/support'
 import JobInfoForm from './components/jobInfoForm'
+import Cookies from 'js-cookie'
 
 const CRON_OBJ = {
   triggerName: '',
@@ -784,7 +808,7 @@ export default {
       this.selections = val
     },
     loadConst() {
-      load(`./array/${this.$store.state.app.language}.js`).then((array) => {
+      load(`./array/${Cookies.get('language')}.js`).then((array) => {
         this.jobStatuses = array.jobStatuses
         this.milliSecondTimeUnits = array.milliSecondTimeUnits
         this.inDayTimeUnits = array.inDayTimeUnits

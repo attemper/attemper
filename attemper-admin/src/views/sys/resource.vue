@@ -5,7 +5,7 @@
         <div slot="header">
           <span>{{ $t('sys.resource.title.left') }}</span>
           <span style="float: right;">
-            <el-input :placeholder="$t('sys.resource.tip.searchKey')" v-model="searchKey" size="mini" style="width: 170px;" @keyup.enter.native="search"/>
+            <el-input v-model="searchKey" :placeholder="$t('sys.resource.tip.searchKey')" size="mini" style="width: 170px;" @keyup.enter.native="search" />
           </span>
         </div>
         <el-tree
@@ -15,11 +15,12 @@
           :expand-on-click-node="false"
           node-key="resourceName"
           default-expand-all
-          @node-click="selectNode">
+          @node-click="selectNode"
+        >
           <span slot-scope="{ node, data }" class="custom-tree-node">
             <span>
-              <i v-if="data.icon && data.icon.indexOf('el-') === 0" :class="data.icon"/>
-              <svg-icon v-if="data.icon && data.icon.indexOf('el-') !== 0" :icon-class="data.icon" style="margin-right: 3px;"/>
+              <i v-if="data.icon && data.icon.indexOf('el-') === 0" :class="data.icon" />
+              <svg-icon v-if="data.icon && data.icon.indexOf('el-') !== 0" :icon-class="data.icon" style="margin-right: 3px;" />
               {{ data.displayName }}
             </span>
             <span>
@@ -30,13 +31,15 @@
                 type="text"
                 size="mini"
                 icon="el-icon-plus"
-                @click="() => append(data)"/>
+                @click="() => append(data)"
+              />
               <el-button
                 v-show="data.parentResourceName"
                 type="text"
                 size="mini"
                 icon="el-icon-delete"
-                @click="() => remove(node, data)"/>
+                @click="() => remove(node, data)"
+              />
             </span>
           </span>
         </el-tree>
@@ -50,32 +53,32 @@
         <div v-if="visible">
           <el-form ref="form" :model="resource" :rules="formRules" label-width="130px" label-position="right">
             <el-form-item :label="$t('sys.resource.label.resourceName')" prop="resourceName">
-              <el-input v-model="resource.resourceName" :placeholder="$t('sys.resource.placeholder.resourceName')"/>
+              <el-input v-model="resource.resourceName" :placeholder="$t('sys.resource.placeholder.resourceName')" />
             </el-form-item>
             <el-form-item :label="$t('sys.resource.label.displayName')" prop="displayName">
-              <el-input v-model="resource.displayName" :placeholder="$t('sys.resource.placeholder.displayName')"/>
+              <el-input v-model="resource.displayName" :placeholder="$t('sys.resource.placeholder.displayName')" />
             </el-form-item>
             <el-form-item :label="$t('sys.resource.label.resourceType')">
               <el-select v-model="resource.resourceType">
-                <el-option v-for="item in resourceTypes" :label="item.label" :value="item.value" :key="item.value"/>
+                <el-option v-for="item in resourceTypes" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
             <el-form-item :label="$t('sys.resource.label.uri')">
-              <el-input v-model="resource.uri" :placeholder="$t('sys.resource.placeholder.uri')"/>
+              <el-input v-model="resource.uri" :placeholder="$t('sys.resource.placeholder.uri')" />
             </el-form-item>
             <el-form-item :label="$t('sys.resource.label.icon')">
               <el-row>
-                <el-col :span = "18">
-                  <el-input v-model="resource.icon" :placeholder="$t('sys.resource.placeholder.icon')"/>
+                <el-col :span="18">
+                  <el-input v-model="resource.icon" :placeholder="$t('sys.resource.placeholder.icon')" />
                 </el-col>
-                <el-col v-if="resource.icon" :span = "4" :offset= "2">
-                  <i v-if="resource.icon.indexOf('el-') === 0" :class="resource.icon"/>
-                  <svg-icon v-else :icon-class="resource.icon"/>
+                <el-col v-if="resource.icon" :span="4" :offset="2">
+                  <i v-if="resource.icon.indexOf('el-') === 0" :class="resource.icon" />
+                  <svg-icon v-else :icon-class="resource.icon" />
                 </el-col>
               </el-row>
             </el-form-item>
             <el-form-item :label="$t('sys.resource.label.position')">
-              <el-input-number v-model="resource.position"/>
+              <el-input-number v-model="resource.position" />
             </el-form-item>
           </el-form>
           <el-row>
@@ -94,6 +97,7 @@
 <script>
 import { treeListReq, saveReq, removeReq } from '@/api/sys/resource'
 import { load } from '@/constant'
+import Cookies from 'js-cookie'
 
 export default {
   name: 'Resource',
@@ -232,7 +236,7 @@ export default {
       return data.resourceName.indexOf(value) !== -1 || data.displayName.indexOf(value) !== -1
     },
     loadConst() {
-      load(`./array/${this.$store.state.app.language}.js`).then((array) => {
+      load(`./array/${Cookies.get('language')}.js`).then((array) => {
         this.resourceTypes = array.resourceTypes
       })
     }
