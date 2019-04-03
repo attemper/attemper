@@ -30,4 +30,9 @@ grpc:
     server:
       port: 5231
 
+camunda:
+  bpm:
+    id-generator: simple
+
+
 
