@@ -1,3 +1,5 @@
+import IdGenerator from 'ids'
+
 export const getDefinitions = (bpmnModeler) => {
   return bpmnModeler._definitions
 }
@@ -43,4 +45,15 @@ export const isBlank = (str) => {
 
 export const startAfterEndTime = (startTimeStr, endTimeStr) => {
   return startTimeStr != null && endTimeStr != null && startTimeStr > endTimeStr
+}
+
+const seed = [32, 10]
+const idGenerator = new IdGenerator(seed)
+
+export const next = () => {
+  return idGenerator.next()
+}
+
+export const nextPrefixed = (prefix) => {
+  return isBlank(prefix) ? next() : idGenerator.nextPrefixed(prefix)
 }

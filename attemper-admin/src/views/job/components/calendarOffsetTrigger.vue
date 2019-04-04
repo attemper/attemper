@@ -1,0 +1,143 @@
+<template>
+  <div>
+    <div v-for="(item,index) in triggerArray" :key="index" class="trigger-row-bottom">
+      <el-row>
+        <el-col :span="4">
+          <el-button icon="el-icon-plus" type="success" size="mini" @click="add" />
+          <el-button v-show="triggerArray.length>1" icon="el-icon-minus" type="danger" size="mini" @click="remove(index)" />
+        </el-col>
+        <el-col :span="20">
+          <el-form :model="item" label-width="150px" label-position="left" size="mini">
+            <el-form-item :label="$t('job.trigger.title.triggerName')">
+              <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')" size="mini">
+                <el-button slot="append" @click="generateId(item)">
+                  <svg-icon icon-class="random" />
+                </el-button>
+              </el-input>
+            </el-form-item>
+            <el-form-item :label="$t('job.trigger.title.timeRange')">
+              <el-col :span="11">
+                <el-date-picker
+                  v-model="item.startTime"
+                  :placeholder="$t('job.trigger.placeholder.startTime')"
+                  type="datetime"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                />
+              </el-col>
+              <el-col :span="11" :offset="1">
+                <el-date-picker
+                  v-model="item.endTime"
+                  :placeholder="$t('job.trigger.placeholder.endTime')"
+                  type="datetime"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                />
+              </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('job.trigger.title.startTimeOfDay')">
+              <el-time-picker
+                v-model="item.startTimeOfDay"
+                :placeholder="$t('job.trigger.placeholder.startTimeOfDay')"
+                value-format="HH:mm:ss"
+              />
+            </el-form-item>
+            <el-form-item :label="$t('job.trigger.title.timeUnit')">
+              <el-select v-model="item.timeUnit" :placeholder="$t('job.trigger.placeholder.timeUnit')" filterable>
+                <el-option
+                  v-for="ele in overDayTimeUnits"
+                  :key="ele.value"
+                  :label="ele.label"
+                  :value="ele.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item :label="$t('job.trigger.title.repeatCount')">
+              <el-input-number v-model="item.repeatCount" :placeholder="$t('job.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" />
+            </el-form-item>
+            <el-form-item :label="$t('job.trigger.title.reversed')">
+              <el-switch v-model="item.reversed" />
+            </el-form-item>
+            <el-form-item :label="$t('job.trigger.title.innerOffset')">
+              <el-input-number v-model="item.innerOffset" :placeholder="$t('job.trigger.placeholder.innerOffset')" :precision="0" :min="0" :step="1" controls-position="right" />
+            </el-form-item>
+            <el-form-item :label="$t('job.trigger.title.outerOffset')">
+              <el-input-number v-model="item.outerOffset" :placeholder="$t('job.trigger.placeholder.outerOffset')" :precision="0" :min="0" :step="1" controls-position="right" />
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+      <hr class="trigger-row-hr">
+    </div>
+  </div>
+</template>
+
+<script>
+import { next, isBlank, startAfterEndTime } from '.././scripts/support'
+
+const CALENDAR_OFFSET_OBJ = {
+  triggerName: '',
+  startTime: null,
+  endTime: null,
+  startTimeOfDay: '08:00:00',
+  timeUnit: 'WEEK',
+  repeatCount: -1,
+  reversed: false,
+  innerOffset: 0,
+  outerOffset: 0
+}
+
+export default {
+  name: 'CalendarOffsetTrigger',
+  props: {
+    initTriggerArray: {
+      type: Array,
+      default: null
+    },
+    overDayTimeUnits: {
+      type: Array,
+      default: null
+    }
+  },
+  data() {
+    return {
+      triggerArray: this.initTriggerArray
+    }
+  },
+  created() {
+  },
+  methods: {
+    generateId(item) {
+      item.triggerName = next()
+    },
+    add() {
+      this.triggerArray.push(Object.assign({}, CALENDAR_OFFSET_OBJ))
+    },
+    remove(index) {
+      this.triggerArray.splice(index, 1)
+    },
+    validateThenSet(trigger) {
+      for (let i = 0; i < this.triggerArray.length; i++) {
+        const item = this.triggerArray[i]
+        if (JSON.stringify(item) !== JSON.stringify(CALENDAR_OFFSET_OBJ)) {
+          if (isBlank(item.triggerName)) {
+            this.$message.error(this.$t('job.trigger.tip.triggerNameNotBlank') + ':' + JSON.stringify(item))
+            return false
+          }
+          if (startAfterEndTime(item.startTime, item.endTime)) {
+            this.$message.error(this.$t('job.trigger.tip.startAfterEndTime') + ':' + item.triggerName)
+            return false
+          }
+          if (!trigger.calendarOffsetTriggers) {
+            trigger.calendarOffsetTriggers = []
+          }
+          trigger.calendarOffsetTriggers.push(item)
+        }
+      }
+      return true
+    }
+  }
+}
+</script>
+
+<style rel="stylesheet/scss" lang="scss">
+  @import ".././styles/jobs.scss";
+</style>
