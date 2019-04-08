@@ -2,8 +2,8 @@ package com.sse.attemper.config.service;
 
 import com.sse.atemper.grpc.invoking.JobInvokingProto;
 import com.sse.atemper.grpc.invoking.JobInvokingServiceGrpc;
+import com.sse.attemper.common.result.CommonResult;
 import com.sse.attemper.config.bean.ContextBeanAware;
-import com.sse.attemper.sdk.common.result.CommonResult;
 import io.grpc.Channel;
 import org.springframework.stereotype.Service;
 

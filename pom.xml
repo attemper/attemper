@@ -37,11 +37,10 @@
 		<quartz.spring.boot.version>0.0.1-SNAPSHOT</quartz.spring.boot.version>
 		<quartz.version>3.0.0</quartz.version>
 
-		<attemper.sdk.version>1.0.0-SNAPSHOT</attemper.sdk.version>
-
 		<mysql.version>5.1.27</mysql.version>
 		<mybatis.spring.boot.version>2.0.0</mybatis.spring.boot.version>
 		<pagehelper.spring.boot.version>1.2.7</pagehelper.spring.boot.version>
+		<jackson.version>2.9.8</jackson.version>
 		<httpclient.version>4.5.5</httpclient.version>
 		<commons.lang.version>2.6</commons.lang.version>
 		<commons.io.version>2.5</commons.io.version>
@@ -159,11 +158,11 @@
 			</dependency>
 			<!-- swagger end -->
 
-			<!--<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>fastjson</artifactId>
-				<version>${fast.json.version}</version>
-			</dependency>-->
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
 
 			<!-- hutool core -->
 			<dependency>
@@ -237,13 +236,6 @@
 				<scope>test</scope>
 			</dependency>
 
-			<!-- attemper sdk -->
-			<dependency>
-				<groupId>${groupId}</groupId>
-				<artifactId>attemper-sdk-common</artifactId>
-				<version>${attemper.sdk.version}</version>
-			</dependency>
-
 			<dependency>
 				<groupId>io.grpc</groupId>
 				<artifactId>grpc-netty</artifactId>
@@ -264,6 +256,11 @@
 				<groupId>com.sse.quartz</groupId>
 				<artifactId>quartz-spring-boot-starter</artifactId>
 				<version>${quartz.spring.boot.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sse.quartz</groupId>
+				<artifactId>quartz-model</artifactId>
+				<version>${quartz.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sse.quartz</groupId>

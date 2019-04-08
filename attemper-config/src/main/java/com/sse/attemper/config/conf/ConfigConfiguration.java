@@ -6,13 +6,18 @@ import com.sse.attemper.config.dao.repo.ApiLogRepository;
 import com.sse.attemper.config.datasource.DataSourceConfig;
 import com.sse.attemper.config.datasource.DataSourceProperties;
 import com.sse.attemper.config.exception.GlobalExceptionAdvicer;
+import com.sse.attemper.config.property.AppProperties;
 import com.sse.attemper.config.service.ApiLogService;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @auth ldang
  */
+@EnableConfigurationProperties(
+        AppProperties.class
+)
 @Configuration
 @ComponentScan(basePackageClasses = {
         //多数据源切面

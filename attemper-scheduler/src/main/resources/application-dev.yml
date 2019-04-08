@@ -22,12 +22,12 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
 
-logging:
-    level:
-        com.sse.attemper.core.dao.mapper: debug
-
 grpc:
     server:
       name: executor
       port: 5231
 
+org:
+  quartz:
+    jobStore:
+      isClustered: true

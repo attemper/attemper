@@ -8,10 +8,10 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sse.attemper.common.constant.CommonConstants;
+import com.sse.attemper.common.exception.RTException;
+import com.sse.attemper.common.result.sys.user.User;
 import com.sse.attemper.config.bean.ContextBeanAware;
-import com.sse.attemper.sdk.common.constant.SdkCommonConstants;
-import com.sse.attemper.sdk.common.exception.RTException;
-import com.sse.attemper.sdk.common.result.sys.user.User;
 import com.sse.attemper.security.exception.JWTDecodedException;
 import com.sse.attemper.security.exception.JWTExpiredException;
 import com.sse.attemper.security.ext.annotation.JWTStrategyType;
@@ -63,7 +63,7 @@ public class JavaJWTStrategy implements JWTStrategy {
         }catch (TokenExpiredException e){
             throw new JWTExpiredException(e);
         }catch(Exception e){
-            throw new RTException(SdkCommonConstants.INTERNAL_SERVER_ERROR, e);
+            throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
         }
     }
 }

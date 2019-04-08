@@ -4,6 +4,10 @@ import com.sse.attemper.sys.controller.ResourceController;
 import com.sse.attemper.sys.controller.TagController;
 import com.sse.attemper.sys.controller.TenantController;
 import com.sse.attemper.sys.controller.UserController;
+import com.sse.attemper.sys.dao.mapper.ResourceMapper;
+import com.sse.attemper.sys.dao.mapper.TagMapper;
+import com.sse.attemper.sys.dao.mapper.TenantMapper;
+import com.sse.attemper.sys.dao.mapper.UserMapper;
 import com.sse.attemper.sys.ext.service.SecretService;
 import com.sse.attemper.sys.init.CustomPostConstruct;
 import com.sse.attemper.sys.service.ResourceService;
@@ -35,7 +39,12 @@ import org.springframework.context.annotation.Import;
         TenantController.class,
         ResourceController.class,
         UserController.class,
-        TagController.class
+        TagController.class,
+
+        TenantMapper.class,
+        ResourceMapper.class,
+        UserMapper.class,
+        TagMapper.class
 })
 public class SysConfiguration {
 }

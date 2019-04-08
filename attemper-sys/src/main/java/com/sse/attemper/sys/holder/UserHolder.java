@@ -1,6 +1,6 @@
 package com.sse.attemper.sys.holder;
 
-import com.sse.attemper.sdk.common.result.sys.user.User;
+import com.sse.attemper.common.result.sys.user.User;
 
 /**
  * 用户线程池

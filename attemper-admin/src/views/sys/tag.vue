@@ -69,7 +69,7 @@
             <el-input v-model="tag.remark" :autosize="{ minRows: 1, maxRows: 4}" :placeholder="$t('sys.tag.placeholder.remark')" type="textarea" />
           </el-form-item>
           <el-form-item>
-            <el-button type="info" @click="editDialog.visible = false">{{ $t('actions.cancel') }}</el-button>
+            <el-button type="info" @click="editDialog.base.visible = false">{{ $t('actions.cancel') }}</el-button>
             <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
           </el-form-item>
         </el-form>

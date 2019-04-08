@@ -4,7 +4,7 @@
 
 <mapper namespace="com.sse.attemper.core.dao.mapper.job.BaseJobMapper">
 
-    <insert id="add" parameterType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
+    <insert id="add" parameterType="com.sse.attemper.common.result.dispatch.job.BaseJob">
         INSERT INTO ${tablePrefix}job (
             `JOB_NAME`,
             `STATUS`,
@@ -24,7 +24,7 @@
         )
     </insert>
 
-    <insert id="addInfo" parameterType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
+    <insert id="addInfo" parameterType="com.sse.attemper.common.result.dispatch.job.BaseJob">
         INSERT INTO ${tablePrefix}job_info (
             `JOB_NAME`,
             `DISPLAY_NAME`,
@@ -46,7 +46,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
+    <update id="update" parameterType="com.sse.attemper.common.result.dispatch.job.BaseJob">
         UPDATE ${tablePrefix}job j
         SET
         STATUS = #{status, jdbcType=INTEGER},
@@ -59,7 +59,7 @@
         </where>
     </update>
 
-    <update id="updateInfo" parameterType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
+    <update id="updateInfo" parameterType="com.sse.attemper.common.result.dispatch.job.BaseJob">
         UPDATE ${tablePrefix}job_info j
         SET
         `VERSION` = #{version, jdbcType=INTEGER},
@@ -72,7 +72,7 @@
         </where>
     </update>
 
-    <select id="get" parameterType="map" resultType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
+    <select id="get" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.job.BaseJob">
         SELECT ji.`JOB_NAME`, ji.`DISPLAY_NAME`, ji.`JOB_CONTENT`, ji.`UPDATE_TIME`, ji.`DEPLOYMENT_TIME`,
         ji.`TENANT_ID`, j.MAX_REVERSION, ji.REVERSION, j.MAX_VERSION, ji.`VERSION`, j.`STATUS`, j.`CREATE_TIME`,
         j.REMARK
@@ -91,7 +91,7 @@
         </if>
     </select>
 
-    <select id="list" parameterType="map" resultType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
+    <select id="list" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.job.BaseJob">
         SELECT * FROM (
         SELECT ji.`JOB_NAME`, ji.`DISPLAY_NAME`, ji.`JOB_CONTENT`, ji.`UPDATE_TIME`, ji.`DEPLOYMENT_TIME`,
         ji.`TENANT_ID`, j.MAX_REVERSION, ji.REVERSION, j.MAX_VERSION, ji.`VERSION`, j.`STATUS`, j.`CREATE_TIME`,
@@ -143,7 +143,7 @@
         </choose>
     </select>
 
-    <select id="versions" parameterType="map" resultType="com.sse.attemper.sdk.common.result.dispatch.job.BaseJob">
+    <select id="versions" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.job.BaseJob">
         <!-- tip: do not return job content here because the column may be too big -->
         SELECT
         ji.`JOB_NAME`,ji.`DISPLAY_NAME`, ji.`UPDATE_TIME`, ji.`DEPLOYMENT_TIME`, ji.`TENANT_ID`,

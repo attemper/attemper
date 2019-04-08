@@ -5,7 +5,7 @@
 <mapper namespace="com.sse.attemper.core.dao.mapper.job.TriggerMapper">
 
     <select id="getCronTriggers" parameterType="map"
-            resultType="com.sse.attemper.sdk.common.result.dispatch.trigger.sub.CronTriggerResult">
+            resultType="com.sse.attemper.common.result.dispatch.trigger.sub.CronTriggerResult">
         SELECT *
         FROM ${tablePrefix}job_triggers jt
         JOIN ${tablePrefix}triggers t
@@ -53,7 +53,7 @@
     </insert>
 
     <select id="getCalendarOffsetTriggers" parameterType="map"
-            resultType="com.sse.attemper.sdk.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult">
+            resultType="com.sse.attemper.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult">
         SELECT *
         FROM ${tablePrefix}job_triggers jt
         JOIN ${tablePrefix}triggers t
@@ -109,7 +109,7 @@
     </insert>
 
     <select id="getDailyIntervalTriggers" parameterType="map"
-            resultType="com.sse.attemper.sdk.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult">
+            resultType="com.sse.attemper.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult">
         SELECT *
         FROM ${tablePrefix}job_triggers jt
         JOIN ${tablePrefix}triggers t
@@ -165,7 +165,7 @@
     </insert>
 
     <select id="getCalendarIntervalTriggers" parameterType="map"
-            resultType="com.sse.attemper.sdk.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult">
+            resultType="com.sse.attemper.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult">
         SELECT *
         FROM ${tablePrefix}job_triggers jt
         JOIN ${tablePrefix}triggers t

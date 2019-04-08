@@ -1,11 +1,15 @@
-package com.sse.attemper.core.ext.util;
+package com.sse.attemper.config.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.quartz.TimeOfDay;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * utils of time
  */
-public class TimeUtils {
+public class TimeUtil {
 
     /**
      * convert time string to TimeOfDay
@@ -21,5 +25,17 @@ public class TimeUtils {
             return null;
         }
         return new TimeOfDay(Integer.parseInt(timeValues[0]), Integer.parseInt(timeValues[1]), Integer.parseInt(timeValues[2]));
+    }
+
+    public static Set<Integer> toDaysOfTheWeek(String daysOfWeek) {
+        if (StringUtils.isBlank(daysOfWeek)) {
+            return null;
+        }
+        String[] daysStr = daysOfWeek.split(",");
+        Set<Integer> days = new HashSet<>(daysStr.length);
+        for (String s : daysStr) {
+            days.add(Integer.parseInt(s));
+        }
+        return days;
     }
 }

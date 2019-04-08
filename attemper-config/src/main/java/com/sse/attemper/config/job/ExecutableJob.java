@@ -1,8 +1,8 @@
 package com.sse.attemper.config.job;
 
+import com.sse.attemper.common.result.CommonResult;
 import com.sse.attemper.config.bean.ContextBeanAware;
 import com.sse.attemper.config.service.JobCallingService;
-import com.sse.attemper.sdk.common.result.CommonResult;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

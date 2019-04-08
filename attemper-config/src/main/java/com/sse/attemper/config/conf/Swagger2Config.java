@@ -1,6 +1,6 @@
 package com.sse.attemper.config.conf;
 
-import com.sse.attemper.sdk.common.constant.SdkCommonConstants;
+import com.sse.attemper.common.constant.CommonConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,8 +46,8 @@ public class Swagger2Config {
                 .version("v1")
                 .build();
         Parameter tokenParameter = new ParameterBuilder()
-                .parameterType(SdkCommonConstants.header)
-                .name(SdkCommonConstants.token)
+                .parameterType(CommonConstants.header)
+                .name(CommonConstants.token)
                 .modelRef(new ModelRef("String"))
                 .description("基于JWT(json web token)实现的访问令牌")
                 .build();

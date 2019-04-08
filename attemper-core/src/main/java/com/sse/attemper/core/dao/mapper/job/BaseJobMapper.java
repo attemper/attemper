@@ -1,7 +1,7 @@
 package com.sse.attemper.core.dao.mapper.job;
 
 import com.sse.attemper.common.base.BaseMapper;
-import com.sse.attemper.sdk.common.result.dispatch.job.BaseJob;
+import com.sse.attemper.common.result.dispatch.job.BaseJob;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

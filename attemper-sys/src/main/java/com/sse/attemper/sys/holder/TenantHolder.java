@@ -1,6 +1,6 @@
 package com.sse.attemper.sys.holder;
 
-import com.sse.attemper.sdk.common.result.sys.tenant.Tenant;
+import com.sse.attemper.common.result.sys.tenant.Tenant;
 
 /**
  * the tenant which user admin it

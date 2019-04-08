@@ -1,9 +1,9 @@
 package com.sse.attemper.sys.service;
 
+import com.sse.attemper.common.constant.CommonConstants;
+import com.sse.attemper.common.result.sys.tenant.Tenant;
+import com.sse.attemper.common.result.sys.user.User;
 import com.sse.attemper.config.util.ServletUtil;
-import com.sse.attemper.sdk.common.constant.SdkCommonConstants;
-import com.sse.attemper.sdk.common.result.sys.tenant.Tenant;
-import com.sse.attemper.sdk.common.result.sys.user.User;
 import com.sse.attemper.sys.holder.TenantHolder;
 import com.sse.attemper.sys.holder.UserHolder;
 import com.xiaoleilu.hutool.bean.BeanUtil;
@@ -26,7 +26,7 @@ public abstract class BaseServiceAdapter implements BaseService {
 
     @Override
     public String injectTenantId() {
-        return ServletUtil.getHeader(SdkCommonConstants.tenantId);
+        return ServletUtil.getHeader(CommonConstants.tenantId);
     }
 
     /**
@@ -42,7 +42,7 @@ public abstract class BaseServiceAdapter implements BaseService {
         } else {
             paramMap = (Map<String, Object>) obj;
         }
-        paramMap.put(SdkCommonConstants.tenantId, injectTenantId());
+        paramMap.put(CommonConstants.tenantId, injectTenantId());
         return paramMap;
     }
 
@@ -63,7 +63,7 @@ public abstract class BaseServiceAdapter implements BaseService {
         } else {
             paramMap = (Map<String, Object>) obj;
         }
-        paramMap.put(SdkCommonConstants.tenantId, injectAdminedTenant().getId());
+        paramMap.put(CommonConstants.tenantId, injectAdminedTenant().getId());
         return paramMap;
     }
 }

@@ -1,10 +1,10 @@
 package com.sse.attemper.security.shiro;
 
+import com.sse.attemper.common.exception.RTException;
+import com.sse.attemper.common.param.sys.user.UserGetParam;
+import com.sse.attemper.common.result.sys.resource.Resource;
+import com.sse.attemper.common.result.sys.user.User;
 import com.sse.attemper.config.bean.ContextBeanAware;
-import com.sse.attemper.sdk.common.exception.RTException;
-import com.sse.attemper.sdk.common.param.sys.user.UserGetParam;
-import com.sse.attemper.sdk.common.result.sys.resource.Resource;
-import com.sse.attemper.sdk.common.result.sys.user.User;
 import com.sse.attemper.security.ext.service.JWTService;
 import com.sse.attemper.security.model.JWTToken;
 import com.sse.attemper.sys.holder.TenantHolder;

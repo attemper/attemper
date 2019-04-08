@@ -1,10 +1,10 @@
 package com.sse.attemper.core.dao.mapper.job;
 
 import com.sse.attemper.common.base.BaseMapper;
-import com.sse.attemper.sdk.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
-import com.sse.attemper.sdk.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult;
-import com.sse.attemper.sdk.common.result.dispatch.trigger.sub.CronTriggerResult;
-import com.sse.attemper.sdk.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult;
+import com.sse.attemper.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
+import com.sse.attemper.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult;
+import com.sse.attemper.common.result.dispatch.trigger.sub.CronTriggerResult;
+import com.sse.attemper.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

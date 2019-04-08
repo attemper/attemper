@@ -1,7 +1,7 @@
 package com.sse.attemper.config.exception;
 
-import com.sse.attemper.sdk.common.exception.RTException;
-import com.sse.attemper.sdk.common.result.CommonResult;
+import com.sse.attemper.common.exception.RTException;
+import com.sse.attemper.common.result.CommonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DuplicateKeyException;

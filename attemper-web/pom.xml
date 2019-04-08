@@ -65,7 +65,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.sse.attemper.web.WebApplication</mainClass>
+                    <mainClass>${groupId}.web.WebApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

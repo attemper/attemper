@@ -13,8 +13,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>${groupId}</groupId>
-            <artifactId>attemper-sdk-common</artifactId>
+            <groupId>com.sse.quartz</groupId>
+            <artifactId>quartz-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -6,6 +6,7 @@ import com.sse.attemper.core.controller.job.TriggerController;
 import com.sse.attemper.core.controller.tool.ToolController;
 import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
 import com.sse.attemper.core.dao.mapper.job.TriggerMapper;
+import com.sse.attemper.core.service.SchedulerHandler;
 import com.sse.attemper.core.service.arg.ArgService;
 import com.sse.attemper.core.service.job.BaseJobService;
 import com.sse.attemper.core.service.job.TriggerService;
@@ -39,7 +40,9 @@ import javax.validation.ValidatorFactory;
         ToolController.class,
 
         BaseJobMapper.class,
-        TriggerMapper.class
+        TriggerMapper.class,
+
+        SchedulerHandler.class
 })
 public class CoreConfiguration {
 

@@ -2,11 +2,11 @@ package com.sse.attemper.sys.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.sse.attemper.sdk.common.exception.RTException;
-import com.sse.attemper.sdk.common.param.sys.tag.*;
-import com.sse.attemper.sdk.common.result.sys.resource.Resource;
-import com.sse.attemper.sdk.common.result.sys.tag.Tag;
-import com.sse.attemper.sdk.common.result.sys.user.User;
+import com.sse.attemper.common.exception.RTException;
+import com.sse.attemper.common.param.sys.tag.*;
+import com.sse.attemper.common.result.sys.resource.Resource;
+import com.sse.attemper.common.result.sys.tag.Tag;
+import com.sse.attemper.common.result.sys.user.User;
 import com.sse.attemper.sys.dao.mapper.TagMapper;
 import com.sse.attemper.sys.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,8 @@ import java.util.Map;
 @Transactional
 public class TagService extends BaseServiceAdapter {
 
-	private @Autowired
-	TagMapper mapper;
+	@Autowired
+	private TagMapper mapper;
 
 	public Map<String, Object> list(TagListParam listParam) {
         Map<String, Object> paramMap = injectTenantIdToMap(listParam);

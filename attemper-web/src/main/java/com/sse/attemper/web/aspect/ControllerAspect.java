@@ -2,19 +2,18 @@ package com.sse.attemper.web.aspect;
 
 import com.sse.attemper.common.constant.CommonConstants;
 import com.sse.attemper.common.constant.GlobalConstants;
+import com.sse.attemper.common.exception.RTException;
+import com.sse.attemper.common.param.CommonParam;
+import com.sse.attemper.common.param.sys.tenant.TenantGetParam;
+import com.sse.attemper.common.result.CommonResult;
+import com.sse.attemper.common.result.sys.tenant.Tenant;
+import com.sse.attemper.common.result.sys.user.User;
 import com.sse.attemper.config.annotation.IgnoreLogResult;
 import com.sse.attemper.config.entity.ApiLog;
 import com.sse.attemper.config.service.ApiLogService;
 import com.sse.attemper.config.util.IPUtil;
 import com.sse.attemper.config.util.ServletUtil;
 import com.sse.attemper.config.util.StringUtil;
-import com.sse.attemper.sdk.common.constant.SdkCommonConstants;
-import com.sse.attemper.sdk.common.exception.RTException;
-import com.sse.attemper.sdk.common.param.CommonParam;
-import com.sse.attemper.sdk.common.param.sys.tenant.TenantGetParam;
-import com.sse.attemper.sdk.common.result.CommonResult;
-import com.sse.attemper.sdk.common.result.sys.tenant.Tenant;
-import com.sse.attemper.sdk.common.result.sys.user.User;
 import com.sse.attemper.security.ext.service.JWTService;
 import com.sse.attemper.sys.holder.TenantHolder;
 import com.sse.attemper.sys.holder.UserHolder;
@@ -142,13 +141,13 @@ public class ControllerAspect {
         CommonResult result = null;
         // 处理日志的分类，方法等
         preHandleLog(joinPoint, apiLog);
-        String tenantId = ServletUtil.getHeader(SdkCommonConstants.tenantId);
+        String tenantId = ServletUtil.getHeader(CommonConstants.tenantId);
         apiLog.setTenantId(tenantId);
         Tenant tenant = tenantService.get(new TenantGetParam(tenantId));
         if (tenant == null) {
             return CommonResult.putAdd(1500, tenantId);
         }
-        String sign = ServletUtil.getHeader(SdkCommonConstants.sign);
+        String sign = ServletUtil.getHeader(CommonConstants.sign);
         if (!StringUtils.equals(sign, tenant.getSign())) {
             return CommonResult.putAdd(1501, sign);
         }
@@ -257,7 +256,7 @@ public class ControllerAspect {
      * @return
      */
     private String resolveUserNameFromToken(){
-        String token = ServletUtil.getHeader(SdkCommonConstants.token);
+        String token = ServletUtil.getHeader(CommonConstants.token);
         if (StringUtils.isNotBlank(token) && !CommonConstants._null.equals(token)
                 && !CommonConstants.undefined.equals(token) && !CommonConstants._false.equals(token)) {
             User user = null;
@@ -280,7 +279,7 @@ public class ControllerAspect {
      */
     private String resolveUserNameFromParam(CommonParam commonParam) {
         try{
-            Field field = commonParam.getClass().getDeclaredField(SdkCommonConstants.userName);
+            Field field = commonParam.getClass().getDeclaredField(CommonConstants.userName);
             field.setAccessible(true);
             return (String) field.get(commonParam);
         }catch (Exception e){

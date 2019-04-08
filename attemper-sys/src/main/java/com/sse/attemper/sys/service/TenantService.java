@@ -2,12 +2,12 @@ package com.sse.attemper.sys.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.sse.attemper.sdk.common.exception.RTException;
-import com.sse.attemper.sdk.common.param.sys.tenant.TenantGetParam;
-import com.sse.attemper.sdk.common.param.sys.tenant.TenantListParam;
-import com.sse.attemper.sdk.common.param.sys.tenant.TenantRemoveParam;
-import com.sse.attemper.sdk.common.param.sys.tenant.TenantSaveParam;
-import com.sse.attemper.sdk.common.result.sys.tenant.Tenant;
+import com.sse.attemper.common.exception.RTException;
+import com.sse.attemper.common.param.sys.tenant.TenantGetParam;
+import com.sse.attemper.common.param.sys.tenant.TenantListParam;
+import com.sse.attemper.common.param.sys.tenant.TenantRemoveParam;
+import com.sse.attemper.common.param.sys.tenant.TenantSaveParam;
+import com.sse.attemper.common.result.sys.tenant.Tenant;
 import com.sse.attemper.sys.conf.SysProperties;
 import com.sse.attemper.sys.dao.mapper.TenantMapper;
 import com.sse.attemper.sys.ext.service.SecretService;

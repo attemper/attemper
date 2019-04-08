@@ -32,7 +32,7 @@ spring:
         driverClassName: com.mysql.jdbc.Driver
         hikari:
             first:
-                minimum-idle: 10
+                minimum-idle: 5
                 maximum-pool-size: 100
                 pool-name: first
                 connection-timeout: 30000
@@ -40,7 +40,7 @@ spring:
                 max-lifetime: 1800000
                 connection-test-query: select 1
             second:
-                minimum-idle: 10
+                minimum-idle: 5
                 maximum-pool-size: 100
                 pool-name: second
                 connection-timeout: 30000
@@ -50,7 +50,7 @@ spring:
     jpa: 
         hibernate: 
             ddl-auto: none
-    jackson: 
+    jackson:
         date-format: yyyy-MM-dd HH:mm:ss
         time-zone: GMT+8
         defaultPropertyInclusion: non_null   #非空node才序列化

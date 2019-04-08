@@ -1,7 +1,7 @@
 package com.sse.attemper.core.dao.mapper.arg;
 
 import com.sse.attemper.common.base.BaseMapper;
-import com.sse.attemper.sdk.common.result.dispatch.arg.Arg;
+import com.sse.attemper.common.result.dispatch.arg.Arg;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

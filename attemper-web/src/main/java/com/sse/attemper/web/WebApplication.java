@@ -4,7 +4,6 @@ package com.sse.attemper.web;
 import com.sse.attemper.common.constant.GlobalConstants;
 import com.sse.attemper.config.conf.ConfigConfiguration;
 import com.sse.attemper.core.conf.CoreConfiguration;
-import com.sse.attemper.sdk.common.constant.SdkGlobalConstants;
 import com.sse.attemper.security.conf.SecurityConfiguration;
 import com.sse.attemper.sys.conf.SysConfiguration;
 import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
@@ -20,8 +19,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * 平台服务启动类
- * @auth ldang
+ * @author ldang
  */
 @Import({
 		ConfigConfiguration.class,
@@ -29,14 +27,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 		CoreConfiguration.class,
 		SecurityConfiguration.class
 })
-@EnableDiscoveryClient  //开启服务发现
-@EnableTransactionManagement  //开启事务
+@EnableAsync
+@EnableDiscoveryClient
+@EnableTransactionManagement
 @EnableJpaRepositories(GlobalConstants.jpaRepositoryLocation)   //jpa dao
 @EntityScan(GlobalConstants.jpaEntityLocation)   //jpa entity
 @MapperScan(GlobalConstants.mybatisPlusMapperLocation)   //mybatis dao
-@EnableAsync  //开启异步执行
 @SpringBootApplication(exclude = {QuartzAutoConfiguration.class})
-@EnableProcessApplication(SdkGlobalConstants.defaultContextPath)
+@EnableProcessApplication(GlobalConstants.defaultContextPath)
 public class WebApplication {
 
 	/**

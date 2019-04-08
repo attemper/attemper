@@ -1,8 +1,8 @@
 package com.sse.attemper.sys.util;
 
 import com.github.pagehelper.Page;
-import com.sse.attemper.sdk.common.constant.SdkCommonConstants;
-import com.sse.attemper.sdk.common.result.PageResult;
+import com.sse.attemper.common.constant.CommonConstants;
+import com.sse.attemper.common.result.PageResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,8 +20,8 @@ public class PageUtil {
      */
     public static Map<String, Object> toResultMap(Page<?> page){
         Map<String, Object> resultMap = new HashMap<>(2);
-        resultMap.put(SdkCommonConstants.page, toPageResult(page));
-        resultMap.put(SdkCommonConstants.list, page.getResult());
+        resultMap.put(CommonConstants.page, toPageResult(page));
+        resultMap.put(CommonConstants.list, page.getResult());
         return resultMap;
     }
 

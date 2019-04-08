@@ -1,13 +1,13 @@
 package com.sse.attemper.security.shiro;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sse.attemper.common.constant.CommonConstants;
+import com.sse.attemper.common.result.CommonResult;
 import com.sse.attemper.config.bean.ContextBeanAware;
 import com.sse.attemper.config.entity.ApiLog;
 import com.sse.attemper.config.service.ApiLogService;
 import com.sse.attemper.config.util.IPUtil;
 import com.sse.attemper.config.util.ServletUtil;
-import com.sse.attemper.sdk.common.constant.SdkCommonConstants;
-import com.sse.attemper.sdk.common.result.CommonResult;
 import com.sse.attemper.security.exception.JWTDecodedException;
 import com.sse.attemper.security.exception.JWTExpiredException;
 import com.sse.attemper.security.model.JWTToken;
@@ -39,7 +39,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-        if ((WebUtils.toHttp(request).getHeader(SdkCommonConstants.token) == null)) {
+        if ((WebUtils.toHttp(request).getHeader(CommonConstants.token) == null)) {
             return printError(response, 1002);
         }
         return super.preHandle(request, response);
@@ -85,7 +85,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) {
-        String accessToken = WebUtils.toHttp(request).getHeader(SdkCommonConstants.token);
+        String accessToken = WebUtils.toHttp(request).getHeader(CommonConstants.token);
         JWTToken token = new JWTToken(accessToken);
         SecurityUtils.getSubject().login(token);  //会请求ream中的认证方法
         return true;
@@ -122,8 +122,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                 .duration(result.getDuration())
                 .responseTime(result.getResponseTime())
                 .className(this.getClass().getName())
-                .param(ServletUtil.getHeader(SdkCommonConstants.token))
-                .tenantId(ServletUtil.getHeader(SdkCommonConstants.tenantId))
+                .param(ServletUtil.getHeader(CommonConstants.token))
+                .tenantId(ServletUtil.getHeader(CommonConstants.tenantId))
                 .ip(IPUtil.getIpAddr())
                 .build();
         ContextBeanAware.getBean(ApiLogService.class).save(apiLog);

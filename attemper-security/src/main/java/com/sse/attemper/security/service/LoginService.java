@@ -1,10 +1,10 @@
 package com.sse.attemper.security.service;
 
-import com.sse.attemper.sdk.common.enums.UserStatus;
-import com.sse.attemper.sdk.common.exception.RTException;
-import com.sse.attemper.sdk.common.param.sys.login.LoginParam;
-import com.sse.attemper.sdk.common.result.sys.login.LoginResult;
-import com.sse.attemper.sdk.common.result.sys.user.User;
+import com.sse.attemper.common.enums.UserStatus;
+import com.sse.attemper.common.exception.RTException;
+import com.sse.attemper.common.param.sys.login.LoginParam;
+import com.sse.attemper.common.result.sys.login.LoginResult;
+import com.sse.attemper.common.result.sys.user.User;
 import com.sse.attemper.security.ext.service.JWTService;
 import com.sse.attemper.sys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

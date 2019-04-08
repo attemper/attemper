@@ -1,6 +1,6 @@
 package com.sse.attemper.security.conf;
 
-import com.sse.attemper.sdk.common.constant.APIPath;
+import com.sse.attemper.common.constant.APIPath;
 import com.sse.attemper.security.shiro.CustomRealm;
 import com.sse.attemper.security.shiro.JWTFilter;
 import org.apache.shiro.mgt.SecurityManager;

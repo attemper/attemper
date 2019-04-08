@@ -1,12 +1,12 @@
 package com.sse.attemper.sys.controller;
 
-import com.sse.attemper.sdk.common.constant.APIConst;
-import com.sse.attemper.sdk.common.constant.APIPath;
-import com.sse.attemper.sdk.common.param.sys.user.*;
-import com.sse.attemper.sdk.common.result.CommonResult;
-import com.sse.attemper.sdk.common.result.sys.tag.Tag;
-import com.sse.attemper.sdk.common.result.sys.user.User;
-import com.sse.attemper.sdk.common.result.sys.user.UserInfo;
+import com.sse.attemper.common.constant.APIConst;
+import com.sse.attemper.common.constant.APIPath;
+import com.sse.attemper.common.param.sys.user.*;
+import com.sse.attemper.common.result.CommonResult;
+import com.sse.attemper.common.result.sys.tag.Tag;
+import com.sse.attemper.common.result.sys.user.User;
+import com.sse.attemper.common.result.sys.user.UserInfo;
 import com.sse.attemper.sys.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

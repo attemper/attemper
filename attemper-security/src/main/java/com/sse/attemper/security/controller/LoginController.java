@@ -1,10 +1,10 @@
 package com.sse.attemper.security.controller;
 
-import com.sse.attemper.sdk.common.constant.APIConst;
-import com.sse.attemper.sdk.common.constant.APIPath;
-import com.sse.attemper.sdk.common.param.sys.login.LoginParam;
-import com.sse.attemper.sdk.common.result.CommonResult;
-import com.sse.attemper.sdk.common.result.sys.login.LoginResult;
+import com.sse.attemper.common.constant.APIConst;
+import com.sse.attemper.common.constant.APIPath;
+import com.sse.attemper.common.param.sys.login.LoginParam;
+import com.sse.attemper.common.result.CommonResult;
+import com.sse.attemper.common.result.sys.login.LoginResult;
 import com.sse.attemper.security.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

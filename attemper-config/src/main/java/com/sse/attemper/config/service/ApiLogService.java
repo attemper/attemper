@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ApiLogService {
 
-	private @Autowired
-    ApiLogRepository repository;
+	@Autowired
+	private ApiLogRepository repository;
 	
 	@Transactional
 	@Async

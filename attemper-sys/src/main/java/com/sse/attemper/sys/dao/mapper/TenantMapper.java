@@ -1,13 +1,15 @@
 package com.sse.attemper.sys.dao.mapper;
 
 import com.sse.attemper.common.base.BaseMapper;
-import com.sse.attemper.sdk.common.result.sys.tenant.Tenant;
+import com.sse.attemper.common.result.sys.tenant.Tenant;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
 @Mapper
+@Repository
 public interface TenantMapper extends BaseMapper<Tenant> {
 
     Tenant get(String id);

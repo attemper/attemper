@@ -1,10 +1,11 @@
 package com.sse.attemper.sys.dao.mapper;
 
 import com.sse.attemper.common.base.BaseMapper;
-import com.sse.attemper.sdk.common.result.sys.resource.Resource;
-import com.sse.attemper.sdk.common.result.sys.tag.Tag;
-import com.sse.attemper.sdk.common.result.sys.user.User;
+import com.sse.attemper.common.result.sys.resource.Resource;
+import com.sse.attemper.common.result.sys.tag.Tag;
+import com.sse.attemper.common.result.sys.user.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
  * @auth ldang
  */
 @Mapper
+@Repository
 public interface UserMapper extends BaseMapper<User> {
 
 	List<User> list(Map<String, Object> paramMap);

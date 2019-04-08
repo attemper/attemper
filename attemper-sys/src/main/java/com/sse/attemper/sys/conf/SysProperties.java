@@ -1,6 +1,6 @@
 package com.sse.attemper.sys.conf;
 
-import com.sse.attemper.sdk.common.result.sys.tenant.Tenant;
+import com.sse.attemper.common.result.sys.tenant.Tenant;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

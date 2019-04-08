@@ -2,11 +2,11 @@ package com.sse.attemper.core.service.job;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sse.attemper.common.exception.RTException;
+import com.sse.attemper.common.param.dispatch.job.*;
+import com.sse.attemper.common.result.dispatch.job.BaseJob;
 import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
-import com.sse.attemper.core.ext.job.factory.JobDetailFactory;
-import com.sse.attemper.sdk.common.exception.RTException;
-import com.sse.attemper.sdk.common.param.dispatch.job.*;
-import com.sse.attemper.sdk.common.result.dispatch.job.BaseJob;
+import com.sse.attemper.core.service.SchedulerHandler;
 import com.sse.attemper.sys.service.BaseServiceAdapter;
 import com.sse.attemper.sys.util.PageUtil;
 import org.apache.commons.lang.StringUtils;
@@ -15,10 +15,7 @@ import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -45,6 +42,9 @@ public class BaseJobService extends BaseServiceAdapter {
 
     @Autowired
     private Scheduler scheduler;
+
+    @Autowired
+    private SchedulerHandler schedulerHandler;
 
     /**
      * 根据id查询租户
@@ -74,16 +74,16 @@ public class BaseJobService extends BaseServiceAdapter {
      * @return
      */
     public BaseJob add(BaseJobSaveParam saveParam) {
-        BaseJob baseJob = get(new BaseJobGetParam().setJobName(saveParam.getJobName()));
+        BaseJob baseJob = get(BaseJobGetParam.builder().jobName(saveParam.getJobName()).build());
         if (baseJob != null) {
             throw new DuplicateKeyException(saveParam.getJobName());
         }
         baseJob = toBaseJob(saveParam);
         Date now = new Date();
-        baseJob.setCreateTime(now)
-                .setUpdateTime(now)
-                .setMaxReversion(1)
-                .setReversion(1);
+        baseJob.setCreateTime(now);
+        baseJob.setUpdateTime(now);
+        baseJob.setMaxReversion(1);
+        baseJob.setReversion(1);
         if (saveParam.getJobContent() == null) {
             BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(baseJob.getJobName())
                     .name(baseJob.getDisplayName())
@@ -111,7 +111,7 @@ public class BaseJobService extends BaseServiceAdapter {
      * @return
      */
     public BaseJob update(BaseJobSaveParam saveParam) {
-        BaseJob baseJob = get(new BaseJobGetParam().setJobName(saveParam.getJobName()));
+        BaseJob baseJob = get(BaseJobGetParam.builder().jobName(saveParam.getJobName()).build());
         if (baseJob == null) {
             return add(saveParam); // Equivalent to copy then add
         }
@@ -119,19 +119,19 @@ public class BaseJobService extends BaseServiceAdapter {
             throw new RTException(6080);
         }
         BaseJob updatedJob = toBaseJob(saveParam);
-        updatedJob.setCreateTime(baseJob.getCreateTime())
-                .setMaxVersion(baseJob.getMaxVersion());
+        updatedJob.setCreateTime(baseJob.getCreateTime());
+        updatedJob.setMaxVersion(baseJob.getMaxVersion());
         if (checkNeedSave(baseJob, updatedJob)) {  // status remark
             updatedJob.setMaxReversion(baseJob.getMaxReversion());
         } else {  //job content
             if (StringUtils.equals(saveParam.getJobContent(), baseJob.getJobContent())) {
                 throw new RTException(6056);
             }
-            updatedJob.setMaxReversion(baseJob.getReversion() + 1)
-                    .setUpdateTime(new Date())
-                    .setReversion(baseJob.getReversion() + 1)
-                    .setVersion(null)
-                    .setDeploymentTime(null);
+            updatedJob.setMaxReversion(baseJob.getReversion() + 1);
+            updatedJob.setUpdateTime(new Date());
+            updatedJob.setReversion(baseJob.getReversion() + 1);
+            updatedJob.setVersion(null);
+            updatedJob.setDeploymentTime(null);
             mapper.addInfo(updatedJob);
         }
         mapper.update(updatedJob);
@@ -147,13 +147,7 @@ public class BaseJobService extends BaseServiceAdapter {
     public Void remove(BaseJobRemoveParam removeParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
         mapper.delete(paramMap);
-        removeParam.getJobNames().forEach(jobName -> {
-            try {
-                scheduler.deleteJob(new JobKey(jobName, injectAdminedTenant().getId()));
-            } catch (SchedulerException e) {
-                throw new RTException(3001, e);
-            }
-        });
+        schedulerHandler.deleteJob(removeParam);
         return null;
     }
 
@@ -173,19 +167,13 @@ public class BaseJobService extends BaseServiceAdapter {
                     .tenantId(injectAdminedTenant().getId())
                     .deploy();
             int maxVersion = baseJob.getMaxVersion() == null ? 1 : baseJob.getMaxVersion() + 1;
-            baseJob.setUpdateTime(deployment.getDeploymentTime())
-                    .setDeploymentTime(deployment.getDeploymentTime())
-                    .setVersion(maxVersion)
-                    .setMaxReversion(baseJob.getMaxReversion())
-                    .setMaxVersion(maxVersion);
+            baseJob.setUpdateTime(deployment.getDeploymentTime());
+            baseJob.setDeploymentTime(deployment.getDeploymentTime());
+            baseJob.setVersion(maxVersion);
+            baseJob.setMaxReversion(baseJob.getMaxReversion());
+            baseJob.setMaxVersion(maxVersion);
             mapper.update(baseJob);
             mapper.updateInfo(baseJob);
-            try {
-                JobDetail jobDetail = JobDetailFactory.getJobDetail(baseJob.getJobName(), baseJob.getTenantId());
-                scheduler.addJob(jobDetail, true, true);
-            } catch (SchedulerException e) {
-                throw new RTException(3000, e);
-            }
         });
         return null;
     }
@@ -252,7 +240,8 @@ public class BaseJobService extends BaseServiceAdapter {
             return update(saveParam);
         }
         //add new model with reversion of 1
-        return add(targetJobParam.setJobContent(sourceJob.getJobContent()));
+        targetJobParam.setJobContent(sourceJob.getJobContent());
+        return add(targetJobParam);
     }
 
     /**

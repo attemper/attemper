@@ -1,6 +1,6 @@
 package com.sse.attemper.security.ext.jwt;
 
-import com.sse.attemper.sdk.common.result.sys.user.User;
+import com.sse.attemper.common.result.sys.user.User;
 import com.sse.attemper.security.exception.JWTDecodedException;
 import com.sse.attemper.security.exception.JWTExpiredException;
 import org.apache.commons.lang.StringUtils;

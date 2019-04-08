@@ -1,7 +1,7 @@
 package com.sse.attemper.sys.service;
 
-import com.sse.attemper.sdk.common.result.sys.tenant.Tenant;
-import com.sse.attemper.sdk.common.result.sys.user.User;
+import com.sse.attemper.common.result.sys.tenant.Tenant;
+import com.sse.attemper.common.result.sys.user.User;
 
 public interface BaseService {
 

@@ -1,10 +1,10 @@
 package com.sse.attemper.sys.service;
 
-import com.sse.attemper.sdk.common.exception.RTException;
-import com.sse.attemper.sdk.common.param.CommonParam;
-import com.sse.attemper.sdk.common.param.sys.resource.ResourceRemoveParam;
-import com.sse.attemper.sdk.common.param.sys.resource.ResourceSaveParam;
-import com.sse.attemper.sdk.common.result.sys.resource.Resource;
+import com.sse.attemper.common.exception.RTException;
+import com.sse.attemper.common.param.CommonParam;
+import com.sse.attemper.common.param.sys.resource.ResourceRemoveParam;
+import com.sse.attemper.common.param.sys.resource.ResourceSaveParam;
+import com.sse.attemper.common.result.sys.resource.Resource;
 import com.sse.attemper.sys.dao.mapper.ResourceMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

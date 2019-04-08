@@ -1,6 +1,6 @@
 package com.sse.attemper.security.service;
 
-import com.sse.attemper.sdk.common.result.sys.user.User;
+import com.sse.attemper.common.result.sys.user.User;
 import com.sse.attemper.sys.service.BaseServiceAdapter;
 import org.apache.shiro.SecurityUtils;
 

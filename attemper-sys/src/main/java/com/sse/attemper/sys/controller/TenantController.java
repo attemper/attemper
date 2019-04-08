@@ -1,12 +1,12 @@
 package com.sse.attemper.sys.controller;
 
-import com.sse.attemper.sdk.common.constant.APIConst;
-import com.sse.attemper.sdk.common.constant.APIPath;
-import com.sse.attemper.sdk.common.param.sys.tenant.TenantGetParam;
-import com.sse.attemper.sdk.common.param.sys.tenant.TenantListParam;
-import com.sse.attemper.sdk.common.param.sys.tenant.TenantRemoveParam;
-import com.sse.attemper.sdk.common.param.sys.tenant.TenantSaveParam;
-import com.sse.attemper.sdk.common.result.CommonResult;
+import com.sse.attemper.common.constant.APIConst;
+import com.sse.attemper.common.constant.APIPath;
+import com.sse.attemper.common.param.sys.tenant.TenantGetParam;
+import com.sse.attemper.common.param.sys.tenant.TenantListParam;
+import com.sse.attemper.common.param.sys.tenant.TenantRemoveParam;
+import com.sse.attemper.common.param.sys.tenant.TenantSaveParam;
+import com.sse.attemper.common.result.CommonResult;
 import com.sse.attemper.sys.service.TenantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
