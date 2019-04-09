@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CalendarOffsetTriggerHandler implements TriggerHandler<CalendarOffsetTriggerParam, CalendarOffsetTriggerResult> {
+public class CalendarOffsetTriggerHandler extends TriggerHandlerInDatabase<CalendarOffsetTriggerParam, CalendarOffsetTriggerResult> {
 
     @Override
     public List<CalendarOffsetTriggerResult> getTriggers(Map<String, Object> jobNameWithTenantIdMap) {

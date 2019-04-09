@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sse.attemper.common.exception.RTException;
 import com.sse.attemper.common.param.dispatch.job.*;
+import com.sse.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
 import com.sse.attemper.common.result.dispatch.job.BaseJob;
 import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
 import com.sse.attemper.core.service.SchedulerHandler;
@@ -15,7 +16,6 @@ import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -41,10 +41,10 @@ public class BaseJobService extends BaseServiceAdapter {
     private RepositoryService repositoryService;
 
     @Autowired
-    private Scheduler scheduler;
+    private SchedulerHandler schedulerHandler;
 
     @Autowired
-    private SchedulerHandler schedulerHandler;
+    private TriggerService triggerService;
 
     /**
      * 根据id查询租户
@@ -146,8 +146,14 @@ public class BaseJobService extends BaseServiceAdapter {
      */
     public Void remove(BaseJobRemoveParam removeParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
+        removeParam.getJobNames().forEach(item -> {
+            TriggerUpdateParam triggerUpdateParam = new TriggerUpdateParam(item);
+            triggerService.update(triggerUpdateParam);
+            /*List<String> oldTriggerNames = triggerService.getOldTriggerNames(triggerUpdateParam);
+            TriggerChangedParam triggerChangedParam = new TriggerChangedParam(item, oldTriggerNames);
+            schedulerHandler.updateTrigger(triggerChangedParam);*/
+        });
         mapper.delete(paramMap);
-        schedulerHandler.deleteJob(removeParam);
         return null;
     }
 

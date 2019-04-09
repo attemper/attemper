@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class DailyIntervalTriggerHandler implements TriggerHandler<DailyIntervalTriggerParam, DailyIntervalTriggerResult> {
+public class DailyIntervalTriggerHandler extends TriggerHandlerInDatabase<DailyIntervalTriggerParam, DailyIntervalTriggerResult> {
 
     @Override
     public List<DailyIntervalTriggerResult> getTriggers(Map<String, Object> jobNameWithTenantIdMap) {

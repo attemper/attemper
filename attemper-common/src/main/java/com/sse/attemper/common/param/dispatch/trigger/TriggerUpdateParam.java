@@ -13,8 +13,8 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
-@Builder
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TriggerUpdateParam implements CommonParam {
@@ -28,6 +28,10 @@ public class TriggerUpdateParam implements CommonParam {
     protected List<DailyIntervalTriggerParam> dailyIntervalTriggers;
 
     protected List<CalendarIntervalTriggerParam> calendarIntervalTriggers;
+
+    public TriggerUpdateParam(String jobName) {
+        this.jobName = jobName;
+    }
 
     public String validate() {
         if (StringUtils.isBlank(jobName)) {

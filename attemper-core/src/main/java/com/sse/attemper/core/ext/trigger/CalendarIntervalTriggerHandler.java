@@ -14,7 +14,7 @@ import org.quartz.impl.jdbcjobstore.Constants;
 
 import java.util.*;
 
-public class CalendarIntervalTriggerHandler implements TriggerHandler<CalendarIntervalTriggerParam, CalendarIntervalTriggerResult> {
+public class CalendarIntervalTriggerHandler extends TriggerHandlerInDatabase<CalendarIntervalTriggerParam, CalendarIntervalTriggerResult> {
 
     @Override
     public List<CalendarIntervalTriggerResult> getTriggers(Map<String, Object> jobNameWithTenantIdMap) {

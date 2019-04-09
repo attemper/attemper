@@ -14,7 +14,7 @@ import org.quartz.impl.jdbcjobstore.Constants;
 
 import java.util.*;
 
-public class CronTriggerHandler implements TriggerHandler<CronTriggerParam, CronTriggerResult> {
+public class CronTriggerHandler extends TriggerHandlerInDatabase<CronTriggerParam, CronTriggerResult> {
 
     @Override
     public List<CronTriggerResult> getTriggers(Map<String, Object> jobNameWithTenantIdMap) {

@@ -31,6 +31,6 @@ logging:
   level:
     com.sse.attemper.core.dao.mapper: debug
 
-camunda:
-  bpm:
-    id-generator: simple
+#camunda:
+#  bpm:
+#    id-generator: simple

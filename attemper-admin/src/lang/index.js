@@ -30,10 +30,14 @@ const messages = {
   }
 }
 
+if (!Cookies.get('language')) {
+  Cookies.set('language', getLocale().split('_')[0])
+}
+
 const i18n = new VueI18n({
   // set locale
   // options: en | zh | es
-  locale: Cookies.get('language') || getLocale().split('_')[0] || 'en',
+  locale: Cookies.get('language'),
   // set locale messages
   messages
 })

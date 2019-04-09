@@ -22,6 +22,8 @@ public class AppProperties {
 
         private String contextPath;
 
+        private int delayedInSecond;
+
         public String getName() {
             return name;
         }
@@ -36,6 +38,14 @@ public class AppProperties {
 
         public void setContextPath(String contextPath) {
             this.contextPath = contextPath;
+        }
+
+        public int getDelayedInSecond() {
+            return delayedInSecond;
+        }
+
+        public void setDelayedInSecond(int delayedInSecond) {
+            this.delayedInSecond = delayedInSecond;
         }
     }
 
