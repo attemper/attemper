@@ -120,46 +120,50 @@
         <job-info-form ref="jobInfoForm" :job="job" @save="save" @cancel="editDialog.base.visible = false" />
       </div>
       <div v-show="editDialog.trigger.visible">
+        <!--
         <el-tabs type="border-card">
           <el-tab-pane>
             <span slot="label">
               <svg-icon icon-class="time" /> {{ $t('job.trigger.tab.time.title') }}
             </span>
-            <el-tabs v-model="triggerTab.timeTrigger.activeTabName" tab-position="left">
-              <el-tab-pane :label="$t('job.trigger.tab.time.cron')" name="0">
-                <CronTrigger ref="cronTrigger" :init-trigger-array="trigger.cronTriggers" :time-zones="timeZones" />
-              </el-tab-pane>
-              <el-tab-pane :label="$t('job.trigger.tab.time.calendarOffset')" name="1">
-                <CalendarOffsetTrigger ref="calendarOffsetTrigger" :init-trigger-array="trigger.calendarOffsetTriggers" :over-day-time-units="overDayTimeUnits" />
-              </el-tab-pane>
-              <el-tab-pane :label="$t('job.trigger.tab.time.dailyInterval')" name="2">
-                <DailyIntervalTrigger
-                  ref="dailyIntervalTrigger"
-                  :init-trigger-array="trigger.dailyIntervalTriggers"
-                  :milli-second-time-units="milliSecondTimeUnits"
-                  :in-day-time-units="inDayTimeUnits"
-                  :days-of-week="daysOfWeek"
-                />
-              </el-tab-pane>
-              <el-tab-pane :label="$t('job.trigger.tab.time.calendarInterval')" name="3">
-                <CalendarIntervalTrigger
-                  ref="calendarIntervalTrigger"
-                  :init-trigger-array="trigger.calendarIntervalTriggers"
-                  :day-time-unit="dayTimeUnit"
-                  :in-day-time-units="inDayTimeUnits"
-                  :over-day-time-units="overDayTimeUnits"
-                  :time-zones="timeZones"
-                />
-              </el-tab-pane>
-            </el-tabs>
+            -->
+        <el-tabs v-model="triggerTab.timeTrigger.activeTabName" tab-position="left">
+          <el-tab-pane :label="$t('job.trigger.tab.time.cron')" name="0">
+            <CronTrigger ref="cronTrigger" :init-trigger-array="trigger.cronTriggers" :time-zones="timeZones" />
           </el-tab-pane>
-          <el-tab-pane>
-            <span slot="label">
-              <svg-icon icon-class="event" /> {{ $t('job.trigger.tab.event.title') }}
-            </span>
-            event
+          <el-tab-pane :label="$t('job.trigger.tab.time.calendarOffset')" name="1">
+            <CalendarOffsetTrigger ref="calendarOffsetTrigger" :init-trigger-array="trigger.calendarOffsetTriggers" :over-day-time-units="overDayTimeUnits" />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('job.trigger.tab.time.dailyInterval')" name="2">
+            <DailyIntervalTrigger
+              ref="dailyIntervalTrigger"
+              :init-trigger-array="trigger.dailyIntervalTriggers"
+              :milli-second-time-units="milliSecondTimeUnits"
+              :in-day-time-units="inDayTimeUnits"
+              :days-of-week="daysOfWeek"
+            />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('job.trigger.tab.time.calendarInterval')" name="3">
+            <CalendarIntervalTrigger
+              ref="calendarIntervalTrigger"
+              :init-trigger-array="trigger.calendarIntervalTriggers"
+              :day-time-unit="dayTimeUnit"
+              :in-day-time-units="inDayTimeUnits"
+              :over-day-time-units="overDayTimeUnits"
+              :time-zones="timeZones"
+            />
           </el-tab-pane>
         </el-tabs>
+        <!--
+        </el-tab-pane>
+        <el-tab-pane>
+          <span slot="label">
+            <svg-icon icon-class="event" /> {{ $t('job.trigger.tab.event.title') }}
+          </span>
+          event
+        </el-tab-pane>
+      </el-tabs>
+      -->
         <el-row style="margin-top: 20px;">
           <el-col :span="4" :offset="8">
             <el-button type="info" @click="editDialog.trigger.visible = false">{{ $t('actions.cancel') }}</el-button>
