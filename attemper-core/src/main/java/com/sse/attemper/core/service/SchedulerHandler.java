@@ -9,6 +9,7 @@ import com.sse.attemper.common.result.sys.tenant.Tenant;
 import com.sse.attemper.config.bean.ContextBeanAware;
 import com.sse.attemper.config.property.AppProperties;
 import com.sse.attemper.sys.holder.TenantHolder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -28,6 +29,7 @@ import java.util.concurrent.Future;
 /**
  * handle interaction from web to scheduler
  */
+@Slf4j
 @Service
 @Transactional
 public class SchedulerHandler {
@@ -38,14 +40,19 @@ public class SchedulerHandler {
     @Autowired
     private DiscoveryClient discoveryClient;
 
-    public void updateTrigger(TriggerChangedParam param) {
+    public CommonResult<Void> updateTrigger(TriggerChangedParam param) {
         List<String> urls = buildUrls(APIPath.SchedulerPath.TRIGGER);
         List<Callable<CommonResult>> callers = new ArrayList<>(urls.size());
         urls.forEach(url -> callers.add(new SchedulerCaller(HttpMethod.PUT, url, param, TenantHolder.get())));
-        invokeAll(callers);
+        return invokeAll(callers);
     }
 
-    private void invokeAll(List<Callable<CommonResult>> callers) {
+    private CommonResult<Void> invokeAll(List<Callable<CommonResult>> callers) {
+        if (callers.isEmpty()) {
+            CommonResult<Void> commonResult = CommonResult.put(3000);
+            log.error(commonResult.getMsg());
+            return commonResult;
+        }
         ExecutorService executorService = Executors.newFixedThreadPool(callers.size());
         try {
             List<Future<CommonResult>> futures = executorService.invokeAll(callers);
@@ -53,16 +60,19 @@ public class SchedulerHandler {
                 preHandleResult(item.get());
             }
             executorService.shutdown();
+            return CommonResult.ok();
         } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("Connection refused")) {
+                CommonResult<Void> commonResult = CommonResult.put(3001);
+                log.error(commonResult.getMsg());
+                return commonResult;
+            }
             throw new RTException(500, e);
         }
     }
 
     private List<String> buildUrls(String uri) {
         List<ServiceInstance> instances = discoveryClient.getInstances(appProperties.getScheduler().getName());
-        if (instances == null || instances.isEmpty()) {
-            throw new RTException(500);
-        }
         List<String> urls = new ArrayList<>(instances.size());
         instances.forEach(item -> urls.add(item.getUri() + "/" + appProperties.getScheduler().getContextPath() + uri));
         return urls;

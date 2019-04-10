@@ -82,8 +82,17 @@ public class TriggerService extends BaseServiceAdapter {
             triggerHandler.deleteAndUnschedule(paramMap);
             triggerHandler.saveAndSchedule(saveParam.getJobName(), paramsOfTriggerMap.get(i));
         }
-        schedulerHandler.updateTrigger(param);
+        callScheduler(param);
         return null;
+    }
+
+    /**
+     * invoke scheduler app
+     *
+     * @param param
+     */
+    private void callScheduler(TriggerChangedParam param) {
+        schedulerHandler.updateTrigger(param);
     }
 
     public List<String> getOldTriggerNames(TriggerUpdateParam saveParam) {

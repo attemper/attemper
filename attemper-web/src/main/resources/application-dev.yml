@@ -28,7 +28,7 @@ app:
     context-path: ${app.scheduler.name}
     delayedInSecond: 5
   web:
-    enable-scheduling: false
+    enable-scheduling: true
 
 logging:
   level:
