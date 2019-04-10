@@ -7,7 +7,6 @@ import com.sse.attemper.common.param.dispatch.job.*;
 import com.sse.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
 import com.sse.attemper.common.result.dispatch.job.BaseJob;
 import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
-import com.sse.attemper.core.service.SchedulerHandler;
 import com.sse.attemper.sys.service.BaseServiceAdapter;
 import com.sse.attemper.sys.util.PageUtil;
 import org.apache.commons.lang.StringUtils;
@@ -39,9 +38,6 @@ public class BaseJobService extends BaseServiceAdapter {
 
     @Autowired
     private RepositoryService repositoryService;
-
-    @Autowired
-    private SchedulerHandler schedulerHandler;
 
     @Autowired
     private TriggerService triggerService;

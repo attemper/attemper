@@ -1,4 +1,4 @@
-package com.sse.attemper.config.service;
+package com.sse.attemper.config.scheduler.service;
 
 import com.sse.atemper.grpc.invoking.JobInvokingProto;
 import com.sse.atemper.grpc.invoking.JobInvokingServiceGrpc;

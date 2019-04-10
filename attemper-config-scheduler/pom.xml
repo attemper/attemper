@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>attemper</artifactId>
+        <groupId>com.sse.attemper</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>attemper-config-scheduler</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>attemper-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sse.quartz</groupId>
+            <artifactId>quartz-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sse.quartz</groupId>
+            <artifactId>quartz-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sse.quartz</groupId>
+            <artifactId>quartz-plugins</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>attemper-grpc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>attemper-grpc-autoconfigure</artifactId>
+        </dependency>
+    </dependencies>
+</project>

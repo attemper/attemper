@@ -17,12 +17,8 @@
             <artifactId>attemper-sys</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sse.quartz</groupId>
-            <artifactId>quartz-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sse.quartz</groupId>
-            <artifactId>quartz-core</artifactId>
+            <groupId>${groupId}</groupId>
+            <artifactId>attemper-config-scheduler</artifactId>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>

@@ -35,3 +35,5 @@ org:
 app:
   scheduler:
     delayedInSecond: 5
+  web:
+    enable-scheduling: true

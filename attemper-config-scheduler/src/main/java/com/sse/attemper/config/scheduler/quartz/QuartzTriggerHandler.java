@@ -1,4 +1,4 @@
-package com.sse.attemper.config.quartz;
+package com.sse.attemper.config.scheduler.quartz;
 
 import com.sse.attemper.common.param.dispatch.trigger.sub.CommonTriggerParam;
 import com.sse.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;

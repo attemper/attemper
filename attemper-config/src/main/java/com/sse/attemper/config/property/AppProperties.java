@@ -7,14 +7,30 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public class AppProperties {
 
     @NestedConfigurationProperty
-    private SchedulerConfig scheduler;
+    private final WebConfig web = new WebConfig();
+
+    @NestedConfigurationProperty
+    private final SchedulerConfig scheduler = new SchedulerConfig();
+
+    public WebConfig getWeb() {
+        return web;
+    }
 
     public SchedulerConfig getScheduler() {
         return scheduler;
     }
 
-    public void setScheduler(SchedulerConfig scheduler) {
-        this.scheduler = scheduler;
+    public static class WebConfig {
+
+        private boolean enableScheduling;
+
+        public boolean isEnableScheduling() {
+            return enableScheduling;
+        }
+
+        public void setEnableScheduling(boolean enableScheduling) {
+            this.enableScheduling = enableScheduling;
+        }
     }
 
     public static class SchedulerConfig {

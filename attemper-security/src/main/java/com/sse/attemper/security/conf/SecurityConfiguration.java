@@ -1,5 +1,6 @@
 package com.sse.attemper.security.conf;
 
+import com.sse.attemper.core.conf.CoreConfiguration;
 import com.sse.attemper.security.controller.LoginController;
 import com.sse.attemper.security.ext.service.JWTService;
 import com.sse.attemper.security.service.LoginService;
@@ -9,8 +10,12 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
+@Import({
+        CoreConfiguration.class
+})
 @Configuration
 @ComponentScan(basePackageClasses = {
         //conf

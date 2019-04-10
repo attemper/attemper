@@ -4,7 +4,7 @@ import com.sse.attemper.common.constant.CommonConstants;
 import com.sse.attemper.common.param.dispatch.trigger.sub.CalendarIntervalTriggerParam;
 import com.sse.attemper.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
 import com.sse.attemper.config.bean.ContextBeanAware;
-import com.sse.attemper.config.util.QuartzUtil;
+import com.sse.attemper.config.scheduler.util.QuartzUtil;
 import com.sse.attemper.core.dao.mapper.job.TriggerMapper;
 import com.sse.attemper.sys.holder.TenantHolder;
 import com.xiaoleilu.hutool.bean.BeanUtil;

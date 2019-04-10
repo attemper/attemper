@@ -18,6 +18,7 @@
 		<module>attemper-grpc</module>
 		<module>attemper-eureka-server</module>
 		<module>attemper-grpc-autoconfigure</module>
+		<module>attemper-config-scheduler</module>
 	</modules>
 	<packaging>pom</packaging>
 
@@ -196,6 +197,11 @@
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>attemper-config</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${groupId}</groupId>
+				<artifactId>attemper-config-scheduler</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

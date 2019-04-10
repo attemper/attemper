@@ -5,8 +5,8 @@ import com.sse.attemper.common.exception.RTException;
 import com.sse.attemper.common.param.dispatch.trigger.sub.CommonTriggerParam;
 import com.sse.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
 import com.sse.attemper.config.bean.ContextBeanAware;
-import com.sse.attemper.config.quartz.QuartzTriggerHandler;
-import com.sse.attemper.config.util.QuartzUtil;
+import com.sse.attemper.config.scheduler.quartz.QuartzTriggerHandler;
+import com.sse.attemper.config.scheduler.util.QuartzUtil;
 import com.sse.attemper.sys.holder.TenantHolder;
 import org.quartz.*;
 

@@ -1,7 +1,6 @@
 package com.sse.attemper.executor;
 
 import com.sse.attemper.common.constant.GlobalConstants;
-import com.sse.attemper.config.conf.ConfigConfiguration;
 import com.sse.attemper.sys.conf.SysConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -13,11 +12,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Import({
-        ConfigConfiguration.class,
         SysConfiguration.class
 })
 @EnableDiscoveryClient
-@EnableTransactionManagement  //开启事务
+@EnableTransactionManagement
 @EnableJpaRepositories(GlobalConstants.jpaRepositoryLocation)   //jpa dao
 @EntityScan(GlobalConstants.jpaEntityLocation)   //jpa entity
 @MapperScan(GlobalConstants.mybatisPlusMapperLocation)   //mybatis dao

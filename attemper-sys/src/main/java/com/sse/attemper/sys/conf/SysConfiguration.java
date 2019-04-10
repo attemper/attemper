@@ -1,5 +1,6 @@
 package com.sse.attemper.sys.conf;
 
+import com.sse.attemper.config.conf.ConfigConfiguration;
 import com.sse.attemper.sys.controller.ResourceController;
 import com.sse.attemper.sys.controller.TagController;
 import com.sse.attemper.sys.controller.TenantController;
@@ -25,7 +26,8 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @EnableConfigurationProperties(SysProperties.class)
 @Import({
-        CustomPostConstruct.class
+        CustomPostConstruct.class,
+        ConfigConfiguration.class
 })
 @ComponentScan(basePackageClasses = {
         //service
