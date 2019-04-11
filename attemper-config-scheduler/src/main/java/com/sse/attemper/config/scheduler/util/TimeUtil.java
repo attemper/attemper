@@ -1,4 +1,4 @@
-package com.sse.attemper.config.util;
+package com.sse.attemper.config.scheduler.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.quartz.TimeOfDay;

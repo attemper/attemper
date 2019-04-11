@@ -13,10 +13,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.sse.quartz</groupId>
-            <artifactId>quartz-model</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
