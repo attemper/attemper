@@ -27,9 +27,9 @@ public class ToolService {
             log.debug(baseUrl);
             baseUrl = baseUrl.replace("https://", "").replace("http://", "");
             String[] arr = baseUrl.split(":");
-            if (arr.length > 1 && NumberUtil.isPositiveNumber(arr[arr.length - 1])) {
+            if (arr.length == 2 && NumberUtil.isPositiveNumber(arr[1])) {
                 log.debug("ip:port");
-                SocketAddress socketAddr = new InetSocketAddress(arr[arr.length - 2].replace("//", ""), Integer.parseInt(arr[arr.length - 1]));
+                SocketAddress socketAddr = new InetSocketAddress(arr[0], Integer.parseInt(arr[1]));
                 Socket socket = new Socket();
                 socket.connect(socketAddr, 5000);
             } else {
