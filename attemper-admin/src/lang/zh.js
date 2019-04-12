@@ -122,6 +122,12 @@ export default {
         id: '请输入租户编号',
         name: '请输入租户名称',
         admin: '请选择管理员'
+      },
+      actions: {
+        instance: '应用地址'
+      },
+      oper: {
+        instance: '应用系统地址列表'
       }
     },
     user: {

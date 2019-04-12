@@ -62,6 +62,14 @@ public class APIConst {
             public static final String REMOVE = _REMOVE + _NAME;
 
             public static final String GET = _GET + _NAME;
+
+            private static final String INSTANCE_NAME = "应用系统地址";
+
+            public static final String SAVE_INSTANCE = _SAVE + INSTANCE_NAME;
+
+            public static final String LIST_INSTANCES = INSTANCE_NAME + _LIST;
+
+            public static final String REMOVE_INSTANCE = _REMOVE + INSTANCE_NAME;
         }
 
         public static final class UserTitle {
@@ -174,6 +182,8 @@ public class APIConst {
 
         public static final class ToolTitle {
             public static final String GET_TIME_ZONE = _GET + "时区";
+
+            public static final String PING = "Ping";
         }
     }
 }

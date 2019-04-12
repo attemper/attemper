@@ -45,6 +45,14 @@ public class APIPath {
         public static final String REMOVE = API_PATH + SYS + TENANT + _REMOVE;
 
         public static final String GET = API_PATH + SYS + TENANT + _GET;
+
+        private static final String INSTANCE = "/instance";
+
+        public static final String LIST_INSTANCES = API_PATH + SYS + TENANT + INSTANCE + _LIST;
+
+        public static final String SAVE_INSTANCE = API_PATH + SYS + TENANT + INSTANCE + _ADD;
+
+        public static final String REMOVE_INSTANCE = API_PATH + SYS + TENANT + INSTANCE + _REMOVE;
     }
 
     public static final class UserPath {
@@ -169,6 +177,8 @@ public class APIPath {
         public static final String TOOL = "/tool";
 
         public static final String GET_TIME_ZONE = API_PATH + SYS + TOOL + "/timeZone" + _LIST;
+
+        public static final String PING = API_PATH + SYS + TOOL + "/ping";
     }
 
     public static final class SchedulerPath {

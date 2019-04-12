@@ -7,6 +7,7 @@ import com.sse.attemper.common.param.sys.tenant.TenantGetParam;
 import com.sse.attemper.common.param.sys.tenant.TenantListParam;
 import com.sse.attemper.common.param.sys.tenant.TenantRemoveParam;
 import com.sse.attemper.common.param.sys.tenant.TenantSaveParam;
+import com.sse.attemper.common.result.sys.tenant.InstanceInfo;
 import com.sse.attemper.common.result.sys.tenant.Tenant;
 import com.sse.attemper.sys.conf.SysProperties;
 import com.sse.attemper.sys.dao.mapper.TenantMapper;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -132,4 +134,20 @@ public class TenantService extends BaseServiceAdapter {
                 .admin(saveParam.getAdmin())
                 .build();
     }
+
+    public InstanceInfo saveInstance(InstanceInfo param) {
+        Map<String, Object> paramMap = BeanUtil.beanToMap(param);
+        mapper.saveInstance(paramMap);
+        return param;
+    }
+
+    public Void removeInstance(InstanceInfo param) {
+        mapper.deleteInstance(param);
+        return null;
+    }
+
+    public List<InstanceInfo> listInstances(TenantGetParam param) {
+        return mapper.listInstances(param.getId());
+    }
+
 }

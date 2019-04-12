@@ -15,10 +15,6 @@ spring:
             hibernate: 
                 format-sql: true
                 user_sql_comments: true
-    quartz:
-      job-store-type: jdbc
-#      properties:
-#        org.quartz.plugin.jobHistory.class: org.quartz.plugins.history.LoggingJobHistoryPlugin
 
 eureka:
   client:

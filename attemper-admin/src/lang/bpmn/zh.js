@@ -143,7 +143,7 @@ export default {
   'Parameters': '参数',
   'Input Parameters': '输入参数',
   'Output Parameters': '输出参数',
-  'Element Template': '元素模板',
+  'Element Template': '模板',
   'Details': '细节',
   'Implementation': '实现',
   'Message': '消息',
@@ -174,11 +174,9 @@ export default {
   'Topic': '主题',
   'Connector Id': '连接器编号',
   'Case Ref': 'CMMN主键',
-  /*
   'Asynchronous Continuations': '异步执行延续性',
-  'Asynchronous Before': '异步执行前',
-  'Asynchronous After': '异步执行后',
-  */
+  'Asynchronous Before': '异步执行之前',
+  'Asynchronous After': '异步执行之后',
   'Field Injections': '属性注入',
   'Field': '属性',
   // 提示

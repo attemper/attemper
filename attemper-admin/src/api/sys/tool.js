@@ -10,3 +10,11 @@ export const listTimeZoneReq = () => {
     method: 'get'
   })
 }
+
+export const pingReq = (params) => {
+  return request({
+    url: APIPath.SYS + SubPath + '/ping',
+    method: 'get',
+    params: params
+  })
+}

@@ -25,4 +25,11 @@ public class ToolController {
     public CommonResult<String[]> listTimeZone() {
         return CommonResult.putResult(service.listTimeZone());
     }
+
+    @ApiOperation(APIConst.APIOperation.ToolTitle.PING)
+    @GetMapping(APIPath.ToolPath.PING)
+    public CommonResult<Void> ping(String baseUrl) {
+        return CommonResult.putResult(service.ping(baseUrl));
+    }
+
 }

@@ -1,28 +1,30 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('sys.tenant.columns.id')" v-model="page.id" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
-      <el-input :placeholder="$t('sys.tenant.columns.name')" v-model="page.name" style="width: 100px;" class="filter-item" @keyup.enter.native="search"/>
+      <el-input v-model="page.id" :placeholder="$t('sys.tenant.columns.id')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.name" :placeholder="$t('sys.tenant.columns.name')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-button v-access="'tenant-add'" class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
-      <el-button v-access="tenant-remove" :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
+      <el-button v-access="'tenant-remove'" :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
       <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>-->
     </div>
 
     <el-table
-      v-loading="listLoading"
       ref="tables"
       :key="tableKey"
+      v-loading="listLoading"
       :data="list"
       border
       fit
       highlight-current-row
       style="width: 100%;"
       @selection-change="handleSelectionChange"
-      @sort-change="sortChange">
+      @sort-change="sortChange"
+    >
       <el-table-column
         type="selection"
-        width="40"/>
+        width="40"
+      />
       <el-table-column :label="$t('sys.tenant.columns.id')" prop="id" sortable="custom" align="center" min-width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
@@ -46,45 +48,101 @@
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-if="canUpdate" type="primary" size="mini" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
+          <el-button type="primary" size="mini" @click="showInstanceTable(scope.row)">{{ $t('sys.tenant.actions.instance') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="page.total>0" :total="page.total" :page.sync="page.currentPage" :limit.sync="page.pageSize" @pagination="search" />
 
-    <el-dialog :title="editDialog.title" :visible.sync="editDialog.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="form" :rules="formRules" :model="tenant" label-position="right" label-width="150px" class="form-layout">
-        <el-form-item :label="$t('sys.tenant.columns.id')" prop="id">
-          <el-input v-model="tenant.id" :placeholder="$t('sys.tenant.placeholder.id')"/>
-        </el-form-item>
-        <el-form-item :label="$t('sys.tenant.columns.name')" prop="name">
-          <el-input v-model="tenant.name" :placeholder="$t('sys.tenant.placeholder.name')"/>
-        </el-form-item>
-        <el-form-item :label="$t('sys.tenant.columns.admin')" prop="admin">
-          <el-select v-model="tenant.admin" :placeholder="$t('sys.tenant.placeholder.admin')" class="filter-item">
-            <el-option v-for="item in tenantAdmins" :value="item.userName" :key="item.userName" :disabled="item.status !== 0" :label="item.displayName + '-' + item.userName">
-              <span>{{ item.displayName }} - {{ item.userName }}</span>
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="info" @click="editDialog.visible = false">{{ $t('actions.cancel') }}</el-button>
-          <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
-        </el-form-item>
-      </el-form>
+    <el-dialog
+      :title="editDialog.title"
+      :visible.sync="editDialog.base.visible || editDialog.instance.visible"
+      :center="true"
+      :modal="true"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :before-close="close"
+    >
+      <div v-show="editDialog.base.visible">
+        <el-form ref="form" :rules="formRules" :model="tenant" label-position="right" label-width="150px" class="form-layout">
+          <el-form-item :label="$t('sys.tenant.columns.id')" prop="id">
+            <el-input v-model="tenant.id" :placeholder="$t('sys.tenant.placeholder.id')" />
+          </el-form-item>
+          <el-form-item :label="$t('sys.tenant.columns.name')" prop="name">
+            <el-input v-model="tenant.name" :placeholder="$t('sys.tenant.placeholder.name')" />
+          </el-form-item>
+          <el-form-item :label="$t('sys.tenant.columns.admin')" prop="admin">
+            <el-select v-model="tenant.admin" :placeholder="$t('sys.tenant.placeholder.admin')" class="filter-item">
+              <el-option v-for="item in tenantAdmins" :key="item.userName" :value="item.userName" :disabled="item.status !== 0" :label="item.displayName + '-' + item.userName">
+                <span>{{ item.displayName }} - {{ item.userName }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="info" @click="editDialog.base.visible = false">{{ $t('actions.cancel') }}</el-button>
+            <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div v-show="editDialog.instance.visible">
+        <el-table
+          ref="instancepTables"
+          :data="instances"
+          border
+          fit
+          highlight-current-row
+          style="width: 100%;"
+          @current-change="handleCurrentChange"
+        >
+          <el-table-column label="baseUrl" prop="baseUrl" sortable="custom" align="center" min-width="100px">
+            <template slot-scope="scope">
+              <span>{{ scope.row.baseUrl }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="contextPath" prop="contextPath" sortable="custom" align="center" min-width="100px">
+            <template slot-scope="scope">
+              <span>{{ scope.row.contextPath }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('actions.handle')" align="center" class-name="small-padding">
+            <template slot-scope="scope">
+              <el-button type="danger" size="mini" @click="removeInstance(scope.row)">{{ $t('actions.remove') }}</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div style="margin-top: 20px;">
+          <el-row>
+            <el-col :span="8">
+              <el-input v-model="instance.baseUrl" placeholder="baseUrl" class="filter-item" />
+            </el-col>
+            <el-col :span="8" :offset="1">
+              <el-input v-model="instance.contextPath" placeholder="contextPath" class="filter-item" />
+            </el-col>
+            <el-col :span="4" :offset="2">
+              <el-button :disabled="!instance.baseUrl" type="success" size="mini" @click="saveInstance">{{ $t('actions.save') }}</el-button>
+              <el-button :disabled="!instance.baseUrl" type="primary" size="mini" @click="ping">Ping</el-button>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq } from '@/api/sys/tenant'
+import { listReq, removeReq, addReq, updateReq, saveInstanceReq, listInstanceReq, removeInstanceReq } from '@/api/sys/tenant'
 import * as userApi from '@/api/sys/user'
+import { pingReq } from '@/api/sys/tool'
 import waves from '@/directive/waves' // Waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import access from '@/directive/access/index.js'
 import { canAccess } from '@/utils/tools'
-
+const DEF_INSTANCE = {
+  baseUrl: null,
+  contextPath: null
+}
 export default {
   name: 'Tenant',
   components: { Pagination },
@@ -105,7 +163,12 @@ export default {
       editDialog: {
         oper: undefined,
         title: undefined,
-        visible: false
+        base: {
+          visible: false
+        },
+        instance: {
+          visible: false
+        }
       },
       formRules: {
         id: [
@@ -126,7 +189,9 @@ export default {
       tenantAdmins: [],
       downloadLoading: false,
       selections: [],
-      canUpdate: canAccess('tenant-update')
+      canUpdate: canAccess('tenant-update'),
+      instance: Object.assign({}, DEF_INSTANCE),
+      instances: []
     }
   },
   created() {
@@ -184,11 +249,48 @@ export default {
         this.editDialog.title = this.$t('actions.update')
       }
       this.selectRow(row)
-      this.editDialog.visible = true
+      this.editDialog.base.visible = true
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
       this.loadTenantAdmins()
+    },
+    ping() {
+      pingReq(this.instance).then(res => {
+        this.$message.success(res.data.msg)
+      })
+    },
+    removeInstance(row) {
+      const msg = '<p>' + this.$t('tip.removeConfirm') + ':<br><span style="color: red">' + row.baseUrl + '</span></p>'
+      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+        .then(() => {
+          removeInstanceReq(this.instance).then(res => {
+            this.$message.success(res.data.msg)
+            this.initInstances(this.instance)
+          })
+        })
+    },
+    saveInstance() {
+      const msg = '<p>' + this.$t('tip.saveConfirm') + '?</p>'
+      this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
+        .then(() => {
+          saveInstanceReq(this.instance).then(res => {
+            this.$message.success(res.data.msg)
+            this.initInstances(this.instance)
+          })
+        })
+    },
+    showInstanceTable(row) {
+      this.selectRow(row)
+      this.editDialog.title = this.$t('sys.tenant.oper.instance')
+      this.instance = Object.assign({ id: row.id }, DEF_INSTANCE)
+      this.editDialog.instance.visible = true
+      this.initInstances(row)
+    },
+    initInstances(row) {
+      listInstanceReq({ id: row.id }).then(res => {
+        this.instances = res.data.result
+      })
     },
     save() {
       this.$refs.form.validate((valid) => {
@@ -196,7 +298,7 @@ export default {
           const request = (this.editDialog.oper === 'add' ? addReq(this.tenant) : updateReq(this.tenant))
           request.then(res => {
             this.$message.success(res.data.msg)
-            this.editDialog.visible = false
+            this.editDialog.base.visible = false
             this.search()
           })
         }
@@ -230,6 +332,13 @@ export default {
     },
     handleSelectionChange(val) {
       this.selections = val
+    },
+    handleCurrentChange(val) {
+      this.instance = Object.assign({}, val) || Object.assign({ id: this.selections[0].id }, DEF_INSTANCE)
+    },
+    close() {
+      this.editDialog.base.visible =
+        this.editDialog.instance.visible = false
     },
     loadTenantAdmins() {
       userApi.listReq({ currentPage: 1, pageSize: 1000 }).then(res => {

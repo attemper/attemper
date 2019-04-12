@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * 租户
+ * tenant
  * @author ldang
  */
 @Data
