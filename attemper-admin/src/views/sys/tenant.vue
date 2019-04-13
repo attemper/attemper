@@ -48,7 +48,6 @@
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-if="canUpdate" type="primary" size="mini" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
-          <el-button type="primary" size="mini" @click="showInstanceTable(scope.row)">{{ $t('sys.tenant.actions.instance') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -57,7 +56,7 @@
 
     <el-dialog
       :title="editDialog.title"
-      :visible.sync="editDialog.base.visible || editDialog.instance.visible"
+      :visible.sync="editDialog.base.visible"
       :center="true"
       :modal="true"
       :close-on-click-modal="false"
@@ -85,64 +84,19 @@
           </el-form-item>
         </el-form>
       </div>
-      <div v-show="editDialog.instance.visible">
-        <el-table
-          ref="instancepTables"
-          :data="instances"
-          border
-          fit
-          highlight-current-row
-          style="width: 100%;"
-          @current-change="handleCurrentChange"
-        >
-          <el-table-column label="baseUrl" prop="baseUrl" sortable="custom" align="center" min-width="100px">
-            <template slot-scope="scope">
-              <span>{{ scope.row.baseUrl }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="contextPath" prop="contextPath" sortable="custom" align="center" min-width="100px">
-            <template slot-scope="scope">
-              <span>{{ scope.row.contextPath }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('actions.handle')" align="center" class-name="small-padding">
-            <template slot-scope="scope">
-              <el-button type="danger" size="mini" @click="removeInstance(scope.row)">{{ $t('actions.remove') }}</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div style="margin-top: 20px;">
-          <el-row>
-            <el-col :span="8">
-              <el-input v-model="instance.baseUrl" placeholder="baseUrl" class="filter-item" />
-            </el-col>
-            <el-col :span="8" :offset="1">
-              <el-input v-model="instance.contextPath" placeholder="contextPath" class="filter-item" />
-            </el-col>
-            <el-col :span="4" :offset="2">
-              <el-button :disabled="!instance.baseUrl" type="success" size="mini" @click="saveInstance">{{ $t('actions.save') }}</el-button>
-              <el-button :disabled="!instance.baseUrl" type="primary" size="mini" @click="ping">Ping</el-button>
-            </el-col>
-          </el-row>
-        </div>
-      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq, saveInstanceReq, listInstanceReq, removeInstanceReq } from '@/api/sys/tenant'
+import { listReq, removeReq, addReq, updateReq } from '@/api/sys/tenant'
 import * as userApi from '@/api/sys/user'
-import { pingReq } from '@/api/sys/tool'
 import waves from '@/directive/waves' // Waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import access from '@/directive/access/index.js'
 import { canAccess } from '@/utils/tools'
-const DEF_INSTANCE = {
-  baseUrl: null,
-  contextPath: null
-}
+
 export default {
   name: 'Tenant',
   components: { Pagination },
@@ -165,9 +119,6 @@ export default {
         title: undefined,
         base: {
           visible: false
-        },
-        instance: {
-          visible: false
         }
       },
       formRules: {
@@ -189,9 +140,7 @@ export default {
       tenantAdmins: [],
       downloadLoading: false,
       selections: [],
-      canUpdate: canAccess('tenant-update'),
-      instance: Object.assign({}, DEF_INSTANCE),
-      instances: []
+      canUpdate: canAccess('tenant-update')
     }
   },
   created() {
@@ -255,43 +204,6 @@ export default {
       })
       this.loadTenantAdmins()
     },
-    ping() {
-      pingReq(this.instance).then(res => {
-        this.$message.success(res.data.msg)
-      })
-    },
-    removeInstance(row) {
-      const msg = '<p>' + this.$t('tip.removeConfirm') + ':<br><span style="color: red">' + row.baseUrl + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
-        .then(() => {
-          removeInstanceReq(this.instance).then(res => {
-            this.$message.success(res.data.msg)
-            this.initInstances(this.instance)
-          })
-        })
-    },
-    saveInstance() {
-      const msg = '<p>' + this.$t('tip.saveConfirm') + '?</p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
-        .then(() => {
-          saveInstanceReq(this.instance).then(res => {
-            this.$message.success(res.data.msg)
-            this.initInstances(this.instance)
-          })
-        })
-    },
-    showInstanceTable(row) {
-      this.selectRow(row)
-      this.editDialog.title = this.$t('sys.tenant.oper.instance')
-      this.instance = Object.assign({ id: row.id }, DEF_INSTANCE)
-      this.editDialog.instance.visible = true
-      this.initInstances(row)
-    },
-    initInstances(row) {
-      listInstanceReq({ id: row.id }).then(res => {
-        this.instances = res.data.result
-      })
-    },
     save() {
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -333,12 +245,8 @@ export default {
     handleSelectionChange(val) {
       this.selections = val
     },
-    handleCurrentChange(val) {
-      this.instance = Object.assign({}, val) || Object.assign({ id: this.selections[0].id }, DEF_INSTANCE)
-    },
     close() {
-      this.editDialog.base.visible =
-        this.editDialog.instance.visible = false
+      this.editDialog.base.visible = false
     },
     loadTenantAdmins() {
       userApi.listReq({ currentPage: 1, pageSize: 1000 }).then(res => {

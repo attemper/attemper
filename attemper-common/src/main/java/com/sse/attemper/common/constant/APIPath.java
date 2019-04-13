@@ -11,7 +11,7 @@ public class APIPath {
 
     private static final String DISPATCH = "/dispatch";
 
-    public static final String SCHEDULER = "/schduler";
+    public static final String SCHEDULER = "/scheduler";
 
     public static final String _SAVE = "";
 
@@ -46,13 +46,6 @@ public class APIPath {
 
         public static final String GET = API_PATH + SYS + TENANT + _GET;
 
-        private static final String INSTANCE = "/instance";
-
-        public static final String LIST_INSTANCES = API_PATH + SYS + TENANT + INSTANCE + _LIST;
-
-        public static final String SAVE_INSTANCE = API_PATH + SYS + TENANT + INSTANCE + _ADD;
-
-        public static final String REMOVE_INSTANCE = API_PATH + SYS + TENANT + INSTANCE + _REMOVE;
     }
 
     public static final class UserPath {
@@ -74,7 +67,7 @@ public class APIPath {
 
         public static final String INFO = API_PATH + SYS + USER + "/info";
 
-        public static final String ADMIN_INFO = API_PATH + SYS + USER + "/adminInfo";
+        //public static final String ADMIN_INFO = API_PATH + SYS + USER + "/adminInfo";
     }
 
     public static final class TagPath {
@@ -102,9 +95,9 @@ public class APIPath {
     public static final class ResourcePath {
         public static final String RESOURCE = "/resource";
 
-        public static final String LIST = API_PATH + SYS + RESOURCE + _LIST;
+        /*public static final String LIST = API_PATH + SYS + RESOURCE + _LIST;
 
-        public static final String ADD = API_PATH + SYS + RESOURCE + _ADD;
+        public static final String ADD = API_PATH + SYS + RESOURCE + _ADD;*/
 
         public static final String UPDATE = API_PATH + SYS + RESOURCE + _UPDATE;
 
@@ -112,7 +105,7 @@ public class APIPath {
 
         public static final String REMOVE = API_PATH + SYS + RESOURCE + _REMOVE;
 
-        public static final String GET = API_PATH + SYS + RESOURCE + _GET;
+        //public static final String GET = API_PATH + SYS + RESOURCE + _GET;
 
         public static final String TREE_LIST = API_PATH + SYS + RESOURCE + "/treeList";
     }
@@ -173,6 +166,26 @@ public class APIPath {
 
     }
 
+    public static final class ProjectPath {
+        public static final String PROJECT = "/project";
+
+        public static final String UPDATE = API_PATH + SYS + PROJECT + _UPDATE;
+
+        public static final String SAVE = API_PATH + SYS + PROJECT + _SAVE;
+
+        public static final String REMOVE = API_PATH + SYS + PROJECT + _REMOVE;
+
+        public static final String TREE_LIST = API_PATH + SYS + PROJECT + "/treeList";
+
+        private static final String INFO = "/info";
+
+        public static final String LIST_INFOS = API_PATH + SYS + PROJECT + INFO + _LIST;
+
+        public static final String SAVE_INFO = API_PATH + SYS + PROJECT + INFO + _ADD;
+
+        public static final String REMOVE_INFO = API_PATH + SYS + PROJECT + INFO + _REMOVE;
+    }
+
     public static final class ToolPath {
         public static final String TOOL = "/tool";
 
@@ -183,10 +196,6 @@ public class APIPath {
 
     public static final class SchedulerPath {
 
-        public static final String JOB = API_PATH + SCHEDULER + "/job";
-
         public static final String TRIGGER = API_PATH + SCHEDULER + "/trigger";
-
-        public static final String CALENDAR = API_PATH + SCHEDULER + "/calendar";
     }
 }

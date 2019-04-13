@@ -168,6 +168,21 @@ export const daysOfWeek = [
   }
 ]
 
+export const uriTypes = [
+  {
+    label: 'Discovery Client',
+    value: '0'
+  },
+  {
+    label: 'ip:port',
+    value: '1'
+  },
+  {
+    label: 'Domain Name',
+    value: '2'
+  }
+]
+
 export const requestMethods = [
   {
     label: 'POST',

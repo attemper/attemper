@@ -168,6 +168,21 @@ export const daysOfWeek = [
   }
 ]
 
+export const uriTypes = [
+  {
+    label: '服务发现',
+    value: 0
+  },
+  {
+    label: 'IP地址和端口',
+    value: 1
+  },
+  {
+    label: '域名',
+    value: 2
+  }
+]
+
 export const requestMethods = [
   {
     label: 'POST',

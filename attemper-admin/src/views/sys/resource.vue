@@ -109,7 +109,7 @@ export default {
         parentResourceName: null,
         displayName: null,
         resourceType: 0,
-        path: null,
+        uri: null,
         icon: null,
         position: 0
       },
@@ -139,7 +139,7 @@ export default {
   methods: {
     setFormRules() {
       this.formRules.resourceName[0].message = this.$t('sys.resource.rules.resourceName')
-      this.formRules.displayName[0].message = this.$t('sys.tag.rules.displayName')
+      this.formRules.displayName[0].message = this.$t('sys.resource.rules.displayName')
     },
     initTreeData() {
       treeListReq().then(res => {

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sse.attemper.core.dao.mapper.project.ProjectMapper">
+
+    <select id="getAll" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.project.Project">
+        select * from ${tablePrefix}project p
+        <where>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="map">
+        <selectKey keyProperty="count" resultType="int" order="BEFORE">
+            select count(*)
+            from ${tablePrefix}project
+            where PROJECT_NAME = #{projectName, jdbcType=VARCHAR}
+              and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </selectKey>
+        <choose>
+            <when test="count == 0">
+                INSERT INTO ${tablePrefix}project (
+                    `PROJECT_NAME`,
+                    `PARENT_PROJECT_NAME`,
+                    `DISPLAY_NAME`,
+                    `CONTEXT_PATH`,
+                    `POSITION`,
+                    `CREATE_TIME`,
+                    `UPDATE_TIME`,
+                    `TENANT_ID`
+                )
+                VALUES
+                (
+                    #{projectName, jdbcType=VARCHAR},
+                    #{parentProjectName, jdbcType=VARCHAR},
+                    #{displayName, jdbcType=VARCHAR},
+                    #{contextPath, jdbcType=VARCHAR},
+                    #{position, jdbcType=INTEGER},
+                    #{createTime, jdbcType=TIMESTAMP},
+                    #{updateTime, jdbcType=TIMESTAMP},
+                    #{tenantId, jdbcType=VARCHAR}
+                )
+            </when>
+            <otherwise>
+                UPDATE
+                  ${tablePrefix}project
+                SET
+                    `PARENT_PROJECT_NAME` = #{parentProjectName, jdbcType=VARCHAR},
+                    `DISPLAY_NAME` = #{displayName, jdbcType=VARCHAR},
+                    `CONTEXT_PATH` = #{contextPath, jdbcType=VARCHAR},
+                    `POSITION` = #{position, jdbcType=INTEGER},
+                    `UPDATE_TIME` = #{updateTime, jdbcType=TIMESTAMP}
+                WHERE `PROJECT_NAME` = #{projectName, jdbcType=VARCHAR}
+                AND `TENANT_ID` = #{tenantId, jdbcType=VARCHAR}
+            </otherwise>
+        </choose>
+    </insert>
+
+    <delete id="delete" parameterType="map">
+        delete from p USING ${tablePrefix}project p
+        <where>
+            <if test="projectNames != null">
+                PROJECT_NAME in
+                <foreach item="projectName" collection="projectNames" open="(" separator="," close=")">
+                    #{projectName}
+                </foreach>
+            </if>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
+    <insert id="saveInfo">
+        <selectKey keyProperty="count" resultType="int" order="BEFORE">
+            select count(*)
+            from ${tablePrefix}project_info
+            where `PROJECT_NAME` = #{projectName, jdbcType=VARCHAR}
+            AND `URI` = #{uri, jdbcType=VARCHAR}
+            AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </selectKey>
+        <choose>
+            <when test="count == 0">
+                INSERT INTO ${tablePrefix}project_info (
+                `PROJECT_NAME`,
+                `URI`,
+                `TYPE`,
+                TENANT_ID
+                )
+                VALUES
+                (
+                #{projectName, jdbcType=VARCHAR},
+                #{uri, jdbcType=VARCHAR},
+                #{type, jdbcType=INTEGER},
+                #{tenantId, jdbcType=VARCHAR}
+                )
+            </when>
+            <otherwise>
+                UPDATE
+                ${tablePrefix}project_info
+                SET
+                `TYPE` = #{type, jdbcType=INTEGER}
+                WHERE `PROJECT_NAME` = #{projectName, jdbcType=VARCHAR}
+                AND `URI` = #{uri, jdbcType=VARCHAR}
+                AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            </otherwise>
+        </choose>
+    </insert>
+
+    <delete id="deleteInfo">
+        delete from ${tablePrefix}project_info
+        <where>
+            `PROJECT_NAME` = #{projectName, jdbcType=VARCHAR}
+            AND `URI` = #{uri, jdbcType=VARCHAR}
+            AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </where>
+    </delete>
+    
+    <select id="listInfos" parameterType="string"
+            resultType="com.sse.attemper.common.result.dispatch.project.ProjectInfo">
+        select *
+        from ${tablePrefix}project_info
+        <where>
+            and PROJECT_NAME = #{1, jdbcType=VARCHAR}
+        </where>
+    </select>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and p.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+</mapper>

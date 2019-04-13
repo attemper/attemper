@@ -22,6 +22,8 @@ public class APIConst {
 
         public static final String TRIGGER = "触发器";
 
+        public static final String PROJECT = "项目";
+
         public static final String TOOL = "工具";
 
         public static final String ARG = "参数";
@@ -63,13 +65,6 @@ public class APIConst {
 
             public static final String GET = _GET + _NAME;
 
-            private static final String INSTANCE_NAME = "应用系统地址";
-
-            public static final String SAVE_INSTANCE = _SAVE + INSTANCE_NAME;
-
-            public static final String LIST_INSTANCES = INSTANCE_NAME + _LIST;
-
-            public static final String REMOVE_INSTANCE = _REMOVE + INSTANCE_NAME;
         }
 
         public static final class UserTitle {
@@ -178,6 +173,24 @@ public class APIConst {
             public static final String UPDATE = _UPDATE + _NAME;
 
             public static final String GET = _GET + _NAME;
+        }
+
+        public static final class ProjectTitle {
+            private static final String _NAME = APITag.PROJECT;
+
+            public static final String TREE_LIST = _GET + _NAME + "树";
+
+            public static final String SAVE = _SAVE + _NAME;
+
+            public static final String REMOVE = _REMOVE + _NAME;
+
+            private static final String INFO_NAME = "应用系统地址";
+
+            public static final String SAVE_INFO = _SAVE + INFO_NAME;
+
+            public static final String LIST_INFOS = INFO_NAME + _LIST;
+
+            public static final String REMOVE_INFO = _REMOVE + INFO_NAME;
         }
 
         public static final class ToolTitle {

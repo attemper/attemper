@@ -7,6 +7,7 @@ export default {
     tag: '标签管理',
     resource: '资源管理',
     job: '任务管理',
+    project: '项目信息',
     jobs: '任务设计',
     introduction: '简述',
     documentation: '文档',
@@ -122,9 +123,6 @@ export default {
         id: '请输入租户编号',
         name: '请输入租户名称',
         admin: '请选择管理员'
-      },
-      actions: {
-        instance: '应用地址'
       },
       oper: {
         instance: '应用系统地址列表'
@@ -321,6 +319,32 @@ export default {
         startAfterEndTime: '开始时间不能晚于结束时间',
         cronExpressionInvalid: 'cron表达式格式非法',
         jobNotPublished: '任务未被发布，无法使用触发器'
+      }
+    },
+    project: {
+      title: {
+        left: '项目树',
+        rightTop: '详情',
+        rightBottom: '地址'
+      },
+      label: {
+        projectName: '项目名称',
+        displayName: '中文名称',
+        contextPath: 'contextPath',
+        position: '位置'
+      },
+      rules: {
+        projectName: '项目名称不能为空',
+        displayName: '中文名称不能为空'
+      },
+      placeholder: {
+        projectName: '请输入项目名称',
+        displayName: '请输入中文名称',
+        contextPath: '请输入contextPath'
+      },
+      tip: {
+        searchKey: '项目名称/中文名称',
+        projectRemoveWarning: '请先删除子节点'
       }
     }
   },

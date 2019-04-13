@@ -42,15 +42,6 @@
         </choose>
     </select>
 
-    <select id="listInstances" parameterType="string"
-            resultType="com.sse.attemper.common.result.sys.tenant.InstanceInfo">
-        select *
-        from ${tablePrefix}tenant_instance
-        <where>
-            and ID = #{1, jdbcType=VARCHAR}
-        </where>
-    </select>
-
     <insert id="save" parameterType="map">
         <selectKey keyProperty="count" resultType="int" order="BEFORE">
             select count(*)
@@ -90,38 +81,6 @@
         </choose>
     </insert>
 
-    <insert id="saveInstance">
-        <selectKey keyProperty="count" resultType="int" order="BEFORE">
-            select count(*)
-            from ${tablePrefix}tenant_instance
-            where ID = #{id, jdbcType=VARCHAR}
-            AND `BASE_URL` = #{baseUrl, jdbcType=VARCHAR}
-        </selectKey>
-        <choose>
-            <when test="count == 0">
-                INSERT INTO ${tablePrefix}tenant_instance (
-                `ID`,
-                `BASE_URL`,
-                `CONTEXT_PATH`
-                )
-                VALUES
-                (
-                #{id, jdbcType=VARCHAR},
-                #{baseUrl, jdbcType=VARCHAR},
-                #{contextPath, jdbcType=VARCHAR}
-                )
-            </when>
-            <otherwise>
-                UPDATE
-                ${tablePrefix}tenant_instance
-                SET
-                `CONTEXT_PATH` = #{contextPath, jdbcType=VARCHAR}
-                WHERE `ID` = #{id, jdbcType=VARCHAR}
-                AND `BASE_URL` = #{baseUrl, jdbcType=VARCHAR}
-            </otherwise>
-        </choose>
-    </insert>
-
     <delete id="delete">
         delete from ${tablePrefix}tenant
         <where>
@@ -132,11 +91,4 @@
         </where>
     </delete>
 
-    <delete id="deleteInstance" parameterType="com.sse.attemper.common.result.sys.tenant.InstanceInfo">
-        delete from ${tablePrefix}tenant_instance
-        <where>
-            `ID` = #{id, jdbcType=VARCHAR}
-            AND `BASE_URL` = #{baseUrl, jdbcType=VARCHAR}
-        </where>
-    </delete>
 </mapper>

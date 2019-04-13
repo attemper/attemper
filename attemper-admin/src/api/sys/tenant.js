@@ -44,28 +44,3 @@ export const getReq = (params) => {
   })
 }
 
-const INSTANCE = '/instance'
-
-export const listInstanceReq = (params) => {
-  return request({
-    url: APIPath.SYS + SubPath + INSTANCE + APIPath.LIST,
-    method: 'get',
-    params: params
-  })
-}
-
-export const saveInstanceReq = (data) => {
-  return request({
-    url: APIPath.SYS + SubPath + INSTANCE + APIPath.ADD,
-    method: 'post',
-    data: data
-  })
-}
-
-export const removeInstanceReq = (data) => {
-  return request({
-    url: APIPath.SYS + SubPath + INSTANCE + APIPath.REMOVE,
-    method: 'delete',
-    data: data
-  })
-}

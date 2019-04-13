@@ -31,7 +31,7 @@ public class ResourceService extends BaseServiceAdapter {
      * @return
      */
 	public List<Resource> getAll(CommonParam commonParam){
-        Map<String, Object> paramMap = injectTenantIdToMap(commonParam);
+        Map<String, Object> paramMap = injectAdminedTenantIdToMap(commonParam);
 		List<Resource> sourceList = mapper.getAll(paramMap);
 	    List<Resource> targetList = new ArrayList<>(sourceList.size());
         Resource rootResource = findRootResource(sourceList);
@@ -50,7 +50,7 @@ public class ResourceService extends BaseServiceAdapter {
         Date now = new Date();
         resource.setCreateTime(now); //mapper中修改是不更新创建时间的
         resource.setUpdateTime(now);
-        mapper.save(injectTenantIdToMap(resource));
+        mapper.save(injectAdminedTenantIdToMap(resource));
         return resource;
     }
 
@@ -60,7 +60,7 @@ public class ResourceService extends BaseServiceAdapter {
      * @return
      */
     public void remove(ResourceRemoveParam removeParam) {
-        Map<String, Object> paramMap = injectTenantIdToMap(removeParam);
+        Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
         mapper.delete(paramMap);
     }
 
