@@ -111,6 +111,7 @@ public class ProjectService extends BaseServiceAdapter {
     }
 
     public List<ProjectInfo> listInfos(ProjectGetParam param) {
-        return mapper.listInfos(param.getProjectName());
+        Map<String, Object> paramMap = injectAdminedTenantIdToMap(param);
+        return mapper.listInfos(paramMap);
     }
 }

@@ -13,7 +13,14 @@ public class ProjectInfo {
 
     protected String projectName;
 
+    protected String parentProjectName;
+
+    protected String displayName;
+
     protected String uri;
 
+    protected String contextPath;
+
     protected Integer type;
+
 }

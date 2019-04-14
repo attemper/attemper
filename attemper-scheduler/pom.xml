@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>${groupId}</groupId>
-            <artifactId>attemper-sys</artifactId>
+            <artifactId>attemper-core</artifactId>
         </dependency>
         <dependency>
             <groupId>${groupId}</groupId>

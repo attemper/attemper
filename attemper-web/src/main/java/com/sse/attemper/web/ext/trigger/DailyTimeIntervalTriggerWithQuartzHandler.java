@@ -1,4 +1,4 @@
-package com.sse.attemper.core.ext.trigger;
+package com.sse.attemper.web.ext.trigger;
 
 import com.sse.attemper.common.constant.CommonConstants;
 import com.sse.attemper.common.param.dispatch.trigger.sub.DailyIntervalTriggerParam;
@@ -6,6 +6,7 @@ import com.sse.attemper.common.result.dispatch.trigger.sub.DailyIntervalTriggerR
 import com.sse.attemper.config.bean.ContextBeanAware;
 import com.sse.attemper.config.scheduler.util.QuartzUtil;
 import com.sse.attemper.core.dao.mapper.job.TriggerMapper;
+import com.sse.attemper.core.ext.trigger.DailyTimeIntervalTriggerHandler;
 import com.sse.attemper.sys.holder.TenantHolder;
 import com.xiaoleilu.hutool.bean.BeanUtil;
 import org.quartz.DateBuilder;
@@ -17,12 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class DailyIntervalTriggerHandler extends TriggerHandlerInDatabase<DailyIntervalTriggerParam, DailyIntervalTriggerResult> {
-
-    @Override
-    public List<DailyIntervalTriggerResult> getTriggers(Map<String, Object> jobNameWithTenantIdMap) {
-        return ContextBeanAware.getBean(TriggerMapper.class).getDailyIntervalTriggers(jobNameWithTenantIdMap);
-    }
+public class DailyTimeIntervalTriggerWithQuartzHandler extends DailyTimeIntervalTriggerHandler implements TriggerWithQuartzHandler<DailyIntervalTriggerParam, DailyIntervalTriggerResult> {
 
     @Override
     public void deleteTriggers(Map<String, Object> jobNameWithTenantIdMap) {

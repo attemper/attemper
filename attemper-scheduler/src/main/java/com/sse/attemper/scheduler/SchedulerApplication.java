@@ -2,7 +2,7 @@ package com.sse.attemper.scheduler;
 
 import com.sse.attemper.common.constant.GlobalConstants;
 import com.sse.attemper.config.scheduler.conf.ConfigSchedulerConfiguration;
-import com.sse.attemper.sys.conf.SysConfiguration;
+import com.sse.attemper.core.conf.CoreConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Import({
         ConfigSchedulerConfiguration.class,
-        SysConfiguration.class
+        CoreConfiguration.class
 })
 @EnableAsync
 @EnableDiscoveryClient

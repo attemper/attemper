@@ -124,9 +124,9 @@ public class APIConst {
         }
 
         public static final class TokenTitle {
-            private static final String _NAME = APITag.TOKEN;
+            //private static final String _NAME = APITag.TOKEN;
 
-            public static final String REFRESH = "根据header中的租户" + _REFRESH + _NAME;
+            //public static final String REFRESH = "根据header中的租户" + _REFRESH + _NAME;
         }
 
         public static final class JobTitle {

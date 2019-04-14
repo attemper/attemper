@@ -2,6 +2,7 @@ package com.sse.attemper.core.dao.mapper.job;
 
 import com.sse.attemper.common.base.BaseMapper;
 import com.sse.attemper.common.result.dispatch.job.BaseJob;
+import com.sse.attemper.common.result.dispatch.project.Project;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -32,4 +33,8 @@ public interface BaseJobMapper extends BaseMapper<BaseJob> {
     void updateInfo(BaseJob baseJob);
 
     List<BaseJob> versions(Map<String, Object> paramMap);
+
+    Project getProject(Map<String, Object> paramMap);
+
+    void saveProject(Map<String, Object> paramMap);
 }

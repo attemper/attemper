@@ -249,7 +249,8 @@ export default {
     actions: {
       design: '设计',
       param: '参数',
-      trigger: '触发器'
+      trigger: '触发器',
+      project: '项目'
     },
     flowJob: {
       btn: {

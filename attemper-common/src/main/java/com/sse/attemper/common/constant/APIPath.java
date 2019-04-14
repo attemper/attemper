@@ -140,6 +140,10 @@ public class APIPath {
             public static final String COPY = API_PATH + DISPATCH + JOB + BASE + "/copy";
 
             public static final String EXCHANGE = API_PATH + DISPATCH + JOB + BASE + "/exchange";
+
+            public static final String GET_PROJECT = API_PATH + DISPATCH + JOB + BASE + "/project";
+
+            public static final String UPDATE_PROJECT = API_PATH + DISPATCH + JOB + BASE + "/project";
         }
 
         public static final class TriggerPath {
@@ -149,6 +153,7 @@ public class APIPath {
 
             public static final String GET = API_PATH + DISPATCH + JOB + TRIGGER + _GET;
         }
+
     }
 
     public static final class ArgPath {

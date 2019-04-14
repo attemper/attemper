@@ -94,6 +94,12 @@
               @click="openTriggerDialog(scope.row)"
             >{{ $t('job.actions.trigger') }}
             </el-button>
+            <el-button
+              type="info"
+              size="mini"
+              @click="openProjectDialog(scope.row)"
+            >{{ $t('job.actions.project') }}
+            </el-button>
           </div>
         </template>
       </el-table-column>
@@ -109,7 +115,7 @@
 
     <el-dialog
       :title="editDialog.title"
-      :visible.sync="editDialog.base.visible || editDialog.param.visible || editDialog.trigger.visible"
+      :visible.sync="editDialog.base.visible || editDialog.param.visible || editDialog.trigger.visible || editDialog.project.visible"
       :center="true"
       :modal="true"
       :close-on-click-modal="false"
@@ -175,6 +181,9 @@
           </el-tooltip>
         </el-row>
       </div>
+      <div v-show="editDialog.project.visible">
+        <ProjectTree ref="projectTree" :job-name="job.jobName" @cancel="editDialog.project.visible = false" />
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -193,10 +202,12 @@ import CronTrigger from './components/cronTrigger'
 import CalendarOffsetTrigger from './components/calendarOffsetTrigger'
 import DailyIntervalTrigger from './components/dailyIntervalTrigger'
 import CalendarIntervalTrigger from './components/calendarIntervalTrigger'
+import ProjectTree from './components/projectTree'
 
 export default {
   name: 'Jobs',
   components: {
+    ProjectTree,
     Pagination,
     JobInfoForm,
     CronTrigger,
@@ -255,6 +266,9 @@ export default {
           visible: false
         },
         trigger: {
+          visible: false
+        },
+        project: {
           visible: false
         }
       },
@@ -321,7 +335,8 @@ export default {
     close() {
       this.editDialog.base.visible =
           this.editDialog.param.visible =
-            this.editDialog.trigger.visible = false
+            this.editDialog.trigger.visible =
+              this.editDialog.project.visible = false
     },
     add() {
       this.editDialog.oper = 'add'
@@ -415,6 +430,14 @@ export default {
           this.$refs.calendarIntervalTrigger.add()
         }
       })
+    },
+    openProjectDialog(row) {
+      this.editDialog.title = this.$t('job.actions.project')
+      this.selectRow(row)
+      this.editDialog.project.visible = true
+      if (this.$refs.projectTree) {
+        this.$refs.projectTree.initTreeData()
+      }
     },
     saveTrigger() {
       const trigger = { jobName: this.job.jobName }

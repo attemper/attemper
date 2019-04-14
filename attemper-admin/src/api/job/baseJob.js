@@ -75,3 +75,20 @@ export const exchangeReq = (data) => {
     data: data
   })
 }
+
+const PROJECT_PATH = '/project'
+export const getProjectReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + PROJECT_PATH,
+    method: 'get',
+    params: params
+  })
+}
+
+export const saveProjectReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + PROJECT_PATH,
+    method: 'put',
+    data: data
+  })
+}

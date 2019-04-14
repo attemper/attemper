@@ -8,6 +8,7 @@ import com.sse.attemper.sys.holder.TenantHolder;
 import com.sse.attemper.sys.holder.UserHolder;
 import com.xiaoleilu.hutool.bean.BeanUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -58,10 +59,14 @@ public abstract class BaseServiceAdapter implements BaseService {
      */
     protected Map<String, Object> injectAdminedTenantIdToMap(Object obj) {
         Map<String, Object> paramMap;
-        if (!(obj instanceof Map)) {
-            paramMap = BeanUtil.beanToMap(obj);
+        if (obj == null) {
+            paramMap = new HashMap<>(1);
         } else {
-            paramMap = (Map<String, Object>) obj;
+            if (!(obj instanceof Map)) {
+                paramMap = BeanUtil.beanToMap(obj);
+            } else {
+                paramMap = (Map<String, Object>) obj;
+            }
         }
         paramMap.put(CommonConstants.tenantId, injectAdminedTenant().getId());
         return paramMap;

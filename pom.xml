@@ -33,6 +33,7 @@
 		<spring.cloud.version>Greenwich.SR1</spring.cloud.version>
 
 		<camunda.spring.boot.version>3.2.0</camunda.spring.boot.version>
+		<camunda.version>7.10.0</camunda.version>
 		<disruptor.version>3.4.2</disruptor.version>
 		<grpc.version>1.19.0</grpc.version>
 		<quartz.spring.boot.version>0.0.1-SNAPSHOT</quartz.spring.boot.version>
@@ -182,6 +183,14 @@
 				<version>${reflections.version}</version>
 			</dependency>
 
+			<!-- camunda -->
+			<dependency>
+				<groupId>org.camunda.bpm</groupId>
+				<artifactId>camunda-bom</artifactId>
+				<scope>import</scope>
+				<type>pom</type>
+				<version>${camunda.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.camunda.bpm.springboot</groupId>
 				<artifactId>camunda-bpm-spring-boot-starter</artifactId>

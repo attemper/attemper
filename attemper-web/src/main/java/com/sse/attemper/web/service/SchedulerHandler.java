@@ -1,4 +1,4 @@
-package com.sse.attemper.core.service;
+package com.sse.attemper.web.service;
 
 import com.sse.attemper.common.constant.APIPath;
 import com.sse.attemper.common.constant.CommonConstants;

@@ -12,9 +12,11 @@
     <insert id="save" parameterType="map">
         <selectKey keyProperty="count" resultType="int" order="BEFORE">
             select count(*)
-            from ${tablePrefix}project
-            where PROJECT_NAME = #{projectName, jdbcType=VARCHAR}
-              and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            from ${tablePrefix}project p
+            <where>
+                <include refid="condProjectName"/>
+                <include refid="condTenantId"/>
+            </where>
         </selectKey>
         <choose>
             <when test="count == 0">
@@ -42,15 +44,17 @@
             </when>
             <otherwise>
                 UPDATE
-                  ${tablePrefix}project
+                ${tablePrefix}project p
                 SET
                     `PARENT_PROJECT_NAME` = #{parentProjectName, jdbcType=VARCHAR},
                     `DISPLAY_NAME` = #{displayName, jdbcType=VARCHAR},
                     `CONTEXT_PATH` = #{contextPath, jdbcType=VARCHAR},
                     `POSITION` = #{position, jdbcType=INTEGER},
                     `UPDATE_TIME` = #{updateTime, jdbcType=TIMESTAMP}
-                WHERE `PROJECT_NAME` = #{projectName, jdbcType=VARCHAR}
-                AND `TENANT_ID` = #{tenantId, jdbcType=VARCHAR}
+                <where>
+                    <include refid="condProjectName"/>
+                    <include refid="condTenantId"/>
+                </where>
             </otherwise>
         </choose>
     </insert>
@@ -71,10 +75,12 @@
     <insert id="saveInfo">
         <selectKey keyProperty="count" resultType="int" order="BEFORE">
             select count(*)
-            from ${tablePrefix}project_info
-            where `PROJECT_NAME` = #{projectName, jdbcType=VARCHAR}
-            AND `URI` = #{uri, jdbcType=VARCHAR}
-            AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            from ${tablePrefix}project_info p
+            <where>
+                <include refid="condProjectName"/>
+                <include refid="condTenantId"/>
+                AND `URI` = #{uri, jdbcType=VARCHAR}
+            </where>
         </selectKey>
         <choose>
             <when test="count == 0">
@@ -94,37 +100,47 @@
             </when>
             <otherwise>
                 UPDATE
-                ${tablePrefix}project_info
+                ${tablePrefix}project_info p
                 SET
                 `TYPE` = #{type, jdbcType=INTEGER}
-                WHERE `PROJECT_NAME` = #{projectName, jdbcType=VARCHAR}
-                AND `URI` = #{uri, jdbcType=VARCHAR}
-                AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+                <where>
+                    <include refid="condProjectName"/>
+                    <include refid="condTenantId"/>
+                    AND `URI` = #{uri, jdbcType=VARCHAR}
+                </where>
             </otherwise>
         </choose>
     </insert>
 
     <delete id="deleteInfo">
-        delete from ${tablePrefix}project_info
+        delete from ${tablePrefix}project_info p
         <where>
-            `PROJECT_NAME` = #{projectName, jdbcType=VARCHAR}
+            <include refid="condProjectName"/>
+            <include refid="condTenantId"/>
             AND `URI` = #{uri, jdbcType=VARCHAR}
-            AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </where>
     </delete>
-    
-    <select id="listInfos" parameterType="string"
+
+    <select id="listInfos" parameterType="map"
             resultType="com.sse.attemper.common.result.dispatch.project.ProjectInfo">
-        select *
-        from ${tablePrefix}project_info
+        select p.*, pi.uri, pi.type
+        from ${tablePrefix}project_info pi join ${tablePrefix}project p
+        using (project_name, tenant_id)
         <where>
-            and PROJECT_NAME = #{1, jdbcType=VARCHAR}
+            <include refid="condProjectName"/>
+            <include refid="condTenantId"/>
         </where>
     </select>
 
-    <sql id="condTenantId">
+    <sql id="condProjectName">
         <if test="tenantId != null">
-            and p.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            and p.PROJECT_NAME = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        <if test="projectName != null">
+            and p.TENANT_ID = #{projectName, jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>

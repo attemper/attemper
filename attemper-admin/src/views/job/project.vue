@@ -42,7 +42,7 @@
         </el-tree>
       </el-card>
     </el-col>
-    <el-col v-show="project.projectName && project.projectName !== 'root'" :span="14">
+    <el-col v-show="project.projectName" :span="14">
       <el-card>
         <div slot="header">
           <span>{{ $t('job.project.title.rightTop') }}</span>

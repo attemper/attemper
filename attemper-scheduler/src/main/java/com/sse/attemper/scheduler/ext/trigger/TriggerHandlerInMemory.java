@@ -4,13 +4,12 @@ import com.sse.attemper.common.exception.RTException;
 import com.sse.attemper.common.param.dispatch.trigger.sub.CommonTriggerParam;
 import com.sse.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
 import com.sse.attemper.config.bean.ContextBeanAware;
-import com.sse.attemper.config.scheduler.quartz.QuartzTriggerHandler;
 import org.quartz.*;
 
 import java.util.HashSet;
 import java.util.List;
 
-public class TriggerHandlerInMemory<K extends CommonTriggerParam, V extends CommonTriggerResult> implements QuartzTriggerHandler {
+public class TriggerHandlerInMemory<K extends CommonTriggerParam, V extends CommonTriggerResult> {
 
     @Override
     public void unscheduleTriggers(String tenantId, List oldTriggerNames) {

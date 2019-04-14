@@ -174,6 +174,40 @@
         </where>
     </delete>
 
+    <select id="getProject" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.project.Project">
+        select jp.*
+        from ${tablePrefix}job_project jp
+        join ${tablePrefix}job j
+        on jp.JOB_NAME = j.JOB_NAME and jp.TENANT_ID = j.TENANT_ID
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <update id="saveProject" parameterType="map">
+        delete from j using ${tablePrefix}job_project j
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+        ;
+        <if test="projectName != null">
+            insert into ${tablePrefix}job_project
+            (
+            JOB_NAME,
+            PROJECT_NAME,
+            TENANT_ID
+            )
+            values
+            (
+            #{jobName, jdbcType=VARCHAR},
+            #{projectName, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+            )
+        </if>
+    </update>
+
     <sql id="condJobName">
         <if test="jobName != null">
             and j.JOB_NAME = #{jobName, jdbcType=VARCHAR}
