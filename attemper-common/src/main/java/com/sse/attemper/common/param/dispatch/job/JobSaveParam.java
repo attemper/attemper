@@ -7,29 +7,33 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * @author ldang
+ */
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseJobCopyParam implements CommonParam {
+public class JobSaveParam implements CommonParam {
 
     protected String jobName;
 
-    protected Integer reversion;
+    protected String displayName;
 
-    protected BaseJobSaveParam targetJobParam;
+    protected String jobContent;
+
+    protected Integer status;
+
+    protected String remark;
 
     public String validate() {
-        if (StringUtils.isBlank(jobName)) {
+        if (StringUtils.isBlank(jobName)){
             return "6000";
         }
-        if (reversion == null || reversion <= 0) {
-            return "6009";
+        if (StringUtils.isBlank(displayName)){
+            return "6003";
         }
-        if (targetJobParam == null) {
-            return "6081";
-        }
-        return targetJobParam.validate();
+        return null;
     }
 
 }

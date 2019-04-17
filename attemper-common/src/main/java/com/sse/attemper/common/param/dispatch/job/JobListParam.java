@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseJobListParam extends PageSortParam {
+public class JobListParam extends PageSortParam {
 
     protected String jobName;
 

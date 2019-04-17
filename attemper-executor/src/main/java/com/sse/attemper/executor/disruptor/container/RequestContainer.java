@@ -28,4 +28,9 @@ public class RequestContainer {
     public void setResponseObserver(StreamObserver<JobInvokingProto.JobInvokingResponse> responseObserver) {
         this.responseObserver = responseObserver;
     }
+
+    public void clear() {
+        jobInvokingRequest = null;
+        responseObserver = null;
+    }
 }

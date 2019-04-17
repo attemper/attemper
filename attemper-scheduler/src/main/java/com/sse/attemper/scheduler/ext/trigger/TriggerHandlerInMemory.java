@@ -11,7 +11,6 @@ import java.util.List;
 
 public class TriggerHandlerInMemory<K extends CommonTriggerParam, V extends CommonTriggerResult> {
 
-    @Override
     public void unscheduleTriggers(String tenantId, List oldTriggerNames) {
         if (oldTriggerNames != null && oldTriggerNames.isEmpty()) {
             try {

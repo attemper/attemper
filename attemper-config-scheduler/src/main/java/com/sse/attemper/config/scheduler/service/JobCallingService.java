@@ -3,23 +3,34 @@ package com.sse.attemper.config.scheduler.service;
 import com.sse.atemper.grpc.invoking.JobInvokingProto;
 import com.sse.atemper.grpc.invoking.JobInvokingServiceGrpc;
 import com.sse.attemper.common.result.CommonResult;
-import com.sse.attemper.config.bean.ContextBeanAware;
+import com.sse.attemper.config.scheduler.interceptor.HeaderClientInterceptor;
+import com.sse.attemper.config.uuid.IdGenerator;
 import io.grpc.Channel;
+import io.grpc.ClientInterceptor;
+import io.grpc.ClientInterceptors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JobCallingService {
 
-    public CommonResult<Void> invoke(String sequenceNo, String jobName, String tenantId) {
-        return this.invoke(sequenceNo, jobName, null, tenantId);
+    @Autowired
+    private Channel originChannel;
+
+    @Autowired
+    private IdGenerator idGenerator;
+
+    public CommonResult<Void> invoke(String jobName, String tenantId) {
+        return this.invoke(jobName, "", tenantId);
     }
 
-    public CommonResult<Void> invoke(String sequenceNo, String jobName, String triggerName, String tenantId) {
-        Channel channel = ContextBeanAware.getBean(Channel.class);
+    public CommonResult<Void> invoke(String jobName, String triggerName, String tenantId) {
+        ClientInterceptor interceptor = new HeaderClientInterceptor(tenantId);
+        Channel channel = ClientInterceptors.intercept(originChannel, interceptor);
         JobInvokingServiceGrpc.JobInvokingServiceBlockingStub stub = JobInvokingServiceGrpc.newBlockingStub(channel);
         JobInvokingProto.JobInvokingResponse helloResponse = stub.invoke(
                 JobInvokingProto.JobInvokingRequest.newBuilder()
-                        .setSequenceNo(sequenceNo)
+                        .setId(idGenerator.getNextId())
                         .setJobName(jobName)
                         .setTriggerName(triggerName)
                         .setTenantId(tenantId)

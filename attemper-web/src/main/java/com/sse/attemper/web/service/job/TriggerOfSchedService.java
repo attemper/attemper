@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
-public class TriggerExtService extends BaseServiceAdapter {
+public class TriggerOfSchedService extends BaseServiceAdapter {
 
     @Autowired
     private SchedulerHandler schedulerHandler;

@@ -29,9 +29,6 @@ public class ProjectSaveParam implements CommonParam {
         } else if (projectName.length() >= 255) {
             return "1503";
         }
-        if (StringUtils.isBlank(parentProjectName)) {
-            return "6501";
-        }
         if (StringUtils.isBlank(displayName)) {
             return "6503";
         }

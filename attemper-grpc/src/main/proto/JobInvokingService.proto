@@ -9,7 +9,7 @@ option java_outer_classname = "JobInvokingProto";
 */
 message JobInvokingRequest {
     //sequence number
-    string sequenceNo = 1;
+    string id = 1;
     //job name
     string jobName = 2;
     //trigger name
@@ -23,7 +23,7 @@ message JobInvokingRequest {
 */
 message JobInvokingResponse {
     //sequence number
-    string sequenceNo = 1;
+    string id = 1;
 
     int32 code = 2;
 

@@ -13,13 +13,13 @@
 
     <insert id="add" parameterType="com.sse.attemper.common.result.sys.tag.Tag">
         INSERT INTO ${tablePrefix}tag (
-        `TAG_NAME`,
-        `DISPLAY_NAME`,
-        `TAG_TYPE`,
-        `CREATE_TIME`,
-        `UPDATE_TIME`,
-        `REMARK`,
-        `TENANT_ID`
+        TAG_NAME,
+        DISPLAY_NAME,
+        TAG_TYPE,
+        CREATE_TIME,
+        UPDATE_TIME,
+        REMARK,
+        TENANT_ID
         )
         VALUES
         (
@@ -37,7 +37,7 @@
         UPDATE ${tablePrefix}tag t
         SET
         <if test="displayName != null">
-            `DISPLAY_NAME` = #{displayName, jdbcType=VARCHAR},
+            DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
         </if>
         UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
         REMARK = #{remark, jdbcType=VARCHAR}
@@ -49,7 +49,7 @@
     </update>
 
     <delete id="delete" parameterType="map">
-        delete from ${tablePrefix}tag
+        delete from t using ${tablePrefix}tag t
         <where>
             <if test="tagNames != null">
                 TAG_NAME in
@@ -57,12 +57,8 @@
                     #{tagName}
                 </foreach>
             </if>
-            <if test="tagType != null">
-                and TAG_TYPE = #{tagType, jdbcType = INTEGER}
-            </if>
-            <if test="tenantId != null">
-                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
-            </if>
+            <include refid="condTagType"/>
+            <include refid="condTenantId"/>
         </where>
     </delete>
 
@@ -110,17 +106,11 @@
     </select>
 
     <delete id="deleteTagUsers" parameterType="map" >
-        DELETE FROM ${tablePrefix}tag_user
+        DELETE FROM t using ${tablePrefix}tag_user t
         <where>
-            <if test="tagName != null">
-                and TAG_NAME = #{tagName, jdbcType = VARCHAR}
-            </if>
-            <if test="tagType != null">
-                and TAG_TYPE = #{tagType, jdbcType = INTEGER}
-            </if>
-            <if test="tenantId != null">
-                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
-            </if>
+            <include refid="condTagName"/>
+            <include refid="condTagType"/>
+            <include refid="condTenantId"/>
         </where>
     </delete>
 
@@ -147,9 +137,9 @@
         select r.*
         from ${tablePrefix}resource r
         join ${tablePrefix}tag_resource tr
-          on r.`RESOURCE_NAME` = tr.`RESOURCE_NAME` and r.TENANT_ID = tr.TENANT_ID
+        on r.RESOURCE_NAME = tr.RESOURCE_NAME and r.TENANT_ID = tr.TENANT_ID
         join ${tablePrefix}tag t
-          on t.`TAG_NAME` = tr.`TAG_NAME` AND t.`TAG_TYPE` = tr.`TAG_TYPE` AND t.`TENANT_ID` = tr.`TENANT_ID`
+        on t.TAG_NAME = tr.TAG_NAME AND t.TAG_TYPE = tr.TAG_TYPE AND t.TENANT_ID = tr.TENANT_ID
         <where>
             <include refid="condTagName"/>
             <include refid="condTagType"/>
@@ -159,27 +149,21 @@
     </select>
 
     <delete id="deleteTagResources" parameterType="map" >
-        DELETE FROM ${tablePrefix}tag_resource
+        DELETE FROM t using ${tablePrefix}tag_resource t
         <where>
-            <if test="tagName != null">
-                and TAG_NAME = #{tagName, jdbcType = VARCHAR}
-            </if>
-            <if test="tagType != null">
-                and TAG_TYPE = #{tagType, jdbcType = INTEGER}
-            </if>
-            <if test="tenantId != null">
-                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
-            </if>
+            <include refid="condTagName"/>
+            <include refid="condTagType"/>
+            <include refid="condTenantId"/>
         </where>
     </delete>
 
     <insert id="saveTagResources">
         insert into ${tablePrefix}tag_resource
         (
-        `TAG_NAME`,
-        `TAG_TYPE`,
-        `RESOURCE_NAME`,
-        `TENANT_ID`
+        TAG_NAME,
+        TAG_TYPE,
+        RESOURCE_NAME,
+        TENANT_ID
         )
         values
         <foreach item="resourceName" collection="resourceNames" separator=",">

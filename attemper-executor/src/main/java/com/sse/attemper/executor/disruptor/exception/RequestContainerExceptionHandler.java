@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RequestContainerExceptionHandler implements ExceptionHandler<RequestContainer> {
     @Override
     public void handleEventException(Throwable throwable, long l, RequestContainer requestContainer) {
-        log.error(requestContainer.getJobInvokingRequest().getSequenceNo(), throwable);
+        log.error(requestContainer.getJobInvokingRequest().getId(), throwable);
     }
 
     @Override

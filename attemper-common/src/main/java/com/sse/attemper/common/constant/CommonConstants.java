@@ -50,4 +50,6 @@ public interface CommonConstants {
     String REGEX_EMAIL = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?";
 
     String jobName = "jobName";
+
+    String projectName = "projectName";
 }

@@ -282,11 +282,11 @@ export default {
           tagNames.push(sel.tagName)
         })
       } else {
-        this.$message.warning(this.$t('tip.remove'))
+        this.$message.warning(this.$t('tip.selectData'))
         return
       }
       const tagType = this.selections[0].tagType
-      const msg = '<p>' + this.$t('tip.removeConfirm') + ':<br><span style="color: red">' + tagNames.join('<br>') + '</span></p>'
+      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + tagNames.join('<br>') + '</span></p>'
       this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
         .then(() => {
           removeReq({ tagNames: tagNames, tagType: tagType }).then(res => {

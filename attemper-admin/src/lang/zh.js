@@ -93,18 +93,16 @@ export default {
     next: '下一个',
     ok: '确定',
     download: '下载',
-    use: '使用'
+    use: '使用',
+    manual: '发起'
   },
   tip: {
     search: '请输入查询关键字',
-    batchRemove: '批量删除',
     confirm: '请确认',
-    remove: '请选中删除的数据',
-    removeConfirm: '确定删除',
-    publish: '请选中要发布的任务',
-    publishConfirm: '确定发布',
+    confirmMsg: '确定操作',
+    selectData: '请选中要操作的数据',
     saveConfirm: '确定保存',
-    clickToSeeDetail: '提示：点击按钮可查看详情'
+    manualWithNoVersion: '流程未被发布，不能手动发起'
   },
   sys: {
     tenant: {

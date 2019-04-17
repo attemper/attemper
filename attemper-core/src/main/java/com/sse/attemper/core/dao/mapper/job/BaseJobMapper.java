@@ -1,7 +1,7 @@
 package com.sse.attemper.core.dao.mapper.job;
 
 import com.sse.attemper.common.base.BaseMapper;
-import com.sse.attemper.common.result.dispatch.job.BaseJob;
+import com.sse.attemper.common.result.dispatch.job.FlowJob;
 import com.sse.attemper.common.result.dispatch.project.Project;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -14,25 +14,25 @@ import java.util.Map;
  */
 @Mapper
 @Repository
-public interface BaseJobMapper extends BaseMapper<BaseJob> {
+public interface BaseJobMapper extends BaseMapper<FlowJob> {
 
-    List<BaseJob> list(Map<String, Object> paramMap);
+    List<FlowJob> list(Map<String, Object> paramMap);
 
-    BaseJob get(Map<String, Object> paramMap);
+    FlowJob get(Map<String, Object> paramMap);
 
     void delete(Map<String, Object> paramMap);
 
     @Override
-    void add(BaseJob baseJob);
+    void add(FlowJob flowJob);
 
-    void addInfo(BaseJob baseJob);
+    void addInfo(FlowJob flowJob);
 
     @Override
-    void update(BaseJob baseJob);
+    void update(FlowJob flowJob);
 
-    void updateInfo(BaseJob baseJob);
+    void updateInfo(FlowJob flowJob);
 
-    List<BaseJob> versions(Map<String, Object> paramMap);
+    List<FlowJob> versions(Map<String, Object> paramMap);
 
     Project getProject(Map<String, Object> paramMap);
 

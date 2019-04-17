@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { getProjectReq, saveProjectReq } from '@/api/job/baseJob'
+import { getProjectReq, saveProjectReq } from '@/api/job/jobs'
 import { treeListReq } from '@/api/job/project'
 
 export default {
@@ -47,7 +47,7 @@ export default {
     }
   },
   created() {
-    this.initTreeData()
+    // this.initTreeData()
   },
   methods: {
     initTreeData() {

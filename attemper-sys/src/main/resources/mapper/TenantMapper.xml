@@ -14,7 +14,7 @@
     <select id="getByAdmin" parameterType="string" resultType="com.sse.attemper.common.result.sys.tenant.Tenant">
         select * from ${tablePrefix}tenant t
         <where>
-            and `ADMIN` = #{1, jdbcType=VARCHAR}
+            and ADMIN = #{1, jdbcType=VARCHAR}
         </where>
     </select>
 
@@ -26,7 +26,7 @@
                 and lower(ID) like concat('%', lower(#{id, jdbcType=VARCHAR}), '%')
             </if>
             <if test="name != null">
-                and lower(`NAME`) like concat('%', lower(#{name, jdbcType=VARCHAR}), '%')
+                and lower(NAME) like concat('%', lower(#{name, jdbcType=VARCHAR}), '%')
             </if>
             <if test="matchAdmin != null">
                 and ADMIN = #{matchAdmin, jdbcType=VARCHAR}
@@ -51,12 +51,12 @@
         <choose>
             <when test="count == 0">
                 INSERT INTO ${tablePrefix}tenant (
-                `ID`,
-                `NAME`,
-                `SIGN`,
-                `ADMIN`,
-                `CREATE_TIME`,
-                `UPDATE_TIME`
+                ID,
+                NAME,
+                SIGN,
+                ADMIN,
+                CREATE_TIME,
+                UPDATE_TIME
                 )
                 VALUES
                 (
@@ -72,11 +72,11 @@
                 UPDATE
                 ${tablePrefix}tenant
                 SET
-                `NAME` = #{name, jdbcType=VARCHAR},
-                `SIGN` = #{sign, jdbcType=VARCHAR},
-                `ADMIN` = #{admin, jdbcType=VARCHAR},
-                `UPDATE_TIME` = #{updateTime, jdbcType=TIMESTAMP}
-                WHERE `ID` = #{id, jdbcType=VARCHAR}
+                NAME = #{name, jdbcType=VARCHAR},
+                SIGN = #{sign, jdbcType=VARCHAR},
+                ADMIN = #{admin, jdbcType=VARCHAR},
+                UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP}
+                WHERE ID = #{id, jdbcType=VARCHAR}
             </otherwise>
         </choose>
     </insert>

@@ -1,7 +1,7 @@
 <template>
   <div ref="container" class="content">
-    <div ref="canvas" class="canvas"/>
-    <div ref="propertiesPanel" class="properties-panel-parent"/>
+    <div ref="canvas" class="canvas" />
+    <div ref="propertiesPanel" class="properties-panel-parent" />
     <ul class="buttons">
       <li>{{ $t('actions.download') }}</li>
       <li>
@@ -18,7 +18,8 @@
         class="filter-item"
         size="mini"
         style="width: 160px"
-        @change="changeJob">
+        @change="changeJob"
+      >
         <el-option v-for="item in jobWithVersions" :key="item.reversion" :label="createVersionLabel(item)" :value="item.reversion">
           <span style="float: left; font-size: 13px">{{ createVersionLabel(item) }}</span>
           <span style="float: right; color: #8492a6; margin-left: 20px;">{{ item.updateTime }}</span>
@@ -27,20 +28,20 @@
       <span style="margin-left: 40px;">
         <el-tooltip :content="$t('actions.save')" effect="dark" placement="top-start">
           <span>
-            <el-button :disabled="job.maxReversion !== currentReversion" icon="el-icon-check" type="success" size="mini" @click="save"/>
+            <el-button :disabled="job.maxReversion !== currentReversion" icon="el-icon-check" type="success" size="mini" @click="save" />
           </span>
         </el-tooltip>
         <el-tooltip :content="$t('job.flowJob.tip.exchange')" effect="dark" placement="top">
           <span style="margin-left: 10px;">
             <el-button :disabled="job.maxReversion === currentReversion" type="info" size="mini" @click="exchange">
-              <svg-icon icon-class="exchange"/>
+              <svg-icon icon-class="exchange" />
             </el-button>
           </span>
         </el-tooltip>
         <el-tooltip :content="$t('job.flowJob.tip.copy')" effect="dark" placement="top-start">
           <span style="margin-left: 10px;">
             <el-button type="primary" size="mini" @click="openCopyDialog">
-              <svg-icon icon-class="copy"/>
+              <svg-icon icon-class="copy" />
             </el-button>
           </span>
         </el-tooltip>
@@ -54,14 +55,15 @@
       :center="true"
       :modal="true"
       :close-on-click-modal="false"
-      :close-on-press-escape="false">
-      <job-info-form :job="targetJobParam" @save="copy" @cancel="editDialog.visible = false"/>
+      :close-on-press-escape="false"
+    >
+      <job-info-form :job="targetJobParam" @save="copy" @cancel="editDialog.visible = false" />
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getReq, updateReq, versionsReq, copyReq, exchangeReq } from '@/api/job/baseJob'
+import { getReq, updateReq, versionsReq, copyReq, exchangeReq } from '@/api/job/jobs'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import propertiesPanelModule from 'bpmn-js-properties-panel'
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'

@@ -247,7 +247,7 @@ export default {
         if (data.children && data.children.length > 0) {
           this.$message.warning(this.$t('job.project.tip.projectRemoveWarning'))
         } else {
-          const msg = '<p>' + this.$t('tip.removeConfirm') + ':<br><span style="color: red">' + data.displayName + '</span></p>'
+          const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + data.displayName + '</span></p>'
           this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
             .then(() => {
               removeReq({ projectNames: [data.projectName] }).then(res => {
@@ -293,7 +293,7 @@ export default {
       })
     },
     removeInfo(row) {
-      const msg = '<p>' + this.$t('tip.removeConfirm') + ':<br><span style="color: red">' + row.uri + '</span></p>'
+      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + row.uri + '</span></p>'
       this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
         .then(() => {
           removeInfoReq(this.projectInfo).then(res => {

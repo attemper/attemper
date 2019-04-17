@@ -15,6 +15,9 @@
       <el-button v-waves :disabled="!selections || !selections.length" class="filter-item table-external-button" size="mini" type="primary" @click="publish">
         <svg-icon icon-class="publish" /> {{ $t('table.publish') }}
       </el-button>
+      <el-button style="float: right" :disabled="!selections || !selections.length" class="filter-item table-external-button" size="mini" type="danger" @click="manual">
+        <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
+      </el-button>
       <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>
       <el-checkbox v-model="showCreateTime" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">{{ $t('job.columns.createTime') }}</el-checkbox>-->
     </div>
@@ -189,7 +192,7 @@
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq, publishReq } from '@/api/job/baseJob'
+import { listReq, removeReq, addReq, updateReq, publishReq, manualReq } from '@/api/job/jobs'
 import * as triggerApi from '@/api/job/trigger'
 import * as toolApi from '@/api/sys/tool'
 import waves from '@/directive/waves' // Waves directive
@@ -343,10 +346,9 @@ export default {
       this.selectRow(null)
       this.editDialog.title = this.$t('actions.add')
       this.editDialog.base.visible = true
-      /* this.$nextTick(() => {
-        this.$refs['baseForm'].clearValidate()
-      })*/
-      // this.$refs.jobInfoForm.clearValidate()
+      if (this.$refs.jobInfoForm) {
+        this.$refs.jobInfoForm.clearValidate()
+      }
     },
     update(row) {
       this.editDialog.oper = 'update'
@@ -354,10 +356,9 @@ export default {
       // this.job = Object.assign({}, row) // copy obj
       this.editDialog.title = this.$t('actions.update')
       this.editDialog.base.visible = true
-      /* this.$nextTick(() => {
-        this.$refs['baseForm'].clearValidate()
-      })*/
-      // this.$refs.jobInfoForm.clearValidate()
+      if (this.$refs.jobInfoForm) {
+        this.$refs.jobInfoForm.clearValidate()
+      }
     },
     save(job) {
       this.job = job
@@ -375,10 +376,10 @@ export default {
           jobNames.push(sel.jobName)
         })
       } else {
-        this.$message.warning(this.$t('tip.publish'))
+        this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const msg = '<p>' + this.$t('tip.publishConfirm') + ':<br><span style="color: red">' + jobNames.join('<br>') + '</span></p>'
+      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + jobNames.join('<br>') + '</span></p>'
       this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
         .then(() => {
           publishReq({ jobNames: jobNames }).then(res => {
@@ -460,10 +461,10 @@ export default {
           jobNames.push(sel.jobName)
         })
       } else {
-        this.$message.warning(this.$t('tip.remove'))
+        this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const msg = '<p>' + this.$t('tip.removeConfirm') + ':<br><span style="color: red">' + jobNames.join('<br>') + '</span></p>'
+      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + jobNames.join('<br>') + '</span></p>'
       this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
         .then(() => {
           removeReq({ jobNames: jobNames }).then(res => {
@@ -543,6 +544,28 @@ export default {
       toolApi.listTimeZoneReq().then(res => {
         this.timeZones = res.data.result
       })
+    },
+    manual() {
+      const jobNames = []
+      if (this.selections.length) {
+        this.selections.forEach((sel) => {
+          if (!sel.maxVersion) {
+            this.$message.warning(this.$t('tip.manualWithNoVersion') + ':' + sel.jobName)
+            return
+          }
+          jobNames.push(sel.jobName)
+        })
+      } else {
+        this.$message.warning(this.$t('tip.selectData'))
+        return
+      }
+      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + jobNames.join('<br>') + '</span></p>'
+      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+        .then(() => {
+          manualReq({ jobNames: jobNames }).then(res => {
+            this.$message.success(res.data.msg)
+          })
+        })
     }
   }
 }

@@ -223,10 +223,10 @@ export default {
           ids.push(sel.id)
         })
       } else {
-        this.$message.warning(this.$t('tip.remove'))
+        this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const msg = '<p>' + this.$t('tip.removeConfirm') + ':<br><span style="color: red">' + ids.join('<br>') + '</span></p>'
+      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + ids.join('<br>') + '</span></p>'
       this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
         .then(() => {
           removeReq({ ids: ids }).then(res => {

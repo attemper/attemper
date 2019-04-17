@@ -23,9 +23,9 @@ public class TriggerController {
 	@Autowired
 	private TriggerService service;
 
-	@ApiOperation(APIConst.APIOperation.JobTitle.TriggerTitle.GET)
+	@ApiOperation(APIConst.APIOperation.TriggerTitle.GET)
 	@ApiImplicitParam(value = "查询单个对象信息", name = "getParam", dataType = "TriggerGetParam", required = true)
-	@GetMapping(APIPath.JobPath.TriggerPath.GET)
+	@GetMapping(APIPath.TriggerPath.GET)
 	public CommonResult<TriggerResult> get(TriggerGetParam getParam) {
 		return CommonResult.putResult(service.get(getParam));
 	}

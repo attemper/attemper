@@ -21,14 +21,14 @@
         <choose>
             <when test="count == 0">
                 INSERT INTO ${tablePrefix}project (
-                    `PROJECT_NAME`,
-                    `PARENT_PROJECT_NAME`,
-                    `DISPLAY_NAME`,
-                    `CONTEXT_PATH`,
-                    `POSITION`,
-                    `CREATE_TIME`,
-                    `UPDATE_TIME`,
-                    `TENANT_ID`
+                PROJECT_NAME,
+                PARENT_PROJECT_NAME,
+                DISPLAY_NAME,
+                CONTEXT_PATH,
+                POSITION,
+                CREATE_TIME,
+                UPDATE_TIME,
+                TENANT_ID
                 )
                 VALUES
                 (
@@ -46,11 +46,11 @@
                 UPDATE
                 ${tablePrefix}project p
                 SET
-                    `PARENT_PROJECT_NAME` = #{parentProjectName, jdbcType=VARCHAR},
-                    `DISPLAY_NAME` = #{displayName, jdbcType=VARCHAR},
-                    `CONTEXT_PATH` = #{contextPath, jdbcType=VARCHAR},
-                    `POSITION` = #{position, jdbcType=INTEGER},
-                    `UPDATE_TIME` = #{updateTime, jdbcType=TIMESTAMP}
+                PARENT_PROJECT_NAME = #{parentProjectName, jdbcType=VARCHAR},
+                DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
+                CONTEXT_PATH = #{contextPath, jdbcType=VARCHAR},
+                POSITION = #{position, jdbcType=INTEGER},
+                UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP}
                 <where>
                     <include refid="condProjectName"/>
                     <include refid="condTenantId"/>
@@ -79,15 +79,15 @@
             <where>
                 <include refid="condProjectName"/>
                 <include refid="condTenantId"/>
-                AND `URI` = #{uri, jdbcType=VARCHAR}
+                AND URI = #{uri, jdbcType=VARCHAR}
             </where>
         </selectKey>
         <choose>
             <when test="count == 0">
                 INSERT INTO ${tablePrefix}project_info (
-                `PROJECT_NAME`,
-                `URI`,
-                `TYPE`,
+                PROJECT_NAME,
+                URI,
+                TYPE,
                 TENANT_ID
                 )
                 VALUES
@@ -102,11 +102,11 @@
                 UPDATE
                 ${tablePrefix}project_info p
                 SET
-                `TYPE` = #{type, jdbcType=INTEGER}
+                TYPE = #{type, jdbcType=INTEGER}
                 <where>
                     <include refid="condProjectName"/>
                     <include refid="condTenantId"/>
-                    AND `URI` = #{uri, jdbcType=VARCHAR}
+                    AND URI = #{uri, jdbcType=VARCHAR}
                 </where>
             </otherwise>
         </choose>
@@ -117,7 +117,7 @@
         <where>
             <include refid="condProjectName"/>
             <include refid="condTenantId"/>
-            AND `URI` = #{uri, jdbcType=VARCHAR}
+            AND URI = #{uri, jdbcType=VARCHAR}
         </where>
     </delete>
 
@@ -133,14 +133,14 @@
     </select>
 
     <sql id="condProjectName">
-        <if test="tenantId != null">
-            and p.PROJECT_NAME = #{tenantId, jdbcType=VARCHAR}
+        <if test="projectName != null">
+            and p.PROJECT_NAME = #{projectName, jdbcType=VARCHAR}
         </if>
     </sql>
 
     <sql id="condTenantId">
-        <if test="projectName != null">
-            and p.TENANT_ID = #{projectName, jdbcType=VARCHAR}
+        <if test="tenantId != null">
+            and p.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>

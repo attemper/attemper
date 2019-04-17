@@ -36,7 +36,7 @@ public class ProjectController {
 	@ApiOperation(APIConst.APIOperation.ProjectTitle.SAVE)
 	@ApiImplicitParam(value = "被保存的数据", name = "saveParam", dataType = "ProjectSaveParam", required = true)
 	@PostMapping(APIPath.ProjectPath.SAVE)
-    public CommonResult<Project> add(@RequestBody ProjectSaveParam saveParam) {
+	public CommonResult<Project> save(@RequestBody ProjectSaveParam saveParam) {
         return CommonResult.putResult(service.save(saveParam));
 	}
 

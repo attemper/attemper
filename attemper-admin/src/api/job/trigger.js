@@ -2,7 +2,7 @@ import request from '@/utils/request'
 import config from '@/config'
 
 const { APIPath } = config
-export const SubPath = '/job/trigger'
+export const SubPath = '/trigger'
 
 export const updateReq = (data) => {
   return request({

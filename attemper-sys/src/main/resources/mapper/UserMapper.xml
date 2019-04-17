@@ -36,15 +36,15 @@
 
     <insert id="add" parameterType="com.sse.attemper.common.result.sys.user.User">
         INSERT INTO ${tablePrefix}user (
-        `USER_NAME`,
-        `DISPLAY_NAME`,
-        `PASSWORD`,
-        `EMAIL`,
-        `MOBILE`,
-        `STATUS`,
-        `CREATE_TIME`,
-        `UPDATE_TIME`,
-        `TENANT_ID`
+        USER_NAME,
+        DISPLAY_NAME,
+        PASSWORD,
+        EMAIL,
+        MOBILE,
+        STATUS,
+        CREATE_TIME,
+        UPDATE_TIME,
+        TENANT_ID
         )
         VALUES
         (
@@ -64,10 +64,10 @@
         UPDATE ${tablePrefix}user u
         SET
         <if test="displayName != null">
-            `DISPLAY_NAME` = #{displayName, jdbcType=VARCHAR},
+            DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
         </if>
         <if test="password != null">
-            `PASSWORD` = #{password, jdbcType=VARCHAR},
+            PASSWORD = #{password, jdbcType=VARCHAR},
         </if>
         EMAIL = #{email, jdbcType=VARCHAR},
         MOBILE = #{mobile, jdbcType=VARCHAR},
@@ -80,7 +80,7 @@
     </update>
 
     <delete id="delete" parameterType="map">
-        delete from ${tablePrefix}user
+        delete from u using ${tablePrefix}user u
         <where>
             <if test="userNames != null">
                 USER_NAME in
@@ -88,9 +88,7 @@
                     #{userName}
                 </foreach>
             </if>
-            <if test="tenantId != null">
-                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
-            </if>
+            <include refid="condTenantId"/>
         </where>
     </delete>
 
@@ -128,13 +126,13 @@
         SELECT r.*
         FROM ${tablePrefix}resource r
         JOIN ${tablePrefix}tag_resource tr
-            ON r.`RESOURCE_NAME` = tr.`RESOURCE_NAME` AND r.`TENANT_ID` = tr.`TENANT_ID`
+        ON r.RESOURCE_NAME = tr.RESOURCE_NAME AND r.TENANT_ID = tr.TENANT_ID
         JOIN ${tablePrefix}tag t
-            ON tr.`TAG_NAME` = t.`TAG_NAME` AND tr.`TAG_TYPE` = t.`TAG_TYPE` AND tr.`TENANT_ID` = t.`TENANT_ID`
+        ON tr.TAG_NAME = t.TAG_NAME AND tr.TAG_TYPE = t.TAG_TYPE AND tr.TENANT_ID = t.TENANT_ID
         JOIN ${tablePrefix}tag_user tu
-            ON t.`TAG_NAME` = tu.`TAG_NAME` AND t.`TAG_TYPE` = tu.`TAG_TYPE` AND t.`TENANT_ID` = tu.`TENANT_ID`
+        ON t.TAG_NAME = tu.TAG_NAME AND t.TAG_TYPE = tu.TAG_TYPE AND t.TENANT_ID = tu.TENANT_ID
         JOIN ${tablePrefix}user u
-            ON tu.`USER_NAME` = u.`USER_NAME` AND tu.`TENANT_ID` = u.`TENANT_ID`
+        ON tu.USER_NAME = u.USER_NAME AND tu.TENANT_ID = u.TENANT_ID
         <where>
             <include refid="condUserName"/>
             <include refid="condTenantId"/>
@@ -156,7 +154,7 @@
     </select>
 
     <delete id="deleteUserTags" parameterType="map" >
-        DELETE FROM ${tablePrefix}tag_user
+        DELETE FROM t using ${tablePrefix}tag_user t
         <where>
             <if test="userName != null">
                 and USER_NAME = #{userName, jdbcType = VARCHAR}
@@ -164,9 +162,7 @@
             <if test="tagType != null">
                 and TAG_TYPE = #{tagType, jdbcType = INTEGER}
             </if>
-            <if test="tenantId != null">
-                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
-            </if>
+            <include refid="condTenantId"/>
         </where>
     </delete>
 

@@ -1,5 +1,57 @@
 [
   {
+    "name": "Sync Http Task",
+    "id": "SyncHttpTask",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [
+      {
+        "label": "Implementation Type",
+        "type": "Text",
+        "value": "com.sse.attemper.executor.task.SyncHttpTask",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "delegate": false,
+      "implementation": false
+    }
+  },
+  {
+    "name": "Async Http Task",
+    "id": "AsyncHttpTask",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [
+      {
+        "label": "Implementation Type",
+        "type": "Text",
+        "value": "com.sse.attemper.executor.task.AsyncHttpTask",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "delegate": false,
+      "implementation": false
+    }
+  },
+  {
     "name": "Mail Task",
     "id": "com.camunda.example.MailTask",
     "appliesTo": [

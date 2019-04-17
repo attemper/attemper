@@ -26,7 +26,7 @@ public class ToolService {
     @Autowired
     private DiscoveryClient discoveryClient;
 
-    public Void ping(String uri, Integer type) {
+    public Boolean ping(String uri, Integer type) {
         try {
             if (uri == null) {
                 throw new RTException(500, "uri is null");
@@ -49,7 +49,7 @@ public class ToolService {
                 log.debug("domain");
                 InetAddress.getByName(uri).isReachable(5000);
             }
-            return null;
+            return true;
         } catch (Exception e) {
             throw new RTException(500, e);
         }

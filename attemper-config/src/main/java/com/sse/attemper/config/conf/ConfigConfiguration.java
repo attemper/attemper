@@ -8,7 +8,10 @@ import com.sse.attemper.config.datasource.DataSourceProperties;
 import com.sse.attemper.config.exception.GlobalExceptionAdvicer;
 import com.sse.attemper.config.property.AppProperties;
 import com.sse.attemper.config.service.ApiLogService;
+import com.sse.attemper.config.uuid.IdGenerator;
+import com.sse.attemper.config.uuid.impl.StrongUuidGenerator;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -41,5 +44,10 @@ import org.springframework.context.annotation.Configuration;
         ApiLogRepository.class
 })
 public class ConfigConfiguration {
+
+    @Bean
+    public IdGenerator idGenerator() {
+        return new StrongUuidGenerator();
+    }
 
 }

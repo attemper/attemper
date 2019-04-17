@@ -120,40 +120,39 @@ public class APIPath {
 
         public static final String JOB = "/job";
 
-        public static final class BasePath {
-            public static final String BASE = "/base";
+        public static final String ADD = API_PATH + DISPATCH + JOB + _ADD;
 
-            public static final String ADD = API_PATH + DISPATCH + JOB + BASE + _ADD;
+        public static final String UPDATE = API_PATH + DISPATCH + JOB + _UPDATE;
 
-            public static final String UPDATE = API_PATH + DISPATCH + JOB + BASE + _UPDATE;
+        public static final String LIST = API_PATH + DISPATCH + JOB + _LIST;
 
-            public static final String LIST = API_PATH + DISPATCH + JOB + BASE + _LIST;
+        public static final String GET = API_PATH + DISPATCH + JOB + _GET;
 
-            public static final String GET = API_PATH + DISPATCH + JOB + BASE + _GET;
+        public static final String REMOVE = API_PATH + DISPATCH + JOB + _REMOVE;
 
-            public static final String REMOVE = API_PATH + DISPATCH + JOB + BASE + _REMOVE;
+        public static final String PUBLISH = API_PATH + DISPATCH + JOB + _PUBLISH;
 
-            public static final String PUBLISH = API_PATH + DISPATCH + JOB + BASE + _PUBLISH;
+        public static final String VERSIONS = API_PATH + DISPATCH + JOB + "/versions";
 
-            public static final String VERSIONS = API_PATH + DISPATCH + JOB + BASE + "/versions";
+        public static final String COPY = API_PATH + DISPATCH + JOB + "/copy";
 
-            public static final String COPY = API_PATH + DISPATCH + JOB + BASE + "/copy";
+        public static final String EXCHANGE = API_PATH + DISPATCH + JOB + "/exchange";
 
-            public static final String EXCHANGE = API_PATH + DISPATCH + JOB + BASE + "/exchange";
+        public static final String MANUAL = API_PATH + DISPATCH + JOB + "/manual";
 
-            public static final String GET_PROJECT = API_PATH + DISPATCH + JOB + BASE + "/project";
+        public static final String GET_PROJECT = API_PATH + DISPATCH + JOB + "/project";
 
-            public static final String UPDATE_PROJECT = API_PATH + DISPATCH + JOB + BASE + "/project";
-        }
+        public static final String UPDATE_PROJECT = API_PATH + DISPATCH + JOB + "/project";
 
-        public static final class TriggerPath {
-            public static final String TRIGGER = "/trigger";
 
-            public static final String UPDATE = API_PATH + DISPATCH + JOB + TRIGGER + _UPDATE;
+    }
 
-            public static final String GET = API_PATH + DISPATCH + JOB + TRIGGER + _GET;
-        }
+    public static final class TriggerPath {
+        public static final String TRIGGER = "/trigger";
 
+        public static final String UPDATE = API_PATH + DISPATCH + TRIGGER + _UPDATE;
+
+        public static final String GET = API_PATH + DISPATCH + TRIGGER + _GET;
     }
 
     public static final class ArgPath {

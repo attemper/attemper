@@ -12,24 +12,26 @@
     <insert id="save" parameterType="map">
         <selectKey keyProperty="count" resultType="int" order="BEFORE">
             select count(*)
-            from ${tablePrefix}resource
-            where RESOURCE_NAME = #{resourceName, jdbcType=VARCHAR}
-              and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            from ${tablePrefix}resource r
+            <where>
+                <include refid="condResourceName"/>
+                <include refid="condTenantId"/>
+            </where>
         </selectKey>
         <choose>
             <when test="count == 0">
                 INSERT INTO ${tablePrefix}resource (
-                    `RESOURCE_NAME`,
-                    `PARENT_RESOURCE_NAME`,
-                    `DISPLAY_NAME`,
-                    `RESOURCE_TYPE`,
-                    `URI`,
-                    `ICON`,
-                    `POSITION`,
-                    `CREATE_TIME`,
-                    `UPDATE_TIME`,
-                    `EXT_ATTR`,
-                    `TENANT_ID`
+                RESOURCE_NAME,
+                PARENT_RESOURCE_NAME,
+                DISPLAY_NAME,
+                RESOURCE_TYPE,
+                URI,
+                ICON,
+                POSITION,
+                CREATE_TIME,
+                UPDATE_TIME,
+                EXT_ATTR,
+                TENANT_ID
                 )
                 VALUES
                 (
@@ -48,24 +50,26 @@
             </when>
             <otherwise>
                 UPDATE
-                  ${tablePrefix}resource
+                ${tablePrefix}resource r
                 SET
-                    `PARENT_RESOURCE_NAME` = #{parentResourceName, jdbcType=VARCHAR},
-                    `DISPLAY_NAME` = #{displayName, jdbcType=VARCHAR},
-                    `RESOURCE_TYPE` = #{resourceType, jdbcType=INTEGER},
-                    `URI` = #{uri, jdbcType=VARCHAR},
-                    `ICON` = #{icon, jdbcType=VARCHAR},
-                    `POSITION` = #{position, jdbcType=INTEGER},
-                    `UPDATE_TIME` = #{updateTime, jdbcType=TIMESTAMP},
-                    `EXT_ATTR` = #{extAttr, jdbcType=VARCHAR}
-                WHERE `RESOURCE_NAME` = #{resourceName, jdbcType=VARCHAR}
-                AND `TENANT_ID` = #{tenantId, jdbcType=VARCHAR}
+                PARENT_RESOURCE_NAME = #{parentResourceName, jdbcType=VARCHAR},
+                DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
+                RESOURCE_TYPE = #{resourceType, jdbcType=INTEGER},
+                URI = #{uri, jdbcType=VARCHAR},
+                ICON = #{icon, jdbcType=VARCHAR},
+                POSITION = #{position, jdbcType=INTEGER},
+                UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+                EXT_ATTR = #{extAttr, jdbcType=VARCHAR}
+                <where>
+                    <include refid="condResourceName"/>
+                    <include refid="condTenantId"/>
+                </where>
             </otherwise>
         </choose>
     </insert>
 
     <delete id="delete" parameterType="map">
-        delete from ${tablePrefix}resource
+        delete from r using ${tablePrefix}resource r
         <where>
             <if test="resourceNames != null">
                 RESOURCE_NAME in
@@ -76,11 +80,15 @@
             <if test="resourceType != null">
                 and RESOURCE_TYPE = #{resourceType, jdbcType = INTEGER}
             </if>
-            <if test="tenantId != null">
-                and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
-            </if>
+            <include refid="condTenantId"/>
         </where>
     </delete>
+
+    <sql id="condResourceName">
+        <if test="resourceName != null">
+            and r.RESOURCE_NAME = #{resourceName, jdbcType=VARCHAR}
+        </if>
+    </sql>
 
     <sql id="condTenantId">
         <if test="tenantId != null">

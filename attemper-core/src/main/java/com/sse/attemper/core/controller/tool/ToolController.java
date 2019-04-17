@@ -28,7 +28,7 @@ public class ToolController {
 
     @ApiOperation(APIConst.APIOperation.ToolTitle.PING)
     @GetMapping(APIPath.ToolPath.PING)
-    public CommonResult<Void> ping(String uri, Integer type) {
+    public CommonResult<Boolean> ping(String uri, Integer type) {
         return CommonResult.putResult(service.ping(uri, type));
     }
 

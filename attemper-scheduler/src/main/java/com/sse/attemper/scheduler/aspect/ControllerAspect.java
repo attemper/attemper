@@ -58,7 +58,10 @@ public class ControllerAspect {
 
     @Pointcut("(execution(public * " + GlobalConstants.basePackageLocation + "sys.controller.*Controller.*(..)))"
             + "||"
-            + "(execution(public * " + GlobalConstants.basePackageLocation + "scheduler.controller.*Controller.*(..)))"
+            + "(execution(public * " + GlobalConstants.basePackageLocation + "core.controller.*Controller.*(..))"
+            + "||"
+            + "(execution(public * " + GlobalConstants.basePackageLocation + "scheduler.controller.*Controller.*(..))"
+            + ")"
     )
     public void aroundController() {
 

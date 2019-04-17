@@ -2,10 +2,10 @@ package com.sse.attemper.core.service.job;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.sse.attemper.common.param.dispatch.job.BaseJobGetParam;
-import com.sse.attemper.common.param.dispatch.job.BaseJobListParam;
+import com.sse.attemper.common.param.dispatch.job.JobGetParam;
+import com.sse.attemper.common.param.dispatch.job.JobListParam;
 import com.sse.attemper.common.param.dispatch.job.JobProjectSaveParam;
-import com.sse.attemper.common.result.dispatch.job.BaseJob;
+import com.sse.attemper.common.result.dispatch.job.FlowJob;
 import com.sse.attemper.common.result.dispatch.project.Project;
 import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
 import com.sse.attemper.sys.service.BaseServiceAdapter;
@@ -22,7 +22,7 @@ import java.util.Map;
  */
 @Service
 @Transactional
-public class BaseJobService extends BaseServiceAdapter {
+public class JobService extends BaseServiceAdapter {
 
     @Autowired
     private BaseJobMapper mapper;
@@ -32,7 +32,7 @@ public class BaseJobService extends BaseServiceAdapter {
      * @param getParam
      * @return
      */
-    public BaseJob get(BaseJobGetParam getParam) {
+    public FlowJob get(JobGetParam getParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(getParam);
         return mapper.get(paramMap);
     }
@@ -42,10 +42,10 @@ public class BaseJobService extends BaseServiceAdapter {
      * @param listParam
      * @return
      */
-    public Map<String, Object> list(BaseJobListParam listParam) {
+    public Map<String, Object> list(JobListParam listParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(listParam);
         PageHelper.startPage(listParam.getCurrentPage(), listParam.getPageSize());
-        Page<BaseJob> list = (Page<BaseJob>) mapper.list(paramMap);
+        Page<FlowJob> list = (Page<FlowJob>) mapper.list(paramMap);
         return PageUtil.toResultMap(list);
     }
 
@@ -55,12 +55,12 @@ public class BaseJobService extends BaseServiceAdapter {
      * @param getParam
      * @return
      */
-    public List<BaseJob> versions(BaseJobGetParam getParam) {
+    public List<FlowJob> versions(JobGetParam getParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(getParam);
         return mapper.versions(paramMap);
     }
 
-    public Project getProject(BaseJobGetParam getParam) {
+    public Project getProject(JobGetParam getParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(getParam);
         return mapper.getProject(paramMap);
     }

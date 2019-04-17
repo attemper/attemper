@@ -4,13 +4,13 @@
 <mapper namespace="com.sse.attemper.core.dao.mapper.arg.ArgMapper">
     <insert id="add" parameterType="com.sse.attemper.common.result.dispatch.arg.Arg">
         INSERT INTO ${tablePrefix}arg (
-            `ARG_NAME`,
-            `ARG_TYPE`,
-            `DEF_VAL`,
-            `CREATE_TIME`,
-            `UPDATE_TIME`,
-            `REMARK`,
-            `TENANT_ID`
+            ARG_NAME,
+            ARG_TYPE,
+            DEF_VAL,
+            CREATE_TIME,
+            UPDATE_TIME,
+            REMARK,
+            TENANT_ID
         )
         VALUES
         (
@@ -46,13 +46,13 @@
 
     <select id="get" resultType="com.sse.attemper.common.result.dispatch.arg.Arg" parameterType="map">
         SELECT
-        `ARG_NAME`,
-        `ARG_TYPE`,
-        `DEF_VAL`,
-        `CREATE_TIME`,
-        `UPDATE_TIME`,
-        `REMARK`,
-        `TENANT_ID`
+        ARG_NAME,
+        ARG_TYPE,
+        DEF_VAL,
+        CREATE_TIME,
+        UPDATE_TIME,
+        REMARK,
+        TENANT_ID
         FROM
         ${tablePrefix}arg
         <where>

@@ -132,33 +132,34 @@ public class APIConst {
         public static final class JobTitle {
             private static final String _NAME = APITag.JOB;
 
-            public static final class BaseTitle {
-                public static final String LIST = _NAME + _LIST;
+            public static final String LIST = _NAME + _LIST;
 
-                public static final String REMOVE = _REMOVE + _NAME;
+            public static final String REMOVE = _REMOVE + _NAME;
 
-                public static final String ADD = _ADD + _NAME;
+            public static final String ADD = _ADD + _NAME;
 
-                public static final String UPDATE = _UPDATE + _NAME;
+            public static final String UPDATE = _UPDATE + _NAME;
 
-                public static final String GET = _GET + _NAME;
+            public static final String GET = _GET + _NAME;
 
-                public static final String PUBLISH = _PUBLISH + _NAME;
+            public static final String PUBLISH = _PUBLISH + _NAME;
 
-                public static final String VERSIONS = _NAME + "版本列表";
+            public static final String VERSIONS = _NAME + "版本列表";
 
-                public static final String COPY = "复制" + _NAME;
+            public static final String COPY = "复制" + _NAME;
 
-                public static final String EXCHANGE = "将当前模型切换为最新的版本";
-            }
+            public static final String EXCHANGE = "将当前模型切换为最新的版本";
 
-            public static final class TriggerTitle {
+            public static final String MANUAL = "手工触发任务";
 
-                public static final String UPDATE = _UPDATE + _NAME + APITag.TRIGGER;
+        }
 
-                public static final String GET = _GET + _NAME + APITag.TRIGGER;
-            }
+        public static final class TriggerTitle {
+            private static final String _NAME = APITag.TRIGGER;
 
+            public static final String UPDATE = _UPDATE + _NAME;
+
+            public static final String GET = _GET + _NAME;
         }
 
         public static final class ArgTitle {

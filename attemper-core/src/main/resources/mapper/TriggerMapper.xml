@@ -84,14 +84,14 @@
         <include refid="saveJobTrigger"/>
         insert into ${tablePrefix}triggers_calendar_offset
         (
-        `TRIGGER_NAME`,
-        `TIME_UNIT`,
-        `START_TIME_OF_DAY`,
-        `INNER_OFFSET`,
-        `OUTER_OFFSET`,
-        `REPEAT_COUNT`,
-        `REVERSED`,
-        `TENANT_ID`
+        TRIGGER_NAME,
+        TIME_UNIT,
+        START_TIME_OF_DAY,
+        INNER_OFFSET,
+        OUTER_OFFSET,
+        REPEAT_COUNT,
+        REVERSED,
+        TENANT_ID
         )
         values
         <foreach item="item" collection="list" separator=",">
@@ -140,14 +140,14 @@
         <include refid="saveJobTrigger"/>
         insert into ${tablePrefix}triggers_daily_interval
         (
-        `TRIGGER_NAME`,
-        `TIME_UNIT`,
-        `DAYS_OF_WEEK`,
-        `START_TIME_OF_DAY`,
-        `END_TIME_OF_DAY`,
-        `INTERVAL`,
-        `REPEAT_COUNT`,
-        `TENANT_ID`
+        TRIGGER_NAME,
+        TIME_UNIT,
+        DAYS_OF_WEEK,
+        START_TIME_OF_DAY,
+        END_TIME_OF_DAY,
+        INTERVAL,
+        REPEAT_COUNT,
+        TENANT_ID
         )
         values
         <foreach item="item" collection="list" separator=",">
@@ -196,14 +196,14 @@
         <include refid="saveJobTrigger"/>
         insert into ${tablePrefix}triggers_calendar_interval
         (
-        `TRIGGER_NAME`,
-        `TIME_UNIT`,
-        `INTERVAL`,
-        `REPEAT_COUNT`,
-        `TIME_ZONE_ID`,
-        `PRESERVE_DAY_LIGHT`,
-        `SKIP_DAY_IF_NO_HOUR`,
-        `TENANT_ID`
+        TRIGGER_NAME,
+        TIME_UNIT,
+        INTERVAL,
+        REPEAT_COUNT,
+        TIME_ZONE_ID,
+        PRESERVE_DAY_LIGHT,
+        SKIP_DAY_IF_NO_HOUR,
+        TENANT_ID
         )
         values
         <foreach item="item" collection="list" separator=",">
@@ -223,10 +223,10 @@
     <sql id="saveJobTrigger">
         insert into ${tablePrefix}job_triggers
         (
-        `TRIGGER_NAME`,
-        `JOB_NAME`,
-        `STATUS`,
-        `TENANT_ID`
+        TRIGGER_NAME,
+        JOB_NAME,
+        STATUS,
+        TENANT_ID
         )
         values
         <foreach item="item" collection="list" separator=",">
@@ -240,12 +240,12 @@
         ;
         insert into ${tablePrefix}triggers
         (
-        `TRIGGER_NAME`,
-        `TRIGGER_TYPE`,
-        `DESCRIPTION`,
-        `START_TIME`,
-        `END_TIME`,
-        `TENANT_ID`
+        TRIGGER_NAME,
+        TRIGGER_TYPE,
+        DESCRIPTION,
+        START_TIME,
+        END_TIME,
+        TENANT_ID
         )
         values
         <foreach item="item" collection="list" separator=",">

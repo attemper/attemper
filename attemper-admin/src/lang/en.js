@@ -95,12 +95,9 @@ export default {
   },
   tip: {
     search: 'please entry something to search',
-    batchRemove: 'batch remove',
     confirm: 'please confirm to do',
     remove: 'please select the data to remove',
-    removeConfirm: 'are you sure to remove it(them)?',
-    saveConfirm: 'are you sure to save it',
-    clickToSeeDetail: 'Tip:click the button to see detail'
+    saveConfirm: 'are you sure to save it'
   },
   sys: {
     tenant: {

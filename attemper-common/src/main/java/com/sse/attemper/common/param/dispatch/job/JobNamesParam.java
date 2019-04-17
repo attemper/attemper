@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseJobRemoveParam implements CommonParam {
+public class JobNamesParam implements CommonParam {
 
     protected List<String> jobNames;
 

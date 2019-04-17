@@ -3,10 +3,13 @@ package com.sse.attemper.web.service.job;
 import com.sse.attemper.common.exception.RTException;
 import com.sse.attemper.common.param.dispatch.job.*;
 import com.sse.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
-import com.sse.attemper.common.result.dispatch.job.BaseJob;
+import com.sse.attemper.common.result.dispatch.job.FlowJob;
+import com.sse.attemper.config.bean.ContextBeanAware;
+import com.sse.attemper.config.scheduler.service.JobCallingService;
 import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
-import com.sse.attemper.core.service.job.BaseJobService;
+import com.sse.attemper.core.service.job.JobService;
 import com.sse.attemper.sys.service.BaseServiceAdapter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.repository.Deployment;
@@ -19,20 +22,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author ldang
  */
+@Slf4j
 @Service
 @Transactional
-public class BaseJobExtService extends BaseServiceAdapter {
+public class JobOfSchedService extends BaseServiceAdapter {
 
     @Autowired
-    private BaseJobService baseJobService;
+    private JobService jobService;
 
     @Autowired
     private BaseJobMapper mapper;
@@ -41,31 +49,31 @@ public class BaseJobExtService extends BaseServiceAdapter {
     private RepositoryService repositoryService;
 
     @Autowired
-    private TriggerExtService triggerService;
+    private TriggerOfSchedService triggerService;
 
     /**
      * 新增
      * @param saveParam
      * @return
      */
-    public BaseJob add(BaseJobSaveParam saveParam) {
-        BaseJob baseJob = baseJobService.get(BaseJobGetParam.builder().jobName(saveParam.getJobName()).build());
-        if (baseJob != null) {
+    public FlowJob add(JobSaveParam saveParam) {
+        FlowJob flowJob = jobService.get(JobGetParam.builder().jobName(saveParam.getJobName()).build());
+        if (flowJob != null) {
             throw new DuplicateKeyException(saveParam.getJobName());
         }
-        baseJob = toBaseJob(saveParam);
+        flowJob = toBaseJob(saveParam);
         Date now = new Date();
-        baseJob.setCreateTime(now);
-        baseJob.setUpdateTime(now);
-        baseJob.setMaxReversion(1);
-        baseJob.setReversion(1);
+        flowJob.setCreateTime(now);
+        flowJob.setUpdateTime(now);
+        flowJob.setMaxReversion(1);
+        flowJob.setReversion(1);
         if (saveParam.getJobContent() == null) {
-            BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(baseJob.getJobName())
-                    .name(baseJob.getDisplayName())
+            BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(flowJob.getJobName())
+                    .name(flowJob.getDisplayName())
                     .startEvent()
                     .id("StartEvent_1")
                     .done();
-            baseJob.setJobContent(Bpmn.convertToString(modelInstance));
+            flowJob.setJobContent(Bpmn.convertToString(modelInstance));
         } else {
             BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(saveParam.getJobContent().getBytes()));
             Collection<Process> modelElements = bpmnModelInstance.getModelElementsByType(Process.class);
@@ -73,11 +81,11 @@ public class BaseJobExtService extends BaseServiceAdapter {
                 process.builder().id(saveParam.getJobName()).name(saveParam.getDisplayName());
                 break;
             }
-            baseJob.setJobContent(Bpmn.convertToString(bpmnModelInstance));
+            flowJob.setJobContent(Bpmn.convertToString(bpmnModelInstance));
         }
-        mapper.add(baseJob);
-        mapper.addInfo(baseJob);
-        return baseJob;
+        mapper.add(flowJob);
+        mapper.addInfo(flowJob);
+        return flowJob;
     }
 
     /**
@@ -85,26 +93,26 @@ public class BaseJobExtService extends BaseServiceAdapter {
      * @param saveParam
      * @return
      */
-    public BaseJob update(BaseJobSaveParam saveParam) {
-        BaseJob baseJob = baseJobService.get(BaseJobGetParam.builder().jobName(saveParam.getJobName()).build());
-        if (baseJob == null) {
+    public FlowJob update(JobSaveParam saveParam) {
+        FlowJob flowJob = jobService.get(JobGetParam.builder().jobName(saveParam.getJobName()).build());
+        if (flowJob == null) {
             return add(saveParam); // Equivalent to copy then add
         }
-        if (!StringUtils.equals(saveParam.getDisplayName(), baseJob.getDisplayName())) {
+        if (!StringUtils.equals(saveParam.getDisplayName(), flowJob.getDisplayName())) {
             throw new RTException(6080);
         }
-        BaseJob updatedJob = toBaseJob(saveParam);
-        updatedJob.setCreateTime(baseJob.getCreateTime());
-        updatedJob.setMaxVersion(baseJob.getMaxVersion());
-        if (checkNeedSave(baseJob, updatedJob)) {  // status remark
-            updatedJob.setMaxReversion(baseJob.getMaxReversion());
+        FlowJob updatedJob = toBaseJob(saveParam);
+        updatedJob.setCreateTime(flowJob.getCreateTime());
+        updatedJob.setMaxVersion(flowJob.getMaxVersion());
+        if (checkNeedSave(flowJob, updatedJob)) {  // status remark
+            updatedJob.setMaxReversion(flowJob.getMaxReversion());
         } else {  //job content
-            if (StringUtils.equals(saveParam.getJobContent(), baseJob.getJobContent())) {
+            if (StringUtils.equals(saveParam.getJobContent(), flowJob.getJobContent())) {
                 throw new RTException(6056);
             }
-            updatedJob.setMaxReversion(baseJob.getReversion() + 1);
+            updatedJob.setMaxReversion(flowJob.getReversion() + 1);
             updatedJob.setUpdateTime(new Date());
-            updatedJob.setReversion(baseJob.getReversion() + 1);
+            updatedJob.setReversion(flowJob.getReversion() + 1);
             updatedJob.setVersion(null);
             updatedJob.setDeploymentTime(null);
             mapper.addInfo(updatedJob);
@@ -119,7 +127,7 @@ public class BaseJobExtService extends BaseServiceAdapter {
      * @param removeParam
      * @return
      */
-    public Void remove(BaseJobRemoveParam removeParam) {
+    public Void remove(JobNamesParam removeParam) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
         removeParam.getJobNames().forEach(item -> {
             TriggerUpdateParam triggerUpdateParam = new TriggerUpdateParam(item);
@@ -138,23 +146,23 @@ public class BaseJobExtService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public Void publish(BaseJobPublishParam param) {
+    public Void publish(JobPublishParam param) {
         List<String> jobNames = param.getJobNames();
         jobNames.forEach(jobName -> {
-            BaseJob baseJob = validateAndGet(jobName);  //the newest reversion job
+            FlowJob flowJob = validateAndGet(jobName);  //the newest reversion job
             Deployment deployment = repositoryService.createDeployment()
-                    .addModelInstance(jobName + ".bpmn20.xml", Bpmn.readModelFromStream(new ByteArrayInputStream(baseJob.getJobContent().getBytes())))
-                    .name(baseJob.getDisplayName())
+                    .addModelInstance(jobName + ".bpmn20.xml", Bpmn.readModelFromStream(new ByteArrayInputStream(flowJob.getJobContent().getBytes())))
+                    .name(flowJob.getDisplayName())
                     .tenantId(injectAdminedTenant().getId())
                     .deploy();
-            int maxVersion = baseJob.getMaxVersion() == null ? 1 : baseJob.getMaxVersion() + 1;
-            baseJob.setUpdateTime(deployment.getDeploymentTime());
-            baseJob.setDeploymentTime(deployment.getDeploymentTime());
-            baseJob.setVersion(maxVersion);
-            baseJob.setMaxReversion(baseJob.getMaxReversion());
-            baseJob.setMaxVersion(maxVersion);
-            mapper.update(baseJob);
-            mapper.updateInfo(baseJob);
+            int maxVersion = flowJob.getMaxVersion() == null ? 1 : flowJob.getMaxVersion() + 1;
+            flowJob.setUpdateTime(deployment.getDeploymentTime());
+            flowJob.setDeploymentTime(deployment.getDeploymentTime());
+            flowJob.setVersion(maxVersion);
+            flowJob.setMaxReversion(flowJob.getMaxReversion());
+            flowJob.setMaxVersion(maxVersion);
+            mapper.update(flowJob);
+            mapper.updateInfo(flowJob);
         });
         return null;
     }
@@ -162,16 +170,16 @@ public class BaseJobExtService extends BaseServiceAdapter {
     /**
      * 判断是否需要更新模型版本
      *
-     * @param baseJob
+     * @param flowJob
      * @param updatedJob
      * @return
      */
-    private boolean checkNeedSave(BaseJob baseJob, BaseJob updatedJob) {
-        return baseJob.getStatus() != updatedJob.getStatus() || !StringUtils.equals(baseJob.getRemark(), updatedJob.getRemark());
+    private boolean checkNeedSave(FlowJob flowJob, FlowJob updatedJob) {
+        return flowJob.getStatus() != updatedJob.getStatus() || !StringUtils.equals(flowJob.getRemark(), updatedJob.getRemark());
     }
 
-    private BaseJob toBaseJob(BaseJobSaveParam saveParam) {
-        return BaseJob.builder()
+    private FlowJob toBaseJob(JobSaveParam saveParam) {
+        return FlowJob.builder()
                 .jobName(saveParam.getJobName())
                 .displayName(saveParam.getDisplayName())
                 .jobContent(saveParam.getJobContent())
@@ -181,16 +189,16 @@ public class BaseJobExtService extends BaseServiceAdapter {
                 .build();
     }
 
-    private BaseJob validateAndGet(String jobName) {
-        BaseJobGetParam baseJobGetParam = BaseJobGetParam.builder().jobName(jobName).build();
-        BaseJob baseJob = baseJobService.get(baseJobGetParam);
-        if (baseJob == null) {
+    private FlowJob validateAndGet(String jobName) {
+        JobGetParam jobGetParam = JobGetParam.builder().jobName(jobName).build();
+        FlowJob flowJob = jobService.get(jobGetParam);
+        if (flowJob == null) {
             throw new RTException(6050, jobName);
         }
-        if (StringUtils.isBlank(baseJob.getJobContent())) {
+        if (StringUtils.isBlank(flowJob.getJobContent())) {
             throw new RTException(6053, jobName);
         }
-        return baseJob;
+        return flowJob;
     }
 
     /**
@@ -199,12 +207,12 @@ public class BaseJobExtService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public BaseJob copy(BaseJobCopyParam param) {
-        BaseJobSaveParam targetJobParam = param.getTargetJobParam();
-        BaseJob sourceJob = baseJobService.get(BaseJobGetParam.builder().jobName(param.getJobName()).reversion(param.getReversion()).build());
-        BaseJob targetJob = baseJobService.get(BaseJobGetParam.builder().jobName(targetJobParam.getJobName()).build());
+    public FlowJob copy(JobCopyParam param) {
+        JobSaveParam targetJobParam = param.getTargetJobParam();
+        FlowJob sourceJob = jobService.get(JobGetParam.builder().jobName(param.getJobName()).reversion(param.getReversion()).build());
+        FlowJob targetJob = jobService.get(JobGetParam.builder().jobName(targetJobParam.getJobName()).build());
         if (targetJob != null) { // add its reversion with new model
-            BaseJobSaveParam saveParam = BaseJobSaveParam.builder().jobName(targetJob.getJobName())
+            JobSaveParam saveParam = JobSaveParam.builder().jobName(targetJob.getJobName())
                     .displayName(targetJob.getDisplayName()).status(targetJob.getStatus()).remark(targetJob.getRemark())
                     .jobContent(sourceJob.getJobContent()).build();
             return update(saveParam);
@@ -220,11 +228,36 @@ public class BaseJobExtService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public BaseJob exchange(BaseJobGetParam param) {
-        BaseJob oldReversionJob = baseJobService.get(param);
-        BaseJobSaveParam saveParam = BaseJobSaveParam.builder().jobName(oldReversionJob.getJobName())
+    public FlowJob exchange(JobGetParam param) {
+        FlowJob oldReversionJob = jobService.get(param);
+        JobSaveParam saveParam = JobSaveParam.builder().jobName(oldReversionJob.getJobName())
                 .displayName(oldReversionJob.getDisplayName()).status(oldReversionJob.getStatus())
                 .remark(oldReversionJob.getRemark()).jobContent(oldReversionJob.getJobContent()).build();
         return update(saveParam);
+    }
+
+    /**
+     * manual run jobs
+     *
+     * @param param
+     * @return
+     */
+    public Void manual(JobNamesParam param) {
+        List<String> jobNames = param.getJobNames();
+        String tenantId = injectAdminedTenant().getId();
+        ExecutorService executorService = Executors.newFixedThreadPool(jobNames.size());
+        for (String jobName : jobNames) {
+            String sequenceNo = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS").format(LocalDateTime.now());
+            executorService.submit(() -> {
+                try {
+                    return ContextBeanAware.getBean(JobCallingService.class).invoke(jobName, tenantId);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    throw e;
+                }
+            });
+        }
+        executorService.shutdown();
+        return null;
     }
 }

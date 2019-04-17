@@ -2,7 +2,7 @@ import request from '@/utils/request'
 import config from '@/config'
 
 const { APIPath } = config
-export const SubPath = '/job/base'
+export const SubPath = '/job'
 
 export const addReq = (data) => {
   return request({
@@ -89,6 +89,14 @@ export const saveProjectReq = (data) => {
   return request({
     url: APIPath.DISPATCH + SubPath + PROJECT_PATH,
     method: 'put',
+    data: data
+  })
+}
+
+export const manualReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + '/manual',
+    method: 'post',
     data: data
   })
 }

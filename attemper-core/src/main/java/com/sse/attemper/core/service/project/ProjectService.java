@@ -32,12 +32,16 @@ public class ProjectService extends BaseServiceAdapter {
      */
 	public List<Project> getAll(CommonParam commonParam){
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(commonParam);
-		List<Project> sourceList = mapper.getAll(paramMap);
-	    List<Project> targetList = new ArrayList<>(sourceList.size());
+        return getAll(paramMap);
+    }
+
+    public List<Project> getAll(Map<String, Object> paramMap) {
+        List<Project> sourceList = mapper.getAll(paramMap);
+        List<Project> targetList = new ArrayList<>(sourceList.size());
         Project rootProject = findRootProject(sourceList);
         targetList.add(rootProject);
         computeTreeList(sourceList, targetList, rootProject);
-		return targetList;
+        return targetList;
     }
 
     /**
@@ -112,6 +116,10 @@ public class ProjectService extends BaseServiceAdapter {
 
     public List<ProjectInfo> listInfos(ProjectGetParam param) {
         Map<String, Object> paramMap = injectAdminedTenantIdToMap(param);
+        return listInfos(paramMap);
+    }
+
+    public List<ProjectInfo> listInfos(Map<String, Object> paramMap) {
         return mapper.listInfos(paramMap);
     }
 }
