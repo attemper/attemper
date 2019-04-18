@@ -22,7 +22,7 @@ import java.util.UUID;
  * @author ldang
  * JJWT实现json web token(jwt)的签名和验证
  */
-@JWTStrategyType(1)
+@JWTStrategyType(0)
 @Slf4j
 public class JJWTStrategy implements JWTStrategy {
 

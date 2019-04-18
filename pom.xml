@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sse.attemper</groupId>
 	<artifactId>attemper</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<modules>
 		<module>attemper-admin</module>
 		<module>attemper-common</module>
@@ -35,7 +35,7 @@
 		<camunda.spring.boot.version>3.2.0</camunda.spring.boot.version>
 		<camunda.version>7.10.0</camunda.version>
 		<disruptor.version>3.4.2</disruptor.version>
-		<grpc.version>1.19.0</grpc.version>
+		<grpc.version>1.20.0</grpc.version>
 		<quartz.spring.boot.version>0.0.1-SNAPSHOT</quartz.spring.boot.version>
 		<quartz.version>3.0.0</quartz.version>
 
@@ -49,7 +49,6 @@
 		<commons.collections.version>3.2.1</commons.collections.version>
 		<shiro.version>1.4.0</shiro.version>
 		<jjwt.version>0.9.1</jjwt.version>
-		<java.jwt.version>3.4.1</java.jwt.version>
 		<!--<kaptcha.version>0.0.9</kaptcha.version>-->
 		<swagger2.version>2.9.2</swagger2.version>
 		<swagger.bootstrap.ui.version>1.7.9</swagger.bootstrap.ui.version>
@@ -136,7 +135,6 @@
 				<artifactId>java-jwt</artifactId>
 				<version>${java.jwt.version}</version>
 			</dependency>
-			<!-- 验证码 -->
 			<!--<dependency>
 				<groupId>com.github.axet</groupId>
 				<artifactId>kaptcha</artifactId>
@@ -239,7 +237,6 @@
 				<artifactId>attemper-grpc-autoconfigure</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<!-- 其他jar包 -->
 			<!--<dependency>
 				<groupId>com.github.stuxuhai</groupId>
 				<artifactId>jpinyin</artifactId>

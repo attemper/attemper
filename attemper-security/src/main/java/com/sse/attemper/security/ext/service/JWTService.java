@@ -5,7 +5,7 @@ import com.sse.attemper.security.exception.JWTDecodedException;
 import com.sse.attemper.security.exception.JWTExpiredException;
 import com.sse.attemper.security.ext.annotation.JWTStrategyType;
 import com.sse.attemper.security.ext.jwt.JWTStrategy;
-import com.sse.attemper.security.ext.jwt.javajwt.JavaJWTStrategy;
+import com.sse.attemper.security.ext.jwt.jjwt.JJWTStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +18,10 @@ import java.util.Set;
 @Service
 public class JWTService {
 
-    @Value("${jwt.strategy:1}")
+    @Value("${jwt.strategy:0}")
     private int strategy;
 
-    @Value("${jwt.expire-duration:3600000}")
+    @Value("${jwt.expire-duration:7200000}")
     private long expireDuration;
 
     private JWTStrategy jwtStrategy;
@@ -40,7 +40,7 @@ public class JWTService {
             }
         } catch (InstantiationException|IllegalAccessException e) {
             log.error(e.getMessage(), e);
-            jwtStrategy = new JavaJWTStrategy();  //默认选择java-jwt实现
+            jwtStrategy = new JJWTStrategy();
         }
     }
 
