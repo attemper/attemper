@@ -179,6 +179,7 @@ export default {
   'Asynchronous After': '异步执行之后',
   'Field Injections': '属性注入',
   'Field': '属性',
+  'Connector': '连接器',
   // 提示
   'Must provide a value': '不能为空',
   'This maps to the process definition key.': '映射为流程定义的主键'

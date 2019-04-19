@@ -7,7 +7,7 @@ import com.sse.attemper.common.param.dispatch.job.JobListParam;
 import com.sse.attemper.common.param.dispatch.job.JobProjectSaveParam;
 import com.sse.attemper.common.result.dispatch.job.FlowJob;
 import com.sse.attemper.common.result.dispatch.project.Project;
-import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
+import com.sse.attemper.core.dao.mapper.job.JobMapper;
 import com.sse.attemper.sys.service.BaseServiceAdapter;
 import com.sse.attemper.sys.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.Map;
 public class JobService extends BaseServiceAdapter {
 
     @Autowired
-    private BaseJobMapper mapper;
+    private JobMapper mapper;
 
     /**
      * 根据id查询租户

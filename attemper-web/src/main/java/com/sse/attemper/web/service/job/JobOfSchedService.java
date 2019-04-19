@@ -6,9 +6,10 @@ import com.sse.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
 import com.sse.attemper.common.result.dispatch.job.FlowJob;
 import com.sse.attemper.config.bean.ContextBeanAware;
 import com.sse.attemper.config.scheduler.service.JobCallingService;
-import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
+import com.sse.attemper.core.dao.mapper.job.JobMapper;
 import com.sse.attemper.core.service.job.JobService;
 import com.sse.attemper.sys.service.BaseServiceAdapter;
+import com.sse.attemper.web.service.CamundaHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
@@ -22,8 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -43,13 +42,16 @@ public class JobOfSchedService extends BaseServiceAdapter {
     private JobService jobService;
 
     @Autowired
-    private BaseJobMapper mapper;
-
-    @Autowired
-    private RepositoryService repositoryService;
+    private JobMapper mapper;
 
     @Autowired
     private TriggerOfSchedService triggerService;
+
+    @Autowired
+    private CamundaHandler camundaHandler;
+
+    @Autowired
+    private RepositoryService repositoryService;
 
     /**
      * 新增
@@ -110,12 +112,18 @@ public class JobOfSchedService extends BaseServiceAdapter {
             if (StringUtils.equals(saveParam.getJobContent(), flowJob.getJobContent())) {
                 throw new RTException(6056);
             }
-            updatedJob.setMaxReversion(flowJob.getReversion() + 1);
             updatedJob.setUpdateTime(new Date());
-            updatedJob.setReversion(flowJob.getReversion() + 1);
-            updatedJob.setVersion(null);
             updatedJob.setDeploymentTime(null);
-            mapper.addInfo(updatedJob);
+            if (flowJob.getVersion() == null) {
+                updatedJob.setMaxReversion(flowJob.getReversion());
+                updatedJob.setReversion(flowJob.getReversion());
+                mapper.updateInfo(updatedJob);
+            } else {
+                updatedJob.setMaxReversion(flowJob.getReversion() + 1);
+                updatedJob.setReversion(flowJob.getReversion() + 1);
+                updatedJob.setVersion(null);
+                mapper.addInfo(updatedJob);
+            }
         }
         mapper.update(updatedJob);
         return updatedJob;
@@ -124,21 +132,20 @@ public class JobOfSchedService extends BaseServiceAdapter {
     /**
      * 删除
      *
-     * @param removeParam
+     * @param param
      * @return
      */
-    public Void remove(JobNamesParam removeParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
-        removeParam.getJobNames().forEach(item -> {
+    public Void remove(JobNamesParam param) {
+        Map<String, Object> paramMap = injectAdminedTenantIdToMap(param);
+        param.getJobNames().forEach(item -> {
             TriggerUpdateParam triggerUpdateParam = new TriggerUpdateParam(item);
             triggerService.update(triggerUpdateParam);
-            /*List<String> oldTriggerNames = triggerService.getOldTriggerNames(triggerUpdateParam);
-            TriggerChangedParam triggerChangedParam = new TriggerChangedParam(item, oldTriggerNames);
-            schedulerHandler.updateTrigger(triggerChangedParam);*/
         });
         mapper.delete(paramMap);
+        camundaHandler.removeDefinitionAndDeployment(param.getJobNames(), injectAdminedTenant().getId());
         return null;
     }
+
 
     /**
      * publish a job to camunda engine
@@ -150,11 +157,7 @@ public class JobOfSchedService extends BaseServiceAdapter {
         List<String> jobNames = param.getJobNames();
         jobNames.forEach(jobName -> {
             FlowJob flowJob = validateAndGet(jobName);  //the newest reversion job
-            Deployment deployment = repositoryService.createDeployment()
-                    .addModelInstance(jobName + ".bpmn20.xml", Bpmn.readModelFromStream(new ByteArrayInputStream(flowJob.getJobContent().getBytes())))
-                    .name(flowJob.getDisplayName())
-                    .tenantId(injectAdminedTenant().getId())
-                    .deploy();
+            Deployment deployment = camundaHandler.createDefault(flowJob);
             int maxVersion = flowJob.getMaxVersion() == null ? 1 : flowJob.getMaxVersion() + 1;
             flowJob.setUpdateTime(deployment.getDeploymentTime());
             flowJob.setDeploymentTime(deployment.getDeploymentTime());
@@ -233,7 +236,8 @@ public class JobOfSchedService extends BaseServiceAdapter {
         JobSaveParam saveParam = JobSaveParam.builder().jobName(oldReversionJob.getJobName())
                 .displayName(oldReversionJob.getDisplayName()).status(oldReversionJob.getStatus())
                 .remark(oldReversionJob.getRemark()).jobContent(oldReversionJob.getJobContent()).build();
-        return update(saveParam);
+        update(saveParam);
+        return jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
     }
 
     /**
@@ -247,7 +251,6 @@ public class JobOfSchedService extends BaseServiceAdapter {
         String tenantId = injectAdminedTenant().getId();
         ExecutorService executorService = Executors.newFixedThreadPool(jobNames.size());
         for (String jobName : jobNames) {
-            String sequenceNo = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS").format(LocalDateTime.now());
             executorService.submit(() -> {
                 try {
                     return ContextBeanAware.getBean(JobCallingService.class).invoke(jobName, tenantId);

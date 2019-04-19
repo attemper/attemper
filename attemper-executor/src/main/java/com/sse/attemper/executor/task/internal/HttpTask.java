@@ -6,34 +6,59 @@ import com.sse.attemper.common.result.dispatch.project.Project;
 import com.sse.attemper.common.result.dispatch.project.ProjectInfo;
 import com.sse.attemper.config.bean.ContextBeanAware;
 import com.sse.attemper.core.service.tool.ToolService;
-import com.sse.attemper.executor.service.ext.BaseJobOfExeService;
-import com.sse.attemper.executor.service.ext.ProjectOfExeService;
+import com.sse.attemper.executor.constant.PropertyConstants;
+import com.sse.attemper.executor.service.operate.JobOfExeService;
+import com.sse.attemper.executor.service.operate.ProjectOfExeService;
 import com.sse.attemper.executor.util.CamundaUtil;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.bpm.model.bpmn.impl.instance.camunda.CamundaPropertiesImpl;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public abstract class HttpTask implements JavaDelegate {
+
+    protected HttpMethod requestMethod;
+
+    protected String subUrl;
 
     @Override
     public void execute(DelegateExecution execution) {
         String jobName = CamundaUtil.extractKeyFromProcessDefinitionId(execution.getProcessDefinitionId());
         String url = resolveUrl(jobName, execution.getTenantId());
+        resolveExtensionElement(jobName, execution);
         executeWithUrl(url, jobName, execution);
     }
 
     protected abstract void executeWithUrl(String url, String jobName, DelegateExecution execution);
+
+    protected abstract Map<String, Object> buildParamMap(DelegateExecution execution);
+
+    protected String invoke(WebClient webClient, DelegateExecution execution) {
+        return webClient
+                .method(this.requestMethod)
+                .uri(this.subUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .syncBody(buildParamMap(execution))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
 
     protected WebClient buildWebClient(String url, int readTimeout) {
         HttpClient httpClient = HttpClient.create()
@@ -49,9 +74,9 @@ public abstract class HttpTask implements JavaDelegate {
      * @return
      */
     private String resolveUrl(String jobName, String tenantId) {
-        BaseJobOfExeService baseJobOfExeService = ContextBeanAware.getBean(BaseJobOfExeService.class);
+        JobOfExeService jobOfExeService = ContextBeanAware.getBean(JobOfExeService.class);
         ProjectOfExeService projectOfExeService = ContextBeanAware.getBean(ProjectOfExeService.class);
-        Project project = baseJobOfExeService.getProject(jobName, tenantId);
+        Project project = jobOfExeService.getProject(jobName, tenantId);
         if (project == null) {
             // find root
             List<Project> allProjects = projectOfExeService.getAll(tenantId);
@@ -128,5 +153,27 @@ public abstract class HttpTask implements JavaDelegate {
         }
         contextPath = contextPath.trim();
         return contextPath.startsWith("/") ? contextPath : "/" + contextPath;
+    }
+
+    private void resolveExtensionElement(String jobName, DelegateExecution execution) {
+        Collection<ModelElementInstance> elements = execution.getBpmnModelElementInstance().getExtensionElements().getElements();
+        elements.forEach(item -> {
+            CamundaPropertiesImpl cpi = (CamundaPropertiesImpl) item;
+            cpi.getCamundaProperties().forEach(cell -> {
+                if (cell.getCamundaValue() != null) {
+                    if (PropertyConstants.requestMethod.equals(cell.getCamundaName())) {
+                        this.requestMethod = HttpMethod.valueOf(cell.getCamundaValue().toUpperCase());
+                    } else if (PropertyConstants.subUrl.equals(cell.getCamundaName())) {
+                        this.subUrl = cell.getCamundaValue().startsWith("/") ? cell.getCamundaValue() : "/" + cell.getCamundaValue();
+                    }
+                }
+            });
+        });
+        if (this.requestMethod == null) {
+            this.requestMethod = HttpMethod.POST;
+        }
+        if (this.subUrl == null) {
+            this.subUrl = "/" + jobName + "/" + execution.getCurrentActivityId();
+        }
     }
 }

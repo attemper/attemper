@@ -9,6 +9,7 @@
       {
         "label": "Implementation Type",
         "type": "Text",
+        "editable": false,
         "value": "com.sse.attemper.executor.task.SyncHttpTask",
         "binding": {
           "type": "property",
@@ -35,6 +36,7 @@
       {
         "label": "Implementation Type",
         "type": "Text",
+        "editable": false,
         "value": "com.sse.attemper.executor.task.AsyncHttpTask",
         "binding": {
           "type": "property",

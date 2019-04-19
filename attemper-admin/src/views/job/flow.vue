@@ -33,7 +33,7 @@
         </el-tooltip>
         <el-tooltip :content="$t('job.flowJob.tip.exchange')" effect="dark" placement="top">
           <span style="margin-left: 10px;">
-            <el-button :disabled="job.maxReversion === currentReversion" type="info" size="mini" @click="exchange">
+            <el-button :disabled="job.maxReversion === currentReversion" type="warning" size="mini" @click="exchange">
               <svg-icon icon-class="exchange" />
             </el-button>
           </span>
@@ -97,6 +97,7 @@ export default {
   },
   created() {
     this.initJobWithVersions()
+    setTimeout(() => this.bindBpmn(), 100)
   },
   methods: {
     bindBpmn() {
@@ -162,27 +163,23 @@ export default {
         .then(() => {
           updateReq(this.job).then(res => {
             this.$message.success(res.data.msg)
+            this.openNewJobPage(this.job.jobName)
           })
         })
     },
     changeJob() {
+      const loading = this.getLoading()
       this.resolveJob({ jobName: this.job.jobName, reversion: this.currentReversion })
+      this.closeLoading(loading)
     },
     initJobWithVersions() {
       versionsReq({ jobName: this.$route.params.id }).then(res => {
-        this.bindBpmn()
         this.jobWithVersions = res.data.result
         for (let i = 0; i < this.jobWithVersions.length; i++) {
           const item = this.jobWithVersions[i]
-          if (!item.maxVersion) {
-            this.currentReversion = item.maxReversion
-            this.resolveJob(item)
-            break
-          } else if (item.version === item.maxVersion) {
-            this.currentReversion = item.reversion
-            this.resolveJob(item)
-            break
-          }
+          this.currentReversion = item.maxReversion
+          this.resolveJob(item)
+          break
         }
       })
     },
@@ -214,9 +211,7 @@ export default {
           copyReq(data).then(res => {
             this.$message.success(res.data.msg)
             this.editDialog.visible = false
-            setTimeout(() => {
-              this.openNewJobPag(this.targetJobParam.jobName) // open new route
-            }, 200)
+            this.openNewJobPage(this.targetJobParam.jobName)
           })
         })
     },
@@ -227,21 +222,25 @@ export default {
         .then(() => {
           exchangeReq(this.job).then(res => {
             this.$message.success(res.data.msg)
-            this.openNewJobPag(this.job.jobName)
-            setTimeout(() => {
-              this.currentReversion = this.job.maxReversion
-            }, 300)
+            this.openNewJobPage(this.job.jobName)
+            this.currentReversion = res.data.result.maxReversion
           })
         })
     },
-    openNewJobPag(id) {
-      const route = {
-        name: 'flow',
-        params: {
-          id: id
+    // open new route
+    openNewJobPage(id) {
+      const loading = this.getLoading()
+      setTimeout(() => {
+        const route = {
+          name: 'flow',
+          params: {
+            id: id
+          }
         }
-      }
-      this.$router.push(route)
+        this.$router.push(route)
+      }, 100)
+      this.initJobWithVersions()
+      this.closeLoading(loading)
     },
     createVersionLabel(item) {
       let label = item.reversion
@@ -306,6 +305,19 @@ export default {
       } else {
         registerFileDrop(self.$refs.container, this.openDiagram)
       }
+    },
+    getLoading() {
+      return this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+    },
+    closeLoading(loading) {
+      setTimeout(() => {
+        loading.close()
+      }, 200)
     }
   }
 }

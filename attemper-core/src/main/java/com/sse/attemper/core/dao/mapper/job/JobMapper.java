@@ -14,7 +14,7 @@ import java.util.Map;
  */
 @Mapper
 @Repository
-public interface BaseJobMapper extends BaseMapper<FlowJob> {
+public interface JobMapper extends BaseMapper<FlowJob> {
 
     List<FlowJob> list(Map<String, Object> paramMap);
 

@@ -1,14 +1,14 @@
 package com.sse.attemper.executor.task;
 
+import com.sse.attemper.executor.constant.ParamConstants;
 import com.sse.attemper.executor.task.internal.HttpTask;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Short Connection with Async-Callback
@@ -18,17 +18,8 @@ public class AsyncHttpTask extends HttpTask {
     @Override
     protected void executeWithUrl(String url, String jobName, DelegateExecution execution) {
         System.out.println("start execution:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ":" + execution.getCurrentActivityName());
-        WebClient webClient = buildWebClient(url, 10);
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("executionId", execution.getId());
-        String result = webClient
-                .method(HttpMethod.POST)
-                .uri("/" + jobName + "/" + execution.getCurrentActivityId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .syncBody(hashMap)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        WebClient webClient = super.buildWebClient(url, 300);
+        String result = super.invoke(webClient, execution);
         System.out.println(result);
         synchronized (execution.getId().intern()) {
             try {
@@ -38,5 +29,13 @@ public class AsyncHttpTask extends HttpTask {
             }
         }
         System.out.println("end execution:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ":" + execution.getCurrentActivityName());
+    }
+
+    @Override
+    protected Map<String, Object> buildParamMap(DelegateExecution execution) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put(ParamConstants.executionId, execution.getId());
+        paramMap.put(ParamConstants.bizParam, execution.getVariables());
+        return paramMap;
     }
 }

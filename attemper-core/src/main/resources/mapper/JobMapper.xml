@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sse.attemper.core.dao.mapper.job.BaseJobMapper">
+<mapper namespace="com.sse.attemper.core.dao.mapper.job.JobMapper">
 
     <insert id="add" parameterType="com.sse.attemper.common.result.dispatch.job.FlowJob">
         INSERT INTO ${tablePrefix}job (
@@ -64,7 +64,8 @@
         SET
         VERSION = #{version, jdbcType=INTEGER},
         UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
-        DEPLOYMENT_TIME = #{deploymentTime, jdbcType=TIMESTAMP}
+        DEPLOYMENT_TIME = #{deploymentTime, jdbcType=TIMESTAMP},
+        JOB_CONTENT = #{jobContent, jdbcType=VARCHAR}
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>

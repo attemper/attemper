@@ -3,11 +3,13 @@ package com.sse.attemper.core.dao.mapper.arg;
 import com.sse.attemper.common.base.BaseMapper;
 import com.sse.attemper.common.result.dispatch.arg.Arg;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
 @Mapper
+@Repository
 public interface ArgMapper extends BaseMapper<Arg> {
     @Override
     void add(Arg argument);
