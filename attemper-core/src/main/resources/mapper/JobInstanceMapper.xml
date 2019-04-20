@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sse.attemper.core.dao.mapper.monitor.JobInstanceMapper">
+
+    <insert id="add" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstance">
+        INSERT INTO ${tablePrefix}job_inst (
+            ID,
+            PROC_INST_ID,
+            TRIGGER_NAME,
+            STATUS,
+            LOG_TEXT
+        )
+        VALUES
+        (
+            #{id, jdbcType=VARCHAR},
+            #{procInstId, jdbcType=VARCHAR},
+            #{triggerName, jdbcType=VARCHAR},
+            #{status, jdbcType=INTEGER},
+            #{logText, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstance">
+        UPDATE ${tablePrefix}job_inst j
+        SET
+        STATUS = #{status, jdbcType=INTEGER},
+        LOG_TEXT = #{logText, jdbcType=VARCHAR}
+        <where>
+            <include refid="condId"/>
+        </where>
+    </update>
+
+    <insert id="addAct" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct">
+        INSERT INTO ${tablePrefix}job_inst_act (
+            ID,
+            ACT_INST_ID,
+            STATUS,
+            CODE,
+            LOG_TEXT
+        )
+        VALUES
+        (
+            #{id, jdbcType=VARCHAR},
+            #{actInstId, jdbcType=VARCHAR},
+            #{status, jdbcType=INTEGER},
+            #{code, jdbcType=VARCHAR},
+            #{logText, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="updateAct" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct">
+        UPDATE ${tablePrefix}job_inst_act j
+        SET
+        STATUS = #{status, jdbcType=INTEGER},
+        CODE = #{code, jdbcType=VARCHAR},
+        LOG_TEXT = #{logText, jdbcType=VARCHAR}
+        <where>
+            <include refid="condActInstId"/>
+        </where>
+    </update>
+
+    <sql id="condId">
+        <if test="id != null">
+            and j.ID = #{id, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condProcInstId">
+        <if test="procInstId != null">
+            and j.PROC_INST_ID = #{procInstId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condRootProcInstId">
+        <if test="rootProcInstId != null">
+            and j.ROOT_PROC_INST_ID = #{rootProcInstId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condActInstId">
+        <if test="actInstId != null">
+            and j.ACT_INST_ID = #{actInstId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+</mapper>

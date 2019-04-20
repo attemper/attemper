@@ -26,9 +26,7 @@ grpc:
     server:
       port: 5231
 
-#camunda:
-#  bpm:
-#    id-generator: simple
-
-
-
+app:
+  snow-flake:
+    data-center-id: 0
+    machine-id: 0

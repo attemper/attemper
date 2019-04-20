@@ -29,6 +29,9 @@ app:
     delayedInSecond: 5
   web:
     enable-scheduling: true
+  snow-flake:
+    data-center-id: 0
+    machine-id: 1
 
 logging:
   level:
@@ -43,7 +46,3 @@ org:
   quartz:
     jobStore:
       isClustered: true
-
-#camunda:
-#  bpm:
-#    id-generator: simple

@@ -157,6 +157,9 @@ public class JobOfSchedService extends BaseServiceAdapter {
         List<String> jobNames = param.getJobNames();
         jobNames.forEach(jobName -> {
             FlowJob flowJob = validateAndGet(jobName);  //the newest reversion job
+            if (flowJob.getVersion() != null) {
+                throw new RTException(6054, jobName);
+            }
             Deployment deployment = camundaHandler.createDefault(flowJob);
             int maxVersion = flowJob.getMaxVersion() == null ? 1 : flowJob.getMaxVersion() + 1;
             flowJob.setUpdateTime(deployment.getDeploymentTime());

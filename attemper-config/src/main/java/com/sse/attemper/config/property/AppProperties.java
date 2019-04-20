@@ -12,12 +12,19 @@ public class AppProperties {
     @NestedConfigurationProperty
     private final SchedulerConfig scheduler = new SchedulerConfig();
 
+    @NestedConfigurationProperty
+    private final SnowFlake snowFlake = new SnowFlake();
+
     public WebConfig getWeb() {
         return web;
     }
 
     public SchedulerConfig getScheduler() {
         return scheduler;
+    }
+
+    public SnowFlake getSnowFlake() {
+        return snowFlake;
     }
 
     public static class WebConfig {
@@ -62,6 +69,29 @@ public class AppProperties {
 
         public void setDelayedInSecond(int delayedInSecond) {
             this.delayedInSecond = delayedInSecond;
+        }
+    }
+
+    public static class SnowFlake {
+
+        private Long dataCenterId;
+
+        private Long machineId;
+
+        public Long getDataCenterId() {
+            return dataCenterId;
+        }
+
+        public void setDataCenterId(Long dataCenterId) {
+            this.dataCenterId = dataCenterId;
+        }
+
+        public Long getMachineId() {
+            return machineId;
+        }
+
+        public void setMachineId(Long machineId) {
+            this.machineId = machineId;
         }
     }
 

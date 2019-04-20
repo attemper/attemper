@@ -6,8 +6,10 @@ import com.sse.attemper.core.controller.job.TriggerController;
 import com.sse.attemper.core.controller.project.ProjectController;
 import com.sse.attemper.core.controller.tool.ToolController;
 import com.sse.attemper.core.dao.mapper.arg.ArgMapper;
-import com.sse.attemper.core.dao.mapper.job.BaseJobMapper;
+import com.sse.attemper.core.dao.mapper.job.JobMapper;
 import com.sse.attemper.core.dao.mapper.job.TriggerMapper;
+import com.sse.attemper.core.dao.mapper.monitor.JobExecutionMapper;
+import com.sse.attemper.core.dao.mapper.monitor.JobInstanceMapper;
 import com.sse.attemper.core.dao.mapper.project.ProjectMapper;
 import com.sse.attemper.core.service.arg.ArgService;
 import com.sse.attemper.core.service.job.JobService;
@@ -32,10 +34,12 @@ import javax.validation.ValidatorFactory;
 @Configuration
 @ComponentScan(basePackageClasses = {
         //dao.mapper
-        BaseJobMapper.class,
+        JobMapper.class,
         TriggerMapper.class,
         ArgMapper.class,
         ProjectMapper.class,
+        JobExecutionMapper.class,
+        JobInstanceMapper.class,
 
         //service
         JobService.class,

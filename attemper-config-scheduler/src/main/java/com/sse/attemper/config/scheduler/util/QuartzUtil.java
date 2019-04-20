@@ -1,6 +1,5 @@
 package com.sse.attemper.config.scheduler.util;
 
-import com.sse.attemper.common.exception.RTException;
 import com.sse.attemper.common.param.dispatch.trigger.sub.*;
 import com.sse.attemper.config.scheduler.job.ExecutableJob;
 import org.quartz.*;
@@ -21,21 +20,10 @@ public class QuartzUtil {
         return JobBuilder.newJob(ExecutableJob.class).withIdentity(jobName, tenantId).build();
     }
 
-    public static void deleteJobs(Scheduler scheduler, List<String> jobNames, String tenantId) {
-        jobNames.forEach(jobName -> {
-            JobKey jobKey = QuartzUtil.newJobKey(jobName, tenantId);
-            try {
-                scheduler.deleteJob(jobKey);
-            } catch (SchedulerException e) {
-                throw new RTException(3004, e);
-            }
-        });
-    }
-
     public static <K extends CommonTriggerParam> TriggerBuilder triggerBuilder(String tenantId, K item) {
         return TriggerBuilder.newTrigger()
                 .withIdentity(new TriggerKey(item.getTriggerName(), tenantId))
-                .startAt(item.getStartTime() == null ? new Date() : item.getStartTime())
+                .startAt(item.getStartTime() == null ? initDateAfterTwoSecond() : item.getStartTime())
                 .endAt(item.getEndTime())
                 .withDescription(item.getDescription());
     }
@@ -117,5 +105,15 @@ public class QuartzUtil {
                     quartzTriggers.add(trigger);
                 });
         return quartzTriggers;
+    }
+
+    /**
+     * add two second to current time
+     *
+     * @return
+     */
+    private static Date initDateAfterTwoSecond() {
+        long mills = System.currentTimeMillis();
+        return new Date(mills + 2 * 1000);
     }
 }

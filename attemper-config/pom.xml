@@ -158,8 +158,8 @@
             <artifactId>spring-cloud-commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.uuid</groupId>
-            <artifactId>java-uuid-generator</artifactId>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-engine</artifactId>
         </dependency>
     </dependencies>
 </project>

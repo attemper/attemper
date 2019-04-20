@@ -4,10 +4,10 @@ import com.sse.atemper.grpc.invoking.JobInvokingProto;
 import com.sse.atemper.grpc.invoking.JobInvokingServiceGrpc;
 import com.sse.attemper.common.result.CommonResult;
 import com.sse.attemper.config.scheduler.interceptor.HeaderClientInterceptor;
-import com.sse.attemper.config.uuid.IdGenerator;
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
 import io.grpc.ClientInterceptors;
+import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

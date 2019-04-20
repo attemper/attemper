@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sse.attemper.core.dao.mapper.monitor.JobExecutionMapper">
+
+    <insert id="add" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobExecution">
+        INSERT INTO ${tablePrefix}job_execution (
+            ID,
+            PROC_INST_ID,
+            ROOT_PROC_INST_ID,
+            JOB_NAME,
+            TRIGGER_NAME,
+            PROC_DEF_ID,
+            START_TIME,
+            STATUS,
+            LOG_TEXT,
+            TENANT_ID
+        )
+        VALUES
+        (
+            #{id, jdbcType=VARCHAR},
+            #{procInstId, jdbcType=VARCHAR},
+            #{rootProcInstId, jdbcType=VARCHAR},
+            #{jobName, jdbcType=VARCHAR},
+            #{triggerName, jdbcType=VARCHAR},
+            #{procDefId, jdbcType=VARCHAR},
+            #{startTime, jdbcType=TIMESTAMP},
+            #{status, jdbcType=INTEGER},
+            #{logText, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobExecution">
+        UPDATE ${tablePrefix}job_execution j
+        SET
+        PROC_INST_ID = #{procInstId, jdbcType=VARCHAR},
+        ROOT_PROC_INST_ID = #{rootProcInstId, jdbcType=VARCHAR},
+        PROC_DEF_ID = #{procDefId, jdbcType=VARCHAR},
+        STATUS = #{status, jdbcType=INTEGER},
+        LOG_TEXT = #{logText, jdbcType=VARCHAR}
+        <where>
+            <include refid="condId"/>
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobExecution">
+        DELETE FROM j USING ${tablePrefix}job_execution j
+        <where>
+            <include refid="condId"/>
+        </where>
+    </delete>
+
+    <insert id="addAct" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobExecutionAct">
+        INSERT INTO ${tablePrefix}job_execution_act (
+            ID,
+            ACT_INST_ID,
+            PARENT_ACT_INST_ID_,
+            EXECUTION_ID,
+            PROC_INST_ID,
+            ROOT_PROC_INST_ID,
+            ACT_ID,
+            ACT_NAME,
+            ACT_TYPE,
+            START_TIME,
+            END_TIME,
+            DURATION,
+            STATUS,
+            CODE,
+            LOG_TEXT
+        )
+        VALUES
+        (
+            #{id, jdbcType=VARCHAR},
+            #{actInstId, jdbcType=VARCHAR},
+            #{parentActInstId, jdbcType=VARCHAR},
+            #{executionId, jdbcType=VARCHAR},
+            #{procInstId, jdbcType=VARCHAR},
+            #{rootProcInstId, jdbcType=VARCHAR},
+            #{actId, jdbcType=VARCHAR},
+            #{actName, jdbcType=VARCHAR},
+            #{actType, jdbcType=VARCHAR},
+            #{startTime, jdbcType=TIMESTAMP},
+            #{endTime, jdbcType=TIMESTAMP},
+            #{duration, jdbcType=INTEGER},
+            #{status, jdbcType=INTEGER},
+            #{code, jdbcType=VARCHAR},
+            #{logText, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="updateAct" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobExecutionAct">
+        UPDATE ${tablePrefix}job_execution_act j
+        SET
+        DURATION = #{duration, jdbcType=INTEGER},
+        STATUS = #{status, jdbcType=INTEGER},
+        END_TIME = #{endTime, jdbcType=TIMESTAMP},
+        CODE = #{code, jdbcType=VARCHAR},
+        LOG_TEXT = #{logText, jdbcType=VARCHAR}
+        <where>
+            <include refid="condActInstId"/>
+        </where>
+    </update>
+
+    <delete id="deleteAct" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobExecution">
+        DELETE FROM j USING ${tablePrefix}job_execution_act j
+        <where>
+            <include refid="condRootProcInstId"/>
+        </where>
+    </delete>
+
+    <sql id="condId">
+        and j.ID = #{id, jdbcType=VARCHAR}
+    </sql>
+
+    <sql id="condProcInstId">
+        <if test="procInstId != null">
+            and j.PROC_INST_ID = #{procInstId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condRootProcInstId">
+        <if test="rootProcInstId != null">
+            and j.ROOT_PROC_INST_ID = #{rootProcInstId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condActInstId">
+        <if test="actInstId != null">
+            and j.ACT_INST_ID = #{actInstId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+</mapper>
