@@ -85,7 +85,7 @@
         delete from ${tablePrefix}tenant
         <where>
             ID in
-            <foreach item="id" collection="array" open="(" separator="," close=")">
+            <foreach item="id" collection="list" open="(" separator="," close=")">
                 #{id}
             </foreach>
         </where>

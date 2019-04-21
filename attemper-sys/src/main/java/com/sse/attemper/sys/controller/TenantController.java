@@ -1,6 +1,5 @@
 package com.sse.attemper.sys.controller;
 
-import com.sse.attemper.common.constant.APIConst;
 import com.sse.attemper.common.constant.APIPath;
 import com.sse.attemper.common.param.sys.tenant.TenantGetParam;
 import com.sse.attemper.common.param.sys.tenant.TenantListParam;
@@ -17,50 +16,49 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-/** 
- * @auth ldang
+/**
+ * @author ldang
  */
-@Api(tags = APIConst.APITag.TENANT)
+@Api("Tenant")
 @RestController
 public class TenantController {
 	
 	@Autowired
 	private TenantService service;
 
-	@ApiOperation(APIConst.APIOperation.TenantTitle.ADD)
-	@ApiImplicitParam(value = "被新增的数据", name = "saveParam", dataType = "TenantSaveParam", required = true)
+	@ApiOperation("Add tenant")
+	@ApiImplicitParam(value = "TenantSaveParam", name = "param", dataType = "TenantSaveParam", required = true)
 	@PostMapping(APIPath.TenantPath.ADD)
-	public CommonResult<Tenant> add(@RequestBody TenantSaveParam saveParam) {
-		return CommonResult.putResult(service.add(saveParam));
+	public CommonResult<Tenant> add(@RequestBody TenantSaveParam param) {
+		return CommonResult.putResult(service.add(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TenantTitle.UPDATE)
-	@ApiImplicitParam(value = "被更新的数据", name = "saveParam", dataType = "TenantSaveParam", required = true)
+	@ApiOperation("Update tenant")
+	@ApiImplicitParam(value = "TenantSaveParam", name = "param", dataType = "TenantSaveParam", required = true)
 	@PutMapping(APIPath.TenantPath.UPDATE)
-	public CommonResult<Tenant> update(@RequestBody TenantSaveParam saveParam) {
-		return CommonResult.putResult(service.update(saveParam));
+	public CommonResult<Tenant> update(@RequestBody TenantSaveParam param) {
+		return CommonResult.putResult(service.update(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TenantTitle.LIST)
-    @ApiImplicitParam(value = "查询参数", name = "listParam", dataType = "TenantListParam", required = true)
+	@ApiOperation("List tenants")
+	@ApiImplicitParam(value = "TenantListParam", name = "param", dataType = "TenantListParam", required = true)
 	@GetMapping(APIPath.TenantPath.LIST)
-	public CommonResult<Map<String, Object>> list(TenantListParam listParam) {
-		return CommonResult.putResult(service.list(listParam));
+	public CommonResult<Map<String, Object>> list(TenantListParam param) {
+		return CommonResult.putResult(service.list(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TenantTitle.REMOVE)
-	@ApiImplicitParam(value = "被删除的主键数组", name = "removeParam", dataType = "TenantRemoveParam", required = true)
+	@ApiOperation("Remove tenants")
+	@ApiImplicitParam(value = "TenantRemoveParam", name = "param", dataType = "TenantRemoveParam", required = true)
 	@DeleteMapping(APIPath.TenantPath.REMOVE)
-	public CommonResult<Void> remove(@RequestBody TenantRemoveParam removeParam) {
-        service.remove(removeParam);
-		return CommonResult.ok();
+	public CommonResult<Void> remove(@RequestBody TenantRemoveParam param) {
+		return CommonResult.putResult(service.remove(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TenantTitle.GET)
-    @ApiImplicitParam(value = "查询单个对象信息", name = "getParam", dataType = "TenantGetParam", required = true)
+	@ApiOperation("Get tenant")
+	@ApiImplicitParam(value = "TenantGetParam", name = "param", dataType = "TenantGetParam", required = true)
 	@GetMapping(APIPath.TenantPath.GET)
-	public CommonResult<Tenant> get(TenantGetParam getParam) {
-		return CommonResult.putResult(service.get(getParam));
+	public CommonResult<Tenant> get(TenantGetParam param) {
+		return CommonResult.putResult(service.get(param));
     }
 
 }

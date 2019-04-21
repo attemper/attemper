@@ -21,87 +21,60 @@ import java.util.Map;
 @Transactional
 @Service
 public class ArgService extends BaseServiceAdapter {
+
     @Autowired
     private ArgMapper mapper;
 
-    /**
-     * 添加新的参数
-     *
-     * @param saveParam
-     * @return
-     */
-    public Arg add(ArgSaveParam saveParam) {
-        Arg arg = get(ArgGetParam.builder().argName(saveParam.getArgName()).build());
+    public Arg add(ArgSaveParam param) {
+        Arg arg = get(ArgGetParam.builder().argName(param.getArgName()).build());
         if (arg != null) {
-            throw new DuplicateKeyException(saveParam.getArgName());
+            throw new DuplicateKeyException(param.getArgName());
         }
-        arg = toArgument(saveParam);
-        arg.setTenantId(injectAdminedTenant().getId());
+        arg = toArgument(param);
+        arg.setTenantId(injectAdminTenant().getId());
         arg.setCreateTime(new Date());
         arg.setUpdateTime(new Date());
         mapper.add(arg);
         return arg;
     }
 
-    /**
-     * 根据 argName tenantId 获取相应参数
-     *
-     * @param getParam
-     * @return
-     */
-    public Arg get(ArgGetParam getParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(getParam);
+    public Arg get(ArgGetParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         return mapper.get(paramMap);
     }
 
-    /**
-     * 获取 Argument 分页数据，
-     *
-     * @param listParam
-     * @return
-     */
-    public Map<String, Object> list(ArgListParam listParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(listParam);
-        PageHelper.startPage(listParam.getCurrentPage(), listParam.getPageSize());
+    public Map<String, Object> list(ArgListParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<Arg> list = (Page<Arg>) mapper.list(paramMap);
         return PageUtil.toResultMap(list);
     }
 
-    /**
-     * 删除 argNames 列表中的对应参数
-     *
-     * @param removeParam
-     */
-    public void remove(ArgRemoveParam removeParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
+    public Void remove(ArgRemoveParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         mapper.delete(paramMap);
+        return null;
     }
 
-    /**
-     * 保存或更新。argName 不存在则新加，否则更新对应的数据。
-     *
-     * @param updateParam
-     * @return
-     */
     public Arg update(ArgSaveParam updateParam) {
         Arg argOld = get(ArgGetParam.builder().argName(updateParam.getArgName()).build());
         if (get(ArgGetParam.builder().argName(updateParam.getArgName()).build()) == null) {
             return add(updateParam);
         }
         Arg argNew = toArgument(updateParam);
-        argNew.setTenantId(injectAdminedTenant().getId());
+        argNew.setTenantId(injectAdminTenant().getId());
         argNew.setUpdateTime(new Date());
         argNew.setCreateTime(argOld.getCreateTime());
         mapper.update(argNew);
         return argNew;
     }
 
-    private Arg toArgument(ArgSaveParam saveParam) {
+    private Arg toArgument(ArgSaveParam param) {
         Arg arg = new Arg();
-        arg.setArgName(saveParam.getArgName());
-        arg.setArgType(saveParam.getArgType());
-        arg.setDefVal(saveParam.getDefVal());
-        arg.setRemark(saveParam.getRemark());
+        arg.setArgName(param.getArgName());
+        arg.setArgType(param.getArgType());
+        arg.setDefVal(param.getDefVal());
+        arg.setRemark(param.getRemark());
         return arg;
     }
 }

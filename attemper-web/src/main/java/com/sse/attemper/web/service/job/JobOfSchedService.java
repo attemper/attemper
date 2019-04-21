@@ -12,7 +12,6 @@ import com.sse.attemper.sys.service.BaseServiceAdapter;
 import com.sse.attemper.web.service.CamundaHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -50,26 +49,18 @@ public class JobOfSchedService extends BaseServiceAdapter {
     @Autowired
     private CamundaHandler camundaHandler;
 
-    @Autowired
-    private RepositoryService repositoryService;
-
-    /**
-     * 新增
-     * @param saveParam
-     * @return
-     */
-    public FlowJob add(JobSaveParam saveParam) {
-        FlowJob flowJob = jobService.get(JobGetParam.builder().jobName(saveParam.getJobName()).build());
+    public FlowJob add(JobSaveParam param) {
+        FlowJob flowJob = jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
         if (flowJob != null) {
-            throw new DuplicateKeyException(saveParam.getJobName());
+            throw new DuplicateKeyException(param.getJobName());
         }
-        flowJob = toBaseJob(saveParam);
+        flowJob = toBaseJob(param);
         Date now = new Date();
         flowJob.setCreateTime(now);
         flowJob.setUpdateTime(now);
         flowJob.setMaxReversion(1);
         flowJob.setReversion(1);
-        if (saveParam.getJobContent() == null) {
+        if (param.getJobContent() == null) {
             BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(flowJob.getJobName())
                     .name(flowJob.getDisplayName())
                     .startEvent()
@@ -77,10 +68,10 @@ public class JobOfSchedService extends BaseServiceAdapter {
                     .done();
             flowJob.setJobContent(Bpmn.convertToString(modelInstance));
         } else {
-            BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(saveParam.getJobContent().getBytes()));
+            BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(param.getJobContent().getBytes()));
             Collection<Process> modelElements = bpmnModelInstance.getModelElementsByType(Process.class);
             for (Process process : modelElements) {
-                process.builder().id(saveParam.getJobName()).name(saveParam.getDisplayName());
+                process.builder().id(param.getJobName()).name(param.getDisplayName());
                 break;
             }
             flowJob.setJobContent(Bpmn.convertToString(bpmnModelInstance));
@@ -90,26 +81,21 @@ public class JobOfSchedService extends BaseServiceAdapter {
         return flowJob;
     }
 
-    /**
-     * update model
-     * @param saveParam
-     * @return
-     */
-    public FlowJob update(JobSaveParam saveParam) {
-        FlowJob flowJob = jobService.get(JobGetParam.builder().jobName(saveParam.getJobName()).build());
+    public FlowJob update(JobSaveParam param) {
+        FlowJob flowJob = jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
         if (flowJob == null) {
-            return add(saveParam); // Equivalent to copy then add
+            return add(param); // Equivalent to copy then add
         }
-        if (!StringUtils.equals(saveParam.getDisplayName(), flowJob.getDisplayName())) {
+        if (!StringUtils.equals(param.getDisplayName(), flowJob.getDisplayName())) {
             throw new RTException(6080);
         }
-        FlowJob updatedJob = toBaseJob(saveParam);
+        FlowJob updatedJob = toBaseJob(param);
         updatedJob.setCreateTime(flowJob.getCreateTime());
         updatedJob.setMaxVersion(flowJob.getMaxVersion());
         if (checkNeedSave(flowJob, updatedJob)) {  // status remark
             updatedJob.setMaxReversion(flowJob.getMaxReversion());
         } else {  //job content
-            if (StringUtils.equals(saveParam.getJobContent(), flowJob.getJobContent())) {
+            if (StringUtils.equals(param.getJobContent(), flowJob.getJobContent())) {
                 throw new RTException(6056);
             }
             updatedJob.setUpdateTime(new Date());
@@ -136,13 +122,13 @@ public class JobOfSchedService extends BaseServiceAdapter {
      * @return
      */
     public Void remove(JobNamesParam param) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(param);
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         param.getJobNames().forEach(item -> {
             TriggerUpdateParam triggerUpdateParam = new TriggerUpdateParam(item);
             triggerService.update(triggerUpdateParam);
         });
         mapper.delete(paramMap);
-        camundaHandler.removeDefinitionAndDeployment(param.getJobNames(), injectAdminedTenant().getId());
+        camundaHandler.removeDefinitionAndDeployment(param.getJobNames(), injectAdminTenant().getId());
         return null;
     }
 
@@ -191,7 +177,7 @@ public class JobOfSchedService extends BaseServiceAdapter {
                 .jobContent(saveParam.getJobContent())
                 .status(saveParam.getStatus())
                 .remark(saveParam.getRemark())
-                .tenantId(injectAdminedTenant().getId())
+                .tenantId(injectAdminTenant().getId())
                 .build();
     }
 
@@ -251,7 +237,7 @@ public class JobOfSchedService extends BaseServiceAdapter {
      */
     public Void manual(JobNamesParam param) {
         List<String> jobNames = param.getJobNames();
-        String tenantId = injectAdminedTenant().getId();
+        String tenantId = injectAdminTenant().getId();
         ExecutorService executorService = Executors.newFixedThreadPool(jobNames.size());
         for (String jobName : jobNames) {
             executorService.submit(() -> {

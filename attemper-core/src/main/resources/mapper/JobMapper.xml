@@ -7,6 +7,7 @@
     <insert id="add" parameterType="com.sse.attemper.common.result.dispatch.job.FlowJob">
         INSERT INTO ${tablePrefix}job (
             JOB_NAME,
+            DISPLAY_NAME,
             STATUS,
             MAX_REVERSION,
             CREATE_TIME,
@@ -16,6 +17,7 @@
         VALUES
         (
             #{jobName, jdbcType=VARCHAR},
+            #{displayName, jdbcType=VARCHAR},
             #{status, jdbcType=INTEGER},
             #{maxReversion, jdbcType=INTEGER},
             #{createTime, jdbcType=TIMESTAMP},
@@ -27,7 +29,6 @@
     <insert id="addInfo" parameterType="com.sse.attemper.common.result.dispatch.job.FlowJob">
         INSERT INTO ${tablePrefix}job_info (
             JOB_NAME,
-            DISPLAY_NAME,
             JOB_CONTENT,
             REVERSION,
             VERSION,
@@ -37,7 +38,6 @@
         VALUES
         (
             #{jobName, jdbcType=VARCHAR},
-            #{displayName, jdbcType=VARCHAR},
             #{jobContent, jdbcType=VARCHAR},
             #{reversion, jdbcType=INTEGER},
             #{version, jdbcType=INTEGER},
@@ -74,7 +74,7 @@
     </update>
 
     <select id="get" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.job.FlowJob">
-        SELECT ji.JOB_NAME, ji.DISPLAY_NAME, ji.JOB_CONTENT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME,
+        SELECT ji.JOB_NAME, j.DISPLAY_NAME, ji.JOB_CONTENT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME,
         ji.TENANT_ID, j.MAX_REVERSION, ji.REVERSION, j.MAX_VERSION, ji.VERSION, j.STATUS, j.CREATE_TIME,
         j.REMARK
         from ${tablePrefix}job j
@@ -94,7 +94,7 @@
 
     <select id="list" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.job.FlowJob">
         SELECT * FROM (
-        SELECT ji.JOB_NAME, ji.DISPLAY_NAME, ji.JOB_CONTENT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME,
+        SELECT ji.JOB_NAME, j.DISPLAY_NAME, ji.JOB_CONTENT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME,
         ji.TENANT_ID, j.MAX_REVERSION, ji.REVERSION, j.MAX_VERSION, ji.VERSION, j.STATUS, j.CREATE_TIME,
         j.REMARK
         FROM
@@ -106,7 +106,7 @@
         USING (JOB_NAME, TENANT_ID, VERSION)
         WHERE j.MAX_VERSION IS NOT NULL
         UNION
-        SELECT ji.JOB_NAME, ji.DISPLAY_NAME, ji.JOB_CONTENT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME,
+        SELECT ji.JOB_NAME, j.DISPLAY_NAME, ji.JOB_CONTENT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME,
         ji.TENANT_ID, j.MAX_REVERSION, ji.REVERSION, j.MAX_VERSION, ji.VERSION, j.STATUS, j.CREATE_TIME,
         j.REMARK
         FROM
@@ -147,7 +147,7 @@
     <select id="versions" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.job.FlowJob">
         <!-- tip: do not return job content here because the column may be too big -->
         SELECT
-        ji.JOB_NAME,ji.DISPLAY_NAME, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME, ji.TENANT_ID,
+        ji.JOB_NAME,j.DISPLAY_NAME, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME, ji.TENANT_ID,
         j.MAX_REVERSION, j.MAX_VERSION, ji.REVERSION, ji.VERSION, j.STATUS, j.CREATE_TIME, j.REMARK
         FROM
         ${tablePrefix}job j JOIN ${tablePrefix}job_info ji USING (JOB_NAME, TENANT_ID)

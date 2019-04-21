@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.List;
+
 /**
  * @author ldang
  */
@@ -16,10 +18,10 @@ import org.apache.commons.lang.StringUtils;
 @AllArgsConstructor
 public class ProjectRemoveParam implements CommonParam {
 
-    protected String[] projectNames;
+    protected List<String> projectNames;
 
     public String validate() {
-        if(projectNames == null || projectNames.length == 0 || StringUtils.isBlank(projectNames[0])){
+        if (projectNames == null || projectNames.isEmpty() || StringUtils.isBlank(projectNames.get(0))) {
             return "6500";
         }
         return null;

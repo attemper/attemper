@@ -54,7 +54,7 @@ public class CustomRealm extends AuthorizingRealm {
             throw new RTException(1300); //1300
         }
         UserHolder.set(dbUser);
-        TenantHolder.set(userService.getAdminedTenant());
+        TenantHolder.set(userService.getAdminTenant());
         return new SimpleAuthenticationInfo(user, token, getName());
     }
 

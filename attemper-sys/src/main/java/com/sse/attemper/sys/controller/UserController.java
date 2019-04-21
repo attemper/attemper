@@ -1,6 +1,5 @@
 package com.sse.attemper.sys.controller;
 
-import com.sse.attemper.common.constant.APIConst;
 import com.sse.attemper.common.constant.APIPath;
 import com.sse.attemper.common.param.sys.user.*;
 import com.sse.attemper.common.result.CommonResult;
@@ -17,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-/** 
- * @auth ldang
+/**
+ * @author ldang
  */
-@Api(tags = APIConst.APITag.USER)
+@Api("User")
 @RestController
 public class UserController {
 	
@@ -28,64 +27,63 @@ public class UserController {
 	private UserService service;
 
 	/**
-	 * 根据token获取用户信息
+	 * get user by token
 	 *
 	 * @return
 	 */
-	@ApiOperation(APIConst.APIOperation.UserTitle.INFO)
+	@ApiOperation("Get user&resource&tag by token")
 	@GetMapping(APIPath.UserPath.INFO)
 	public CommonResult<UserInfo> getUserInfo() {
 		return CommonResult.putResult(service.getUserInfo());
 	}
 
-	@ApiOperation(APIConst.APIOperation.UserTitle.LIST)
-	@ApiImplicitParam(value = "查询参数", name = "listParam", dataType = "UserListParam", required = true)
+	@ApiOperation("List users")
+	@ApiImplicitParam(value = "UserListParam", name = "param", dataType = "UserListParam", required = true)
 	@GetMapping(APIPath.UserPath.LIST)
-	public CommonResult<Map<String, Object>> list(UserListParam listParam) {
-		return CommonResult.putResult(service.list(listParam));
+	public CommonResult<Map<String, Object>> list(UserListParam param) {
+		return CommonResult.putResult(service.list(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.UserTitle.GET)
-	@ApiImplicitParam(value = "查询对象", name = "getParam", dataType = "UserGetParam", required = true)
+	@ApiOperation("Get user")
+	@ApiImplicitParam(value = "UserGetParam", name = "param", dataType = "UserGetParam", required = true)
 	@GetMapping(APIPath.UserPath.GET)
-	public CommonResult<User> get(UserGetParam getParam) {
-		return CommonResult.putResult(service.get(getParam));
+	public CommonResult<User> get(UserGetParam param) {
+		return CommonResult.putResult(service.get(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.UserTitle.ADD)
-	@ApiImplicitParam(value = "被新增的数据", name = "saveParam", dataType = "UserSaveParam", required = true)
+	@ApiOperation("Add user")
+	@ApiImplicitParam(value = "UserSaveParam", name = "param", dataType = "UserSaveParam", required = true)
 	@PostMapping(APIPath.UserPath.ADD)
-	public CommonResult<User> add(@RequestBody UserSaveParam saveParam) {
-		return CommonResult.putResult(service.add(saveParam));
+	public CommonResult<User> add(@RequestBody UserSaveParam param) {
+		return CommonResult.putResult(service.add(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.UserTitle.UPDATE)
-	@ApiImplicitParam(value = "被更新的数据", name = "saveParam", dataType = "UserSaveParam", required = true)
+	@ApiOperation("Update user")
+	@ApiImplicitParam(value = "UserSaveParam", name = "param", dataType = "UserSaveParam", required = true)
 	@PutMapping(APIPath.UserPath.UPDATE)
-	public CommonResult<User> update(@RequestBody UserSaveParam saveParam) {
-		return CommonResult.putResult(service.update(saveParam));
+	public CommonResult<User> update(@RequestBody UserSaveParam param) {
+		return CommonResult.putResult(service.update(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.UserTitle.REMOVE)
-	@ApiImplicitParam(value = "被删除的主键数组", name = "removeParam", dataType = "UserRemoveParam", required = true)
+	@ApiOperation("Remove users")
+	@ApiImplicitParam(value = "UserRemoveParam", name = "param", dataType = "UserRemoveParam", required = true)
 	@DeleteMapping(APIPath.UserPath.REMOVE)
-	public CommonResult remove(@RequestBody UserRemoveParam removeParam) {
-		service.remove(removeParam);
-		return CommonResult.ok();
+	public CommonResult<Void> remove(@RequestBody UserRemoveParam param) {
+		return CommonResult.putResult(service.remove(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.UserTitle.USER_TAG_GET)
-	@ApiImplicitParam(value = "获取用户关联的标签数据", name = "getParam", dataType = "UserGetParam", required = true)
+	@ApiOperation("Get tag by user")
+	@ApiImplicitParam(value = "UserGetParam", name = "param", dataType = "UserGetParam", required = true)
 	@GetMapping(APIPath.UserPath.TAG_LIST)
-	public CommonResult<List<Tag>> getTags(UserGetParam getParam) {
-		return CommonResult.putResult(service.getTags(getParam));
+	public CommonResult<List<Tag>> getTags(UserGetParam param) {
+		return CommonResult.putResult(service.getTags(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.UserTitle.USER_TAG_UPDATE)
-	@ApiImplicitParam(value = "用户关联的标签数据", name = "updateParam", dataType = "UserTagUpdateParam", required = true)
+	@ApiOperation("Update tag by user")
+	@ApiImplicitParam(value = "UserTagUpdateParam", name = "param", dataType = "UserTagUpdateParam", required = true)
 	@PutMapping(APIPath.UserPath.TAG_UPDATE)
-	public CommonResult updateUserTags(@RequestBody UserTagUpdateParam updateParam) {
-		service.updateUserTags(updateParam);
+	public CommonResult updateUserTags(@RequestBody UserTagUpdateParam param) {
+		service.updateUserTags(param);
 		return CommonResult.ok();
 	}
 }

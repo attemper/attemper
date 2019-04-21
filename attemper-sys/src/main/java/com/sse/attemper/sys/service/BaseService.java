@@ -22,6 +22,6 @@ public interface BaseService {
      * 被管理的租户，而非超管
      * @return
      */
-    Tenant injectAdminedTenant();
+    Tenant injectAdminTenant();
 
 }

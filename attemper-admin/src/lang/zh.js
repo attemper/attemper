@@ -7,8 +7,12 @@ export default {
     tag: '标签管理',
     resource: '资源管理',
     job: '任务管理',
-    project: '项目信息',
+    project: '服务信息',
     jobs: '任务设计',
+    monitor: '监控管理',
+    realTime: '实时监控',
+    history: '历史监控',
+    total: '全量监控',
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',
@@ -345,6 +349,13 @@ export default {
         searchKey: '项目名称/中文名称',
         projectRemoveWarning: '请先删除子节点'
       }
+    }
+  },
+  monitor: {
+    columns: {
+      status: '状态',
+      startTime: '开始时间',
+      endTime: '结束时间'
     }
   },
   navbar: {

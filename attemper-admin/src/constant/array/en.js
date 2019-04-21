@@ -183,6 +183,60 @@ export const uriTypes = [
   }
 ]
 
+export const runningJobInstanceStatus = [
+  {
+    label: 'Running',
+    value: 0
+  }
+]
+
+export const successJobInstanceStatus = [
+  {
+    label: 'Success',
+    value: 1
+  }
+]
+
+export const failureJobInstanceStatus = [
+  {
+    label: 'Failure',
+    value: 2
+  }
+]
+
+export const terminatedJobInstanceStatus = [
+  {
+    label: 'Terminated',
+    value: 3
+  }
+]
+
+export const pausedJobInstanceStatus = [
+  {
+    label: 'Paused',
+    value: 4
+  }
+]
+
+export const todoJobInstanceStatuses = [
+  ...runningJobInstanceStatus,
+  ...pausedJobInstanceStatus
+]
+
+export const doneJobInstanceStatuses = [
+  ...successJobInstanceStatus,
+  ...failureJobInstanceStatus,
+  ...terminatedJobInstanceStatus
+]
+
+export const jobInstanceStatuses = [
+  ...runningJobInstanceStatus,
+  ...successJobInstanceStatus,
+  ...failureJobInstanceStatus,
+  ...terminatedJobInstanceStatus,
+  ...pausedJobInstanceStatus
+]
+
 export const requestMethods = [
   {
     label: 'POST',

@@ -1,6 +1,5 @@
 package com.sse.attemper.core.controller.job;
 
-import com.sse.attemper.common.constant.APIConst;
 import com.sse.attemper.common.constant.APIPath;
 import com.sse.attemper.common.param.dispatch.trigger.TriggerGetParam;
 import com.sse.attemper.common.result.CommonResult;
@@ -16,18 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 /** 
  * @author ldang
  */
-@Api(tags = APIConst.APITag.TRIGGER)
+@Api("Trigger")
 @RestController
 public class TriggerController {
 	
 	@Autowired
 	private TriggerService service;
 
-	@ApiOperation(APIConst.APIOperation.TriggerTitle.GET)
-	@ApiImplicitParam(value = "查询单个对象信息", name = "getParam", dataType = "TriggerGetParam", required = true)
+	@ApiOperation("Get trigger info by job")
+	@ApiImplicitParam(value = "TriggerGetParam", name = "param", dataType = "TriggerGetParam", required = true)
 	@GetMapping(APIPath.TriggerPath.GET)
-	public CommonResult<TriggerResult> get(TriggerGetParam getParam) {
-		return CommonResult.putResult(service.get(getParam));
+	public CommonResult<TriggerResult> get(TriggerGetParam param) {
+		return CommonResult.putResult(service.get(param));
 	}
 
 }

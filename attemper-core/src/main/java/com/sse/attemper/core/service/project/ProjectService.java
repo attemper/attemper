@@ -31,7 +31,7 @@ public class ProjectService extends BaseServiceAdapter {
      * @return
      */
 	public List<Project> getAll(CommonParam commonParam){
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(commonParam);
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(commonParam);
         return getAll(paramMap);
     }
 
@@ -53,7 +53,7 @@ public class ProjectService extends BaseServiceAdapter {
         Date now = new Date();
         project.setCreateTime(now);
         project.setUpdateTime(now);
-        mapper.save(injectAdminedTenantIdToMap(project));
+        mapper.save(injectAdminTenantIdToMap(project));
         return project;
     }
 
@@ -61,9 +61,10 @@ public class ProjectService extends BaseServiceAdapter {
      * @param removeParam
      * @return
      */
-    public void remove(ProjectRemoveParam removeParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
+    public Void remove(ProjectRemoveParam removeParam) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(removeParam);
         mapper.delete(paramMap);
+        return null;
     }
 
     private void computeTreeList(List<Project> sourceList, List<Project> targetList, Project cellProject) {
@@ -103,19 +104,19 @@ public class ProjectService extends BaseServiceAdapter {
 
 
     public Void saveInfo(ProjectInfoSaveParam param) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(param);
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         mapper.saveInfo(paramMap);
         return null;
     }
 
     public Void removeInfo(ProjectInfoRemoveParam param) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(param);
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         mapper.deleteInfo(paramMap);
         return null;
     }
 
     public List<ProjectInfo> listInfos(ProjectGetParam param) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(param);
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         return listInfos(paramMap);
     }
 

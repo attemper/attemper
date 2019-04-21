@@ -28,23 +28,18 @@ public class JobService extends BaseServiceAdapter {
     private JobMapper mapper;
 
     /**
-     * 根据id查询租户
-     * @param getParam
+     * get job by jobName
+     * @param param
      * @return
      */
-    public FlowJob get(JobGetParam getParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(getParam);
+    public FlowJob get(JobGetParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         return mapper.get(paramMap);
     }
 
-    /**
-     * 查询列表
-     * @param listParam
-     * @return
-     */
-    public Map<String, Object> list(JobListParam listParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(listParam);
-        PageHelper.startPage(listParam.getCurrentPage(), listParam.getPageSize());
+    public Map<String, Object> list(JobListParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<FlowJob> list = (Page<FlowJob>) mapper.list(paramMap);
         return PageUtil.toResultMap(list);
     }
@@ -52,21 +47,21 @@ public class JobService extends BaseServiceAdapter {
     /**
      * list all versions by a specified job name
      *
-     * @param getParam
+     * @param param
      * @return
      */
-    public List<FlowJob> versions(JobGetParam getParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(getParam);
+    public List<FlowJob> versions(JobGetParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         return mapper.versions(paramMap);
     }
 
-    public Project getProject(JobGetParam getParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(getParam);
+    public Project getProject(JobGetParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         return mapper.getProject(paramMap);
     }
 
     public Void saveProject(JobProjectSaveParam param) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(param);
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         mapper.saveProject(paramMap);
         return null;
     }

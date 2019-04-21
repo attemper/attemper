@@ -48,7 +48,7 @@ public abstract class BaseServiceAdapter implements BaseService {
     }
 
     @Override
-    public Tenant injectAdminedTenant() {
+    public Tenant injectAdminTenant() {
         return TenantHolder.get();
     }
 
@@ -57,7 +57,7 @@ public abstract class BaseServiceAdapter implements BaseService {
      * @param obj
      * @return
      */
-    protected Map<String, Object> injectAdminedTenantIdToMap(Object obj) {
+    protected Map<String, Object> injectAdminTenantIdToMap(Object obj) {
         Map<String, Object> paramMap;
         if (obj == null) {
             paramMap = new HashMap<>(1);
@@ -68,7 +68,7 @@ public abstract class BaseServiceAdapter implements BaseService {
                 paramMap = (Map<String, Object>) obj;
             }
         }
-        paramMap.put(CommonConstants.tenantId, injectAdminedTenant().getId());
+        paramMap.put(CommonConstants.tenantId, injectAdminTenant().getId());
         return paramMap;
     }
 }

@@ -1,6 +1,5 @@
 package com.sse.attemper.security.controller;
 
-import com.sse.attemper.common.constant.APIConst;
 import com.sse.attemper.common.constant.APIPath;
 import com.sse.attemper.common.param.sys.login.LoginParam;
 import com.sse.attemper.common.result.CommonResult;
@@ -14,18 +13,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = APIConst.APITag.LOGIN)
+@Api("Login")
 @RestController
 public class LoginController {
 
     private @Autowired
     LoginService service;
 
-    @ApiOperation(APIConst.APIOperation.LoginTitle.LOGIN)
-    @ApiImplicitParam(value = "登录的用户", name = "loginParam", dataType = "LoginParam", required = true)
+    @ApiOperation("Login by userName and password")
+    @ApiImplicitParam(value = "LoginParam", name = "param", dataType = "LoginParam", required = true)
     @PostMapping(APIPath.LoginPath.LOGIN_BY_USERNAME_PWD)
-    public CommonResult<LoginResult> login(@RequestBody LoginParam loginParam) {
-        return CommonResult.putResult(service.login(loginParam));
+    public CommonResult<LoginResult> login(@RequestBody LoginParam param) {
+        return CommonResult.putResult(service.login(param));
     }
 
 }

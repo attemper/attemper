@@ -5,7 +5,7 @@
 <mapper namespace="com.sse.attemper.core.dao.mapper.monitor.JobInstanceMapper">
 
     <insert id="add" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstance">
-        INSERT INTO ${tablePrefix}job_inst (
+        INSERT INTO ${tablePrefix}job_instance (
             ID,
             PROC_INST_ID,
             TRIGGER_NAME,
@@ -23,8 +23,9 @@
     </insert>
 
     <update id="update" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstance">
-        UPDATE ${tablePrefix}job_inst j
+        UPDATE ${tablePrefix}job_instance j
         SET
+        PROC_INST_ID = #{procInstId, jdbcType=VARCHAR},
         STATUS = #{status, jdbcType=INTEGER},
         LOG_TEXT = #{logText, jdbcType=VARCHAR}
         <where>
@@ -33,7 +34,7 @@
     </update>
 
     <insert id="addAct" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct">
-        INSERT INTO ${tablePrefix}job_inst_act (
+        INSERT INTO ${tablePrefix}job_instance_act (
             ID,
             ACT_INST_ID,
             STATUS,
@@ -51,7 +52,7 @@
     </insert>
 
     <update id="updateAct" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct">
-        UPDATE ${tablePrefix}job_inst_act j
+        UPDATE ${tablePrefix}job_instance_act j
         SET
         STATUS = #{status, jdbcType=INTEGER},
         CODE = #{code, jdbcType=VARCHAR},
@@ -60,6 +61,34 @@
             <include refid="condActInstId"/>
         </where>
     </update>
+
+    <select id="list" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.monitor.JobInst">
+        SELECT * FROM(
+        SELECT ins.*, a.ROOT_PROC_INST_ID_ AS ROOT_PROC_INST_ID, a.PROC_DEF_KEY_ AS JOB_NAME,
+        job.DISPLAY_NAME, a.PROC_DEF_ID_ AS PROC_DEF_ID, a.START_TIME_ AS START_TIME,
+        a.END_TIME_ AS END_TIME, a.DURATION_ AS DURATION, a.TENANT_ID_ AS TENANT_ID
+        FROM ${tablePrefix}job_instance ins
+        JOIN act_hi_procinst a
+        ON ins.PROC_INST_ID = a.PROC_INST_ID_
+        LEFT JOIN ${tablePrefix}job job
+        ON a.PROC_DEF_KEY_ = job.JOB_NAME AND a.TENANT_ID_ = job.TENANT_ID
+        ) j
+        <where>
+            <if test="jobName != null">
+                and lower(JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="displayName != null">
+                and lower(DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="status != null &amp;&amp;status.size() &gt; 0">
+                and STATUS in
+                <foreach item="item" collection="status" open="(" separator="," close=")">
+                    #{item, jdbcType=INTEGER}
+                </foreach>
+            </if>
+            <include refid="condTenantId"></include>
+        </where>
+    </select>
 
     <sql id="condId">
         <if test="id != null">
@@ -82,6 +111,12 @@
     <sql id="condActInstId">
         <if test="actInstId != null">
             and j.ACT_INST_ID = #{actInstId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and j.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>

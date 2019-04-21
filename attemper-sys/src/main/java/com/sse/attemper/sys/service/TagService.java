@@ -29,9 +29,9 @@ public class TagService extends BaseServiceAdapter {
 	@Autowired
 	private TagMapper mapper;
 
-	public Map<String, Object> list(TagListParam listParam) {
-        Map<String, Object> paramMap = injectTenantIdToMap(listParam);
-		PageHelper.startPage(listParam.getCurrentPage(), listParam.getPageSize());
+	public Map<String, Object> list(TagListParam param) {
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
 		Page<Tag> list = (Page<Tag>) mapper.list(paramMap);
 		return PageUtil.toResultMap(list);
 	}
@@ -41,18 +41,12 @@ public class TagService extends BaseServiceAdapter {
 	    return mapper.get(paramMap);
     }
 
-	/**
-	 * 新增
-	 * @param saveParam
-	 * @return
-	 */
-	public Tag add(TagSaveParam saveParam) {
-		//主键应不在数据库中
-		Tag user = get(new TagGetParam(saveParam.getTagName(), saveParam.getTagType()));
+	public Tag add(TagSaveParam param) {
+		Tag user = get(new TagGetParam(param.getTagName(), param.getTagType()));
 		if(user != null){
 			throw new DuplicateKeyException(user.getTagName());
 		}
-		user = toTag(saveParam);
+		user = toTag(param);
 		Date now = new Date();
 		user.setCreateTime(now);
 		user.setUpdateTime(now);
@@ -61,18 +55,12 @@ public class TagService extends BaseServiceAdapter {
 		return user;
 	}
 
-	/**
-	 * 更新
-	 * @param saveParam
-	 * @return
-	 */
-	public Tag update(TagSaveParam saveParam) {
-		//主键应在数据库中
-		Tag tag = get(new TagGetParam(saveParam.getTagName(), saveParam.getTagType()));
+	public Tag update(TagSaveParam param) {
+		Tag tag = get(new TagGetParam(param.getTagName(), param.getTagType()));
 		if(tag == null){
-			throw new RTException(5350);  //5350
+			throw new RTException(5350);
 		}
-		Tag updatedTag = toTag(saveParam);
+		Tag updatedTag = toTag(param);
         updatedTag.setCreateTime(tag.getCreateTime());
         updatedTag.setUpdateTime(new Date());
         updatedTag.setTenantId(injectTenantId());
@@ -80,68 +68,46 @@ public class TagService extends BaseServiceAdapter {
         return updatedTag;
 	}
 
-	/**
-	 * 删除
-	 * @param removeParam
-	 * @return
-	 */
-	public void remove(TagRemoveParam removeParam) {
-        Map<String, Object> paramMap = injectTenantIdToMap(removeParam);
+	public Void remove(TagRemoveParam param) {
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
 		mapper.delete(paramMap);
+		return null;
 	}
 
-    /**
-     * 获取某标签下的用户
-     * @param getParam
-     * @return
-     */
-    public List<User> getUsers(TagGetParam getParam) {
-        Map<String, Object> paramMap = injectTenantIdToMap(getParam);
+	public List<User> getUsers(TagGetParam param) {
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.getUsers(paramMap);
     }
 
-    /**
-     * 为标签分配用户
-     * @param tagUserUpdateParam
-     */
-    public void updateTagUsers(TagUserUpdateParam tagUserUpdateParam) {
-        Map<String, Object> paramMap = injectTenantIdToMap(tagUserUpdateParam);
+	public Void updateTagUsers(TagUserUpdateParam param) {
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.deleteTagUsers(paramMap);
-        if(tagUserUpdateParam.getUserNames() == null || tagUserUpdateParam.getUserNames().length == 0){
-            return;
+		if (param.getUserNames() != null && !param.getUserNames().isEmpty()) {
+			mapper.saveTagUsers(paramMap);
         }
-        mapper.saveTagUsers(paramMap);
+		return null;
     }
 
-	/**
-	 * 获取某标签下的资源
-	 * @param getParam
-	 * @return
-	 */
-	public List<Resource> getResources(TagGetParam getParam) {
-		Map<String, Object> paramMap = injectTenantIdToMap(getParam);
+	public List<Resource> getResources(TagGetParam param) {
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
 		return mapper.getResources(paramMap);
 	}
 
-	/**
-	 * 为标签分配资源
-	 * @param updateParam
-	 */
-	public void updateTagResources(TagResourceUpdateParam updateParam) {
-		Map<String, Object> paramMap = injectTenantIdToMap(updateParam);
+	public Void updateTagResources(TagResourceUpdateParam param) {
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
 		mapper.deleteTagResources(paramMap);
-		if(updateParam.getResourceNames() == null || updateParam.getResourceNames().length == 0){
-			return;
+		if (param.getResourceNames() != null && !param.getResourceNames().isEmpty()) {
+			mapper.saveTagResources(paramMap);
 		}
-		mapper.saveTagResources(paramMap);
+		return null;
 	}
 
-	private Tag toTag(TagSaveParam saveParam) {
+	private Tag toTag(TagSaveParam param) {
 		return Tag.builder()
-				.tagName(saveParam.getTagName())
-				.displayName(saveParam.getDisplayName())
-				.tagType(saveParam.getTagType())
-				.remark(saveParam.getRemark())
+				.tagName(param.getTagName())
+				.displayName(param.getDisplayName())
+				.tagType(param.getTagType())
+				.remark(param.getRemark())
 				.build();
 	}
 }

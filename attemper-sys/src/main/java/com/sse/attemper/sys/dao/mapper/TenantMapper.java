@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author ldang
+ */
 @Mapper
 @Repository
 public interface TenantMapper extends BaseMapper<Tenant> {
@@ -16,7 +19,7 @@ public interface TenantMapper extends BaseMapper<Tenant> {
 
     List<Tenant> list(Map<String, Object> paramMap);
 
-    void delete(String[] ids);
+    void delete(List<String> ids);
 
     void save(Map<String, Object> paramMap);
 

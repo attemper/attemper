@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.List;
+
 /**
  * @author ldang
  */
@@ -16,10 +18,10 @@ import org.apache.commons.lang.StringUtils;
 @AllArgsConstructor
 public class UserRemoveParam implements CommonParam {
 
-    protected String[] userNames;
+    protected List<String> userNames;
 
     public String validate() {
-        if(userNames == null || userNames.length == 0 || StringUtils.isBlank(userNames[0])){
+        if (userNames == null || userNames.isEmpty() || StringUtils.isBlank(userNames.get(0))) {
             return "5200";
         }
         return null;

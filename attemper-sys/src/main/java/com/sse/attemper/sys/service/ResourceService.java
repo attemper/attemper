@@ -1,7 +1,7 @@
 package com.sse.attemper.sys.service;
 
 import com.sse.attemper.common.exception.RTException;
-import com.sse.attemper.common.param.CommonParam;
+import com.sse.attemper.common.param.EmptyParam;
 import com.sse.attemper.common.param.sys.resource.ResourceRemoveParam;
 import com.sse.attemper.common.param.sys.resource.ResourceSaveParam;
 import com.sse.attemper.common.result.sys.resource.Resource;
@@ -26,12 +26,12 @@ public class ResourceService extends BaseServiceAdapter {
 	private ResourceMapper mapper;
 
     /**
-     * 获取资源树
-     * @param commonParam
+     * get tree of resources
+     * @param param
      * @return
      */
-	public List<Resource> getAll(CommonParam commonParam){
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(commonParam);
+    public List<Resource> getAll(EmptyParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
 		List<Resource> sourceList = mapper.getAll(paramMap);
 	    List<Resource> targetList = new ArrayList<>(sourceList.size());
         Resource rootResource = findRootResource(sourceList);
@@ -40,28 +40,19 @@ public class ResourceService extends BaseServiceAdapter {
 		return targetList;
     }
 
-    /**
-     * 保存
-     * @param saveParam
-     * @return
-     */
-    public Resource save(ResourceSaveParam saveParam) {
-        Resource resource = toResource(saveParam);
+    public Resource save(ResourceSaveParam param) {
+        Resource resource = toResource(param);
         Date now = new Date();
         resource.setCreateTime(now); //mapper中修改是不更新创建时间的
         resource.setUpdateTime(now);
-        mapper.save(injectAdminedTenantIdToMap(resource));
+        mapper.save(injectAdminTenantIdToMap(resource));
         return resource;
     }
 
-    /**
-     * 删除
-     * @param removeParam
-     * @return
-     */
-    public void remove(ResourceRemoveParam removeParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(removeParam);
+    public Void remove(ResourceRemoveParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         mapper.delete(paramMap);
+        return null;
     }
 
     private void computeTreeList(List<Resource> sourceList, List<Resource> targetList, Resource cellResource) {
@@ -89,16 +80,16 @@ public class ResourceService extends BaseServiceAdapter {
         return resources.get(0);
     }
 
-    private Resource toResource(ResourceSaveParam saveParam) {
+    private Resource toResource(ResourceSaveParam param) {
         return Resource.builder()
-                .resourceName(saveParam.getResourceName())
-                .parentResourceName(saveParam.getParentResourceName())
-                .displayName(saveParam.getDisplayName())
-                .resourceType(saveParam.getResourceType())
-                .uri(saveParam.getUri())
-                .icon(saveParam.getIcon())
-                .position(saveParam.getPosition())
-                .extAttr(saveParam.getExtAttr())
+                .resourceName(param.getResourceName())
+                .parentResourceName(param.getParentResourceName())
+                .displayName(param.getDisplayName())
+                .resourceType(param.getResourceType())
+                .uri(param.getUri())
+                .icon(param.getIcon())
+                .position(param.getPosition())
+                .extAttr(param.getExtAttr())
                 .build();
     }
 }

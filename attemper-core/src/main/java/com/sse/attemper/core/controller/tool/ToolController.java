@@ -1,6 +1,5 @@
 package com.sse.attemper.core.controller.tool;
 
-import com.sse.attemper.common.constant.APIConst;
 import com.sse.attemper.common.constant.APIPath;
 import com.sse.attemper.common.result.CommonResult;
 import com.sse.attemper.core.service.tool.ToolService;
@@ -13,20 +12,20 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author ldang
  */
-@Api(tags = APIConst.APITag.TOOL)
+@Api("Tool")
 @RestController
 public class ToolController {
 
     @Autowired
     private ToolService service;
 
-    @ApiOperation(APIConst.APIOperation.ToolTitle.GET_TIME_ZONE)
+    @ApiOperation("Get time zones of all")
     @GetMapping(APIPath.ToolPath.GET_TIME_ZONE)
     public CommonResult<String[]> listTimeZone() {
         return CommonResult.putResult(service.listTimeZone());
     }
 
-    @ApiOperation(APIConst.APIOperation.ToolTitle.PING)
+    @ApiOperation("Ping the Internet address")
     @GetMapping(APIPath.ToolPath.PING)
     public CommonResult<Boolean> ping(String uri, Integer type) {
         return CommonResult.putResult(service.ping(uri, type));

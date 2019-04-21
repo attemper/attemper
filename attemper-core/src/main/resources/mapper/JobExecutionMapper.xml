@@ -110,6 +110,27 @@
         </where>
     </delete>
 
+    <select id="list" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.monitor.JobInst">
+        SELECT j.*, job.DISPLAY_NAME
+        FROM ${tablePrefix}job_execution j
+        LEFT JOIN ${tablePrefix}job job USING (JOB_NAME, TENANT_ID)
+        <where>
+            <if test="jobName != null">
+                and lower(j.JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="displayName != null">
+                and lower(job.DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="status != null &amp;&amp;status.size() &gt; 0">
+                and j.STATUS in
+                <foreach item="item" collection="status" open="(" separator="," close=")">
+                    #{item, jdbcType=INTEGER}
+                </foreach>
+            </if>
+            <include refid="condTenantId"></include>
+        </where>
+    </select>
+
     <sql id="condId">
         and j.ID = #{id, jdbcType=VARCHAR}
     </sql>
@@ -129,6 +150,12 @@
     <sql id="condActInstId">
         <if test="actInstId != null">
             and j.ACT_INST_ID = #{actInstId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and j.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>

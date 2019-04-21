@@ -92,13 +92,13 @@ public class SchedulerHandler {
 
         private Object param;
 
-        private Tenant adminedTenant;
+        private Tenant adminTenant;
 
-        public SchedulerCaller(HttpMethod method, String url, Object param, Tenant adminedTenant) {
+        public SchedulerCaller(HttpMethod method, String url, Object param, Tenant adminTenant) {
             this.method = method;
             this.url = url;
             this.param = param;
-            this.adminedTenant = adminedTenant;
+            this.adminTenant = adminTenant;
         }
 
         @Override
@@ -108,8 +108,8 @@ public class SchedulerHandler {
                     .uri(url)
                     //.accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .header(CommonConstants.tenantId, adminedTenant.getId())
-                    .header(CommonConstants.sign, adminedTenant.getSign())
+                    .header(CommonConstants.tenantId, adminTenant.getId())
+                    .header(CommonConstants.sign, adminTenant.getSign())
                     .syncBody(param)
                     .retrieve()
                     .bodyToMono(CommonResult.class)

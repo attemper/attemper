@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.List;
+
 /**
  * @author ldang
  */
@@ -21,7 +23,7 @@ public class TagUserUpdateParam implements CommonParam {
 
     protected Integer tagType;
 
-    protected String[] userNames;
+    protected List<String> userNames;
 
     public String validate() {
         if(StringUtils.isBlank(tagName)) {

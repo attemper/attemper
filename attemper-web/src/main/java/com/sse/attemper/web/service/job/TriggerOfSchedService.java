@@ -41,29 +41,25 @@ public class TriggerOfSchedService extends BaseServiceAdapter {
             new CalendarIntervalTriggerWithQuartzHandler()
     };
 
-    /**
-     * @param saveParam
-     * @return
-     */
-    public Void update(TriggerUpdateParam saveParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(saveParam);
+    public Void update(TriggerUpdateParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         Map<Integer, List<? extends CommonTriggerParam>> paramsOfTriggerMap = new HashMap<>();
-        paramsOfTriggerMap.put(0, saveParam.getCronTriggers());
-        paramsOfTriggerMap.put(1, saveParam.getCalendarOffsetTriggers());
-        paramsOfTriggerMap.put(2, saveParam.getDailyIntervalTriggers());
-        paramsOfTriggerMap.put(3, saveParam.getCalendarIntervalTriggers());
-        TriggerChangedParam param = new TriggerChangedParam();
-        param.setJobName(saveParam.getJobName());
-        param.setOldTriggerNames(getOldTriggerNames(saveParam));
+        paramsOfTriggerMap.put(0, param.getCronTriggers());
+        paramsOfTriggerMap.put(1, param.getCalendarOffsetTriggers());
+        paramsOfTriggerMap.put(2, param.getDailyIntervalTriggers());
+        paramsOfTriggerMap.put(3, param.getCalendarIntervalTriggers());
+        TriggerChangedParam triggerChangedParam = new TriggerChangedParam();
+        triggerChangedParam.setJobName(param.getJobName());
+        triggerChangedParam.setOldTriggerNames(getOldTriggerNames(param));
         for (int i = 0; i < triggerHandlers.length; i++) {
             TriggerWithQuartzHandler triggerHandler = triggerHandlers[i];
             /*triggerHandler.getTriggers(paramMap);
             triggerHandler.deleteTriggers(paramMap);
-            triggerHandler.saveTriggers(saveParam.getJobName(), paramsOfTriggerMap.get(i));*/
+            triggerHandler.saveTriggers(param.getJobName(), paramsOfTriggerMap.get(i));*/
             triggerHandler.deleteAndUnschedule(paramMap);
-            triggerHandler.saveAndSchedule(saveParam.getJobName(), paramsOfTriggerMap.get(i));
+            triggerHandler.saveAndSchedule(param.getJobName(), paramsOfTriggerMap.get(i));
         }
-        callScheduler(param);
+        callScheduler(triggerChangedParam);
         return null;
     }
 
@@ -77,7 +73,7 @@ public class TriggerOfSchedService extends BaseServiceAdapter {
     }
 
     public List<String> getOldTriggerNames(TriggerUpdateParam saveParam) {
-        Map<String, Object> paramMap = injectAdminedTenantIdToMap(saveParam);
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(saveParam);
         List<String> oldTriggerNames = new ArrayList<>();
         for (int i = 0; i < triggerHandlers.length; i++) {
             TriggerWithQuartzHandler triggerHandler = triggerHandlers[i];

@@ -34,11 +34,6 @@ public class UserService extends BaseServiceAdapter {
 	@Autowired
 	private TenantService tenantService;
 
-	/**
-	 * 根据token获取用户信息
-	 *
-	 * @return
-	 */
 	public UserInfo getUserInfo() {
 		User user = injectUser();
 		UserGetParam getParam = new UserGetParam(user.getUserName());
@@ -51,53 +46,34 @@ public class UserService extends BaseServiceAdapter {
 				.build();
 	}
 
-	/**
-	 * 根据token获取用户和其管理的租户信息
-	 *
-	 * @return
-	 */
-	public Tenant getAdminedTenant() {
+	public Tenant getAdminTenant() {
 		User user = injectUser();
 		String userName = user.getUserName();
 		return tenantService.getByAdmin(userName);
 	}
 
-	public Map<String, Object> list(UserListParam listParam) {
-		Map<String, Object> paramMap = injectTenantIdToMap(listParam);
-		PageHelper.startPage(listParam.getCurrentPage(), listParam.getPageSize());
+	public Map<String, Object> list(UserListParam param) {
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
 		Page<User> list = (Page<User>) mapper.list(paramMap);
 		return PageUtil.toResultMap(list);
 	}
 
-	/**
-	 * 供登录接口使用
-	 * 支持用户名/手机号/邮箱号来登录
-	 *
-	 * @param user
-	 * @return
-	 */
 	public List<User> login(User user) {
 		return mapper.login(user);
 	}
 
-	public User get(UserGetParam getParam) {
-		Map<String, Object> paramMap = injectTenantIdToMap(getParam);
+	public User get(UserGetParam param) {
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
 		return mapper.get(paramMap);
 	}
 
-	/**
-	 * 新增
-	 *
-	 * @param saveParam
-	 * @return
-	 */
-	public User add(UserSaveParam saveParam) {
-		//主键应在数据库中   不存在
-		User user = get(new UserGetParam(saveParam.getUserName()));
+	public User add(UserSaveParam param) {
+		User user = get(new UserGetParam(param.getUserName()));
 		if (user != null) {
 			throw new DuplicateKeyException(user.getUserName());
 		}
-		user = toUser(saveParam);
+		user = toUser(param);
 		Date now = new Date();
 		user.setCreateTime(now);
 		user.setUpdateTime(now);
@@ -106,30 +82,23 @@ public class UserService extends BaseServiceAdapter {
 		return user;
 	}
 
-	private User toUser(UserSaveParam saveParam) {
+	private User toUser(UserSaveParam param) {
 		return User.builder()
-				.userName(saveParam.getUserName())
-				.displayName(saveParam.getDisplayName())
-				.password(saveParam.getPassword())
-				.email(saveParam.getEmail())
-				.mobile(saveParam.getMobile())
-				.status(saveParam.getStatus())
+				.userName(param.getUserName())
+				.displayName(param.getDisplayName())
+				.password(param.getPassword())
+				.email(param.getEmail())
+				.mobile(param.getMobile())
+				.status(param.getStatus())
 				.build();
 	}
 
-	/**
-	 * 更新
-	 *
-	 * @param saveParam
-	 * @return
-	 */
-	public User update(UserSaveParam saveParam) {
-		//主键应在数据库中  存在
-		User user = get(new UserGetParam(saveParam.getUserName()));
+	public User update(UserSaveParam param) {
+		User user = get(new UserGetParam(param.getUserName()));
 		if (user == null) {
-			throw new RTException(5250);  //5250
+			throw new RTException(5250);
 		}
-		User updatedUser = toUser(saveParam);
+		User updatedUser = toUser(param);
 		updatedUser.setCreateTime(user.getCreateTime());
 		updatedUser.setUpdateTime(new Date());
 		updatedUser.setTenantId(injectTenantId());
@@ -137,46 +106,24 @@ public class UserService extends BaseServiceAdapter {
 		return updatedUser;
 	}
 
-	/**
-	 * 删除
-	 *
-	 * @param removeParam
-	 * @return
-	 */
-	public void remove(UserRemoveParam removeParam) {
-		Map<String, Object> paramMap = injectTenantIdToMap(removeParam);
+	public Void remove(UserRemoveParam param) {
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
 		mapper.delete(paramMap);
+		return null;
 	}
 
-	/**
-	 * 获取用户拥有的资源集合
-	 *
-	 * @param getParam
-	 * @return
-	 */
-	public List<Resource> getResources(UserGetParam getParam) {
-		return mapper.getResources(injectTenantIdToMap(getParam));
+	public List<Resource> getResources(UserGetParam param) {
+		return mapper.getResources(injectTenantIdToMap(param));
 	}
 
-	/**
-	 * 获取用户隶属的标签集合
-	 *
-	 * @param getParam
-	 * @return
-	 */
-	public List<Tag> getTags(UserGetParam getParam) {
-		return mapper.getTags(injectTenantIdToMap(getParam));
+	public List<Tag> getTags(UserGetParam param) {
+		return mapper.getTags(injectTenantIdToMap(param));
 	}
 
-	/**
-	 * 更新用户关联的标签数据
-	 *
-	 * @param updateParam
-	 */
-	public void updateUserTags(UserTagUpdateParam updateParam) {
-		Map<String, Object> paramMap = injectTenantIdToMap(updateParam);
+	public void updateUserTags(UserTagUpdateParam param) {
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
 		mapper.deleteUserTags(paramMap);
-		if (updateParam.getTagNames() == null || updateParam.getTagNames().length == 0) {
+		if (param.getTagNames() == null || param.getTagNames().isEmpty()) {
 			return;
 		}
 		mapper.saveUserTags(paramMap);

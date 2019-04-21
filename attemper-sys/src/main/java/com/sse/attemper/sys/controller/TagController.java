@@ -1,9 +1,11 @@
 package com.sse.attemper.sys.controller;
 
-import com.sse.attemper.common.constant.APIConst;
 import com.sse.attemper.common.constant.APIPath;
 import com.sse.attemper.common.param.sys.tag.*;
 import com.sse.attemper.common.result.CommonResult;
+import com.sse.attemper.common.result.sys.resource.Resource;
+import com.sse.attemper.common.result.sys.tag.Tag;
+import com.sse.attemper.common.result.sys.user.User;
 import com.sse.attemper.sys.service.TagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -11,79 +13,79 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-/** 
- * @auth ldang
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author ldang
  */
-@Api(tags = APIConst.APITag.TAG)
+@Api("Tag")
 @RestController
 public class TagController {
 	
 	@Autowired
 	private TagService service;
 
-	@ApiOperation(APIConst.APIOperation.TagTitle.LIST)
-	@ApiImplicitParam(value = "查询参数", name = "listParam", dataType = "TagListParam", required = true)
+	@ApiOperation("List tags")
+	@ApiImplicitParam(value = "TagListParam", name = "param", dataType = "TagListParam", required = true)
 	@GetMapping(APIPath.TagPath.LIST)
-	public CommonResult list(TagListParam listParam) {
-		return CommonResult.putResult(service.list(listParam));
+	public CommonResult<Map<String, Object>> list(TagListParam param) {
+		return CommonResult.putResult(service.list(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TagTitle.GET)
-	@ApiImplicitParam(value = "查询单个对象信息", name = "getParam", dataType = "TagGetParam", required = true)
+	@ApiOperation("Get tag")
+	@ApiImplicitParam(value = "TagGetParam", name = "param", dataType = "TagGetParam", required = true)
 	@GetMapping(APIPath.TagPath.GET)
-	public CommonResult get(TagGetParam getParam) {
-		return CommonResult.putResult(service.get(getParam));
+	public CommonResult<Tag> get(TagGetParam param) {
+		return CommonResult.putResult(service.get(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TagTitle.ADD)
-	@ApiImplicitParam(value = "被新增的数据", name = "saveParam", dataType = "TagSaveParam", required = true)
+	@ApiOperation("Add tag")
+	@ApiImplicitParam(value = "TagSaveParam", name = "param", dataType = "TagSaveParam", required = true)
 	@PostMapping(APIPath.TagPath.ADD)
-	public CommonResult add(@RequestBody TagSaveParam saveParam) {
-		return CommonResult.putResult(service.add(saveParam));
+	public CommonResult<Tag> add(@RequestBody TagSaveParam param) {
+		return CommonResult.putResult(service.add(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TagTitle.UPDATE)
-	@ApiImplicitParam(value = "被更新的数据", name = "saveParam", dataType = "TagSaveParam", required = true)
+	@ApiOperation("Update tag")
+	@ApiImplicitParam(value = "TagSaveParam", name = "param", dataType = "TagSaveParam", required = true)
 	@PutMapping(APIPath.TagPath.UPDATE)
-	public CommonResult update(@RequestBody TagSaveParam saveParam) {
-		return CommonResult.putResult(service.update(saveParam));
+	public CommonResult<Tag> update(@RequestBody TagSaveParam param) {
+		return CommonResult.putResult(service.update(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TagTitle.REMOVE)
-	@ApiImplicitParam(value = "被删除的主键数组", name = "removeParam", dataType = "TagRemoveParam", required = true)
+	@ApiOperation("Remove tag")
+	@ApiImplicitParam(value = "TagRemoveParam", name = "param", dataType = "TagRemoveParam", required = true)
 	@DeleteMapping(APIPath.TagPath.REMOVE)
-	public CommonResult remove(@RequestBody TagRemoveParam removeParam) {
-		service.remove(removeParam);
-		return CommonResult.ok();
+	public CommonResult<Void> remove(@RequestBody TagRemoveParam param) {
+		return CommonResult.putResult(service.remove(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TagTitle.TAG_USER_GET)
-    @ApiImplicitParam(value = "获取标签关联的用户数据", name = "getParam", dataType = "TagGetParam", required = true)
+	@ApiOperation("Get users of tag")
+	@ApiImplicitParam(value = "TagGetParam", name = "param", dataType = "TagGetParam", required = true)
 	@GetMapping(APIPath.TagPath.USER_LIST)
-	public CommonResult getUsers(TagGetParam getParam) {
-		return CommonResult.putResult(service.getUsers(getParam));
+	public CommonResult<List<User>> getUsers(TagGetParam param) {
+		return CommonResult.putResult(service.getUsers(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TagTitle.TAG_USER_UPDATE)
-    @ApiImplicitParam(value = "保存标签关联的用户数据", name = "tagUserUpdateParam", dataType = "TagUserUpdateParam", required = true)
+	@ApiOperation("Update users of tag")
+	@ApiImplicitParam(value = "TagUserUpdateParam", name = "param", dataType = "TagUserUpdateParam", required = true)
 	@PutMapping(APIPath.TagPath.USER_UPDATE)
-	public CommonResult updateTagUsers(@RequestBody TagUserUpdateParam tagUserUpdateParam) {
-        service.updateTagUsers(tagUserUpdateParam);
-		return CommonResult.ok();
+	public CommonResult<Void> updateTagUsers(@RequestBody TagUserUpdateParam param) {
+		return CommonResult.putResult(service.updateTagUsers(param));
     }
 
-	@ApiOperation(APIConst.APIOperation.TagTitle.TAG_RESOURCE_GET)
-	@ApiImplicitParam(value = "获取标签关联的资源数据", name = "getParam", dataType = "TagGetParam", required = true)
+	@ApiOperation("Add resources of tag")
+	@ApiImplicitParam(value = "TagGetParam", name = "param", dataType = "TagGetParam", required = true)
 	@GetMapping(APIPath.TagPath.RESOURCE_LIST)
-	public CommonResult getResources(TagGetParam getParam) {
-		return CommonResult.putResult(service.getResources(getParam));
+	public CommonResult<List<Resource>> getResources(TagGetParam param) {
+		return CommonResult.putResult(service.getResources(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.TagTitle.TAG_RESOURCE_UPDATE)
-	@ApiImplicitParam(value = "保存标签关联的资源数据", name = "updateParam", dataType = "TagResourceUpdateParam", required = true)
+	@ApiOperation("Update resources of tag")
+	@ApiImplicitParam(value = "TagResourceUpdateParam", name = "param", dataType = "TagResourceUpdateParam", required = true)
 	@PutMapping(APIPath.TagPath.RESOURCE_UPDATE)
-	public CommonResult updateTagResources(@RequestBody TagResourceUpdateParam updateParam) {
-		service.updateTagResources(updateParam);
-		return CommonResult.ok();
+	public CommonResult<Void> updateTagResources(@RequestBody TagResourceUpdateParam param) {
+		return CommonResult.putResult(service.updateTagResources(param));
 	}
 }

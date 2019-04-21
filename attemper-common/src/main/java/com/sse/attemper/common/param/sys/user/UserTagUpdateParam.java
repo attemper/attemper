@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.List;
+
 /**
  * @author ldang
  */
@@ -19,7 +21,7 @@ public class UserTagUpdateParam implements CommonParam {
 
     protected String userName;
 
-    protected String[] tagNames;
+    protected List<String> tagNames;
 
     protected Integer tagType;
 
@@ -27,7 +29,7 @@ public class UserTagUpdateParam implements CommonParam {
         if (StringUtils.isBlank(userName)) {
             return "5200";
         }
-        boolean tagNameNull = (tagNames == null || tagNames.length == 0);
+        boolean tagNameNull = (tagNames == null || tagNames.isEmpty());
         boolean tagTypeNull = (tagType == null);
         if(!tagTypeNull){
             if(tagNameNull) {

@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.List;
+
 /**
  * @author ldang
  */
@@ -17,12 +19,12 @@ import org.apache.commons.lang.StringUtils;
 @AllArgsConstructor
 public class TagRemoveParam implements CommonParam {
 
-    protected String[] tagNames;
+    protected List<String> tagNames;
 
     protected Integer tagType;
 
     public String validate() {
-        if(tagNames == null || tagNames.length == 0 || StringUtils.isBlank(tagNames[0])){
+        if (tagNames == null || tagNames.isEmpty() || StringUtils.isBlank(tagNames.get(0))) {
             return "5300";
         }
         if(TagType.get(tagType) == null){

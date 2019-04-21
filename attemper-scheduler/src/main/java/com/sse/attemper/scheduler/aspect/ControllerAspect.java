@@ -130,16 +130,16 @@ public class ControllerAspect {
         preHandleLog(joinPoint, apiLog);
         String tenantId = ServletUtil.getHeader(CommonConstants.tenantId);
         apiLog.setTenantId(tenantId);
-        Tenant adminedTenant = tenantService.get(new TenantGetParam(tenantId));
-        if (adminedTenant == null) {
+        Tenant adminTenant = tenantService.get(new TenantGetParam(tenantId));
+        if (adminTenant == null) {
             return CommonResult.putAdd(1500, tenantId);
         }
         String sign = ServletUtil.getHeader(CommonConstants.sign);
-        if (!StringUtils.equals(sign, adminedTenant.getSign())) {
+        if (!StringUtils.equals(sign, adminTenant.getSign())) {
             return CommonResult.putAdd(1501, sign);
         }
-        TenantHolder.set(adminedTenant);
-        String userNameOfAdmin = adminedTenant.getAdmin();
+        TenantHolder.set(adminTenant);
+        String userNameOfAdmin = adminTenant.getAdmin();
         apiLog.setUserName(userNameOfAdmin);
         Object[] args = joinPoint.getArgs();
         if (args != null) {

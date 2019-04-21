@@ -1,6 +1,5 @@
 package com.sse.attemper.core.controller.project;
 
-import com.sse.attemper.common.constant.APIConst;
 import com.sse.attemper.common.constant.APIPath;
 import com.sse.attemper.common.param.EmptyParam;
 import com.sse.attemper.common.param.dispatch.project.*;
@@ -16,54 +15,53 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/** 
- * @auth ldang
+/**
+ * @author ldang
  */
-@Api(tags = APIConst.APITag.PROJECT)
+@Api("Project")
 @RestController
 public class ProjectController {
 	
 	@Autowired
 	private ProjectService service;
 
-	@ApiOperation(APIConst.APIOperation.ProjectTitle.TREE_LIST)
-	@ApiImplicitParam(value = "empty param", name = "emptyParam", dataType = "EmptyParam", required = true)
+	@ApiOperation("Get project tree list")
+	@ApiImplicitParam(value = "EmptyParam", name = "param", dataType = "EmptyParam", required = true)
 	@GetMapping(APIPath.ProjectPath.TREE_LIST)
-    public CommonResult<List<Project>> getTreeList(EmptyParam emptyParam) {
-        return CommonResult.putResult(service.getAll(emptyParam));
+	public CommonResult<List<Project>> getTreeList(EmptyParam param) {
+		return CommonResult.putResult(service.getAll(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.ProjectTitle.SAVE)
-	@ApiImplicitParam(value = "被保存的数据", name = "saveParam", dataType = "ProjectSaveParam", required = true)
+	@ApiOperation("Add or update project")
+	@ApiImplicitParam(value = "ProjectSaveParam", name = "param", dataType = "ProjectSaveParam", required = true)
 	@PostMapping(APIPath.ProjectPath.SAVE)
-	public CommonResult<Project> save(@RequestBody ProjectSaveParam saveParam) {
-        return CommonResult.putResult(service.save(saveParam));
+	public CommonResult<Project> save(@RequestBody ProjectSaveParam param) {
+		return CommonResult.putResult(service.save(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.ProjectTitle.REMOVE)
-    @ApiImplicitParam(value = "被删除的主键数组", name = "removeParam", dataType = "ProjectRemoveParam", required = true)
+	@ApiOperation("Remove projects")
+	@ApiImplicitParam(value = "ProjectRemoveParam", name = "param", dataType = "ProjectRemoveParam", required = true)
 	@DeleteMapping(APIPath.ProjectPath.REMOVE)
-    public CommonResult<Void> remove(@RequestBody ProjectRemoveParam removeParam) {
-        service.remove(removeParam);
-        return CommonResult.ok();
+	public CommonResult<Void> remove(@RequestBody ProjectRemoveParam param) {
+		return CommonResult.putResult(service.remove(param));
     }
-    
-	@ApiOperation(APIConst.APIOperation.ProjectTitle.SAVE_INFO)
-	@ApiImplicitParam(value = "save data", name = "param", dataType = "ProjectInfoSaveParam", required = true)
+
+	@ApiOperation("Save project info")
+	@ApiImplicitParam(value = "ProjectInfoSaveParam", name = "param", dataType = "ProjectInfoSaveParam", required = true)
 	@PostMapping(APIPath.ProjectPath.SAVE_INFO)
 	public CommonResult<Void> saveInfo(@RequestBody ProjectInfoSaveParam param) {
 		return CommonResult.putResult(service.saveInfo(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.ProjectTitle.LIST_INFOS)
-	@ApiImplicitParam(value = "查询参数", name = "param", dataType = "ProjectGetParam", required = true)
+	@ApiOperation("List project info")
+	@ApiImplicitParam(value = "ProjectGetParam", name = "param", dataType = "ProjectGetParam", required = true)
 	@GetMapping(APIPath.ProjectPath.LIST_INFOS)
 	public CommonResult<List<ProjectInfo>> listInfos(ProjectGetParam param) {
 		return CommonResult.putResult(service.listInfos(param));
 	}
 
-	@ApiOperation(APIConst.APIOperation.ProjectTitle.REMOVE_INFO)
-	@ApiImplicitParam(value = "remove by tenantId and baseUrl", name = "param", dataType = "ProjectInfoRemoveParam", required = true)
+	@ApiOperation("Remove project info")
+	@ApiImplicitParam(value = "ProjectInfoRemoveParam", name = "param", dataType = "ProjectInfoRemoveParam", required = true)
 	@DeleteMapping(APIPath.ProjectPath.REMOVE_INFO)
 	public CommonResult<Void> removeInfo(@RequestBody ProjectInfoRemoveParam param) {
 		return CommonResult.putResult(service.removeInfo(param));

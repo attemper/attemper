@@ -8,23 +8,20 @@ public enum JobInstanceStatus {
     /** success */
     SUCCESS(1),
 
-    /** termination */
-    TERMINATION(2),
+    /**
+     * FAILURE
+     */
+    FAILURE(2),
 
-    /** failure */
-    FAILURE(3),
+    /**
+     * terminated
+     */
+    TERMINATED(3),
 
-    /** running */
-    RETRY_RUNNING(4),
-
-    /** success */
-    RETRY_SUCCESS(5),
-
-    /** termination */
-    RETRY_TERMINATION(6),
-
-    /** failure */
-    RETRY_FAILURE(7)
+    /**
+     * paused
+     */
+    PAUSED(4)
 
     ;
 

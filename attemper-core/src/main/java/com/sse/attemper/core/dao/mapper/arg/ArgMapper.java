@@ -11,11 +11,12 @@ import java.util.Map;
 @Mapper
 @Repository
 public interface ArgMapper extends BaseMapper<Arg> {
-    @Override
-    void add(Arg argument);
 
     @Override
-    void update(Arg argument);
+    void add(Arg arg);
+
+    @Override
+    void update(Arg arg);
 
     List<Arg> list(Map<String, Object> paramMap);
 

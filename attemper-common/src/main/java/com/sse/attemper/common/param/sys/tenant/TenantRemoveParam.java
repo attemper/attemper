@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.List;
+
 /**
  * @author ldang
  */
@@ -16,10 +18,10 @@ import org.apache.commons.lang.StringUtils;
 @AllArgsConstructor
 public class TenantRemoveParam implements CommonParam {
 
-    protected String[] ids;
+    protected List<String> ids;
 
     public String validate() {
-        if(ids == null || ids.length == 0 || StringUtils.isBlank(ids[0])){
+        if (ids == null || ids.isEmpty() || StringUtils.isBlank(ids.get(0))) {
             return "5112";
         }
         return null;

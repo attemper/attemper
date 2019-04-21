@@ -38,71 +38,44 @@ public class TenantService extends BaseServiceAdapter {
     @Autowired
     private SysProperties sysProperties;
 
-    /**
-     * 根据id查询租户
-     * @param getParam
-     * @return
-     */
-    public Tenant get(TenantGetParam getParam) {
-        return mapper.get(getParam.getId());
+    public Tenant get(TenantGetParam param) {
+        return mapper.get(param.getId());
     }
 
     public Tenant getByAdmin(String admin) {
         return mapper.getByAdmin(admin);
     }
 
-    /**
-     * 查询列表
-     * @param listParam
-     * @return
-     */
-    public Map<String, Object> list(TenantListParam listParam) {
-        Map<String, Object> paramMap = injectTenantIdToMap(listParam);
+    public Map<String, Object> list(TenantListParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         if (!injectUser().getUserName().equals(sysProperties.getSuperTenant().getAdmin())) {
-            //非超管，仅查出当前租户
-            paramMap.put("matchAdmin", injectUser().getUserName());
+            paramMap.put("matchAdmin", injectUser().getUserName());  //only find current tenant of the user
         }
-        PageHelper.startPage(listParam.getCurrentPage(), listParam.getPageSize());
+        PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<Tenant> list = (Page<Tenant>) mapper.list(paramMap);
         return PageUtil.toResultMap(list);
     }
 
-    /**
-     * 新增
-     * @param saveParam
-     * @return
-     */
-    public Tenant add(TenantSaveParam saveParam) {
-        //主键应在数据库中   不存在
-        Tenant tenant = get(new TenantGetParam(saveParam.getId()));
+    public Tenant add(TenantSaveParam param) {
+        Tenant tenant = get(new TenantGetParam(param.getId()));
         if(tenant != null){
-            throw new DuplicateKeyException(saveParam.getId());
+            throw new DuplicateKeyException(param.getId());
         }
-        tenant = toTenant(saveParam);
+        tenant = toTenant(param);
         tenant.setCreateTime(new Date());
         return save(tenant);
     }
 
-    /**
-     * 更新
-     * @param saveParam
-     * @return
-     */
-    public Tenant update(TenantSaveParam saveParam) {
-        //主键应在数据库中  存在
-        Tenant tenant = get(new TenantGetParam(saveParam.getId()));
+    public Tenant update(TenantSaveParam param) {
+        Tenant tenant = get(new TenantGetParam(param.getId()));
         if(tenant == null){
-            throw new RTException(5150);  //5150
+            throw new RTException(5150);
         }
-        Tenant updatedTenant = toTenant(saveParam);
+        Tenant updatedTenant = toTenant(param);
         updatedTenant.setCreateTime(tenant.getCreateTime());
         return save(updatedTenant);
     }
 
-    /**
-     * 保存
-     * @param tenant
-     */
     public Tenant save(Tenant tenant) {
         String sign = secretService.encode(tenant.getId());
         tenant.setSign(sign);
@@ -111,25 +84,21 @@ public class TenantService extends BaseServiceAdapter {
         return tenant;
     }
 
-    /**
-     * 删除
-     * @param removeParam
-     * @return
-     */
-    public void remove(TenantRemoveParam removeParam) {
-        for (String id : removeParam.getIds()) {
+    public Void remove(TenantRemoveParam param) {
+        for (String id : param.getIds()) {
             if (StringUtils.equals(id, sysProperties.getSuperTenant().getId())) {
                 throw new RTException(5115, id);
             }
         }
-        mapper.delete(removeParam.getIds());
+        mapper.delete(param.getIds());
+        return null;
     }
 
-    private Tenant toTenant(TenantSaveParam saveParam) {
+    private Tenant toTenant(TenantSaveParam param) {
         return Tenant.builder()
-                .id(saveParam.getId())
-                .name(saveParam.getName())
-                .admin(saveParam.getAdmin())
+                .id(param.getId())
+                .name(param.getName())
+                .admin(param.getAdmin())
                 .build();
     }
 

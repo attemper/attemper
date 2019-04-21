@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.List;
+
 /**
  * @author ldang
  */
@@ -16,10 +18,10 @@ import org.apache.commons.lang.StringUtils;
 @AllArgsConstructor
 public class ResourceRemoveParam implements CommonParam {
 
-    protected String[] resourceNames;
+    protected List<String> resourceNames;
 
     public String validate() {
-        if(resourceNames == null || resourceNames.length == 0 || StringUtils.isBlank(resourceNames[0])){
+        if (resourceNames == null || resourceNames.isEmpty() || StringUtils.isBlank(resourceNames.get(0))) {
             return "5400";
         }
         return null;

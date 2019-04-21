@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * service of login
  * @author ldang
  */
 @Service
@@ -25,13 +24,8 @@ public class LoginService extends BaseSecurityService {
     @Autowired
     private UserService userService;
 
-    /**
-     * login by user
-     * @param loginParam
-     * @return
-     */
-    public LoginResult login(LoginParam loginParam) {
-        User user = toUser(loginParam);
+    public LoginResult login(LoginParam param) {
+        User user = toUser(param);
         user.setTenantId(injectTenantId());
         List<User> userList = userService.login(user);
         if (userList.isEmpty()) {
