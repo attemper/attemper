@@ -4,11 +4,9 @@ import com.lmax.disruptor.WorkHandler;
 import com.sse.atemper.grpc.invoking.JobInvokingProto;
 import com.sse.attemper.common.enums.JobInstanceStatus;
 import com.sse.attemper.common.result.CommonResult;
-import com.sse.attemper.common.result.dispatch.monitor.JobExecution;
 import com.sse.attemper.common.result.dispatch.monitor.JobInstance;
 import com.sse.attemper.config.bean.ContextBeanAware;
 import com.sse.attemper.executor.disruptor.container.RequestContainer;
-import com.sse.attemper.executor.service.instance.JobExecutionOfExeService;
 import com.sse.attemper.executor.service.instance.JobInstanceOfExeService;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +27,6 @@ public class RequestConsumer implements WorkHandler<RequestContainer> {
         JobInvokingProto.JobInvokingRequest request = container.getJobInvokingRequest();
         JobInvokingProto.JobInvokingResponse.Builder responseBuilder = JobInvokingProto.JobInvokingResponse.newBuilder()
                 .setId(request.getId());
-        saveExecution(request);
         saveInstance(request);
         try {
             runtimeService.startProcessInstanceByKey(request.getJobName(), request.getId());
@@ -59,24 +56,14 @@ public class RequestConsumer implements WorkHandler<RequestContainer> {
         responseBuilder.setCode(code).setMsg(msg);
     }
 
-    private void saveExecution(JobInvokingProto.JobInvokingRequest request) {
-        JobExecutionOfExeService jobExecutionOfExeService = ContextBeanAware.getBean(JobExecutionOfExeService.class);
-        JobExecution jobExecution = JobExecution.builder()
+    private void saveInstance(JobInvokingProto.JobInvokingRequest request) {
+        JobInstanceOfExeService jobInstanceOfExeService = ContextBeanAware.getBean(JobInstanceOfExeService.class);
+        JobInstance jobInstance = JobInstance.builder()
                 .id(request.getId())
                 .jobName(request.getJobName())
                 .triggerName(request.getTriggerName())
                 .startTime(new Date())
                 .tenantId(request.getTenantId())
-                .build();
-        jobExecution.setStatus(JobInstanceStatus.RUNNING.getStatus());
-        jobExecutionOfExeService.add(jobExecution);
-    }
-
-    private void saveInstance(JobInvokingProto.JobInvokingRequest request) {
-        JobInstanceOfExeService jobInstanceOfExeService = ContextBeanAware.getBean(JobInstanceOfExeService.class);
-        JobInstance jobInstance = JobInstance.builder()
-                .id(request.getId())
-                .triggerName(request.getTriggerName())
                 .build();
         jobInstance.setStatus(JobInstanceStatus.RUNNING.getStatus());
         jobInstanceOfExeService.add(jobInstance);

@@ -1,9 +1,8 @@
 package com.sse.attemper.core.dao.mapper.monitor;
 
 import com.sse.attemper.common.base.BaseMapper;
-import com.sse.attemper.common.result.dispatch.monitor.JobExecution;
-import com.sse.attemper.common.result.dispatch.monitor.JobExecutionAct;
-import com.sse.attemper.common.result.dispatch.monitor.JobInst;
+import com.sse.attemper.common.result.dispatch.monitor.JobInstance;
+import com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -12,21 +11,11 @@ import java.util.Map;
 
 @Mapper
 @Repository
-public interface JobExecutionMapper extends BaseMapper<JobExecution> {
+public interface JobExecutionMapper extends BaseMapper<JobInstance> {
 
-    @Override
-    void add(JobExecution jobExecution);
+    void delete(JobInstance jobInstance);
 
-    void addAct(JobExecutionAct jobExecutionAct);
+    void deleteAct(JobInstanceAct jobInstanceAct);
 
-    void delete(JobExecution jobExecution);
-
-    @Override
-    void update(JobExecution jobExecution);
-
-    void updateAct(JobExecutionAct jobExecutionAct);
-
-    void deleteAct(JobExecutionAct jobExecutionAct);
-
-    List<JobInst> list(Map<String, Object> paramMap);
+    List<JobInstance> list(Map<String, Object> paramMap);
 }

@@ -3,7 +3,7 @@ package com.sse.attemper.core.conf;
 import com.sse.attemper.core.controller.arg.ArgController;
 import com.sse.attemper.core.controller.job.JobController;
 import com.sse.attemper.core.controller.job.TriggerController;
-import com.sse.attemper.core.controller.monitor.RealTimeMonitorController;
+import com.sse.attemper.core.controller.monitor.MonitorController;
 import com.sse.attemper.core.controller.project.ProjectController;
 import com.sse.attemper.core.controller.tool.ToolController;
 import com.sse.attemper.core.dao.mapper.arg.ArgMapper;
@@ -15,7 +15,7 @@ import com.sse.attemper.core.dao.mapper.project.ProjectMapper;
 import com.sse.attemper.core.service.arg.ArgService;
 import com.sse.attemper.core.service.job.JobService;
 import com.sse.attemper.core.service.job.TriggerService;
-import com.sse.attemper.core.service.monitor.RealTimeMonitorService;
+import com.sse.attemper.core.service.monitor.MonitorService;
 import com.sse.attemper.core.service.project.ProjectService;
 import com.sse.attemper.core.service.tool.ToolService;
 import com.sse.attemper.sys.conf.SysConfiguration;
@@ -49,7 +49,7 @@ import javax.validation.ValidatorFactory;
         TriggerService.class,
         ProjectService.class,
         ToolService.class,
-        RealTimeMonitorService.class,
+        MonitorService.class,
 
         //controller
         JobController.class,
@@ -57,7 +57,7 @@ import javax.validation.ValidatorFactory;
         TriggerController.class,
         ProjectController.class,
         ToolController.class,
-        RealTimeMonitorController.class
+        MonitorController.class,
 })
 public class CoreConfiguration {
 

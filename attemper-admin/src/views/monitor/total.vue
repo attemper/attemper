@@ -73,7 +73,7 @@ import { load } from '@/constant'
 import Cookies from 'js-cookie'
 
 export default {
-  name: 'HistoryMonitor',
+  name: 'TotalMonitor',
   components: {
     Pagination
   },
@@ -170,7 +170,7 @@ export default {
     },
     loadConst() {
       load(`./array/${Cookies.get('language')}.js`).then((array) => {
-        this.jobInstanceStatuses = array.doneJobInstanceStatuses
+        this.jobInstanceStatuses = array.jobInstanceStatuses
         this.initPageStatus()
       })
     },

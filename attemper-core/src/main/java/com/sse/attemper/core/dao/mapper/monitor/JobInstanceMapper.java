@@ -1,7 +1,6 @@
 package com.sse.attemper.core.dao.mapper.monitor;
 
 import com.sse.attemper.common.base.BaseMapper;
-import com.sse.attemper.common.result.dispatch.monitor.JobInst;
 import com.sse.attemper.common.result.dispatch.monitor.JobInstance;
 import com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,10 +12,6 @@ import java.util.Map;
 @Mapper
 @Repository
 public interface JobInstanceMapper extends BaseMapper<JobInstance> {
-    /*
-    List<JobInstance> list(Map<String, Object> paramMap);
-
-    JobInstance get(Map<String, Object> paramMap);*/
 
     @Override
     void add(JobInstance jobInstance);
@@ -28,5 +23,5 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
 
     void updateAct(JobInstanceAct jobInstanceAct);
 
-    List<JobInst> list(Map<String, Object> paramMap);
+    List<JobInstance> list(Map<String, Object> paramMap);
 }

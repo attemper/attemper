@@ -27,7 +27,7 @@ public enum JobInstanceStatus {
 
     private int status;
 
-    JobInstanceStatus(int status){
+    JobInstanceStatus(int status) {
         this.status = status;
     }
 
@@ -35,12 +35,8 @@ public enum JobInstanceStatus {
         return status;
     }
 
-    /**
-     * @param status
-     * @return
-     */
-    public static JobInstanceStatus get(int status){
-        for(JobInstanceStatus item : JobInstanceStatus.values()){
+    public static JobInstanceStatus get(int status) {
+        for (JobInstanceStatus item : JobInstanceStatus.values()) {
             if(item.getStatus() == status){
                 return item;
             }

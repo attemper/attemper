@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author ldang
@@ -22,7 +21,7 @@ public class JobInstListParam extends PageSortParam {
 
     protected String displayName;
 
-    protected List<Integer> status;
+    protected Integer[] status;
 
     protected Date lowerStartTime;
 

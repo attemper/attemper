@@ -4,7 +4,7 @@
       <el-input v-model="page.jobName" :placeholder="$t('job.columns.jobName')" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search" />
       <el-input v-model="page.displayName" :placeholder="$t('job.columns.displayName')" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search" />
       <el-select v-model="page.status" :placeholder="$t('monitor.columns.status')" multiple clearable collapse-tags class="filter-item" size="mini" style="width: 160px">
-        <el-option v-for="item in todoJobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
+        <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
@@ -95,13 +95,13 @@ export default {
         total: 0,
         jobName: undefined,
         displayName: undefined,
-        status: [0],
+        status: [],
         sort: 'JOB_NAME'
       },
-      todoJobInstanceStatuses: [],
+      jobInstanceStatuses: [],
       /* sortOptions: [{ label: this.$t('job.sort.nameAsc'), key: 'JOB_NAME' }, { label: this.$t('job.sort.nameDesc'), key: 'JOB_NAME DESC' }],*/
       showCreateTime: false,
-      jobInst: {
+      jobInstance: {
         id: undefined,
         jobName: null,
         displayName: '',
@@ -120,6 +120,7 @@ export default {
   methods: {
     search() {
       this.listLoading = true
+      this.initPageStatus()
       listReq(this.page).then(response => {
         this.list = response.data.result.list
         Object.assign(this.page, response.data.result.page)
@@ -144,8 +145,8 @@ export default {
       this.search()
     },
     formatStatus(item) {
-      for (let i = 0; i < this.todoJobInstanceStatuses.length; i++) {
-        const option = this.todoJobInstanceStatuses[i]
+      for (let i = 0; i < this.jobInstanceStatuses.length; i++) {
+        const option = this.jobInstanceStatuses[i]
         if (option.value === item) {
           return option.label
         }
@@ -164,8 +165,14 @@ export default {
     },
     loadConst() {
       load(`./array/${Cookies.get('language')}.js`).then((array) => {
-        this.todoJobInstanceStatuses = array.todoJobInstanceStatuses
+        this.jobInstanceStatuses = array.todoJobInstanceStatuses
+        this.initPageStatus()
       })
+    },
+    initPageStatus() {
+      if (this.page.status && this.page.status.length === 0) {
+        this.page.status = this.jobInstanceStatuses.map(item => item.value)
+      }
     }
   }
 }

@@ -1,27 +1,20 @@
 package com.sse.attemper.common.enums;
 
-/**
- * @author pczhao
- * @email
- * @date 2019-01-14 14:50
- */
-
 public enum ArgType {
-    // integer 类型
+    // integer
     INTEGER(1),
-    // String 类型
+    // String
     STRING(2),
-    // boolean 类型
+    // boolean
     BOOLEAN(3),
-    // double 类型
+    // double
     DOUBLE(4),
-    // long 类型
+    // long
     LONG(5),
-    // datetime 类型
+    // datetime
     DATE(6),
-    // SQL 语句
-    SQL(7)
-    ;
+    // SQL
+    SQL(7);
 
     ArgType(int type) {
         this.type = type;
@@ -33,12 +26,7 @@ public enum ArgType {
         return type;
     }
 
-    /**
-     * 获取枚举对象
-     * @param type
-     * @return
-     */
-    public static ArgType get(Integer type){
+    public static ArgType get(Integer type) {
         if (type != null) {
             for (ArgType argType : ArgType.values()) {
                 if (argType.getType() == type) {

@@ -3,7 +3,7 @@ package com.sse.attemper.core.controller.monitor;
 import com.sse.attemper.common.constant.APIPath;
 import com.sse.attemper.common.param.dispatch.monitor.JobInstListParam;
 import com.sse.attemper.common.result.CommonResult;
-import com.sse.attemper.core.service.monitor.HistoryMonitorService;
+import com.sse.attemper.core.service.monitor.MonitorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@Api("HistoryMonitor")
+@Api("Monitor")
 @RestController
-public class HistoryMonitorController {
+public class MonitorController {
 
     @Autowired
-    private HistoryMonitorService service;
+    private MonitorService service;
 
-    @ApiOperation("List executed jobs")
+    @ApiOperation("List job instances")
     @ApiImplicitParam(value = "JobInstListParam", name = "param", dataType = "JobInstListParam", required = true)
-    @GetMapping(APIPath.MonitorPath.HistoryPath.LIST)
+    @GetMapping(APIPath.MonitorPath.LIST)
     public CommonResult<Map<String, Object>> list(JobInstListParam param) {
         return CommonResult.putResult(service.list(param));
     }

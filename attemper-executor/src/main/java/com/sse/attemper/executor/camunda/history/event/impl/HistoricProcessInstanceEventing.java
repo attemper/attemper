@@ -1,9 +1,8 @@
 package com.sse.attemper.executor.camunda.history.event.impl;
 
 import com.sse.attemper.common.enums.JobInstanceStatus;
-import com.sse.attemper.common.result.dispatch.monitor.JobExecution;
-import com.sse.attemper.common.result.dispatch.monitor.JobExecutionAct;
 import com.sse.attemper.common.result.dispatch.monitor.JobInstance;
+import com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct;
 import com.sse.attemper.config.bean.ContextBeanAware;
 import com.sse.attemper.executor.camunda.history.event.EndEventing;
 import com.sse.attemper.executor.camunda.history.event.EventingAdapter;
@@ -20,11 +19,6 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
 
     @Override
     public void start() {
-        JobExecution jobExecution = toJobExecution(historyEvent);
-        jobExecution.setStatus(JobInstanceStatus.RUNNING.getStatus());
-        JobExecutionOfExeService jobExecutionOfExeService = ContextBeanAware.getBean(JobExecutionOfExeService.class);
-        jobExecutionOfExeService.update(jobExecution);
-
         JobInstance jobInstance = toJobInstance(historyEvent);
         jobInstance.setStatus(JobInstanceStatus.RUNNING.getStatus());
         JobInstanceOfExeService jobInstanceOfExeService = ContextBeanAware.getBean(JobInstanceOfExeService.class);
@@ -33,32 +27,26 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
 
     @Override
     public void end() {
-        JobExecutionOfExeService jobExecutionOfExeService = ContextBeanAware.getBean(JobExecutionOfExeService.class);
-        JobExecution jobExecution = JobExecution.builder().id(historyEvent.getBusinessKey()).build();
-        jobExecutionOfExeService.delete(jobExecution);
-        JobExecutionAct jobExecutionAct = JobExecutionAct.builder()
-                .rootProcInstId(historyEvent.getRootProcessInstanceId()).build();
-        jobExecutionOfExeService.deleteAct(jobExecutionAct);
-
         JobInstance jobInstance = toJobInstance(historyEvent);
         jobInstance.setStatus(JobInstanceStatus.SUCCESS.getStatus());
         JobInstanceOfExeService jobInstanceOfExeService = ContextBeanAware.getBean(JobInstanceOfExeService.class);
         jobInstanceOfExeService.update(jobInstance);
-    }
 
-    private JobExecution toJobExecution(HistoricProcessInstanceEventEntity historyEvent) {
-        return JobExecution.builder()
-                .id(historyEvent.getBusinessKey())
-                .procInstId(historyEvent.getProcessInstanceId())
-                .rootProcInstId(historyEvent.getRootProcessInstanceId())
-                .procDefId(historyEvent.getProcessDefinitionId())
-                .build();
+        JobExecutionOfExeService jobExecutionOfExeService = ContextBeanAware.getBean(JobExecutionOfExeService.class);
+        jobExecutionOfExeService.delete(jobInstance);
+        JobInstanceAct jobInstanceAct = JobInstanceAct.builder()
+                .rootProcInstId(historyEvent.getRootProcessInstanceId()).build();
+        jobExecutionOfExeService.deleteAct(jobInstanceAct);
     }
 
     private JobInstance toJobInstance(HistoricProcessInstanceEventEntity historyEvent) {
         return JobInstance.builder()
                 .id(historyEvent.getBusinessKey())
                 .procInstId(historyEvent.getProcessInstanceId())
+                .rootProcInstId(historyEvent.getRootProcessInstanceId())
+                .procDefId(historyEvent.getProcessDefinitionId())
+                .endTime(historyEvent.getEndTime())
+                .duration(historyEvent.getDurationInMillis())
                 .build();
     }
 }

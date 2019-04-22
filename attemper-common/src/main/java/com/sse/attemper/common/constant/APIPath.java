@@ -193,12 +193,14 @@ public class APIPath {
     public static final class MonitorPath {
         private static final String MONITOR = "/monitor";
 
+        public static final String LIST = API_PATH + DISPATCH + MONITOR + _LIST;
+
         public static final class RealTimePath {
             public static final String REAL_TIME = "/realTime";
 
             public static final String LIST = API_PATH + DISPATCH + MONITOR + REAL_TIME + _LIST;
         }
-
+        /*
         public static final class HistoryPath {
             private static final String HISTORY = "/history";
 
@@ -209,7 +211,7 @@ public class APIPath {
             public static final String TOTAL = "/total";
 
             public static final String LIST = API_PATH + DISPATCH + MONITOR + TOTAL + _LIST;
-        }
+        }*/
     }
 
     public static final class ToolPath {

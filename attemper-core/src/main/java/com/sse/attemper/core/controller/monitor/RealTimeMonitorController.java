@@ -20,7 +20,7 @@ public class RealTimeMonitorController {
     @Autowired
     private RealTimeMonitorService service;
 
-    @ApiOperation("List executing jobs")
+    @ApiOperation("List executing job instances")
     @ApiImplicitParam(value = "JobInstListParam", name = "param", dataType = "JobInstListParam", required = true)
     @GetMapping(APIPath.MonitorPath.RealTimePath.LIST)
     public CommonResult<Map<String, Object>> list(JobInstListParam param) {
