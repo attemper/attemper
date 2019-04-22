@@ -73,7 +73,7 @@ import { load } from '@/constant'
 import Cookies from 'js-cookie'
 
 export default {
-  name: 'TotalMonitor',
+  name: 'Total',
   components: {
     Pagination
   },

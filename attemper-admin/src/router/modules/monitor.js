@@ -19,7 +19,8 @@ const monitorRouter = {
       name: 'realTime',
       meta: {
         title: 'realTime',
-        icon: 'realTime'
+        icon: 'realTime',
+        noCache: false
       }
     },
     {
@@ -28,7 +29,8 @@ const monitorRouter = {
       name: 'history',
       meta: {
         title: 'history',
-        icon: 'history'
+        icon: 'history',
+        noCache: false
       }
     },
     {
@@ -37,7 +39,8 @@ const monitorRouter = {
       name: 'total',
       meta: {
         title: 'total',
-        icon: 'total'
+        icon: 'total',
+        noCache: false
       }
     }
   ]

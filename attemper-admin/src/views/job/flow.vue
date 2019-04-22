@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { getReq, updateReq, versionsReq, copyReq, exchangeReq } from '@/api/job/jobs'
+import { getReq, updateReq, versionsReq, copyReq, exchangeReq } from '@/api/job/flowJob'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import propertiesPanelModule from 'bpmn-js-properties-panel'
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
@@ -79,6 +79,7 @@ import {
 import customElementTemplate from './element-templates/custom'
 
 export default {
+  name: 'Flow',
   components: {
     JobInfoForm
   },

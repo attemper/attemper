@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { getProjectReq, saveProjectReq } from '@/api/job/jobs'
+import { getProjectReq, saveProjectReq } from '@/api/job/flowJob'
 import { treeListReq } from '@/api/job/project'
 
 export default {

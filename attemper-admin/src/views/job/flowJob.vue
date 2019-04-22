@@ -192,7 +192,7 @@
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq, publishReq, manualReq } from '@/api/job/jobs'
+import { listReq, removeReq, addReq, updateReq, publishReq, manualReq } from '@/api/job/flowJob'
 import * as triggerApi from '@/api/job/trigger'
 import * as toolApi from '@/api/sys/tool'
 import waves from '@/directive/waves' // Waves directive
@@ -208,7 +208,7 @@ import CalendarIntervalTrigger from './components/calendarIntervalTrigger'
 import ProjectTree from './components/projectTree'
 
 export default {
-  name: 'Jobs',
+  name: 'FlowJob',
   components: {
     ProjectTree,
     Pagination,

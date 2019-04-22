@@ -68,7 +68,7 @@ import { load } from '@/constant'
 import Cookies from 'js-cookie'
 
 export default {
-  name: 'RealTimeMonitor',
+  name: 'RealTime',
   components: {
     Pagination
   },

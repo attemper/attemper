@@ -14,12 +14,13 @@ const jobRouter = {
   },
   children: [
     {
-      path: 'jobs',
-      component: () => import('@/views/job/jobs'),
-      name: 'jobs',
+      path: 'flowJob',
+      component: () => import('@/views/job/flowJob'),
+      name: 'flowJob',
       meta: {
-        title: 'jobs',
-        icon: 'jobs'
+        title: 'flowJob',
+        icon: 'flowJob',
+        noCache: false
       }
     },
     {
@@ -28,7 +29,8 @@ const jobRouter = {
       name: 'project',
       meta: {
         title: 'project',
-        icon: 'project'
+        icon: 'project',
+        noCache: false
       }
     },
     {
@@ -38,7 +40,8 @@ const jobRouter = {
       hidden: true,
       meta: {
         title: route => `${route.params.id}`,
-        notMenu: true
+        notMenu: true,
+        noCache: false
       }
     }
   ]

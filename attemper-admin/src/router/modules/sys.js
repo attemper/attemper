@@ -18,7 +18,8 @@ const sysRouter = {
     name: 'tenant',
     meta: {
       title: 'tenant',
-      icon: 'tenant'
+      icon: 'tenant',
+      noCache: false
     }
   },
   {
@@ -27,7 +28,8 @@ const sysRouter = {
     name: 'user',
     meta: {
       title: 'user',
-      icon: 'user'
+      icon: 'user',
+      noCache: false
     }
   },
   {
@@ -36,7 +38,8 @@ const sysRouter = {
     name: 'tag',
     meta: {
       title: 'tag',
-      icon: 'tag'
+      icon: 'tag',
+      noCache: false
     }
   },
   {
@@ -45,7 +48,8 @@ const sysRouter = {
     name: 'resource',
     meta: {
       title: 'resource',
-      icon: 'resource'
+      icon: 'resource',
+      noCache: false
     }
   }
   ]

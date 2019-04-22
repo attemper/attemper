@@ -8,7 +8,7 @@ export default {
     resource: '资源管理',
     job: '任务管理',
     project: '服务信息',
-    jobs: '任务设计',
+    flowJob: '任务设计',
     monitor: '监控管理',
     realTime: '实时监控',
     history: '历史监控',
