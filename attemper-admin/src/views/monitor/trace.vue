@@ -126,7 +126,7 @@ import Cookies from 'js-cookie'
 import DateTimeGenerator from '@/components/DateTimeGenerator'
 
 export default {
-  name: 'Trace',
+  name: 'trace',
   components: {
     DateTimeGenerator,
     Pagination
