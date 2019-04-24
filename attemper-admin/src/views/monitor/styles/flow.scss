@@ -3,7 +3,10 @@
 @import '~bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
 @import '~bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 @import '~diagram-js-minimap/assets/diagram-js-minimap.css';
-@import "~@/styles/bpmn.scss";
+
+.djs-minimap {
+  right: 10px;
+}
 
 .layout{
   margin: 0;
@@ -27,10 +30,6 @@
   font-size: 12px;
   float: right;
   overflow: auto;
-}
-
-.djs-minimap {
-  right: 10px;
 }
 
 .el-table .row0{

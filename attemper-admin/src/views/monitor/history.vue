@@ -127,7 +127,7 @@ export default {
     loadConst() {
       load(`./array/${Cookies.get('language')}.js`).then((array) => {
         this.jobInstanceStatuses = array.doneJobInstanceStatuses
-        this.initPageStatus()
+        this.search()
       })
     }
   }

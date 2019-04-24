@@ -36,7 +36,6 @@ export default {
   },
   created() {
     this.loadConst()
-    this.search()
   },
   methods: {
     sortChange(data) {
@@ -73,7 +72,7 @@ export default {
       this.selections = val
     },
     initPageStatus() {
-      if (this.page.status && this.page.status.length === 0) {
+      if (this.page.status || this.page.status.length === 0) {
         this.page.status = this.jobInstanceStatuses.map(item => item.value)
       }
     },

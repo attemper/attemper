@@ -4,7 +4,23 @@
 @import '~bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 @import '~bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css';
 @import '~diagram-js-minimap/assets/diagram-js-minimap.css';
-@import "~@/styles/bpmn.scss";
+// overwrite some styles of bpmn
+
+.properties-panel-parent {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 260px;
+  z-index: 10;
+  border-left: 1px solid #ccc;
+  overflow: auto;
+}
+
+.djs-minimap {
+  top: 10px;
+  right: 270px;
+}
 
 .content{
   position: absolute;
