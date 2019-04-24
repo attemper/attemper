@@ -122,7 +122,7 @@ import { load } from '@/constant'
 import Cookies from 'js-cookie'
 
 export default {
-  name: 'User',
+  name: 'user',
   components: { Pagination },
   directives: { waves },
   filters: {

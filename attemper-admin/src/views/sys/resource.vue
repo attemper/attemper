@@ -100,7 +100,7 @@ import { load } from '@/constant'
 import Cookies from 'js-cookie'
 
 export default {
-  name: 'Resource',
+  name: 'resource',
   data() {
     return {
       treeData: [],

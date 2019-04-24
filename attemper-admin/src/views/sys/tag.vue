@@ -136,7 +136,7 @@ import { load } from '@/constant'
 import Cookies from 'js-cookie'
 
 export default {
-  name: 'Tag',
+  name: 'tag',
   components: { Pagination },
   directives: { waves },
   filters: {

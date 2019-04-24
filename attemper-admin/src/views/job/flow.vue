@@ -79,7 +79,7 @@ import {
 import customElementTemplate from './element-templates/custom'
 
 export default {
-  name: 'Flow',
+  name: 'flow',
   components: {
     JobInfoForm
   },

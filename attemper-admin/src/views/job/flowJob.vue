@@ -207,7 +207,7 @@ import CalendarIntervalTrigger from './components/calendarIntervalTrigger'
 import ProjectTree from './components/projectTree'
 
 export default {
-  name: 'FlowJob',
+  name: 'flowJob',
   components: {
     ProjectTree,
     Pagination,

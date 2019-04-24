@@ -98,7 +98,7 @@ import access from '@/directive/access/index.js'
 import { canAccess } from '@/utils/tools'
 
 export default {
-  name: 'Tenant',
+  name: 'tenant',
   components: { Pagination },
   directives: { waves, access },
   data() {

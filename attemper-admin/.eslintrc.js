@@ -23,7 +23,7 @@ module.exports = {
     }],
     "vue/singleline-html-element-content-newline": "off",
     "vue/multiline-html-element-content-newline":"off",
-    //"vue/name-property-casing": ["error", "PascalCase"],
+    "vue/name-property-casing": ["never", "PascalCase"],
     "vue/no-v-html": "off",
     'accessor-pairs': 2,
     'arrow-spacing': [2, {

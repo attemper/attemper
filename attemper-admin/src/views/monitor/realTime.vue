@@ -99,7 +99,7 @@ import Cookies from 'js-cookie'
 import common from './mixins/common'
 
 export default {
-  name: 'RealTime',
+  name: 'realTime',
   mixins: [common],
   methods: {
     search() {

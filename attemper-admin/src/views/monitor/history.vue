@@ -109,7 +109,7 @@ import Cookies from 'js-cookie'
 import common from './mixins/common'
 
 export default {
-  name: 'History',
+  name: 'history',
   mixins: [common],
   methods: {
     search() {

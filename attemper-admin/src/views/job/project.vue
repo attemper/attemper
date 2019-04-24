@@ -132,7 +132,7 @@ const DEF_INSTANCE = {
   type: 0
 }
 export default {
-  name: 'Project',
+  name: 'project',
   filters: {
     typeFilter(type) {
       const typeMap = {
