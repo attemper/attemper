@@ -1,7 +1,7 @@
 package com.sse.attemper.core.controller.monitor;
 
 import com.sse.attemper.common.constant.APIPath;
-import com.sse.attemper.common.param.dispatch.monitor.JobInstListParam;
+import com.sse.attemper.common.param.dispatch.monitor.JobInstanceListParam;
 import com.sse.attemper.common.result.CommonResult;
 import com.sse.attemper.core.service.monitor.RealTimeMonitorService;
 import io.swagger.annotations.Api;
@@ -21,9 +21,9 @@ public class RealTimeMonitorController {
     private RealTimeMonitorService service;
 
     @ApiOperation("List executing job instances")
-    @ApiImplicitParam(value = "JobInstListParam", name = "param", dataType = "JobInstListParam", required = true)
+    @ApiImplicitParam(value = "JobInstanceListParam", name = "param", dataType = "JobInstanceListParam", required = true)
     @GetMapping(APIPath.MonitorPath.RealTimePath.LIST)
-    public CommonResult<Map<String, Object>> list(JobInstListParam param) {
+    public CommonResult<Map<String, Object>> list(JobInstanceListParam param) {
         return CommonResult.putResult(service.list(param));
     }
 }

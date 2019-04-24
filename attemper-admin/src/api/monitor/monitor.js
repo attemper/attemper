@@ -11,3 +11,12 @@ export const listReq = (params) => {
     params: params
   })
 }
+
+export const listActReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + APIPath.LIST + '/act',
+    method: 'get',
+    params: params
+  })
+}
+

@@ -98,7 +98,10 @@ export default {
     ok: '确定',
     download: '下载',
     use: '使用',
-    manual: '发起'
+    manual: '发起',
+    showCurrent: '显示当前',
+    showAll: '显示全部',
+    highSearch: '高级查询'
   },
   tip: {
     search: '请输入查询关键字',
@@ -355,7 +358,12 @@ export default {
     columns: {
       status: '状态',
       startTime: '开始时间',
-      endTime: '结束时间'
+      endTime: '结束时间',
+      duration: '执行时长'
+    },
+    label: {
+      record: '记录',
+      log: '日志'
     }
   },
   navbar: {

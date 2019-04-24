@@ -5,7 +5,7 @@ export function generateTitle(title) {
   }
   if (typeof title === 'function') {
     const displayTitle = this.$route.meta.title(this.$route)
-    return (displayTitle && displayTitle.indexOf('undefined') === -1) ? displayTitle : this.$route.meta.id
+    return (displayTitle && displayTitle.indexOf('undefined') === -1) ? displayTitle : this.$route.meta.key
   }
   const hasKey = this.$te('route.' + title)
 
@@ -16,4 +16,8 @@ export function generateTitle(title) {
     return translatedTitle
   }
   return title
+}
+
+export function translate(langKey) {
+  return this.$t(langKey)
 }

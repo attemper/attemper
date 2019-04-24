@@ -67,7 +67,6 @@
       >
         <template slot-scope="scope">
           <el-tag type="primary" @click="update(scope.row)">{{ scope.row.jobName || '-' }}</el-tag>
-          <!--<span><a @click="update(scope.row)">{{ scope.row.jobName }}</a></span>-->
         </template>
       </el-table-column>
       <el-table-column :label="$t('job.columns.displayName')" min-width="150px">
@@ -535,7 +534,7 @@ export default {
       const route = {
         name: 'flow',
         params: {
-          id: this.selections[0].jobName
+          key: this.selections[0].jobName
         }
       }
       this.$router.push(route)

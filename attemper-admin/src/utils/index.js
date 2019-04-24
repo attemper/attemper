@@ -313,3 +313,33 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
+
+export function parseDuration(duration) {
+  if (!duration || duration === null) {
+    return null
+  }
+  if (duration < 1000) {
+    return duration
+  }
+  const seconds = parseInt(duration / 1000)
+  if (seconds < 60) {
+    return seconds + 's ' + parseDuration(duration - seconds * 1000)
+  }
+  const minutes = parseInt(seconds / 60)
+  if (minutes < 60) {
+    return minutes + 'm ' + parseDuration(duration - minutes * 60 * 1000)
+  }
+  const hours = parseInt(minutes / 60)
+  return hours + 'h ' + parseDuration(duration - hours * 60 * 60 * 1000)
+}
+
+export function renderJobInstanceStatus(item) {
+  const map = {
+    0: 'primary',
+    1: 'success',
+    2: 'danger',
+    3: 'warning',
+    4: 'info'
+  }
+  return map[item]
+}

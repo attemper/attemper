@@ -10,6 +10,39 @@
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>-->
       <el-button v-waves class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
+      <el-popover
+        placement="bottom"
+        trigger="click"
+      >
+        <el-form
+          label-position="left"
+          label-width="100px"
+          size="mini"
+          style="height: 100%"
+        >
+          <el-form-item :label="$t('monitor.columns.startTime')" style="margin-bottom: 5px;">
+            <date-time-generator @update="page.lowerStartTime = $event" @change="search" />
+          </el-form-item>
+          <el-form-item>
+            <date-time-generator @update="page.upperStartTime = $event" @change="search" />
+          </el-form-item>
+          <el-form-item :label="$t('monitor.columns.endTime')" style="margin-bottom: 5px;">
+            <date-time-generator @update="page.lowerEndTime = $event" @change="search" />
+          </el-form-item>
+          <el-form-item>
+            <date-time-generator @update="page.upperEndTime = $event" @change="search" />
+          </el-form-item>
+          <!--<el-form-item :label="$t('job.columns.remark')">
+            <el-input
+              v-model="job.remark"
+              :autosize="{ minRows: 2, maxRows: 4}"
+              :placeholder="$t('job.placeholder.remark')"
+              type="textarea"
+            />
+          </el-form-item>-->
+        </el-form>
+        <el-button slot="reference" class="filter-item" style="float: right;" size="mini" type="primary">{{ $t('actions.highSearch') }}</el-button>
+      </el-popover>
     </div>
 
     <el-table
@@ -29,7 +62,7 @@
       />
       <el-table-column :label="$t('job.columns.jobName')" min-width="100px">
         <template slot-scope="scope">
-          <span>{{ scope.row.jobName }}</span>
+          <el-tag type="primary" @click="openTrace(scope.row)">{{ scope.row.jobName || '-' }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column :label="$t('job.columns.displayName')" min-width="150px">
@@ -39,7 +72,7 @@
       </el-table-column>
       <el-table-column :label="$t('monitor.columns.status')" align="center" class-name="status-col" width="100px">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
+          <el-tag :type="scope.row.status | renderJobInstanceStatus">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column :label="$t('monitor.columns.startTime')" min-width="90px" align="center">
@@ -50,6 +83,11 @@
       <el-table-column :label="$t('monitor.columns.endTime')" min-width="90px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.endTime }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('monitor.columns.duration')" min-width="80px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.duration | parseDuration }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -66,62 +104,13 @@
 
 <script>
 import { listReq } from '@/api/monitor/monitor'
-import waves from '@/directive/waves' // Waves directive
-// import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 import Cookies from 'js-cookie'
+import common from './mixins/common'
 
 export default {
   name: 'History',
-  components: {
-    Pagination
-  },
-  directives: { waves },
-  filters: {
-    statusFilter(item) {
-      const map = {
-        0: 'primary',
-        1: 'success',
-        2: 'danger',
-        3: 'warning',
-        4: 'info'
-      }
-      return map[item]
-    }
-  },
-  data() {
-    return {
-      list: null,
-      listLoading: true,
-      page: {
-        currentPage: 1,
-        pageSize: 20,
-        total: 0,
-        jobName: undefined,
-        displayName: undefined,
-        status: [],
-        sort: 'JOB_NAME'
-      },
-      jobInstanceStatuses: [],
-      /* sortOptions: [{ label: this.$t('job.sort.nameAsc'), key: 'JOB_NAME' }, { label: this.$t('job.sort.nameDesc'), key: 'JOB_NAME DESC' }],*/
-      showCreateTime: false,
-      jobInstance: {
-        id: undefined,
-        jobName: null,
-        displayName: '',
-        status: 0,
-        startTime: null,
-        duration: '0'
-      },
-      downloadLoading: false,
-      selections: []
-    }
-  },
-  created() {
-    this.loadConst()
-    this.search()
-  },
+  mixins: [common],
   methods: {
     search() {
       this.listLoading = true
@@ -135,49 +124,11 @@ export default {
         }, 200)
       })
     },
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'jobName') {
-        this.sortByName(order)
-      }
-    },
-    sortByName(order) {
-      if (order === 'ascending') {
-        this.page.sort = 'JOB_NAME'
-      } else {
-        this.page.sort = 'JOB_NAME DESC'
-      }
-      this.search()
-    },
-    formatStatus(item) {
-      for (let i = 0; i < this.jobInstanceStatuses.length; i++) {
-        const option = this.jobInstanceStatuses[i]
-        if (option.value === item) {
-          return option.label
-        }
-      }
-      return item
-    },
-    selectRow(row) {
-      this.$refs.tables.clearSelection()
-      if (row && (this.editDialog.oper === 'update' || row.jobName)) {
-        this.$refs.tables.toggleRowSelection(row, true)
-      }
-      this.reset() // get the newest or reset to origin
-    },
-    handleSelectionChange(val) {
-      this.selections = val
-    },
     loadConst() {
       load(`./array/${Cookies.get('language')}.js`).then((array) => {
         this.jobInstanceStatuses = array.doneJobInstanceStatuses
         this.initPageStatus()
       })
-    },
-    initPageStatus() {
-      if (this.page.status && this.page.status.length === 0) {
-        this.page.status = this.jobInstanceStatuses.map(item => item.value)
-      }
     }
   }
 }

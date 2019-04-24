@@ -195,6 +195,10 @@ public class APIPath {
 
         public static final String LIST = API_PATH + DISPATCH + MONITOR + _LIST;
 
+        private static final String ACT = "/act";
+
+        public static final String LIST_ACT = API_PATH + DISPATCH + MONITOR + _LIST + ACT;
+
         public static final class RealTimePath {
             public static final String REAL_TIME = "/realTime";
 

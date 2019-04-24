@@ -1,8 +1,10 @@
 package com.sse.attemper.core.controller.monitor;
 
 import com.sse.attemper.common.constant.APIPath;
-import com.sse.attemper.common.param.dispatch.monitor.JobInstListParam;
+import com.sse.attemper.common.param.dispatch.monitor.JobInstanceActParam;
+import com.sse.attemper.common.param.dispatch.monitor.JobInstanceListParam;
 import com.sse.attemper.common.result.CommonResult;
+import com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct;
 import com.sse.attemper.core.service.monitor.MonitorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @Api("Monitor")
@@ -21,9 +24,16 @@ public class MonitorController {
     private MonitorService service;
 
     @ApiOperation("List job instances")
-    @ApiImplicitParam(value = "JobInstListParam", name = "param", dataType = "JobInstListParam", required = true)
+    @ApiImplicitParam(value = "JobInstanceListParam", name = "param", dataType = "JobInstanceListParam", required = true)
     @GetMapping(APIPath.MonitorPath.LIST)
-    public CommonResult<Map<String, Object>> list(JobInstListParam param) {
+    public CommonResult<Map<String, Object>> list(JobInstanceListParam param) {
         return CommonResult.putResult(service.list(param));
+    }
+
+    @ApiOperation("List all activity nodes of one instance")
+    @ApiImplicitParam(value = "JobInstanceActParam", name = "param", dataType = "JobInstanceActParam", required = true)
+    @GetMapping(APIPath.MonitorPath.LIST_ACT)
+    public CommonResult<List<JobInstanceAct>> listAct(JobInstanceActParam param) {
+        return CommonResult.putResult(service.listAct(param));
     }
 }

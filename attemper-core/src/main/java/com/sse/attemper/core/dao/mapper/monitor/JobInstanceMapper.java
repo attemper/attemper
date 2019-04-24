@@ -24,4 +24,7 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
     void updateAct(JobInstanceAct jobInstanceAct);
 
     List<JobInstance> list(Map<String, Object> paramMap);
+
+    List<JobInstanceAct> listAct(Map<String, Object> paramMap);
+
 }

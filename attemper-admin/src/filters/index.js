@@ -1,5 +1,5 @@
 // set function parseTime,formatTime to filter
-export { parseTime, formatTime } from '@/utils'
+export { parseTime, formatTime, parseDuration, renderJobInstanceStatus } from '@/utils'
 
 function pluralize(time, label) {
   if (time === 1) {
@@ -40,3 +40,4 @@ export function numberFormatter(num, digits) {
 export function toThousandFilter(num) {
   return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
 }
+

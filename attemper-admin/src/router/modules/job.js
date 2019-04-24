@@ -34,12 +34,12 @@ const jobRouter = {
       }
     },
     {
-      path: 'flow/:id',
+      path: 'flow/:key',
       component: () => import('@/views/job/flow'),
       name: 'flow',
       hidden: true,
       meta: {
-        title: route => `${route.params.id}`,
+        title: route => `${route.params.key}`,
         notMenu: true,
         noCache: false
       }

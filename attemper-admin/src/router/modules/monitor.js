@@ -42,6 +42,16 @@ const monitorRouter = {
         icon: 'total',
         noCache: false
       }
+    },
+    {
+      path: 'trace/:key',
+      component: () => import('@/views/monitor/trace'),
+      name: 'trace',
+      hidden: true,
+      meta: {
+        title: route => `${route.params.key}`,
+        notMenu: true
+      }
     }
   ]
 }

@@ -174,7 +174,7 @@ export default {
       this.closeLoading(loading)
     },
     initJobWithVersions() {
-      versionsReq({ jobName: this.$route.params.id }).then(res => {
+      versionsReq({ jobName: this.$route.params.key }).then(res => {
         this.jobWithVersions = res.data.result
         for (let i = 0; i < this.jobWithVersions.length; i++) {
           const item = this.jobWithVersions[i]
@@ -229,13 +229,13 @@ export default {
         })
     },
     // open new route
-    openNewJobPage(id) {
+    openNewJobPage(key) {
       const loading = this.getLoading()
       setTimeout(() => {
         const route = {
           name: 'flow',
           params: {
-            id: id
+            key: key
           }
         }
         this.$router.push(route)
