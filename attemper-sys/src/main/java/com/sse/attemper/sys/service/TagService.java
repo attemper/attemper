@@ -67,18 +67,18 @@ public class TagService extends BaseServiceAdapter {
 	}
 
 	public Void remove(TagRemoveParam param) {
-		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
 		mapper.delete(paramMap);
 		return null;
 	}
 
 	public List<User> getUsers(TagGetParam param) {
-		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.getUsers(paramMap);
     }
 
 	public Void updateTagUsers(TagUserUpdateParam param) {
-		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.deleteTagUsers(paramMap);
 		if (param.getUserNames() != null && !param.getUserNames().isEmpty()) {
 			mapper.saveTagUsers(paramMap);
@@ -106,7 +106,7 @@ public class TagService extends BaseServiceAdapter {
 				.displayName(param.getDisplayName())
 				.tagType(param.getTagType())
 				.remark(param.getRemark())
-				.tenantId(injectAdminTenant().getId())
+				.tenantId(injectTenantId())
 				.build();
 	}
 }

@@ -53,7 +53,7 @@ public class UserService extends BaseServiceAdapter {
 	}
 
 	public Map<String, Object> list(UserListParam param) {
-		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
 		PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
 		Page<User> list = (Page<User>) mapper.list(paramMap);
 		return PageUtil.toResultMap(list);
@@ -89,7 +89,7 @@ public class UserService extends BaseServiceAdapter {
 				.email(param.getEmail())
 				.mobile(param.getMobile())
 				.status(param.getStatus())
-				.tenantId(injectAdminTenant().getId())
+				.tenantId(injectTenantId())
 				.build();
 	}
 
@@ -106,21 +106,21 @@ public class UserService extends BaseServiceAdapter {
 	}
 
 	public Void remove(UserRemoveParam param) {
-		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
 		mapper.delete(paramMap);
 		return null;
 	}
 
 	public List<Resource> getResources(UserGetParam param) {
-		return mapper.getResources(injectAdminTenantIdToMap(param));
+		return mapper.getResources(injectTenantIdToMap(param));
 	}
 
 	public List<Tag> getTags(UserGetParam param) {
-		return mapper.getTags(injectAdminTenantIdToMap(param));
+		return mapper.getTags(injectTenantIdToMap(param));
 	}
 
 	public void updateUserTags(UserTagUpdateParam param) {
-		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+		Map<String, Object> paramMap = injectTenantIdToMap(param);
 		mapper.deleteUserTags(paramMap);
 		if (param.getTagNames() == null || param.getTagNames().isEmpty()) {
 			return;
