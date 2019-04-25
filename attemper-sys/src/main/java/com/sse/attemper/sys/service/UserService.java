@@ -53,7 +53,7 @@ public class UserService extends BaseServiceAdapter {
 	}
 
 	public Map<String, Object> list(UserListParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
 		PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
 		Page<User> list = (Page<User>) mapper.list(paramMap);
 		return PageUtil.toResultMap(list);
@@ -77,7 +77,6 @@ public class UserService extends BaseServiceAdapter {
 		Date now = new Date();
 		user.setCreateTime(now);
 		user.setUpdateTime(now);
-		user.setTenantId(injectTenantId());
 		mapper.add(user);
 		return user;
 	}
@@ -90,6 +89,7 @@ public class UserService extends BaseServiceAdapter {
 				.email(param.getEmail())
 				.mobile(param.getMobile())
 				.status(param.getStatus())
+				.tenantId(injectAdminTenant().getId())
 				.build();
 	}
 
@@ -101,27 +101,26 @@ public class UserService extends BaseServiceAdapter {
 		User updatedUser = toUser(param);
 		updatedUser.setCreateTime(user.getCreateTime());
 		updatedUser.setUpdateTime(new Date());
-		updatedUser.setTenantId(injectTenantId());
 		mapper.update(updatedUser);
 		return updatedUser;
 	}
 
 	public Void remove(UserRemoveParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
 		mapper.delete(paramMap);
 		return null;
 	}
 
 	public List<Resource> getResources(UserGetParam param) {
-		return mapper.getResources(injectTenantIdToMap(param));
+		return mapper.getResources(injectAdminTenantIdToMap(param));
 	}
 
 	public List<Tag> getTags(UserGetParam param) {
-		return mapper.getTags(injectTenantIdToMap(param));
+		return mapper.getTags(injectAdminTenantIdToMap(param));
 	}
 
 	public void updateUserTags(UserTagUpdateParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
 		mapper.deleteUserTags(paramMap);
 		if (param.getTagNames() == null || param.getTagNames().isEmpty()) {
 			return;

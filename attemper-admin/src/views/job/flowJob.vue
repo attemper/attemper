@@ -4,7 +4,7 @@
       <el-input v-model="page.jobName" :placeholder="$t('job.columns.jobName')" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search" />
       <el-input v-model="page.displayName" :placeholder="$t('job.columns.displayName')" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search" />
       <el-select v-model="page.status" :placeholder="$t('job.columns.status')" multiple clearable collapse-tags class="filter-item" size="mini" style="width: 160px">
-        <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value" />
+        <el-option v-for="item in jobStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
@@ -87,20 +87,26 @@
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <div style="padding-top: 6px;">
-            <el-button type="primary" size="mini">{{
-              $t('job.actions.param') }}
+            <el-button
+              type="primary"
+              size="mini"
+              @click="openParamDialog(scope.row)"
+            >
+              {{ $t('job.actions.param') }}
             </el-button>
             <el-button
               type="success"
               size="mini"
               @click="openTriggerDialog(scope.row)"
-            >{{ $t('job.actions.trigger') }}
+            >
+              {{ $t('job.actions.trigger') }}
             </el-button>
             <el-button
               type="info"
               size="mini"
               @click="openProjectDialog(scope.row)"
-            >{{ $t('job.actions.project') }}
+            >
+              {{ $t('job.actions.project') }}
             </el-button>
           </div>
         </template>
@@ -183,6 +189,47 @@
           </el-tooltip>
         </el-row>
       </div>
+      <div v-show="editDialog.param.visible">
+        <div class="filter-container">
+          <el-input v-model="argPage.argName" :placeholder="$t('job.arg.columns.argName')" style="width: 100px;" class="filter-item" @keyup.enter.native="argSearch" />
+          <el-select v-model="argPage.argType" :placeholder="$t('job.arg.columns.argType')" clearable collapse-tags class="filter-item" style="width: 160px">
+            <el-option v-for="item in argTypes" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+          <el-input v-model="argPage.argValue" :placeholder="$t('job.arg.columns.argValue')" style="width: 100px;" class="filter-item" @keyup.enter.native="argSearch" />
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="argSearch">{{ $t('actions.search') }}</el-button>
+        </div>
+
+        <el-table
+          v-loading="argListLoading"
+          :data="argList"
+          border
+          fit
+          highlight-current-row
+          style="width: 100%;"
+        >
+          <el-table-column :label="$t('job.arg.columns.argName')" prop="id" sortable="custom" align="center" min-width="100px">
+            <template slot-scope="scope">
+              <span>{{ scope.row.argName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('job.arg.columns.argType')" align="center" width="100">
+            <template slot-scope="scope">
+              <span>{{ formatArgType(scope.row.argType) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('job.arg.columns.argValue')" min-width="150px">
+            <template slot-scope="scope">
+              <span>{{ scope.row.argValue }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('actions.handle')" align="center" min-width="120" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button :type="scope.row.allocated ? 'danger' : 'primary'" :icon="scope.row.allocated ? 'el-icon-minus' : 'el-icon-plus'" size="mini" @click="operateArg(scope.row)" />
+            </template>
+          </el-table-column>
+        </el-table>
+        <pagination v-show="argPage.total>0" :total="argPage.total" :page.sync="argPage.currentPage" :limit.sync="argPage.pageSize" @pagination="argSearch" />
+      </div>
       <div v-show="editDialog.project.visible">
         <ProjectTree ref="projectTree" :job-name="job.jobName" @cancel="editDialog.project.visible = false" />
       </div>
@@ -191,7 +238,7 @@
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq, publishReq, manualReq } from '@/api/job/flowJob'
+import { listReq, removeReq, addReq, updateReq, publishReq, manualReq, listArgReq, addArgReq, removeArgReq } from '@/api/job/flowJob'
 import * as triggerApi from '@/api/job/trigger'
 import * as toolApi from '@/api/sys/tool'
 import waves from '@/directive/waves' // Waves directive
@@ -243,6 +290,19 @@ export default {
         status: [0],
         sort: 'JOB_NAME'
       },
+      argList: null,
+      argListLoading: true,
+      argPage: {
+        jobName: undefined,
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+        argName: undefined,
+        argValue: undefined,
+        argType: null,
+        sort: 'ARG_NAME'
+      },
+      argTypes: [],
       jobStatuses: [],
       milliSecondTimeUnits: [],
       inDayTimeUnits: [],
@@ -431,6 +491,39 @@ export default {
         }
       })
     },
+    openParamDialog(row) {
+      this.editDialog.title = this.$t('job.actions.param')
+      this.selectRow(row)
+      this.editDialog.param.visible = true
+      this.argSearch()
+    },
+    argSearch() {
+      this.argListLoading = true
+      this.argPage.jobName = this.job.jobName
+      listArgReq(this.argPage).then(response => {
+        this.argList = response.data.result.list
+        Object.assign(this.argPage, response.data.result.page)
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.argListLoading = false
+        }, 200)
+      })
+    },
+    operateArg(row) {
+      const req = (row.allocated ? removeArgReq : addArgReq)
+      const data = {
+        jobName: this.job.jobName,
+        argName: row.argName
+      }
+      req(data).then(res => {
+        this.$message.success(res.data.msg)
+        this.argSearch()
+      })
+    },
+    cancelFollow(row) {
+      console.log('cancelFollow')
+      this.argSearch()
+    },
     openProjectDialog(row) {
       this.editDialog.title = this.$t('job.actions.project')
       this.selectRow(row)
@@ -499,7 +592,7 @@ export default {
       for (let i = 0; i < this.jobStatuses.length; i++) {
         const option = this.jobStatuses[i]
         if (option.value === item) {
-          return option.text
+          return option.label
         }
       }
       return item
@@ -524,6 +617,18 @@ export default {
         this.daysOfWeek = array.daysOfWeek
         // this.calendars = array.calendars
       })
+      load(`./common.js`).then((array) => {
+        this.argTypes = array.argTypes
+      })
+    },
+    formatArgType(item) {
+      for (let i = 0; i < this.argTypes.length; i++) {
+        const option = this.argTypes[i]
+        if (option.value === item) {
+          return option.label
+        }
+      }
+      return item
     },
     openDesignDialog(row) {
       this.editDialog.title = this.$t('job.actions.design')

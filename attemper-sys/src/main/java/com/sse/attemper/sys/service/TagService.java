@@ -50,7 +50,6 @@ public class TagService extends BaseServiceAdapter {
 		Date now = new Date();
 		user.setCreateTime(now);
 		user.setUpdateTime(now);
-		user.setTenantId(injectTenantId());
 		mapper.add(user);
 		return user;
 	}
@@ -63,24 +62,23 @@ public class TagService extends BaseServiceAdapter {
 		Tag updatedTag = toTag(param);
         updatedTag.setCreateTime(tag.getCreateTime());
         updatedTag.setUpdateTime(new Date());
-        updatedTag.setTenantId(injectTenantId());
         mapper.update(updatedTag);
         return updatedTag;
 	}
 
 	public Void remove(TagRemoveParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
 		mapper.delete(paramMap);
 		return null;
 	}
 
 	public List<User> getUsers(TagGetParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         return mapper.getUsers(paramMap);
     }
 
 	public Void updateTagUsers(TagUserUpdateParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         mapper.deleteTagUsers(paramMap);
 		if (param.getUserNames() != null && !param.getUserNames().isEmpty()) {
 			mapper.saveTagUsers(paramMap);
@@ -108,6 +106,7 @@ public class TagService extends BaseServiceAdapter {
 				.displayName(param.getDisplayName())
 				.tagType(param.getTagType())
 				.remark(param.getRemark())
+				.tenantId(injectAdminTenant().getId())
 				.build();
 	}
 }

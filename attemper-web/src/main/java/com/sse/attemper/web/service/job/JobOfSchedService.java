@@ -252,4 +252,16 @@ public class JobOfSchedService extends BaseServiceAdapter {
         executorService.shutdown();
         return null;
     }
+
+    public Void addArg(JobArgAllocatedParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        mapper.addArg(paramMap);
+        return null;
+    }
+
+    public Void removeArg(JobArgAllocatedParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        mapper.deleteArg(paramMap);
+        return null;
+    }
 }

@@ -15,7 +15,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.Map;
 
 @Transactional
@@ -25,22 +24,29 @@ public class ArgService extends BaseServiceAdapter {
     @Autowired
     private ArgMapper mapper;
 
+    public Arg get(ArgGetParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        return mapper.get(paramMap);
+    }
+
     public Arg add(ArgSaveParam param) {
         Arg arg = get(ArgGetParam.builder().argName(param.getArgName()).build());
         if (arg != null) {
             throw new DuplicateKeyException(param.getArgName());
         }
-        arg = toArgument(param);
-        arg.setTenantId(injectAdminTenant().getId());
-        arg.setCreateTime(new Date());
-        arg.setUpdateTime(new Date());
+        arg = toArg(param);
         mapper.add(arg);
         return arg;
     }
 
-    public Arg get(ArgGetParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
-        return mapper.get(paramMap);
+    public Arg update(ArgSaveParam param) {
+        Arg oldArg = get(ArgGetParam.builder().argName(param.getArgName()).build());
+        if (oldArg == null) {
+            return add(param);
+        }
+        Arg updatedArg = toArg(param);
+        mapper.update(updatedArg);
+        return updatedArg;
     }
 
     public Map<String, Object> list(ArgListParam param) {
@@ -56,25 +62,13 @@ public class ArgService extends BaseServiceAdapter {
         return null;
     }
 
-    public Arg update(ArgSaveParam updateParam) {
-        Arg argOld = get(ArgGetParam.builder().argName(updateParam.getArgName()).build());
-        if (get(ArgGetParam.builder().argName(updateParam.getArgName()).build()) == null) {
-            return add(updateParam);
-        }
-        Arg argNew = toArgument(updateParam);
-        argNew.setTenantId(injectAdminTenant().getId());
-        argNew.setUpdateTime(new Date());
-        argNew.setCreateTime(argOld.getCreateTime());
-        mapper.update(argNew);
-        return argNew;
-    }
-
-    private Arg toArgument(ArgSaveParam param) {
-        Arg arg = new Arg();
-        arg.setArgName(param.getArgName());
-        arg.setArgType(param.getArgType());
-        arg.setDefVal(param.getDefVal());
-        arg.setRemark(param.getRemark());
-        return arg;
+    private Arg toArg(ArgSaveParam param) {
+        return Arg.builder()
+                .argName(param.getArgName())
+                .argType(param.getArgType())
+                .argValue(param.getArgValue())
+                .remark(param.getRemark())
+                .tenantId(injectAdminTenant().getId())
+                .build();
     }
 }

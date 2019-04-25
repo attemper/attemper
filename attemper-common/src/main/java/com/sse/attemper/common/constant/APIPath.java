@@ -144,7 +144,11 @@ public class APIPath {
 
         public static final String UPDATE_PROJECT = API_PATH + DISPATCH + JOB + "/project";
 
+        public static final String LIST_ARG = API_PATH + DISPATCH + JOB + ArgPath.ARG + _LIST;
 
+        public static final String ADD_ARG = API_PATH + DISPATCH + JOB + ArgPath.ARG + _ADD;
+
+        public static final String REMOVE_ARG = API_PATH + DISPATCH + JOB + ArgPath.ARG + _REMOVE;
     }
 
     public static final class TriggerPath {

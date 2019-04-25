@@ -6,9 +6,7 @@
         INSERT INTO ${tablePrefix}arg (
             ARG_NAME,
             ARG_TYPE,
-            DEF_VAL,
-            CREATE_TIME,
-            UPDATE_TIME,
+            ARG_VALUE,
             REMARK,
             TENANT_ID
         )
@@ -16,9 +14,7 @@
         (
             #{argName, jdbcType=VARCHAR},
             #{argType, jdbcType=INTEGER},
-            #{defVal, jdbcType=VARCHAR},
-            #{createTime, jdbcType=TIMESTAMP},
-            #{updateTime, jdbcType=TIMESTAMP},
+            #{argValue, jdbcType=VARCHAR},
             #{remark, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
         );
@@ -28,29 +24,20 @@
         UPDATE
         ${tablePrefix}arg
         SET
-        <if test="argType != null">
-            ARG_TYPE = #{argType, jdbcType=INTEGER},
-        </if>
-        <if test="defVal != null">
-            DEF_VAL = #{defVal, jdbcType=VARCHAR},
-        </if>
-        UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
-        <if test="remark != null">
-            REMARK = #{remark, jdbcType=VARCHAR}
-        </if>
+        ARG_TYPE = #{argType, jdbcType=INTEGER},
+        ARG_VALUE = #{argValue, jdbcType=VARCHAR},
+        REMARK = #{remark, jdbcType=VARCHAR}
         <where>
             <include refid="condArgName"/>
             <include refid="condTenantId"/>
         </where>
     </update>
 
-    <select id="get" resultType="com.sse.attemper.common.result.dispatch.arg.Arg" parameterType="map">
+    <select id="get" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.arg.Arg">
         SELECT
         ARG_NAME,
         ARG_TYPE,
-        DEF_VAL,
-        CREATE_TIME,
-        UPDATE_TIME,
+        ARG_VALUE,
         REMARK,
         TENANT_ID
         FROM
@@ -68,16 +55,16 @@
             <if test="argName != null">
                 and lower(ARG_NAME) like concat('%', lower(#{argName, jdbcType=VARCHAR}), '%')
             </if>
-            <include refid="condTenantId"/>
             <if test="argType != null">
                 and ARG_TYPE = #{argType, jdbcType = INTEGER}
             </if>
-            <if test="defVal != null">
-                and lower(DEF_VAL) like concat('%', lower(#{defVal, jdbcType = VARCHAR}), '%')
+            <if test="argValue != null">
+                and lower(ARG_VALUE) like concat('%', lower(#{argValue, jdbcType = VARCHAR}), '%')
             </if>
             <if test="remark != null">
                 and lower(REMARK) like concat('%', lower(#{remark, jdbcType = VARCHAR}), '%')
             </if>
+            <include refid="condTenantId"/>
         </where>
         <choose>
             <when test="sort == null">

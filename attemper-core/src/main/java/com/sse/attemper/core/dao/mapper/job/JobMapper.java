@@ -1,6 +1,7 @@
 package com.sse.attemper.core.dao.mapper.job;
 
 import com.sse.attemper.common.base.BaseMapper;
+import com.sse.attemper.common.result.dispatch.job.ArgAllocatedResult;
 import com.sse.attemper.common.result.dispatch.job.FlowJob;
 import com.sse.attemper.common.result.dispatch.project.Project;
 import org.apache.ibatis.annotations.Mapper;
@@ -37,4 +38,10 @@ public interface JobMapper extends BaseMapper<FlowJob> {
     Project getProject(Map<String, Object> paramMap);
 
     void saveProject(Map<String, Object> paramMap);
+
+    List<ArgAllocatedResult> listArg(Map<String, Object> paramMap);
+
+    void addArg(Map<String, Object> paramMap);
+
+    void deleteArg(Map<String, Object> paramMap);
 }

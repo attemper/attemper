@@ -45,19 +45,19 @@ export const statuses = [
 
 export const jobStatuses = [
   {
-    text: '启用',
+    label: '启用',
     value: 0
   },
   {
-    text: '禁用',
+    label: '禁用',
     value: 1
   },
   {
-    text: '临时',
+    label: '临时',
     value: 2
   },
   {
-    text: '一次性',
+    label: '一次性',
     value: 3
   }
 ]

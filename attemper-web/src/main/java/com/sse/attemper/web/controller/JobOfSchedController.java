@@ -69,4 +69,18 @@ public class JobOfSchedController {
     public CommonResult<Void> manual(@RequestBody JobNamesParam param) {
         return CommonResult.putResult(service.manual(param));
     }
+
+    @ApiOperation("Add arg")
+    @ApiImplicitParam(value = "JobArgAllocatedParam", name = "param", dataType = "JobArgAllocatedParam", required = true)
+    @PostMapping(APIPath.JobPath.ADD_ARG)
+    public CommonResult<Void> addArg(@RequestBody JobArgAllocatedParam param) {
+        return CommonResult.putResult(service.addArg(param));
+    }
+
+    @ApiOperation("Remove arg")
+    @ApiImplicitParam(value = "JobArgAllocatedParam", name = "param", dataType = "JobArgAllocatedParam", required = true)
+    @DeleteMapping(APIPath.JobPath.REMOVE_ARG)
+    public CommonResult<Void> removeArg(@RequestBody JobArgAllocatedParam param) {
+        return CommonResult.putResult(service.removeArg(param));
+    }
 }

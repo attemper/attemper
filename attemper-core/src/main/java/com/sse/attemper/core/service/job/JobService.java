@@ -2,9 +2,11 @@ package com.sse.attemper.core.service.job;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sse.attemper.common.param.dispatch.job.JobArgListParam;
 import com.sse.attemper.common.param.dispatch.job.JobGetParam;
 import com.sse.attemper.common.param.dispatch.job.JobListParam;
 import com.sse.attemper.common.param.dispatch.job.JobProjectSaveParam;
+import com.sse.attemper.common.result.dispatch.job.ArgAllocatedResult;
 import com.sse.attemper.common.result.dispatch.job.FlowJob;
 import com.sse.attemper.common.result.dispatch.project.Project;
 import com.sse.attemper.core.dao.mapper.job.JobMapper;
@@ -64,5 +66,12 @@ public class JobService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         mapper.saveProject(paramMap);
         return null;
+    }
+
+    public Map<String, Object> listArg(JobArgListParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
+        Page<ArgAllocatedResult> list = (Page<ArgAllocatedResult>) mapper.listArg(paramMap);
+        return PageUtil.toResultMap(list);
     }
 }

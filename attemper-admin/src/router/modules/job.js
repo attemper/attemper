@@ -24,6 +24,16 @@ const jobRouter = {
       }
     },
     {
+      path: 'arg',
+      component: () => import('@/views/job/arg'),
+      name: 'arg',
+      meta: {
+        title: 'arg',
+        icon: 'arg',
+        noCache: false
+      }
+    },
+    {
       path: 'project',
       component: () => import('@/views/job/project'),
       name: 'project',

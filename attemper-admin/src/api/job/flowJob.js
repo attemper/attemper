@@ -75,6 +75,30 @@ export const exchangeReq = (data) => {
     data: data
   })
 }
+const ARG_PATH = '/arg'
+export const listArgReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + ARG_PATH + APIPath.LIST,
+    method: 'get',
+    params: params
+  })
+}
+
+export const addArgReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + ARG_PATH + APIPath.ADD,
+    method: 'post',
+    data: data
+  })
+}
+
+export const removeArgReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + ARG_PATH + APIPath.REMOVE,
+    method: 'delete',
+    data: data
+  })
+}
 
 const PROJECT_PATH = '/project'
 export const getProjectReq = (params) => {

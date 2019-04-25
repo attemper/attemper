@@ -1,24 +1,22 @@
-package com.sse.attemper.common.result.dispatch.arg;
+package com.sse.attemper.common.param.dispatch.job;
 
+import com.sse.attemper.common.param.PageSortParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Arg {
+public class JobArgListParam extends PageSortParam {
+
+    protected String jobName;
 
     protected String argName;
 
     protected Integer argType;
 
     protected String argValue;
-
-    protected String remark;
-
-    protected String tenantId;
-
 }

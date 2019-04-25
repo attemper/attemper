@@ -1,4 +1,4 @@
-package com.sse.attemper.common.result.dispatch.arg;
+package com.sse.attemper.common.result.dispatch.job;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Arg {
+public class ArgAllocatedResult {
 
     protected String argName;
 
@@ -17,8 +17,6 @@ public class Arg {
 
     protected String argValue;
 
-    protected String remark;
-
-    protected String tenantId;
+    protected Boolean allocated;
 
 }

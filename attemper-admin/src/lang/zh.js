@@ -7,6 +7,7 @@ export default {
     tag: '标签管理',
     resource: '资源管理',
     job: '任务管理',
+    arg: '参数管理',
     project: '服务信息',
     flowJob: '任务设计',
     monitor: '监控管理',
@@ -325,6 +326,24 @@ export default {
         startAfterEndTime: '开始时间不能晚于结束时间',
         cronExpressionInvalid: 'cron表达式格式非法',
         jobNotPublished: '任务未被发布，无法使用触发器'
+      }
+    },
+    arg: {
+      columns: {
+        argName: '参数名称',
+        argType: '参数类型',
+        argValue: '参数值',
+        remark: '备注'
+      },
+      placeholder: {
+        argName: '请输入参数名称',
+        argType: '请选择参数类型',
+        argValue: '请输入参数值',
+        remark: '请输入备注'
+      },
+      rules: {
+        argName: '参数名称不能为空',
+        argValue: '参数值不能为空'
       }
     },
     project: {

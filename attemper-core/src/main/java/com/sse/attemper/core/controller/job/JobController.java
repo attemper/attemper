@@ -1,6 +1,7 @@
 package com.sse.attemper.core.controller.job;
 
 import com.sse.attemper.common.constant.APIPath;
+import com.sse.attemper.common.param.dispatch.job.JobArgListParam;
 import com.sse.attemper.common.param.dispatch.job.JobGetParam;
 import com.sse.attemper.common.param.dispatch.job.JobListParam;
 import com.sse.attemper.common.param.dispatch.job.JobProjectSaveParam;
@@ -49,6 +50,13 @@ public class JobController {
 	@GetMapping(APIPath.JobPath.VERSIONS)
 	public CommonResult<List<FlowJob>> listVersions(JobGetParam param) {
 		return CommonResult.putResult(service.versions(param));
+	}
+
+	@ApiOperation("List args of job")
+	@ApiImplicitParam(value = "JobArgListParam", name = "param", dataType = "JobArgListParam", required = true)
+	@GetMapping(APIPath.JobPath.LIST_ARG)
+	public CommonResult<Map<String, Object>> listArg(JobArgListParam param) {
+		return CommonResult.putResult(service.listArg(param));
 	}
 
 	@ApiOperation("Get project")

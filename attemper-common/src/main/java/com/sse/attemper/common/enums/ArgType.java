@@ -1,20 +1,16 @@
 package com.sse.attemper.common.enums;
 
 public enum ArgType {
-    // integer
+    STRING(0),
     INTEGER(1),
-    // String
-    STRING(2),
-    // boolean
-    BOOLEAN(3),
-    // double
-    DOUBLE(4),
-    // long
-    LONG(5),
-    // datetime
-    DATE(6),
-    // SQL
-    SQL(7);
+    BOOLEAN(2),
+    DOUBLE(3),
+    LONG(4),
+    DATE(5),
+    DATETIME(6),
+    LIST(7),
+    MAP(8),
+    SQL(9);
 
     ArgType(int type) {
         this.type = type;
@@ -28,9 +24,9 @@ public enum ArgType {
 
     public static ArgType get(Integer type) {
         if (type != null) {
-            for (ArgType argType : ArgType.values()) {
-                if (argType.getType() == type) {
-                    return argType;
+            for (ArgType item : ArgType.values()) {
+                if (item.getType() == type) {
+                    return item;
                 }
             }
         }

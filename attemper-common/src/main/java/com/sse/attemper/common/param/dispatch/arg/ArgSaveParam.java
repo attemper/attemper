@@ -18,7 +18,7 @@ public class ArgSaveParam implements CommonParam {
 
     protected Integer argType;
 
-    protected String defVal;
+    protected String argValue;
 
     protected String remark;
 

@@ -175,6 +175,72 @@
         </where>
     </delete>
 
+    <select id="listArg" parameterType="map"
+            resultType="com.sse.attemper.common.result.dispatch.job.ArgAllocatedResult">
+        SELECT ARG_NAME, ARG_TYPE, ARG_VALUE, ALLOCATED
+        FROM (
+        SELECT t.*, 1 AS ALLOCATED FROM ${tablePrefix}arg t
+        WHERE TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        AND ARG_NAME IN
+        (
+        SELECT ar.ARG_NAME
+        FROM ${tablePrefix}arg ar JOIN ${tablePrefix}job_arg j USING(ARG_NAME, TENANT_ID)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+        )
+        UNION ALL
+        SELECT t.*, 0 AS ALLOCATED FROM ${tablePrefix}arg t
+        WHERE TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        AND ARG_NAME NOT IN
+        (
+        SELECT ar.ARG_NAME
+        FROM ${tablePrefix}arg ar JOIN ${tablePrefix}job_arg j USING(ARG_NAME, TENANT_ID)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+        )
+        ) a
+        <where>
+            <if test="argName != null">
+                and lower(ARG_NAME) like concat('%', lower(#{argName, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="argType != null">
+                and ARG_TYPE = #{argType, jdbcType = INTEGER}
+            </if>
+            <if test="argValue != null">
+                and lower(ARG_VALUE) like concat('%', lower(#{argValue, jdbcType = VARCHAR}), '%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="addArg" parameterType="map">
+      INSERT INTO ${tablePrefix}job_arg (
+          `JOB_NAME`,
+          `ARG_NAME`,
+          `TENANT_ID`
+        )
+        VALUES
+          (
+            #{jobName, jdbcType=VARCHAR},
+            #{argName, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+          )
+    </insert>
+
+    <delete id="deleteArg" parameterType="map">
+        DELETE FROM j USING ${tablePrefix}job_arg j
+        <where>
+            <include refid="condJobName"/>
+            <if test="argName != null">
+                and ARG_NAME = #{argName, jdbcType=VARCHAR}
+            </if>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
     <select id="getProject" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.project.Project">
         select jp.*
         from ${tablePrefix}job_project jp
