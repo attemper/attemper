@@ -47,6 +47,7 @@
 		<commons.lang.version>2.6</commons.lang.version>
 		<commons.io.version>2.5</commons.io.version>
 		<commons.collections.version>3.2.1</commons.collections.version>
+		<commons.logging.version>1.2</commons.logging.version>
 		<shiro.version>1.4.0</shiro.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<!--<kaptcha.version>0.0.9</kaptcha.version>-->
@@ -57,13 +58,19 @@
 		<hutool.version>3.3.2</hutool.version>
 		<reflections.version>0.9.10</reflections.version>
 		<junit.version>4.12</junit.version>
-		<groovy.version>2.5.6</groovy.version>
+		<groovy.version>2.4.15</groovy.version>
 		<fasterxml.uuid.version>3.2.0</fasterxml.uuid.version>
 
 		<!-- plugin version -->
 		<os.plugin.version>1.5.0.Final</os.plugin.version>
 		<protobuf.plugin.version>0.5.0</protobuf.plugin.version>
 		<protoc.version>3.5.1</protoc.version>
+		<maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
+		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
+		<lombok.maven.plugin.version>1.16.18.0</lombok.maven.plugin.version>
+		<!-- docker -->
+		<dockerfile.maven.plugin.version>1.4.10</dockerfile.maven.plugin.version>
+		<docker.image.prefix>${project.artifactId}</docker.image.prefix>
 	</properties>
 
 	<dependencyManagement>
@@ -122,6 +129,16 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-core</artifactId>
+				<version>${shiro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-web</artifactId>
+				<version>${shiro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
 				<artifactId>shiro-spring</artifactId>
 				<version>${shiro.version}</version>
 			</dependency>
@@ -129,11 +146,6 @@
 				<groupId>io.jsonwebtoken</groupId>
 				<artifactId>jjwt</artifactId>
 				<version>${jjwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.auth0</groupId>
-				<artifactId>java-jwt</artifactId>
-				<version>${java.jwt.version}</version>
 			</dependency>
 			<!--<dependency>
 				<groupId>com.github.axet</groupId>
@@ -198,42 +210,42 @@
 
 			<!-- modules -->
 			<dependency>
-				<groupId>${groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>attemper-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>attemper-config</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>attemper-config-scheduler</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>attemper-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>attemper-sys</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>attemper-security</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>attemper-grpc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>attemper-grpc-autoconfigure</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -308,14 +320,18 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven.deploy.plugin.version}</version>
 			</plugin>
-
-			<!-- lombok -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.jar.plugin.version}</version>
+			</plugin>
 			<plugin>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok-maven-plugin</artifactId>
-				<version>1.16.18.0</version>
+				<version>${lombok.maven.plugin.version}</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
