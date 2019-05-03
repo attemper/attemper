@@ -1,6 +1,6 @@
-FROM openjdk:8-jre
+FROM openjdk:8-jre-slim
 
-ADD attemper-web-*.jar ./attemper-web.jar
+ADD target/attemper-web.jar ./attemper-web.jar
 
 EXPOSE 8055
 

@@ -1,6 +1,6 @@
-FROM openjdk:8-jre
+FROM openjdk:8-jre-slim
 
-ADD attemper-eureka-server-*.jar ./attemper-eureka-server.jar
+ADD target/attemper-eureka-server.jar ./attemper-eureka-server.jar
 
 EXPOSE 8055
 

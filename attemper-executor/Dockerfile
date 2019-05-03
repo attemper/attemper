@@ -1,6 +1,6 @@
-FROM openjdk:8-jre
+FROM openjdk:8-jre-slim
 
-ADD attemper-executor-*.jar ./attemper-executor.jar
+ADD target/attemper-executor.jar ./attemper-executor.jar
 
 EXPOSE 8055
 

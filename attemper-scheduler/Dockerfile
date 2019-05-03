@@ -1,6 +1,6 @@
-FROM openjdk:8-jre
+FROM openjdk:8-jre-slim
 
-ADD attemper-scheduler-*.jar ./attemper-scheduler.jar
+ADD target/attemper-scheduler.jar ./attemper-scheduler.jar
 
 EXPOSE 8055
 
