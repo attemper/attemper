@@ -284,11 +284,6 @@
 			</dependency>
 			<dependency>
 				<groupId>com.sse.quartz</groupId>
-				<artifactId>quartz-model</artifactId>
-				<version>${quartz.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sse.quartz</groupId>
 				<artifactId>quartz-core</artifactId>
 				<version>${quartz.version}</version>
 			</dependency>
