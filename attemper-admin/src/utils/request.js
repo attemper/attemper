@@ -3,7 +3,7 @@ import Qs from 'qs'
 import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-import config from '@/config'
+import { tenantId, sign } from '@/settings'
 
 // create an axios instance
 const service = axios.create({
@@ -11,7 +11,6 @@ const service = axios.create({
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
-const { tenantId, sign } = config
 
 // request interceptor
 service.interceptors.request.use(

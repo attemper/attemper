@@ -1,11 +1,11 @@
 import defaultSettings from '@/settings'
-import { translateByKey } from './i18n'
+import { generateTitleByVm, translateByVm } from './i18n'
 const title = defaultSettings.title
 
-export default function getPageTitle(pageTitle, vm) {
-  const projectTitle = translateByKey(vm, `${title}`, `${title}`)
-  if (pageTitle) {
-    return translateByKey(vm, 'route.' + `${pageTitle}`, `${pageTitle}`) + '-' + projectTitle
+export default function getPageTitle(toMeta, vm) {
+  const projectTitle = translateByVm(vm, title, title)
+  if (toMeta.title) {
+    return generateTitleByVm(vm, toMeta.title) + '-' + projectTitle
   }
   return projectTitle
 }

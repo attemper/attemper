@@ -1,7 +1,6 @@
 import request from '@/utils/request'
-import config from '@/config'
+import { APIPath } from '@/settings'
 
-const { APIPath } = config
 export const SubPath = '/job'
 
 export const addReq = (data) => {
