@@ -3,22 +3,24 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>attemper</artifactId>
         <groupId>com.github.attemper</groupId>
+        <artifactId>attemper</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>attemper-scheduler</artifactId>
+    <artifactId>${project.parent.artifactId}-scheduler</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attemper-core</artifactId>
+            <artifactId>${project.parent.artifactId}-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attemper-config-scheduler</artifactId>
+            <artifactId>${project.parent.artifactId}-config-scheduler</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

@@ -6,19 +6,19 @@
 	<artifactId>attemper</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<modules>
-		<module>attemper-admin</module>
-		<module>attemper-common</module>
-		<module>attemper-config</module>
-		<module>attemper-sys</module>
-		<module>attemper-core</module>
-		<module>attemper-security</module>
-		<module>attemper-web</module>
-		<module>attemper-scheduler</module>
-		<module>attemper-executor</module>
-		<module>attemper-grpc</module>
-		<module>attemper-eureka-server</module>
-		<module>attemper-grpc-autoconfigure</module>
-		<module>attemper-config-scheduler</module>
+		<module>${project.artifactId}-admin</module>
+		<module>${project.artifactId}-common</module>
+		<module>${project.artifactId}-config</module>
+		<module>${project.artifactId}-sys</module>
+		<module>${project.artifactId}-core</module>
+		<module>${project.artifactId}-security</module>
+		<module>${project.artifactId}-web</module>
+		<module>${project.artifactId}-scheduler</module>
+		<module>${project.artifactId}-executor</module>
+		<module>${project.artifactId}-grpc</module>
+		<module>${project.artifactId}-eureka-server</module>
+		<module>${project.artifactId}-grpc-autoconfigure</module>
+		<module>${project.artifactId}-config-scheduler</module>
 	</modules>
 	<packaging>pom</packaging>
 
@@ -209,47 +209,6 @@
 				<version>${camunda.spring.boot.version}</version>
 			</dependency>
 
-			<!-- modules -->
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>attemper-common</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>attemper-config</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>attemper-config-scheduler</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>attemper-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>attemper-sys</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>attemper-security</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>attemper-grpc</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>attemper-grpc-autoconfigure</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 			<!--<dependency>
 				<groupId>com.github.stuxuhai</groupId>
 				<artifactId>jpinyin</artifactId>
