@@ -2,9 +2,9 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sse.attemper.core.dao.mapper.monitor.JobInstanceMapper">
+<mapper namespace="com.github.attemper.core.dao.mapper.monitor.JobInstanceMapper">
 
-    <insert id="add" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstance">
+    <insert id="add" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstance">
         INSERT INTO ${tablePrefix}job_execution (
             ID,
             PROC_INST_ID,
@@ -57,7 +57,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstance">
+    <update id="update" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstance">
         UPDATE ${tablePrefix}job_execution j
         SET
         PROC_INST_ID = #{procInstId, jdbcType=VARCHAR},
@@ -86,7 +86,7 @@
     </update>
 
 
-    <insert id="addAct" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct">
+    <insert id="addAct" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstanceAct">
         INSERT INTO ${tablePrefix}job_execution_act (
             ID,
             ACT_INST_ID,
@@ -159,7 +159,7 @@
         )
     </insert>
 
-    <update id="updateAct" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct">
+    <update id="updateAct" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstanceAct">
         UPDATE ${tablePrefix}job_execution_act j
         SET
         STATUS = #{status, jdbcType=INTEGER},
@@ -183,7 +183,7 @@
         </where>
     </update>
 
-    <select id="list" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.monitor.JobInstance">
+    <select id="list" parameterType="map" resultType="com.github.attemper.common.result.dispatch.monitor.JobInstance">
         SELECT * FROM (
         SELECT t.ID,
         t.PROC_INST_ID,
@@ -239,7 +239,7 @@
     </select>
 
     <select id="listAct" parameterType="map"
-            resultType="com.sse.attemper.common.result.dispatch.monitor.JobInstanceAct">
+            resultType="com.github.attemper.common.result.dispatch.monitor.JobInstanceAct">
         SELECT act.*
         FROM ${tablePrefix}job_instance_act act
         JOIN ${tablePrefix}job_instance j

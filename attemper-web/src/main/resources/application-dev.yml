@@ -35,7 +35,7 @@ app:
 
 logging:
   level:
-    com.sse.attemper.core.dao.mapper: debug
+    com.github.attemper.core.dao.mapper: debug
 
 grpc:
     server:

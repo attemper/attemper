@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sse.attemper.core.dao.mapper.arg.ArgMapper">
-    <insert id="add" parameterType="com.sse.attemper.common.result.dispatch.arg.Arg">
+<mapper namespace="com.github.attemper.core.dao.mapper.arg.ArgMapper">
+    <insert id="add" parameterType="com.github.attemper.common.result.dispatch.arg.Arg">
         INSERT INTO ${tablePrefix}arg (
             ARG_NAME,
             ARG_TYPE,
@@ -20,7 +20,7 @@
         );
     </insert>
 
-    <update id="update" parameterType="com.sse.attemper.common.result.dispatch.arg.Arg">
+    <update id="update" parameterType="com.github.attemper.common.result.dispatch.arg.Arg">
         UPDATE
         ${tablePrefix}arg
         SET
@@ -33,7 +33,7 @@
         </where>
     </update>
 
-    <select id="get" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.arg.Arg">
+    <select id="get" parameterType="map" resultType="com.github.attemper.common.result.dispatch.arg.Arg">
         SELECT
         ARG_NAME,
         ARG_TYPE,
@@ -48,7 +48,7 @@
         </where>
     </select>
 
-    <select id="list" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.arg.Arg">
+    <select id="list" parameterType="map" resultType="com.github.attemper.common.result.dispatch.arg.Arg">
         SELECT *
         FROM ${tablePrefix}arg
         <where>

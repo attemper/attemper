@@ -2,23 +2,23 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sse.attemper.core.dao.mapper.monitor.JobExecutionMapper">
+<mapper namespace="com.github.attemper.core.dao.mapper.monitor.JobExecutionMapper">
 
-    <delete id="delete" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstance">
+    <delete id="delete" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstance">
         DELETE FROM j USING ${tablePrefix}job_execution j
         <where>
             <include refid="condId"/>
         </where>
     </delete>
 
-    <delete id="deleteAct" parameterType="com.sse.attemper.common.result.dispatch.monitor.JobInstance">
+    <delete id="deleteAct" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstance">
         DELETE FROM j USING ${tablePrefix}job_execution_act j
         <where>
             <include refid="condRootProcInstId"/>
         </where>
     </delete>
 
-    <select id="list" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.monitor.JobInstance">
+    <select id="list" parameterType="map" resultType="com.github.attemper.common.result.dispatch.monitor.JobInstance">
         <!-- never return column LOG_TEXT here,because it may be every large -->
         SELECT * FROM (
         SELECT

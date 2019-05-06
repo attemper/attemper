@@ -1,4 +1,5 @@
 export default {
+  title: '调度中心',
   route: {
     dashboard: '首页',
     sys: '系统管理',

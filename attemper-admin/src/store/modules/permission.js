@@ -1,12 +1,12 @@
 import { asyncRouterMap, devRouterMap, constantRouterMap } from '@/router'
 
 /**
- * 通过meta.role判断是否与当前用户权限匹配
+ * Use meta.role to determine if the current user has permission
  * @param roles
  * @param route
  */
 function hasPermission(resourceNames, route) {
-  if (route.meta && !route.meta.notMenu) { // 是菜单
+  if (route.meta && !route.meta.notMenu) { // is menu
     return resourceNames.some(resourceName => (route.name || route.path.substring(1)) === resourceName)
   } else {
     return true
@@ -14,7 +14,7 @@ function hasPermission(resourceNames, route) {
 }
 
 /**
- * 递归过滤异步路由表，返回符合用户角色权限的路由表
+ * Filter asynchronous routing tables by recursion
  * @param routes asyncRouterMap
  * @param roles
  */
@@ -67,5 +67,4 @@ export default {
   mutations,
   actions
 }
-
 

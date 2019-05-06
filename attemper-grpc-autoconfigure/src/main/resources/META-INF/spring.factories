@@ -1,2 +1,2 @@
 # Auto Configure
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.sse.attemper.autoconfigure.GrpcClientConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.github.attemper.autoconfigure.GrpcClientConfiguration

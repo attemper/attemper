@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.sse.attemper</groupId>
+	<groupId>com.github.attemper</groupId>
 	<artifactId>attemper</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<modules>
@@ -36,8 +36,9 @@
 		<camunda.version>7.10.0</camunda.version>
 		<disruptor.version>3.4.2</disruptor.version>
 		<grpc.version>1.20.0</grpc.version>
-		<quartz.spring.boot.version>0.0.1-SNAPSHOT</quartz.spring.boot.version>
-		<quartz.version>3.0.0</quartz.version>
+		<quartz.groupId>com.github.quartz</quartz.groupId>
+		<quartz.spring.boot.version>1.0.0-SNAPSHOT</quartz.spring.boot.version>
+		<quartz.version>3.0.0-SNAPSHOT</quartz.version>
 
 		<mysql.version>5.1.27</mysql.version>
 		<mybatis.spring.boot.version>2.0.0</mybatis.spring.boot.version>
@@ -278,17 +279,17 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.sse.quartz</groupId>
+				<groupId>${quartz.groupId}</groupId>
 				<artifactId>quartz-spring-boot-starter</artifactId>
 				<version>${quartz.spring.boot.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.sse.quartz</groupId>
+				<groupId>${quartz.groupId}</groupId>
 				<artifactId>quartz-core</artifactId>
 				<version>${quartz.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.sse.quartz</groupId>
+				<groupId>${quartz.groupId}</groupId>
 				<artifactId>quartz-plugins</artifactId>
 				<version>${quartz.version}</version>
 			</dependency>

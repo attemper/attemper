@@ -1,6 +1,6 @@
 /** When your routing system is too long, you can split it into small modules**/
 
-import Layout from '@/layout/Layout'
+import Layout from '@/layout'
 
 const sysRouter = {
   name: 'sys',

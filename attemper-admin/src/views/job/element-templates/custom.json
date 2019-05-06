@@ -10,7 +10,7 @@
         "label": "Implementation Type",
         "type": "Text",
         "editable": false,
-        "value": "com.sse.attemper.executor.task.SyncHttpTask",
+        "value": "com.github.attemper.executor.task.SyncHttpTask",
         "binding": {
           "type": "property",
           "name": "camunda:class"
@@ -55,7 +55,7 @@
         "label": "Implementation Type",
         "type": "Text",
         "editable": false,
-        "value": "com.sse.attemper.executor.task.AsyncHttpTask",
+        "value": "com.github.attemper.executor.task.AsyncHttpTask",
         "binding": {
           "type": "property",
           "name": "camunda:class"

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.sse.attemper.core.dao.mapper.project.ProjectMapper">
+<mapper namespace="com.github.attemper.core.dao.mapper.project.ProjectMapper">
 
-    <select id="getAll" parameterType="map" resultType="com.sse.attemper.common.result.dispatch.project.Project">
+    <select id="getAll" parameterType="map" resultType="com.github.attemper.common.result.dispatch.project.Project">
         select * from ${tablePrefix}project p
         <where>
             <include refid="condTenantId"/>
@@ -122,7 +122,7 @@
     </delete>
 
     <select id="listInfos" parameterType="map"
-            resultType="com.sse.attemper.common.result.dispatch.project.ProjectInfo">
+            resultType="com.github.attemper.common.result.dispatch.project.ProjectInfo">
         select p.*, pi.uri, pi.type
         from ${tablePrefix}project_info pi join ${tablePrefix}project p
         using (project_name, tenant_id)

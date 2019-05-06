@@ -1,0 +1,20 @@
+package com.github.attemper.sys.conf;
+
+import com.github.attemper.common.result.sys.tenant.Tenant;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+/**
+ * @author ldang
+ */
+@ConfigurationProperties
+@Getter
+@Setter
+public class SysProperties {
+
+    @NestedConfigurationProperty
+    private Tenant superTenant;
+
+}

@@ -2,10 +2,10 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sse.attemper.sys.dao.mapper.UserMapper">
+<mapper namespace="com.github.attemper.sys.dao.mapper.UserMapper">
 
-    <select id="login" parameterType="com.sse.attemper.common.result.sys.user.User"
-            resultType="com.sse.attemper.common.result.sys.user.User">
+    <select id="login" parameterType="com.github.attemper.common.result.sys.user.User"
+            resultType="com.github.attemper.common.result.sys.user.User">
         select * from ${tablePrefix}user u
         <where>
             <choose>
@@ -26,7 +26,7 @@
         </where>
     </select>
 
-    <select id="get" parameterType="map" resultType="com.sse.attemper.common.result.sys.user.User">
+    <select id="get" parameterType="map" resultType="com.github.attemper.common.result.sys.user.User">
         select * from ${tablePrefix}user u
         <where>
             <include refid="condUserName"/>
@@ -34,7 +34,7 @@
         </where>
     </select>
 
-    <insert id="add" parameterType="com.sse.attemper.common.result.sys.user.User">
+    <insert id="add" parameterType="com.github.attemper.common.result.sys.user.User">
         INSERT INTO ${tablePrefix}user (
         USER_NAME,
         DISPLAY_NAME,
@@ -60,7 +60,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.sse.attemper.common.result.sys.user.User">
+    <update id="update" parameterType="com.github.attemper.common.result.sys.user.User">
         UPDATE ${tablePrefix}user u
         SET
         <if test="displayName != null">
@@ -92,7 +92,7 @@
         </where>
     </delete>
 
-    <select id="list" parameterType="map" resultType="com.sse.attemper.common.result.sys.user.User">
+    <select id="list" parameterType="map" resultType="com.github.attemper.common.result.sys.user.User">
         select * from ${tablePrefix}user u
         <where>
             <if test="userName != null">
@@ -122,7 +122,7 @@
         </choose>
     </select>
 
-    <select id="getResources" parameterType="map" resultType="com.sse.attemper.common.result.sys.resource.Resource">
+    <select id="getResources" parameterType="map" resultType="com.github.attemper.common.result.sys.resource.Resource">
         SELECT r.*
         FROM ${tablePrefix}resource r
         JOIN ${tablePrefix}tag_resource tr
@@ -139,7 +139,7 @@
         </where>
     </select>
 
-    <select id="getTags" parameterType="map" resultType="com.sse.attemper.common.result.sys.tag.Tag">
+    <select id="getTags" parameterType="map" resultType="com.github.attemper.common.result.sys.tag.Tag">
         select t.*
         from ${tablePrefix}tag t
         join ${tablePrefix}tag_user tu
