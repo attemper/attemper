@@ -10,9 +10,10 @@
           <el-form :model="item" label-width="150px" label-position="left" size="mini">
             <el-form-item :label="$t('job.trigger.title.triggerName')">
               <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')" size="mini">
-                <el-button slot="append" @click="generateId(item)">
+                <el-button slot="prepend" @click="generateId(item)">
                   <svg-icon icon-class="random" />
                 </el-button>
+                <el-button slot="append" icon="el-icon-minus" @click="removeId(item, index)" />
               </el-input>
             </el-form-item>
             <el-form-item :label="$t('job.trigger.title.expression')">
@@ -57,7 +58,8 @@
 <script>
 import CronInput from 'vue-cron-generator/src/components/cron-input'
 import { DEFAULT_CRON_EXPRESSION } from 'vue-cron-generator/src/constant/filed'
-import { next, isBlank, startAfterEndTime } from '.././scripts/support'
+import { isBlank, startAfterEndTime } from '.././scripts/support'
+import CommonTrigger from './mixins/commonTrigger'
 
 const CRON_OBJ = {
   triggerName: '',
@@ -72,6 +74,7 @@ export default {
   components: {
     CronInput
   },
+  mixins: [CommonTrigger],
   props: {
     initTriggerArray: {
       type: Array,
@@ -87,17 +90,9 @@ export default {
       triggerArray: this.initTriggerArray
     }
   },
-  created() {
-  },
   methods: {
-    generateId(item) {
-      item.triggerName = next()
-    },
     add() {
-      this.triggerArray.push(Object.assign({}, CRON_OBJ))
-    },
-    remove(index) {
-      this.triggerArray.splice(index, 1)
+      this.put(CRON_OBJ)
     },
     change(newCron, index) {
       this.triggerArray[index].expression = newCron

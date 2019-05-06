@@ -10,9 +10,10 @@
           <el-form :model="item" label-width="150px" label-position="left" size="mini">
             <el-form-item :label="$t('job.trigger.title.triggerName')">
               <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')" size="mini">
-                <el-button slot="append" @click="generateId(item)">
+                <el-button slot="prepend" @click="generateId(item)">
                   <svg-icon icon-class="random" />
                 </el-button>
+                <el-button slot="append" icon="el-icon-minus" @click="removeId(item, index)" />
               </el-input>
             </el-form-item>
             <el-form-item :label="$t('job.trigger.title.timeRange')">
@@ -71,7 +72,8 @@
 </template>
 
 <script>
-import { next, isBlank, startAfterEndTime } from '.././scripts/support'
+import { isBlank, startAfterEndTime } from '.././scripts/support'
+import CommonTrigger from './mixins/commonTrigger'
 
 const CALENDAR_OFFSET_OBJ = {
   triggerName: '',
@@ -87,32 +89,16 @@ const CALENDAR_OFFSET_OBJ = {
 
 export default {
   name: 'CalendarOffsetTrigger',
+  mixins: [CommonTrigger],
   props: {
-    initTriggerArray: {
-      type: Array,
-      default: null
-    },
     overDayTimeUnits: {
       type: Array,
       default: null
     }
   },
-  data() {
-    return {
-      triggerArray: this.initTriggerArray
-    }
-  },
-  created() {
-  },
   methods: {
-    generateId(item) {
-      item.triggerName = next()
-    },
     add() {
-      this.triggerArray.push(Object.assign({}, CALENDAR_OFFSET_OBJ))
-    },
-    remove(index) {
-      this.triggerArray.splice(index, 1)
+      this.put(CALENDAR_OFFSET_OBJ)
     },
     validateThenSet(trigger) {
       for (let i = 0; i < this.triggerArray.length; i++) {

@@ -280,10 +280,10 @@ export default {
       tab: {
         time: {
           title: '时间',
-          cron: 'Cron表达式触发器',
-          calendarOffset: '日程偏移触发器',
-          dailyInterval: '日间周期触发器',
-          calendarInterval: '日历周期触发器'
+          cron: 'CronTab',
+          calendarOffset: '日程偏移',
+          dailyInterval: '日间周期',
+          calendarInterval: '日历周期'
         },
         event: {
           title: '事件'
