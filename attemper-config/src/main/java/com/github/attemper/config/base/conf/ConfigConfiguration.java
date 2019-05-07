@@ -2,7 +2,7 @@ package com.github.attemper.config.base.conf;
 
 import com.github.attemper.config.base.aspect.MultiDataSourceAspect;
 import com.github.attemper.config.base.bean.ContextBeanAware;
-import com.github.attemper.config.base.dao.repo.ApiLogRepository;
+import com.github.attemper.config.base.dao.mapper.ApiLogMapper;
 import com.github.attemper.config.base.datasource.DataSourceConfig;
 import com.github.attemper.config.base.datasource.DataSourceProperties;
 import com.github.attemper.config.base.exception.GlobalExceptionAdvicer;
@@ -17,7 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @auth ldang
+ * @author ldang
  */
 @EnableConfigurationProperties(
         AppProperties.class
@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Configuration;
 
         //log
         ApiLogService.class,
-        ApiLogRepository.class
+        ApiLogMapper.class
 })
 public class ConfigConfiguration {
 

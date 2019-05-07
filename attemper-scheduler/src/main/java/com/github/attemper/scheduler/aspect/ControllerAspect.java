@@ -10,6 +10,7 @@ import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.annotation.IgnoreLogResult;
 import com.github.attemper.config.base.entity.ApiLog;
 import com.github.attemper.config.base.service.ApiLogService;
+import com.github.attemper.config.base.util.AspectUtil;
 import com.github.attemper.config.base.util.IPUtil;
 import com.github.attemper.config.base.util.ServletUtil;
 import com.github.attemper.config.base.util.StringUtil;
@@ -28,12 +29,10 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.Instant;
@@ -97,8 +96,8 @@ public class ControllerAspect {
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             Method method = signature.getMethod();
             IgnoreLogResult ignoreLogResult = method.getAnnotation(IgnoreLogResult.class);
-            if (ignoreLogResult == null || !ignoreLogResult.value() && result != null) {
-                apiLog.setResult(result.toString());
+            if (result.getResult() != null && (ignoreLogResult == null || !ignoreLogResult.value())) {
+                apiLog.setResult(result.getResult().toString());
             }
             return result;
         } catch (RTException rte) {
@@ -110,11 +109,11 @@ public class ControllerAspect {
         }finally {
             if (result != null) {
                 Instant end = Instant.now();
-                result.setDuration(String.valueOf(Duration.between(begin, end).toMillis() / 1000.0));// 请求耗时
+                result.setDuration(String.valueOf(Duration.between(begin, end).toMillis() / 1000.0));
             }
             UserHolder.clear();
             TenantHolder.clear();
-            apiLogService.save(resultToLog(result, apiLog));
+            AspectUtil.saveLog(apiLogService, apiLog, result);
         }
     }
 
@@ -178,77 +177,19 @@ public class ControllerAspect {
 
         Class<?> clazz = joinPoint.getTarget().getClass();
         Api api = clazz.getAnnotation(Api.class);
-        if (api != null && api.tags() != null && api.tags().length > 0) {
-            apiLog.setTag(api.tags()[0]); // 记录类标签
+        if (api != null) {
+            apiLog.setTag(api.value());
         }
-        apiLog.setClassName(clazz.getName()); // 记录类名称
+        apiLog.setClassName(clazz.getName());
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         ApiOperation apiOperation = method.getAnnotation(ApiOperation.class);
         if (apiOperation != null) {
-            apiLog.setOperation(apiOperation.value()); // 记录类标签
+            apiLog.setOperation(apiOperation.value());
         }
-        apiLog.setMethod(method.getName()); // 记录方法名称
-        resolvePath(method, apiLog);
+        apiLog.setMethod(method.getName());
+        AspectUtil.resolvePath(method, apiLog);
     }
 
-    private void resolvePath(Method method, ApiLog apiLog) {
-        Annotation[] annotations = method.getAnnotations();
-        if(annotations != null){
-            for (Annotation annotation : annotations) {
-                if(annotation instanceof RequestMapping){
-                    RequestMapping mappingAnnotation = (RequestMapping) annotation;
-                    if(mappingAnnotation != null
-                            && mappingAnnotation.value() != null
-                            && mappingAnnotation.value().length > 0){
-                        apiLog.setPath(mappingAnnotation.value()[0]);
-                    }
-                } else if (annotation instanceof GetMapping) {
-                    GetMapping mappingAnnotation = (GetMapping) annotation;
-                    if(mappingAnnotation != null
-                            && mappingAnnotation.value() != null
-                            && mappingAnnotation.value().length > 0){
-                        apiLog.setPath(mappingAnnotation.value()[0]);
-                    }
-                } else if (annotation instanceof PostMapping) {
-                    PostMapping mappingAnnotation = (PostMapping) annotation;
-                    if(mappingAnnotation != null
-                            && mappingAnnotation.value() != null
-                            && mappingAnnotation.value().length > 0){
-                        apiLog.setPath(mappingAnnotation.value()[0]);
-                    }
-                } else if (annotation instanceof PutMapping) {
-                    PutMapping mappingAnnotation = (PutMapping) annotation;
-                    if(mappingAnnotation != null
-                            && mappingAnnotation.value() != null
-                            && mappingAnnotation.value().length > 0){
-                        apiLog.setPath(mappingAnnotation.value()[0]);
-                    }
-                } else if (annotation instanceof DeleteMapping) {
-                    DeleteMapping mappingAnnotation = (DeleteMapping) annotation;
-                    if(mappingAnnotation != null
-                            && mappingAnnotation.value() != null
-                            && mappingAnnotation.value().length > 0){
-                        apiLog.setPath(mappingAnnotation.value()[0]);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * 将BaseResult中的数据设置给log
-     * @param result
-     * @param apiLog
-     */
-    private static ApiLog resultToLog(CommonResult result, ApiLog apiLog) {
-        if(result != null){
-            apiLog.setCode(result.getCode());
-            apiLog.setMsg(result.getMsg());
-            apiLog.setResponseTime(result.getResponseTime());
-            apiLog.setDuration(result.getDuration());
-        }
-        return apiLog;
-    }
 }

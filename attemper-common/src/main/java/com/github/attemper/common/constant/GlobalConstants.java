@@ -8,20 +8,17 @@ import java.util.Locale;
  */
 public interface GlobalConstants {
 
-	String basePackageLocation = "com.github.attemper.";
-	
-	String mybatisPlusMapperLocation = basePackageLocation + "**.dao.mapper*";
-	
-	String jpaRepositoryLocation = basePackageLocation + "**.dao.repo";
-
-	String jpaEntityLocation = basePackageLocation + "**.entity";
-
-	String LOG_DB_PREFIX = "";
-
-	/**
-	 * 默认服务名
-	 */
 	String defaultContextPath = "attemper";
+
+	String basePackageLocation = "com.github." + defaultContextPath + ".";
+
+	String mybatisPlusMapperLocation = basePackageLocation + "**.dao.mapper*";
+
+	//String jpaRepositoryLocation = basePackageLocation + "**.dao.repo";
+
+	//String jpaEntityLocation = basePackageLocation + "**.entity";
+
+	//String LOG_DB_PREFIX = "";
 
 	String statusPropertiesName = "status";
 

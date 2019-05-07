@@ -5,10 +5,8 @@ import com.github.attemper.core.conf.CoreConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Import({
@@ -16,8 +14,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 })
 @EnableDiscoveryClient
 @EnableTransactionManagement
-@EnableJpaRepositories(GlobalConstants.jpaRepositoryLocation)   //jpa dao
-@EntityScan(GlobalConstants.jpaEntityLocation)   //jpa entity
+//@EnableJpaRepositories(GlobalConstants.jpaRepositoryLocation)   //jpa dao
+//@EntityScan(GlobalConstants.jpaEntityLocation)   //jpa entity
 @MapperScan(GlobalConstants.mybatisPlusMapperLocation)   //mybatis dao
 @SpringBootApplication
 public class ExecutorApplication {
