@@ -31,3 +31,6 @@ app:
     delayedInSecond: 5
   web:
     enable-scheduling: true
+  snow-flake:
+    data-center-id: 0
+    machine-id: 10
