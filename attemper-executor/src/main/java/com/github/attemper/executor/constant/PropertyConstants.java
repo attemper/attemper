@@ -8,4 +8,8 @@ public interface PropertyConstants {
     String requestMethod = "requestMethod";
 
     String subUrl = "subUrl";
+
+    String beanName = "beanName";
+
+    String methodName = "methodName";
 }

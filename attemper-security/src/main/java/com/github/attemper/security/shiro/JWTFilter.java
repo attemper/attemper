@@ -3,7 +3,7 @@ package com.github.attemper.security.shiro;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.config.base.bean.ContextBeanAware;
+import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.entity.ApiLog;
 import com.github.attemper.config.base.service.ApiLogService;
 import com.github.attemper.config.base.util.IPUtil;
@@ -102,7 +102,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             ((HttpServletResponse) response).setStatus(HttpStatus.SC_UNAUTHORIZED);
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             CommonResult result = CommonResult.put(code);
-            String json = ContextBeanAware.getBean(ObjectMapper.class).writeValueAsString(result);
+            String json = SpringContextAware.getBean(ObjectMapper.class).writeValueAsString(result);
             response.getWriter().print(json);
             saveLog(result);
         } catch (IOException e) {
@@ -126,6 +126,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                 .tenantId(ServletUtil.getHeader(CommonConstants.tenantId))
                 .ip(IPUtil.getIpAddr())
                 .build();
-        ContextBeanAware.getBean(ApiLogService.class).save(apiLog);
+        SpringContextAware.getBean(ApiLogService.class).save(apiLog);
     }
 }

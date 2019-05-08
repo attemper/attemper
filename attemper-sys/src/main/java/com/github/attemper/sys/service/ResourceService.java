@@ -1,11 +1,10 @@
 package com.github.attemper.sys.service;
 
-import com.github.attemper.sys.dao.mapper.ResourceMapper;
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.EmptyParam;
 import com.github.attemper.common.param.sys.resource.ResourceRemoveParam;
 import com.github.attemper.common.param.sys.resource.ResourceSaveParam;
 import com.github.attemper.common.result.sys.resource.Resource;
+import com.github.attemper.sys.dao.mapper.ResourceMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,11 +26,10 @@ public class ResourceService extends BaseServiceAdapter {
 
     /**
      * get tree of resources
-     * @param param
      * @return
      */
-    public List<Resource> getAll(EmptyParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+    public List<Resource> getAll() {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(null);
 		List<Resource> sourceList = mapper.getAll(paramMap);
 	    List<Resource> targetList = new ArrayList<>(sourceList.size());
         Resource rootResource = findRootResource(sourceList);

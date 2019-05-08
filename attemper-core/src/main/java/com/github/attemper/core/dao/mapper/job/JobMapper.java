@@ -17,19 +17,7 @@ import java.util.Map;
 @Repository
 public interface JobMapper extends BaseMapper<FlowJob> {
 
-    List<FlowJob> list(Map<String, Object> paramMap);
-
-    FlowJob get(Map<String, Object> paramMap);
-
-    void delete(Map<String, Object> paramMap);
-
-    @Override
-    void add(FlowJob flowJob);
-
     void addInfo(FlowJob flowJob);
-
-    @Override
-    void update(FlowJob flowJob);
 
     void updateInfo(FlowJob flowJob);
 

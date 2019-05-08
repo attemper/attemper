@@ -9,12 +9,6 @@ spring:
                 jdbc-url: jdbc:mysql://127.0.0.1:3306/log?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
                 username: root
                 password: 123456
-    jpa: 
-        show-sql: true
-        properties: 
-            hibernate: 
-                format-sql: true
-                user_sql_comments: true
 
 eureka:
   client:

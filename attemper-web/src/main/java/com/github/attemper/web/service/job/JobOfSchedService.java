@@ -4,7 +4,7 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.job.*;
 import com.github.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
 import com.github.attemper.common.result.dispatch.job.FlowJob;
-import com.github.attemper.config.base.bean.ContextBeanAware;
+import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.scheduler.service.JobCallingService;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.core.service.job.JobService;
@@ -242,7 +242,7 @@ public class JobOfSchedService extends BaseServiceAdapter {
         for (String jobName : jobNames) {
             executorService.submit(() -> {
                 try {
-                    return ContextBeanAware.getBean(JobCallingService.class).invoke(jobName, tenantId);
+                    return SpringContextAware.getBean(JobCallingService.class).invoke(jobName, tenantId);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     throw e;

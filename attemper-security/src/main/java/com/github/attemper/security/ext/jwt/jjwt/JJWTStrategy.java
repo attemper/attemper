@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.result.sys.user.User;
-import com.github.attemper.config.base.bean.ContextBeanAware;
+import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.security.exception.JWTDecodedException;
 import com.github.attemper.security.exception.JWTExpiredException;
 import com.github.attemper.security.ext.annotation.JWTStrategyType;
@@ -39,7 +39,7 @@ public class JJWTStrategy implements JWTStrategy {
         Map<String, Object> claims = new HashMap<>();
         String userJsonStr;
         try {
-            userJsonStr = ContextBeanAware.getBean(ObjectMapper.class).writeValueAsString(user);
+            userJsonStr = SpringContextAware.getBean(ObjectMapper.class).writeValueAsString(user);
         } catch (JsonProcessingException e){
             log.error(e.getMessage(), e);
             userJsonStr = "";
@@ -65,7 +65,7 @@ public class JJWTStrategy implements JWTStrategy {
                     .parseClaimsJws(token)
                     .getBody();
             String userJsonStr = claims.get(USER, String.class);
-            return ContextBeanAware.getBean(ObjectMapper.class).readValue(userJsonStr, User.class);
+            return SpringContextAware.getBean(ObjectMapper.class).readValue(userJsonStr, User.class);
         }catch (MalformedJwtException e){
             throw new JWTDecodedException(e);
         }catch (SignatureException e){

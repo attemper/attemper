@@ -1,7 +1,6 @@
 package com.github.attemper.core.controller.project;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.EmptyParam;
 import com.github.attemper.common.param.dispatch.project.*;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.project.Project;
@@ -26,10 +25,9 @@ public class ProjectController {
 	private ProjectService service;
 
 	@ApiOperation("Get project tree list")
-	@ApiImplicitParam(value = "EmptyParam", name = "param", dataType = "EmptyParam", required = true)
 	@GetMapping(APIPath.ProjectPath.TREE_LIST)
-	public CommonResult<List<Project>> getTreeList(EmptyParam param) {
-		return CommonResult.putResult(service.getAll(param));
+	public CommonResult<List<Project>> getTreeList() {
+		return CommonResult.putResult(service.getAll());
 	}
 
 	@ApiOperation("Add or update project")
@@ -55,9 +53,9 @@ public class ProjectController {
 
 	@ApiOperation("List project info")
 	@ApiImplicitParam(value = "ProjectGetParam", name = "param", dataType = "ProjectGetParam", required = true)
-	@GetMapping(APIPath.ProjectPath.LIST_INFOS)
-	public CommonResult<List<ProjectInfo>> listInfos(ProjectGetParam param) {
-		return CommonResult.putResult(service.listInfos(param));
+	@GetMapping(APIPath.ProjectPath.LIST_INFO)
+	public CommonResult<List<ProjectInfo>> listInfo(ProjectGetParam param) {
+		return CommonResult.putResult(service.listInfo(param));
 	}
 
 	@ApiOperation("Remove project info")

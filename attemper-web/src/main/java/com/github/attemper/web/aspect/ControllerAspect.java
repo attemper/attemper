@@ -54,9 +54,6 @@ public class ControllerAspect {
     private JWTService jwtService;
 
     @Autowired
-    private ApiLogService apiLogService;
-
-    @Autowired
     private TenantService tenantService;
 
     private static Validator validator = Validation
@@ -125,7 +122,7 @@ public class ControllerAspect {
             }
             UserHolder.clear();
             TenantHolder.clear();
-            AspectUtil.saveLog(apiLogService, apiLog, result);
+            AspectUtil.saveLog(apiLog, result);
         }
     }
 

@@ -18,13 +18,9 @@ public interface ProjectMapper extends BaseMapper<Project> {
 
     List<Project> getAll(Map<String, Object> paramMap);
 
-    void save(Map<String, Object> paramMap);
-
-    void delete(Map<String, Object> paramMap);
-
     void saveInfo(Map<String, Object> paramMap);
 
-    List<ProjectInfo> listInfos(Map<String, Object> paramMap);
+    List<ProjectInfo> listInfo(Map<String, Object> paramMap);
 
     void deleteInfo(Map<String, Object> paramMap);
 }

@@ -18,17 +18,7 @@ import java.util.Map;
 @Repository
 public interface UserMapper extends BaseMapper<User> {
 
-	List<User> list(Map<String, Object> paramMap);
-
 	List<User> login(User user);
-
-	User get(Map<String, Object> paramMap);
-
-	void add(User user);
-
-	void update(User user);
-
-    void delete(Map<String, Object> paramMap);
 
     List<Resource> getResources(Map<String, Object> paramMap);
 

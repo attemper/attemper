@@ -4,7 +4,7 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.sys.user.UserGetParam;
 import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.user.User;
-import com.github.attemper.config.base.bean.ContextBeanAware;
+import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.security.ext.service.JWTService;
 import com.github.attemper.security.model.JWTToken;
 import com.github.attemper.sys.holder.TenantHolder;
@@ -44,8 +44,8 @@ public class CustomRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
         String token = (String) auth.getCredentials();
-        User user = ContextBeanAware.getBean(JWTService.class).parseTokenToUser(token);
-        UserService userService = ContextBeanAware.getBean(UserService.class);
+        User user = SpringContextAware.getBean(JWTService.class).parseTokenToUser(token);
+        UserService userService = SpringContextAware.getBean(UserService.class);
         User dbUser = userService.get(new UserGetParam(user.getUserName()));
         if(dbUser == null){
             throw new RTException(1303);
@@ -67,7 +67,7 @@ public class CustomRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         User user = (User) principals.getPrimaryPrincipal();
         Set<String> resourcePermissions = new HashSet<>();
-        UserService userService = ContextBeanAware.getBean(UserService.class);
+        UserService userService = SpringContextAware.getBean(UserService.class);
         List<Resource> resources = userService.getResources(new UserGetParam(user.getUserName()));
         resources.forEach(resource -> resourcePermissions.add(resource.getResourceName()));
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();

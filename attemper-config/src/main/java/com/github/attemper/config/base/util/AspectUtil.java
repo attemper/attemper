@@ -1,6 +1,7 @@
 package com.github.attemper.config.base.util;
 
 import com.github.attemper.common.result.CommonResult;
+import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.entity.ApiLog;
 import com.github.attemper.config.base.service.ApiLogService;
 import org.springframework.web.bind.annotation.*;
@@ -10,14 +11,14 @@ import java.lang.reflect.Method;
 
 public class AspectUtil {
 
-    public static void saveLog(ApiLogService service, ApiLog apiLog, CommonResult result) {
+    public static void saveLog(ApiLog apiLog, CommonResult result) {
         if(result != null){
             apiLog.setCode(result.getCode());
             apiLog.setMsg(result.getMsg());
             apiLog.setResponseTime(result.getResponseTime());
             apiLog.setDuration(result.getDuration());
         }
-        service.save(apiLog);
+        SpringContextAware.getBean(ApiLogService.class).save(apiLog);
     }
 
     public static void resolvePath(Method method, ApiLog apiLog) {

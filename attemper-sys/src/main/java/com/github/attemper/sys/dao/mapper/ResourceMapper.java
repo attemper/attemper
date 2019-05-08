@@ -16,8 +16,4 @@ import java.util.Map;
 public interface ResourceMapper extends BaseMapper<Resource> {
 
     List<Resource> getAll(Map<String, Object> paramMap);
-
-    void save(Map<String, Object> paramMap);
-
-    void delete(Map<String, Object> paramMap);
 }

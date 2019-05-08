@@ -15,7 +15,7 @@
     </el-form-item>
     <el-form-item :label="$t('job.columns.status')" prop="status">
       <el-select v-model="job.status" :placeholder="$t('job.placeholder.status')" class="filter-item">
-        <el-option v-for="item in jobStatuses" :key="item.value" :label="item.text" :value="item.value" />
+        <el-option v-for="item in jobStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </el-form-item>
     <el-form-item :label="$t('job.columns.remark')">

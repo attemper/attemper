@@ -6,7 +6,7 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.scheduler.TriggerChangedParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.sys.tenant.Tenant;
-import com.github.attemper.config.base.bean.ContextBeanAware;
+import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.sys.holder.TenantHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +103,7 @@ public class SchedulerHandler {
 
         @Override
         public CommonResult call() throws Exception {
-            return ContextBeanAware.getBean(WebClient.class)
+            return SpringContextAware.getBean(WebClient.class)
                     .method(method)
                     .uri(url)
                     //.accept(MediaType.APPLICATION_JSON)

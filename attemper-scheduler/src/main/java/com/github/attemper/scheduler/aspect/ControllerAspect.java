@@ -9,7 +9,6 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.annotation.IgnoreLogResult;
 import com.github.attemper.config.base.entity.ApiLog;
-import com.github.attemper.config.base.service.ApiLogService;
 import com.github.attemper.config.base.util.AspectUtil;
 import com.github.attemper.config.base.util.IPUtil;
 import com.github.attemper.config.base.util.ServletUtil;
@@ -47,9 +46,6 @@ import java.util.Set;
 public class ControllerAspect {
 
     @Autowired
-    private ApiLogService apiLogService;
-
-    @Autowired
     private TenantService tenantService;
 
     private static Validator validator = Validation
@@ -57,10 +53,9 @@ public class ControllerAspect {
 
     @Pointcut("(execution(public * " + GlobalConstants.basePackageLocation + "sys.controller.*Controller.*(..)))"
             + "||"
-            + "(execution(public * " + GlobalConstants.basePackageLocation + "core.controller.*Controller.*(..))"
+            + "(execution(public * " + GlobalConstants.basePackageLocation + "core.controller.*Controller.*(..)))"
             + "||"
-            + "(execution(public * " + GlobalConstants.basePackageLocation + "scheduler.controller.*Controller.*(..))"
-            + ")"
+            + "(execution(public * " + GlobalConstants.basePackageLocation + "scheduler.controller.*Controller.*(..)))"
     )
     public void aroundController() {
 
@@ -113,7 +108,7 @@ public class ControllerAspect {
             }
             UserHolder.clear();
             TenantHolder.clear();
-            AspectUtil.saveLog(apiLogService, apiLog, result);
+            AspectUtil.saveLog(apiLog, result);
         }
     }
 

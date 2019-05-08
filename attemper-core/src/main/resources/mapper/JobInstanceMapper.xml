@@ -10,6 +10,7 @@
             PROC_INST_ID,
             ROOT_PROC_INST_ID,
             JOB_NAME,
+            DISPLAY_NAME,
             TRIGGER_NAME,
             PROC_DEF_ID,
             START_TIME,
@@ -23,6 +24,7 @@
             #{procInstId, jdbcType=VARCHAR},
             #{rootProcInstId, jdbcType=VARCHAR},
             #{jobName, jdbcType=VARCHAR},
+            #{displayName, jdbcType=VARCHAR},
             #{triggerName, jdbcType=VARCHAR},
             #{procDefId, jdbcType=VARCHAR},
             #{startTime, jdbcType=TIMESTAMP},
@@ -35,6 +37,7 @@
             PROC_INST_ID,
             ROOT_PROC_INST_ID,
             JOB_NAME,
+            DISPLAY_NAME,
             TRIGGER_NAME,
             PROC_DEF_ID,
             START_TIME,
@@ -48,6 +51,7 @@
             #{procInstId, jdbcType=VARCHAR},
             #{rootProcInstId, jdbcType=VARCHAR},
             #{jobName, jdbcType=VARCHAR},
+            #{displayName, jdbcType=VARCHAR},
             #{triggerName, jdbcType=VARCHAR},
             #{procDefId, jdbcType=VARCHAR},
             #{startTime, jdbcType=TIMESTAMP},
@@ -101,7 +105,7 @@
             END_TIME,
             DURATION,
             STATUS,
-            CODE,
+            LOG_KEY,
             LOG_TEXT
         )
         VALUES
@@ -119,7 +123,7 @@
             #{endTime, jdbcType=TIMESTAMP},
             #{duration, jdbcType=INTEGER},
             #{status, jdbcType=INTEGER},
-            #{code, jdbcType=VARCHAR},
+            #{logKey, jdbcType=VARCHAR},
             #{logText, jdbcType=VARCHAR}
         );
         INSERT INTO ${tablePrefix}job_instance_act (
@@ -136,7 +140,7 @@
             END_TIME,
             DURATION,
             STATUS,
-            CODE,
+            LOG_KEY,
             LOG_TEXT
         )
         VALUES
@@ -154,7 +158,7 @@
             #{endTime, jdbcType=TIMESTAMP},
             #{duration, jdbcType=INTEGER},
             #{status, jdbcType=INTEGER},
-            #{code, jdbcType=VARCHAR},
+            #{logKey, jdbcType=VARCHAR},
             #{logText, jdbcType=VARCHAR}
         )
     </insert>
@@ -165,7 +169,7 @@
         STATUS = #{status, jdbcType=INTEGER},
         END_TIME = #{endTime, jdbcType=TIMESTAMP},
         DURATION = #{duration, jdbcType=INTEGER},
-        CODE = #{code, jdbcType=VARCHAR},
+        LOG_KEY = #{logKey, jdbcType=VARCHAR},
         LOG_TEXT = #{logText, jdbcType=VARCHAR}
         <where>
             <include refid="condActInstId"/>
@@ -176,7 +180,7 @@
         STATUS = #{status, jdbcType=INTEGER},
         END_TIME = #{endTime, jdbcType=TIMESTAMP},
         DURATION = #{duration, jdbcType=INTEGER},
-        CODE = #{code, jdbcType=VARCHAR},
+        LOG_KEY = #{logKey, jdbcType=VARCHAR},
         LOG_TEXT = #{logText, jdbcType=VARCHAR}
         <where>
             <include refid="condActInstId"/>
@@ -189,14 +193,14 @@
         t.PROC_INST_ID,
         t.ROOT_PROC_INST_ID,
         t.JOB_NAME,
+        t.DISPLAY_NAME,
         t.TRIGGER_NAME,
         t.PROC_DEF_ID,
         t.START_TIME,
         t.END_TIME,
         t.DURATION,
         t.STATUS,
-        t.TENANT_ID,
-        job.DISPLAY_NAME
+        t.TENANT_ID
         FROM ${tablePrefix}job_instance t
         LEFT JOIN ${tablePrefix}job job USING (JOB_NAME, TENANT_ID)
         ) j
@@ -207,7 +211,7 @@
             <if test="displayName != null">
                 and lower(DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
             </if>
-            <if test="status != null &amp;&amp;status.length &gt; 0">
+            <if test="status != null &amp;&amp;status.size() &gt; 0">
                 and STATUS in
                 <foreach item="item" collection="status" open="(" separator="," close=")">
                     #{item, jdbcType=INTEGER}

@@ -3,10 +3,10 @@ package com.github.attemper.sys.service;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.common.result.sys.user.User;
+import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.config.base.util.ServletUtil;
 import com.github.attemper.sys.holder.TenantHolder;
 import com.github.attemper.sys.holder.UserHolder;
-import com.xiaoleilu.hutool.bean.BeanUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public abstract class BaseServiceAdapter implements BaseService {
     protected Map<String, Object> injectTenantIdToMap(Object obj) {
         Map<String, Object> paramMap;
         if (!(obj instanceof Map)) {
-            paramMap = BeanUtil.beanToMap(obj);
+            paramMap = BeanUtil.bean2Map(obj);
         } else {
             paramMap = (Map<String, Object>) obj;
         }
@@ -63,7 +63,7 @@ public abstract class BaseServiceAdapter implements BaseService {
             paramMap = new HashMap<>(1);
         } else {
             if (!(obj instanceof Map)) {
-                paramMap = BeanUtil.beanToMap(obj);
+                paramMap = BeanUtil.bean2Map(obj);
             } else {
                 paramMap = (Map<String, Object>) obj;
             }

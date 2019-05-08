@@ -4,7 +4,7 @@ package com.github.attemper.web.ext.trigger;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.trigger.sub.CommonTriggerParam;
 import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
-import com.github.attemper.config.base.bean.ContextBeanAware;
+import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.scheduler.util.QuartzUtil;
 import com.github.attemper.core.ext.trigger.TriggerHandlerInDatabase;
 import com.github.attemper.sys.holder.TenantHolder;
@@ -23,7 +23,7 @@ public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extend
         if (oldTriggerNames.size() > 0) {
             oldTriggerNames.forEach(item -> {
                 try {
-                    ContextBeanAware.getBean(Scheduler.class).unscheduleJob(new TriggerKey(String.valueOf(item), tenantId));
+                    SpringContextAware.getBean(Scheduler.class).unscheduleJob(new TriggerKey(String.valueOf(item), tenantId));
                 } catch (SchedulerException e) {
                     throw new RTException(3002, e);
                 }
@@ -50,7 +50,7 @@ public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extend
         Set<Trigger> quartzTriggers = buildTriggers(tenantId, paramOfTriggers);
         JobDetail jobDetail = QuartzUtil.newJobDetail(jobName, tenantId);
         try {
-            ContextBeanAware.getBean(Scheduler.class).scheduleJob(jobDetail, quartzTriggers, true);
+            SpringContextAware.getBean(Scheduler.class).scheduleJob(jobDetail, quartzTriggers, true);
         } catch (SchedulerException e) {
             throw new RTException(3003, e);
         }

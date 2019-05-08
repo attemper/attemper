@@ -187,7 +187,7 @@ public class APIPath {
 
         private static final String INFO = "/info";
 
-        public static final String LIST_INFOS = API_PATH + SYS + PROJECT + INFO + _LIST;
+        public static final String LIST_INFO = API_PATH + SYS + PROJECT + INFO + _LIST;
 
         public static final String SAVE_INFO = API_PATH + SYS + PROJECT + INFO + _ADD;
 

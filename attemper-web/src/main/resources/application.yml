@@ -47,9 +47,6 @@ spring:
                 idle-timeout: 600000
                 max-lifetime: 1800000
                 connection-test-query: select 1
-    jpa: 
-        hibernate: 
-            ddl-auto: none
     jackson:
         date-format: yyyy-MM-dd HH:mm:ss
         time-zone: GMT+8

@@ -121,7 +121,7 @@
         </where>
     </delete>
 
-    <select id="listInfos" parameterType="map"
+    <select id="listInfo" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.project.ProjectInfo">
         select p.*, pi.uri, pi.type
         from ${tablePrefix}project_info pi join ${tablePrefix}project p

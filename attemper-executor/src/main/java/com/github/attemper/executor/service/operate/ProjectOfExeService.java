@@ -27,9 +27,9 @@ public class ProjectOfExeService extends BaseOfExeServiceAdapter {
         return projectService.getAll(paramMap);
     }
 
-    public List<ProjectInfo> listInfos(String projectName, String tenantId) {
+    public List<ProjectInfo> listInfo(String projectName, String tenantId) {
         Map<String, Object> paramMap = toProjectNameMap(toTenantIdMap(tenantId), projectName);
-        return projectService.listInfos(paramMap);
+        return projectService.listInfo(paramMap);
     }
 
     private Map<String, Object> toProjectNameMap(Map<String, Object> tenantIdMap, String projectName) {

@@ -18,16 +18,6 @@ import java.util.Map;
 @Repository
 public interface TagMapper extends BaseMapper<Tag> {
 
-	List<Tag> list(Map<String, Object> paramMap);
-
-	Tag get(Map<String, Object> paramMap);
-
-	void add(Tag user);
-
-	void update(Tag user);
-
-    void delete(Map<String, Object> paramMap);
-
     List<User> getUsers(Map<String, Object> paramMap);
 
     void deleteTagUsers(Map<String, Object> paramMap);

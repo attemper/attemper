@@ -1,18 +1,18 @@
 package com.github.attemper.sys.service;
 
-import com.github.attemper.sys.conf.SysProperties;
-import com.github.attemper.sys.dao.mapper.TenantMapper;
-import com.github.attemper.sys.ext.service.SecretService;
-import com.github.attemper.sys.util.PageUtil;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.sys.tenant.TenantGetParam;
 import com.github.attemper.common.param.sys.tenant.TenantListParam;
 import com.github.attemper.common.param.sys.tenant.TenantRemoveParam;
 import com.github.attemper.common.param.sys.tenant.TenantSaveParam;
 import com.github.attemper.common.result.sys.tenant.Tenant;
-import com.xiaoleilu.hutool.bean.BeanUtil;
+import com.github.attemper.config.base.util.BeanUtil;
+import com.github.attemper.sys.conf.SysProperties;
+import com.github.attemper.sys.dao.mapper.TenantMapper;
+import com.github.attemper.sys.ext.service.SecretService;
+import com.github.attemper.sys.util.PageUtil;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -80,7 +80,7 @@ public class TenantService extends BaseServiceAdapter {
         String sign = secretService.encode(tenant.getId());
         tenant.setSign(sign);
         tenant.setUpdateTime(new Date());
-        mapper.save(BeanUtil.beanToMap(tenant));
+        mapper.save(BeanUtil.bean2Map(tenant));
         return tenant;
     }
 

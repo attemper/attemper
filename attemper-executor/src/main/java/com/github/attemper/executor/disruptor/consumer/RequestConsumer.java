@@ -4,7 +4,7 @@ import com.github.atemper.grpc.invoking.JobInvokingProto;
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.monitor.JobInstance;
-import com.github.attemper.config.base.bean.ContextBeanAware;
+import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.executor.disruptor.container.RequestContainer;
 import com.github.attemper.executor.service.instance.JobInstanceOfExeService;
 import com.lmax.disruptor.WorkHandler;
@@ -23,7 +23,7 @@ public class RequestConsumer implements WorkHandler<RequestContainer> {
 
     @Override
     public void onEvent(RequestContainer container) throws Exception {
-        RuntimeService runtimeService = ContextBeanAware.getBean(RuntimeService.class);
+        RuntimeService runtimeService = SpringContextAware.getBean(RuntimeService.class);
         JobInvokingProto.JobInvokingRequest request = container.getJobInvokingRequest();
         JobInvokingProto.JobInvokingResponse.Builder responseBuilder = JobInvokingProto.JobInvokingResponse.newBuilder()
                 .setId(request.getId());
@@ -57,7 +57,7 @@ public class RequestConsumer implements WorkHandler<RequestContainer> {
     }
 
     private void saveInstance(JobInvokingProto.JobInvokingRequest request) {
-        JobInstanceOfExeService jobInstanceOfExeService = ContextBeanAware.getBean(JobInstanceOfExeService.class);
+        JobInstanceOfExeService jobInstanceOfExeService = SpringContextAware.getBean(JobInstanceOfExeService.class);
         JobInstance jobInstance = JobInstance.builder()
                 .id(request.getId())
                 .jobName(request.getJobName())

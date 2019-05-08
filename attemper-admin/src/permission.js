@@ -87,7 +87,8 @@ router.beforeEach(async(to, from, next) => {
           store.dispatch('user/resetToken').then()
           Message.error(error || 'Has Error')
           closeAllTabs()
-          next(`/login?redirect=${to.path}`)
+          // next(`/login?redirect=${to.path}`)
+          next(`/login`)
           NProgress.done()
         })
       }

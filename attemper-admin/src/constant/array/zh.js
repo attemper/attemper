@@ -257,11 +257,11 @@ export const requestMethods = [
 ]
 
 export const transferTitles = [
-  'pull',
-  'push'
+  '移出',
+  '移入'
 ]
 
 export const allocateTitles = [
-  'exclude',
-  'included'
+  '待分配',
+  '已分配'
 ]

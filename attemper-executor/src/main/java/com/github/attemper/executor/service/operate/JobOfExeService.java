@@ -1,9 +1,10 @@
 package com.github.attemper.executor.service.operate;
 
-import com.github.attemper.executor.service.BaseOfExeServiceAdapter;
 import com.github.attemper.common.constant.CommonConstants;
+import com.github.attemper.common.result.dispatch.job.FlowJob;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
+import com.github.attemper.executor.service.BaseOfExeServiceAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,10 @@ public class JobOfExeService extends BaseOfExeServiceAdapter {
 
     @Autowired
     private JobMapper mapper;
+
+    public FlowJob get(String jobName, String tenantId) {
+        return mapper.get(toJobNameMap(toTenantIdMap(tenantId), jobName));
+    }
 
     /**
      * get project by jobName and tenantId

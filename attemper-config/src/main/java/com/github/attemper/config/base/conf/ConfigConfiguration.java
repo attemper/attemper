@@ -1,7 +1,7 @@
 package com.github.attemper.config.base.conf;
 
 import com.github.attemper.config.base.aspect.MultiDataSourceAspect;
-import com.github.attemper.config.base.bean.ContextBeanAware;
+import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.dao.mapper.ApiLogMapper;
 import com.github.attemper.config.base.datasource.DataSourceConfig;
 import com.github.attemper.config.base.datasource.DataSourceProperties;
@@ -38,7 +38,7 @@ import org.springframework.context.annotation.Configuration;
         Swagger2Config.class,
 
         //bean factory bean
-        ContextBeanAware.class,
+        SpringContextAware.class,
 
         //log
         ApiLogService.class,

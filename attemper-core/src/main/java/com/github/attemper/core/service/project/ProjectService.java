@@ -1,7 +1,6 @@
 package com.github.attemper.core.service.project;
 
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.CommonParam;
 import com.github.attemper.common.param.dispatch.project.*;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.common.result.dispatch.project.ProjectInfo;
@@ -26,12 +25,8 @@ public class ProjectService extends BaseServiceAdapter {
     @Autowired
 	private ProjectMapper mapper;
 
-    /**
-     * @param commonParam
-     * @return
-     */
-	public List<Project> getAll(CommonParam commonParam){
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(commonParam);
+    public List<Project> getAll() {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(null);
         return getAll(paramMap);
     }
 
@@ -44,12 +39,8 @@ public class ProjectService extends BaseServiceAdapter {
         return targetList;
     }
 
-    /**
-     * @param saveParam
-     * @return
-     */
-    public Project save(ProjectSaveParam saveParam) {
-        Project project = toProject(saveParam);
+    public Project save(ProjectSaveParam param) {
+        Project project = toProject(param);
         Date now = new Date();
         project.setCreateTime(now);
         project.setUpdateTime(now);
@@ -57,12 +48,8 @@ public class ProjectService extends BaseServiceAdapter {
         return project;
     }
 
-    /**
-     * @param removeParam
-     * @return
-     */
-    public Void remove(ProjectRemoveParam removeParam) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(removeParam);
+    public Void remove(ProjectRemoveParam param) {
+        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
         mapper.delete(paramMap);
         return null;
     }
@@ -87,18 +74,18 @@ public class ProjectService extends BaseServiceAdapter {
 	    List<Project> projects =
                 sourceList.stream().filter(project -> project.getParentProjectName() == null).collect(Collectors.toList());
 	    if(projects.size() != 1){
-            throw new RTException(6570);
+            throw new RTException(6570, String.valueOf(projects.size()));
         }
         return projects.get(0);
     }
 
-    private Project toProject(ProjectSaveParam saveParam) {
+    private Project toProject(ProjectSaveParam param) {
         return Project.builder()
-                .projectName(saveParam.getProjectName())
-                .parentProjectName(saveParam.getParentProjectName())
-                .displayName(saveParam.getDisplayName())
-                .contextPath(saveParam.getContextPath())
-                .position(saveParam.getPosition())
+                .projectName(param.getProjectName())
+                .parentProjectName(param.getParentProjectName())
+                .displayName(param.getDisplayName())
+                .contextPath(param.getContextPath())
+                .position(param.getPosition())
                 .build();
     }
 
@@ -115,12 +102,12 @@ public class ProjectService extends BaseServiceAdapter {
         return null;
     }
 
-    public List<ProjectInfo> listInfos(ProjectGetParam param) {
+    public List<ProjectInfo> listInfo(ProjectGetParam param) {
         Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
-        return listInfos(paramMap);
+        return listInfo(paramMap);
     }
 
-    public List<ProjectInfo> listInfos(Map<String, Object> paramMap) {
-        return mapper.listInfos(paramMap);
+    public List<ProjectInfo> listInfo(Map<String, Object> paramMap) {
+        return mapper.listInfo(paramMap);
     }
 }

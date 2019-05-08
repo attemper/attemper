@@ -1,12 +1,11 @@
 package com.github.attemper.sys.controller;
 
-import com.github.attemper.sys.service.ResourceService;
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.EmptyParam;
 import com.github.attemper.common.param.sys.resource.ResourceRemoveParam;
 import com.github.attemper.common.param.sys.resource.ResourceSaveParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.sys.resource.Resource;
+import com.github.attemper.sys.service.ResourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -26,10 +25,9 @@ public class ResourceController {
 	private ResourceService service;
 
 	@ApiOperation("List resource tree")
-	@ApiImplicitParam(value = "EmptyParam", name = "param", dataType = "EmptyParam", required = true)
 	@GetMapping(APIPath.ResourcePath.TREE_LIST)
-	public CommonResult<List<Resource>> getTreeList(EmptyParam param) {
-		return CommonResult.putResult(service.getAll(param));
+	public CommonResult<List<Resource>> getTreeList() {
+		return CommonResult.putResult(service.getAll());
 	}
 
 	@ApiOperation("Add or update resource")

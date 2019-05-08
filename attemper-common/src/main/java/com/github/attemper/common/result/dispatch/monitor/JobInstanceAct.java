@@ -39,7 +39,7 @@ public class JobInstanceAct {
 
     protected Integer status;
 
-    protected String code;
+    protected String logKey;
 
     protected String logText;
 

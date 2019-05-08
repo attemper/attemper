@@ -2,7 +2,7 @@ package com.github.attemper.executor.camunda.history.event.impl;
 
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.result.dispatch.monitor.JobInstanceAct;
-import com.github.attemper.config.base.bean.ContextBeanAware;
+import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.executor.camunda.history.event.EndEventing;
 import com.github.attemper.executor.camunda.history.event.EventingAdapter;
 import com.github.attemper.executor.camunda.history.event.StartEventing;
@@ -19,7 +19,7 @@ public class HistoricActivityInstanceEventing extends EventingAdapter<HistoricAc
         JobInstanceAct jobInstanceAct = toJobInstanceAct(historyEvent);
         jobInstanceAct.setStatus(JobInstanceStatus.RUNNING.getStatus());
         jobInstanceAct.setStartTime(historyEvent.getStartTime());
-        JobInstanceOfExeService jobInstanceOfExeService = ContextBeanAware.getBean(JobInstanceOfExeService.class);
+        JobInstanceOfExeService jobInstanceOfExeService = SpringContextAware.getBean(JobInstanceOfExeService.class);
         jobInstanceOfExeService.addAct(jobInstanceAct);
     }
 
@@ -29,7 +29,7 @@ public class HistoricActivityInstanceEventing extends EventingAdapter<HistoricAc
         jobInstanceAct.setStatus(JobInstanceStatus.SUCCESS.getStatus());
         jobInstanceAct.setEndTime(historyEvent.getEndTime());
         jobInstanceAct.setDuration(historyEvent.getDurationInMillis());
-        JobInstanceOfExeService jobInstanceOfExeService = ContextBeanAware.getBean(JobInstanceOfExeService.class);
+        JobInstanceOfExeService jobInstanceOfExeService = SpringContextAware.getBean(JobInstanceOfExeService.class);
         jobInstanceOfExeService.updateAct(jobInstanceAct);
     }
 

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author ldang
  */
@@ -19,5 +21,5 @@ public class JobListParam extends PageSortParam {
 
     protected String displayName;
 
-    protected Integer[] status;
+    protected List<Integer> status;
 }

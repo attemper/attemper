@@ -6,11 +6,11 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
- * 获取应用上下文，从而获取bean
+ * get spring context
  * @author ldang
  */
 @Component
-public class ContextBeanAware implements ApplicationContextAware {
+public class SpringContextAware implements ApplicationContextAware {
 
     private static ApplicationContext context = null;
 
@@ -20,12 +20,36 @@ public class ContextBeanAware implements ApplicationContextAware {
     }
 
     /**
-     * 通过T.class来获取bean
+     * get bean by T.class
      * @param beanClass
      * @param <T>
      * @return
      */
     public static <T> T getBean(Class<T> beanClass){
         return context.getBean(beanClass);
+    }
+
+
+    /**
+     * get bean by name
+     *
+     * @param name bean name
+     * @return bean of object
+     */
+    public static Object getBean(String name) {
+        return context.getBean(name);
+    }
+
+    /**
+     * get bean by name and T.class
+     *
+     * @param beanClass
+     * @param name
+     * @param <T>
+     * @return
+     */
+    public static <T> T getBean(Class<T> beanClass, String name) {
+        Object bean = context.getBean(name);
+        return beanClass.isInstance(bean) ? (T) bean : null;
     }
 }

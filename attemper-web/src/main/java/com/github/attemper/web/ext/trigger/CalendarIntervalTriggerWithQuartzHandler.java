@@ -3,12 +3,12 @@ package com.github.attemper.web.ext.trigger;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.param.dispatch.trigger.sub.CalendarIntervalTriggerParam;
 import com.github.attemper.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
-import com.github.attemper.config.base.bean.ContextBeanAware;
+import com.github.attemper.config.base.bean.SpringContextAware;
+import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.config.scheduler.util.QuartzUtil;
 import com.github.attemper.core.dao.mapper.job.TriggerMapper;
 import com.github.attemper.core.ext.trigger.CalendarIntervalTriggerHandler;
 import com.github.attemper.sys.holder.TenantHolder;
-import com.xiaoleilu.hutool.bean.BeanUtil;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.Trigger;
 import org.quartz.impl.jdbcjobstore.Constants;
@@ -19,7 +19,7 @@ public class CalendarIntervalTriggerWithQuartzHandler extends CalendarIntervalTr
 
     @Override
     public void deleteTriggers(Map<String, Object> jobNameWithTenantIdMap) {
-        ContextBeanAware.getBean(TriggerMapper.class).deleteCalendarIntervalTriggers(jobNameWithTenantIdMap);
+        SpringContextAware.getBean(TriggerMapper.class).deleteCalendarIntervalTriggers(jobNameWithTenantIdMap);
     }
 
     @Override
@@ -33,12 +33,12 @@ public class CalendarIntervalTriggerWithQuartzHandler extends CalendarIntervalTr
             if (StringUtils.isBlank(item.getTimeZoneId()) || TimeZone.getTimeZone(item.getTimeZoneId()) == null) {
                 item.setTimeZoneId(TimeZone.getDefault().getID());
             }
-            Map<String, Object> map = BeanUtil.beanToMap(item);
+            Map<String, Object> map = BeanUtil.bean2Map(item);
             map.put(CommonConstants.jobName, jobName);
             map.put(CommonConstants.tenantId, TenantHolder.get().getId());
             mapList.add(map);
         });
-        ContextBeanAware.getBean(TriggerMapper.class).saveCalendarIntervalTriggers(mapList);
+        SpringContextAware.getBean(TriggerMapper.class).saveCalendarIntervalTriggers(mapList);
     }
 
     @Override
