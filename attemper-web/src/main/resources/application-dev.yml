@@ -22,7 +22,7 @@ app:
     context-path: ${app.scheduler.name}
     delayedInSecond: 5
   web:
-    enable-scheduling: true
+    enable-scheduling: false
   snow-flake:
     data-center-id: 0
     machine-id: 1
