@@ -45,19 +45,19 @@ export const statuses = [
 
 export const jobStatuses = [
   {
-    text: 'Enable',
+    label: 'Enable',
     value: 0
   },
   {
-    text: 'Disable',
+    label: 'Disable',
     value: 1
   },
   {
-    text: 'Transient',
+    label: 'Transient',
     value: 2
   },
   {
-    text: 'Disposible',
+    label: 'Disposible',
     value: 3
   }
 ]
