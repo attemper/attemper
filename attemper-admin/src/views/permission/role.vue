@@ -22,7 +22,7 @@
       </el-table-column>
       <el-table-column align="center" label="Operations">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">
+          <el-button type="primary" @click="handleEdit(scope)">
             {{ $t('permission.editPermission') }}
           </el-button>
           <el-button type="danger" size="small" @click="handleDelete(scope)">

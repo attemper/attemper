@@ -89,8 +89,8 @@
           filterable
           @change="handleChange"
         >
-          <el-button slot="left-footer" class="transfer-footer" size="small" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
-          <el-button slot="right-footer" class="transfer-footer" size="small" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
+          <el-button slot="left-footer" class="transfer-footer" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
+          <el-button slot="right-footer" class="transfer-footer" icon="el-icon-refresh" @click="generateData">{{ $t('actions.refresh') }}</el-button>
         </el-transfer>
       </div>
       <div v-show="editDialog.resource.visible">
