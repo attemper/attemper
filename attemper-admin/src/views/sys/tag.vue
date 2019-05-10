@@ -42,9 +42,9 @@
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="260px" class-name="small-padding">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
-          <el-button type="success" size="mini" @click="openUserDialog(scope.row)">{{ $t('sys.tag.actions.user') }}</el-button>
-          <el-button type="primary" size="mini" @click="openResourceDialog(scope.row)">{{ $t('sys.tag.actions.resource') }}</el-button>
+          <el-button type="primary" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
+          <el-button type="success" @click="openUserDialog(scope.row)">{{ $t('sys.tag.actions.user') }}</el-button>
+          <el-button type="primary" @click="openResourceDialog(scope.row)">{{ $t('sys.tag.actions.resource') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -133,7 +133,6 @@ import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 // import { parseTime } from '@/utils'
-import Cookies from 'js-cookie'
 
 export default {
   name: 'tag',
@@ -444,7 +443,7 @@ export default {
       )
     },
     loadConst() {
-      load(`./array/${Cookies.get('language')}.js`).then((array) => {
+      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
         this.tagTypes = array.tagTypes
         this.transferTitles = array.transferTitles
         this.allocateTitles = array.allocateTitles

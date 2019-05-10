@@ -81,16 +81,16 @@
       </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button type="primary" @click="handleUpdate(row)">
             Edit
           </el-button>
-          <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
+          <el-button v-if="row.status!='published'" type="success" @click="handleModifyStatus(row,'published')">
             Publish
           </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
+          <el-button v-if="row.status!='draft'" @click="handleModifyStatus(row,'draft')">
             Draft
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleModifyStatus(row,'deleted')">
+          <el-button v-if="row.status!='deleted'" type="danger" @click="handleModifyStatus(row,'deleted')">
             Delete
           </el-button>
         </template>

@@ -21,7 +21,7 @@
         </el-tab-pane>
         <el-tab-pane :label="$t('monitor.label.record')" name="record">
           <div style="margin-bottom: 10px;">
-            <el-button class="filter-item" size="mini" type="success" @click="toggleList">
+            <el-button class="filter-item" type="success" @click="toggleList">
               {{ showAll ? $t('actions.showCurrent') : $t('actions.showAll') }}
             </el-button>
             <el-popover
@@ -32,7 +32,6 @@
               <el-form
                 label-position="left"
                 label-width="100px"
-                size="mini"
                 style="height: 100%"
               >
                 <el-form-item :label="$t('monitor.columns.status')">
@@ -61,7 +60,7 @@
                   />
                 </el-form-item>-->
               </el-form>
-              <el-button v-if="showAll" slot="reference" class="filter-item" style="float: right;" size="mini" type="primary" @click="visible = !visible">{{ $t('actions.highSearch') }}</el-button>
+              <el-button v-if="showAll" slot="reference" class="filter-item" style="float: right;" type="primary" @click="visible = !visible">{{ $t('actions.highSearch') }}</el-button>
             </el-popover>
           </div>
           <el-table
@@ -122,7 +121,6 @@ import customElementTemplate from '../job/element-templates/custom'
 import Pagination from '@/components/Pagination'
 import { getVersionByDefinition } from './scripts/support'
 import { load } from '@/constant'
-import Cookies from 'js-cookie'
 import DateTimeGenerator from '@/components/DateTimeGenerator'
 
 export default {
@@ -365,7 +363,7 @@ export default {
       }
     },
     loadConst() {
-      load(`./array/${Cookies.get('language')}.js`).then((array) => {
+      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
         this.jobInstanceStatuses = array.jobInstanceStatuses
       })
     }

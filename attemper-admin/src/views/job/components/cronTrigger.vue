@@ -3,13 +3,13 @@
     <div v-for="(item,index) in triggerArray" :key="index" class="trigger-row-bottom">
       <el-row>
         <el-col :span="4">
-          <el-button icon="el-icon-plus" type="success" size="mini" @click="add" />
-          <el-button v-show="triggerArray.length>1" icon="el-icon-minus" type="danger" size="mini" @click="remove(index)" />
+          <el-button icon="el-icon-plus" type="success" @click="add" />
+          <el-button v-show="triggerArray.length>1" icon="el-icon-minus" type="danger" @click="remove(index)" />
         </el-col>
         <el-col :span="20">
-          <el-form :model="item" label-width="150px" label-position="left" size="mini">
+          <el-form :model="item" label-width="150px" label-position="left">
             <el-form-item :label="$t('job.trigger.title.triggerName')">
-              <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')" size="mini">
+              <el-input v-model="item.triggerName" :placeholder="$t('job.trigger.placeholder.triggerName')">
                 <el-button slot="prepend" @click="generateId(item)">
                   <svg-icon icon-class="random" />
                 </el-button>
@@ -17,7 +17,7 @@
               </el-input>
             </el-form-item>
             <el-form-item :label="$t('job.trigger.title.expression')">
-              <cron-input v-model="item.expression" @change="change($event, index)" @reset="reset($event, index)" />
+              <cron-input v-model="item.expression" :size="size" @change="change($event, index)" @reset="reset($event, index)" />
             </el-form-item>
             <el-form-item :label="$t('job.trigger.title.timeRange')">
               <el-col :span="11">
@@ -88,6 +88,11 @@ export default {
   data() {
     return {
       triggerArray: this.initTriggerArray
+    }
+  },
+  computed: {
+    size() {
+      return localStorage.getItem('size')
     }
   },
   methods: {

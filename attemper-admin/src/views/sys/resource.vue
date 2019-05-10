@@ -5,7 +5,7 @@
         <div slot="header">
           <span>{{ $t('sys.resource.title.left') }}</span>
           <span style="float: right;">
-            <el-input v-model="searchKey" :placeholder="$t('sys.resource.tip.searchKey')" size="mini" style="width: 170px;" @keyup.enter.native="search" />
+            <el-input v-model="searchKey" :placeholder="$t('sys.resource.tip.searchKey')" style="width: 170px;" @keyup.enter.native="search" />
           </span>
         </div>
         <el-tree
@@ -29,14 +29,12 @@
                 :style="{ marginRight: data.parentResourceName ? '3px' : '31px' }"
                 class="custom-add"
                 type="text"
-                size="mini"
                 icon="el-icon-plus"
                 @click="() => append(data)"
               />
               <el-button
                 v-show="data.parentResourceName"
                 type="text"
-                size="mini"
                 icon="el-icon-delete"
                 @click="() => remove(node, data)"
               />
@@ -97,7 +95,6 @@
 <script>
 import { treeListReq, saveReq, removeReq } from '@/api/sys/resource'
 import { load } from '@/constant'
-import Cookies from 'js-cookie'
 
 export default {
   name: 'resource',
@@ -236,7 +233,7 @@ export default {
       return data.resourceName.indexOf(value) !== -1 || data.displayName.indexOf(value) !== -1
     },
     loadConst() {
-      load(`./array/${Cookies.get('language')}.js`).then((array) => {
+      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
         this.resourceTypes = array.resourceTypes
       })
     }

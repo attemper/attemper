@@ -5,7 +5,7 @@
         <div slot="header">
           <span>{{ $t('job.project.title.left') }}</span>
           <span style="float: right;">
-            <el-input v-model="searchKey" :placeholder="$t('job.project.tip.searchKey')" size="mini" style="width: 170px;" @keyup.enter.native="search" />
+            <el-input v-model="searchKey" :placeholder="$t('job.project.tip.searchKey')" style="width: 170px;" @keyup.enter.native="search" />
           </span>
         </div>
         <el-tree
@@ -26,14 +26,12 @@
                 :style="{ marginRight: data.parentProjectName ? '3px' : '31px' }"
                 class="custom-add"
                 type="text"
-                size="mini"
                 icon="el-icon-plus"
                 @click="() => append(data)"
               />
               <el-button
                 v-show="data.parentProjectName"
                 type="text"
-                size="mini"
                 icon="el-icon-delete"
                 @click="() => remove(node, data)"
               />
@@ -96,7 +94,7 @@
             </el-table-column>
             <el-table-column :label="$t('actions.handle')" align="center" class-name="small-padding">
               <template slot-scope="scope">
-                <el-button type="danger" size="mini" @click="removeInfo(scope.row)">{{ $t('actions.remove') }}</el-button>
+                <el-button type="danger" @click="removeInfo(scope.row)">{{ $t('actions.remove') }}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -111,8 +109,8 @@
                 </el-select>
               </el-col>
               <el-col :span="4" :offset="2">
-                <el-button :disabled="!projectInfo.uri" type="success" size="mini" @click="saveInfo">{{ $t('actions.save') }}</el-button>
-                <el-button :disabled="!projectInfo.uri" type="primary" size="mini" @click="ping">Ping</el-button>
+                <el-button :disabled="!projectInfo.uri" type="success" @click="saveInfo">{{ $t('actions.save') }}</el-button>
+                <el-button :disabled="!projectInfo.uri" type="primary" @click="ping">Ping</el-button>
               </el-col>
             </el-row>
           </div>
@@ -126,7 +124,7 @@
 import { treeListReq, saveReq, removeReq, saveInfoReq, listInfoReq, removeInfoReq } from '@/api/job/project'
 import { pingReq } from '@/api/sys/tool'
 import { load } from '@/constant'
-import Cookies from 'js-cookie'
+
 const DEF_INSTANCE = {
   uri: null,
   type: 0
@@ -328,7 +326,7 @@ export default {
       this.projectInfo = Object.assign({}, val) || Object.assign({ projectName: this.project.projectName }, DEF_INSTANCE)
     },
     loadConst() {
-      load(`./array/${Cookies.get('language')}.js`).then((array) => {
+      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
         this.uriTypes = array.uriTypes
       })
     }

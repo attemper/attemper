@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="page.jobName" :placeholder="$t('job.columns.jobName')" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search" />
-      <el-input v-model="page.displayName" :placeholder="$t('job.columns.displayName')" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search" />
-      <el-select v-model="page.status" :placeholder="$t('monitor.columns.status')" multiple clearable collapse-tags class="filter-item" size="mini" style="width: 160px">
+      <el-input v-model="page.jobName" :placeholder="$t('job.columns.jobName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('job.columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-select v-model="page.status" :placeholder="$t('monitor.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
         <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>-->
-      <el-button v-waves class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-popover
         placement="bottom"
         trigger="click"
@@ -17,7 +17,6 @@
         <el-form
           label-position="left"
           label-width="100px"
-          size="mini"
           style="height: 100%"
         >
           <el-form-item :label="$t('monitor.columns.startTime')" style="margin-bottom: 5px;">
@@ -41,7 +40,7 @@
             />
           </el-form-item>-->
         </el-form>
-        <el-button slot="reference" class="filter-item" style="float: right;" size="mini" type="primary">{{ $t('actions.highSearch') }}</el-button>
+        <el-button slot="reference" class="filter-item" style="float: right;" type="primary">{{ $t('actions.highSearch') }}</el-button>
       </el-popover>
     </div>
 
@@ -95,7 +94,6 @@
 <script>
 import { listReq } from '@/api/monitor/realTime'
 import { load } from '@/constant'
-import Cookies from 'js-cookie'
 import common from './mixins/common'
 
 export default {
@@ -115,7 +113,7 @@ export default {
       })
     },
     loadConst() {
-      load(`./array/${Cookies.get('language')}.js`).then((array) => {
+      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
         this.jobInstanceStatuses = array.todoJobInstanceStatuses
         this.search()
       })

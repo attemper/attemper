@@ -1,21 +1,21 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="page.jobName" :placeholder="$t('job.columns.jobName')" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search" />
-      <el-input v-model="page.displayName" :placeholder="$t('job.columns.displayName')" style="width: 100px;" class="filter-item" size="mini" @keyup.enter.native="search" />
-      <el-select v-model="page.status" :placeholder="$t('job.columns.status')" multiple clearable collapse-tags class="filter-item" size="mini" style="width: 160px">
+      <el-input v-model="page.jobName" :placeholder="$t('job.columns.jobName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('job.columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-select v-model="page.status" :placeholder="$t('job.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
         <el-option v-for="item in jobStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>-->
-      <el-button v-waves class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
-      <el-button class="filter-item table-external-button" size="mini" type="success" icon="el-icon-plus" @click="add">{{ $t('actions.add') }}</el-button>
-      <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" size="mini" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
-      <el-button v-waves :disabled="!selections || !selections.length" class="filter-item table-external-button" size="mini" type="primary" @click="publish">
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
+      <el-button class="filter-item table-external-button" type="success" icon="el-icon-plus" @click="add">{{ $t('actions.add') }}</el-button>
+      <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
+      <el-button v-waves :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="publish">
         <svg-icon icon-class="publish" /> {{ $t('table.publish') }}
       </el-button>
-      <el-button style="float: right" :disabled="!selections || !selections.length" class="filter-item table-external-button" size="mini" type="danger" @click="manual">
+      <el-button style="float: right" :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" @click="manual">
         <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
       </el-button>
       <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>
@@ -55,7 +55,7 @@
       />
       <el-table-column :label="$t('job.columns.version')" align="center" width="80px">
         <template slot-scope="scope">
-          <el-button :type="scope.row.maxVersion ? 'success' : 'info'" size="mini" @click="openDesignDialog(scope.row)">{{ scope.row.maxVersion || '-' }}</el-button>
+          <el-button :type="scope.row.maxVersion ? 'success' : 'info'" @click="openDesignDialog(scope.row)">{{ scope.row.maxVersion || '-' }}</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -89,21 +89,18 @@
           <div style="padding-top: 6px;">
             <el-button
               type="primary"
-              size="mini"
               @click="openParamDialog(scope.row)"
             >
               {{ $t('job.actions.param') }}
             </el-button>
             <el-button
               type="success"
-              size="mini"
               @click="openTriggerDialog(scope.row)"
             >
               {{ $t('job.actions.trigger') }}
             </el-button>
             <el-button
               type="info"
-              size="mini"
               @click="openProjectDialog(scope.row)"
             >
               {{ $t('job.actions.project') }}
@@ -224,7 +221,7 @@
           </el-table-column>
           <el-table-column :label="$t('actions.handle')" align="center" min-width="120" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button :type="scope.row.allocated ? 'danger' : 'primary'" :icon="scope.row.allocated ? 'el-icon-minus' : 'el-icon-plus'" size="mini" @click="operateArg(scope.row)" />
+              <el-button :type="scope.row.allocated ? 'danger' : 'primary'" :icon="scope.row.allocated ? 'el-icon-minus' : 'el-icon-plus'" @click="operateArg(scope.row)" />
             </template>
           </el-table-column>
         </el-table>
@@ -246,7 +243,6 @@ import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 import JobInfoForm from './components/jobInfoForm'
-import Cookies from 'js-cookie'
 import CronTrigger from './components/cronTrigger'
 import CalendarOffsetTrigger from './components/calendarOffsetTrigger'
 import DailyIntervalTrigger from './components/dailyIntervalTrigger'
@@ -608,7 +604,7 @@ export default {
       this.selections = val
     },
     loadConst() {
-      load(`./array/${Cookies.get('language')}.js`).then((array) => {
+      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
         this.jobStatuses = array.jobStatuses
         this.milliSecondTimeUnits = array.milliSecondTimeUnits
         this.inDayTimeUnits = array.inDayTimeUnits

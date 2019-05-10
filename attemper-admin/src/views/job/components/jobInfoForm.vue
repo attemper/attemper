@@ -35,7 +35,6 @@
 
 <script>
 import { load } from '@/constant'
-import Cookies from 'js-cookie'
 
 export default {
   name: 'JobInfoForm',
@@ -81,7 +80,7 @@ export default {
       })
     },
     loadConst() {
-      load(`./array/${Cookies.get('language')}.js`).then((array) => {
+      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
         this.jobStatuses = array.jobStatuses
       })
     }

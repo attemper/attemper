@@ -16,7 +16,6 @@
         v-model="currentReversion"
         :placeholder="$t('job.columns.reversion') + '-' + $t('job.columns.version')"
         class="filter-item"
-        size="mini"
         style="width: 160px"
         @change="changeJob"
       >
@@ -28,19 +27,19 @@
       <span style="margin-left: 40px;">
         <el-tooltip :content="$t('actions.save')" effect="dark" placement="top-start">
           <span>
-            <el-button :disabled="job.maxReversion !== currentReversion" icon="el-icon-check" type="success" size="mini" @click="save" />
+            <el-button :disabled="job.maxReversion !== currentReversion" icon="el-icon-check" type="success" @click="save" />
           </span>
         </el-tooltip>
         <el-tooltip :content="$t('job.flowJob.tip.exchange')" effect="dark" placement="top">
           <span style="margin-left: 10px;">
-            <el-button :disabled="job.maxReversion === currentReversion" type="warning" size="mini" @click="exchange">
+            <el-button :disabled="job.maxReversion === currentReversion" type="warning" @click="exchange">
               <svg-icon icon-class="exchange" />
             </el-button>
           </span>
         </el-tooltip>
         <el-tooltip :content="$t('job.flowJob.tip.copy')" effect="dark" placement="top-start">
           <span style="margin-left: 10px;">
-            <el-button type="primary" size="mini" @click="openCopyDialog">
+            <el-button type="primary" @click="openCopyDialog">
               <svg-icon icon-class="copy" />
             </el-button>
           </span>

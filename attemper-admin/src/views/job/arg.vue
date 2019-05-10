@@ -50,7 +50,7 @@
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
+          <el-button type="primary" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
         </template>
       </el-table-column>
     </el-table>

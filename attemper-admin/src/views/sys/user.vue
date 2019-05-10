@@ -52,8 +52,8 @@
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
-          <el-button type="success" size="mini" @click="openTagDialog(scope.row)">{{ $t('sys.user.actions.tag') }}</el-button>
+          <el-button type="primary" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
+          <el-button type="success" @click="openTagDialog(scope.row)">{{ $t('sys.user.actions.tag') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -119,7 +119,6 @@ import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 // import { parseTime } from '@/utils'
-import Cookies from 'js-cookie'
 
 export default {
   name: 'user',
@@ -389,7 +388,7 @@ export default {
       )
     },
     loadConst() {
-      load(`./array/${Cookies.get('language')}.js`).then((array) => {
+      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
         this.statuses = array.statuses
         this.transferTitles = array.transferTitles
         this.allocateTitles = array.allocateTitles
