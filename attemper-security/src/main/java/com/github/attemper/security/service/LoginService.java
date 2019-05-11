@@ -1,12 +1,18 @@
 package com.github.attemper.security.service;
 
-import com.github.attemper.security.ext.service.JWTService;
-import com.github.attemper.sys.service.UserService;
-import com.github.attemper.common.enums.UserStatus;
+import com.github.attemper.common.enums.TenantStatus;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.sys.login.LoginParam;
+import com.github.attemper.common.param.sys.tenant.TenantGetParam;
+import com.github.attemper.common.result.sys.login.LoginInfo;
 import com.github.attemper.common.result.sys.login.LoginResult;
-import com.github.attemper.common.result.sys.user.User;
+import com.github.attemper.common.result.sys.resource.Resource;
+import com.github.attemper.common.result.sys.tag.Tag;
+import com.github.attemper.common.result.sys.tenant.Tenant;
+import com.github.attemper.sys.ext.service.JWTService;
+import com.github.attemper.sys.service.BaseServiceAdapter;
+import com.github.attemper.sys.service.TenantService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,41 +22,42 @@ import java.util.List;
  * @author ldang
  */
 @Service
-public class LoginService extends BaseSecurityService {
+public class LoginService extends BaseServiceAdapter {
 
     @Autowired
     private JWTService jwtService;
 
     @Autowired
-    private UserService userService;
+    private TenantService tenantService;
 
     public LoginResult login(LoginParam param) {
-        User user = toUser(param);
-        user.setTenantId(injectTenantId());
-        List<User> userList = userService.login(user);
-        if (userList.isEmpty()) {
-            throw new RTException(1300, user.getUserName());
+        Tenant tenant = tenantService.get(new TenantGetParam(param.getUserName()));
+        if (tenant == null) {
+            throw new RTException(1300, tenant.getUserName());
+        } else if (!StringUtils.equals(tenant.getPassword(), param.getPassword())) {
+            throw new RTException(1301, tenant.getUserName());
         }
-        if (userList.size() > 1) {
-            throw new RTException(1300, user.getUserName());
+        if (tenant.getStatus() == TenantStatus.FROZEN.getStatus()) {
+            throw new RTException(1302, tenant.getUserName());
+        } else if (tenant.getStatus() == TenantStatus.DELETED.getStatus()) {
+            throw new RTException(1303, tenant.getUserName());
         }
-        user = userList.get(0);
-        if (user.getStatus() == UserStatus.FROZEN.getStatus()) {
-            throw new RTException(1302, user.getUserName());
-        }
-        if (user.getStatus() == UserStatus.DELETED.getStatus()) {
-            throw new RTException(1303, user.getUserName());
-        }
+        tenant.setPassword(null);
         return LoginResult.builder()
-                .token(jwtService.createToken(user))
-                .user(user)
+                .token(jwtService.createToken(tenant))
+                .tenant(tenant)
                 .build();
     }
 
-    private User toUser(LoginParam loginParam) {
-        return User.builder()
-                .userName(loginParam.getUserName())
-                .password(loginParam.getPassword())
+    public LoginInfo getInfo() {
+        TenantGetParam getParam = new TenantGetParam(injectTenantId());
+        Tenant tenant = tenantService.get(getParam);
+        List<Tag> tags = tenantService.getTags(getParam);
+        List<Resource> resources = tenantService.getResources(getParam);
+        return LoginInfo.builder()
+                .tenant(tenant)
+                .resources(resources)
+                .tags(tags)
                 .build();
     }
 }

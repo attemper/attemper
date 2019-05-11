@@ -12,6 +12,8 @@ public interface BaseMapper<T> {
 
     void update(T t);
 
+    void save(T t);
+
     T get(Map<String, Object> paramMap);
 
     List<T> list(Map<String, Object> paramMap);

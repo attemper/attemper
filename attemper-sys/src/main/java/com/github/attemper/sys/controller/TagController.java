@@ -1,12 +1,12 @@
 package com.github.attemper.sys.controller;
 
-import com.github.attemper.sys.service.TagService;
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.param.sys.tag.*;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tag.Tag;
-import com.github.attemper.common.result.sys.user.User;
+import com.github.attemper.common.result.sys.tenant.Tenant;
+import com.github.attemper.sys.service.TagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -63,16 +63,16 @@ public class TagController {
 
 	@ApiOperation("Get users of tag")
 	@ApiImplicitParam(value = "TagGetParam", name = "param", dataType = "TagGetParam", required = true)
-	@GetMapping(APIPath.TagPath.USER_LIST)
-	public CommonResult<List<User>> getUsers(TagGetParam param) {
-		return CommonResult.putResult(service.getUsers(param));
+	@GetMapping(APIPath.TagPath.TENANT_LIST)
+	public CommonResult<List<Tenant>> getUsers(TagGetParam param) {
+		return CommonResult.putResult(service.getTenants(param));
 	}
 
 	@ApiOperation("Update users of tag")
-	@ApiImplicitParam(value = "TagUserUpdateParam", name = "param", dataType = "TagUserUpdateParam", required = true)
-	@PutMapping(APIPath.TagPath.USER_UPDATE)
-	public CommonResult<Void> updateTagUsers(@RequestBody TagUserUpdateParam param) {
-		return CommonResult.putResult(service.updateTagUsers(param));
+	@ApiImplicitParam(value = "TagTenantUpdateParam", name = "param", dataType = "TagTenantUpdateParam", required = true)
+	@PutMapping(APIPath.TagPath.TENANT_UPDATE)
+	public CommonResult<Void> updateTagTenants(@RequestBody TagTenantUpdateParam param) {
+		return CommonResult.putResult(service.updateTagTenants(param));
     }
 
 	@ApiOperation("Add resources of tag")

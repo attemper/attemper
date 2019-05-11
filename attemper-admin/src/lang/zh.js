@@ -116,83 +116,52 @@ export default {
   sys: {
     tenant: {
       columns: {
-        id: '编号',
-        name: '名称',
-        sign: '认证码',
-        admin: '管理员'
-      },
-      rules: {
-        id: '租户编号不能为空',
-        name: '租户名称不能为空',
-        admin: '管理员不能为空'
-      },
-      placeholder: {
-        id: '请输入租户编号',
-        name: '请输入租户名称',
-        admin: '请选择管理员'
-      },
-      oper: {
-        instance: '应用系统地址列表'
-      }
-    },
-    user: {
-      columns: {
-        userName: '用户名',
+        userName: '编号',
         displayName: '中文名',
         password: '密码',
         email: '邮箱',
         mobile: '手机号',
-        status: '状态'
+        status: '状态',
+        sign: '认证码'
       },
       rules: {
-        userName: '用户名不能为空',
-        displayName: '中文名不能为空',
-        email: '邮箱非法',
-        mobile: '手机号长度必须为11位'
+        userName: '租户编号不能为空',
+        displayName: '租户中文名不能为空'
       },
       placeholder: {
-        userName: '请输入用户名',
-        displayName: '请输入中文名',
+        userName: '请输入租户编号',
+        displayName: '请输入租户中文名',
         password: '请输入密码',
         email: '请输入邮箱',
         mobile: '请输入手机号'
-      },
-      tip: {
-        tag: '分配标签',
-        tagFilterTip: '标签名称或中文名称'
-      },
-      actions: {
-        tag: '标签'
       }
     },
     tag: {
       columns: {
-        tagName: '标签名称',
+        tagName: '角色名称',
         displayName: '中文名称',
-        tagType: '标签类型',
         remark: '备注'
       },
       rules: {
-        tagName: '标签名称不能为空',
-        displayName: '中文名不能为空',
-        tagType: '标签类型不能为空'
+        tagName: '角色名称不能为空',
+        displayName: '中文名不能为空'
       },
       placeholder: {
-        tagName: '请输入标签名称',
+        tagName: '请输入角色名称',
         displayName: '请输入中文名',
         remark: '请输入备注'
       },
       tip: {
-        user: '分配用户',
+        tenant: '分配租户',
         resource: '分配资源',
-        userFilterTip: '用户名或中文名称'
+        tenantFilterTip: '租户编号或中文名称'
       },
       actions: {
-        user: '用户',
+        tenant: '租户',
         resource: '资源'
       },
       label: {
-        allocateUser: '分配用户',
+        allocateTenant: '分配租户',
         allocateResource: '分配资源'
       }
     },

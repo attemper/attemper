@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TenantListParam extends PageSortParam {
 
-    protected String id;
+    protected String userName;
 
-    protected String name;
+    protected String displayName;
 
 }

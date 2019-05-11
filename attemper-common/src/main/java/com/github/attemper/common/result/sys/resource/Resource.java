@@ -38,6 +38,4 @@ public class Resource {
 
 	protected String extAttr;
 
-	protected String tenantId;
-
 }

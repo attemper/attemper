@@ -1,11 +1,11 @@
-package com.github.attemper.security.ext.service;
+package com.github.attemper.sys.ext.service;
 
-import com.github.attemper.security.exception.JWTDecodedException;
-import com.github.attemper.security.exception.JWTExpiredException;
-import com.github.attemper.security.ext.annotation.JWTStrategyType;
-import com.github.attemper.security.ext.jwt.JWTStrategy;
-import com.github.attemper.security.ext.jwt.jjwt.JJWTStrategy;
-import com.github.attemper.common.result.sys.user.User;
+import com.github.attemper.common.result.sys.tenant.Tenant;
+import com.github.attemper.sys.exception.JWTDecodedException;
+import com.github.attemper.sys.exception.JWTExpiredException;
+import com.github.attemper.sys.ext.annotation.JWTStrategyType;
+import com.github.attemper.sys.ext.jwt.JWTStrategy;
+import com.github.attemper.sys.ext.jwt.jjwt.JJWTStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,15 +44,15 @@ public class JWTService {
         }
     }
 
-    public String createToken(User user){
-        return jwtStrategy.createToken(expireDuration, user);
+    public String createToken(Tenant tenant) {
+        return jwtStrategy.createToken(expireDuration, tenant);
     }
 
-    public User parseTokenToUser(String token) throws JWTExpiredException, JWTDecodedException {
-        return jwtStrategy.parseTokenToUser(token);
+    public Tenant parseToken(String token) throws JWTExpiredException, JWTDecodedException {
+        return jwtStrategy.parseToken(token);
     }
 
-    public boolean verify(String token, User user){
-        return jwtStrategy.verify(token, user);
+    public boolean verify(String token, Tenant tenant) {
+        return jwtStrategy.verify(token, tenant);
     }
 }

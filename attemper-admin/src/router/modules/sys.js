@@ -23,16 +23,6 @@ const sysRouter = {
     }
   },
   {
-    path: 'user',
-    component: () => import('@/views/sys/user'),
-    name: 'user',
-    meta: {
-      title: 'user',
-      icon: 'user',
-      noCache: false
-    }
-  },
-  {
     path: 'tag',
     component: () => import('@/views/sys/tag'),
     name: 'tag',

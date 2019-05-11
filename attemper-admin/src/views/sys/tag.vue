@@ -35,15 +35,10 @@
           <span>{{ scope.row.displayName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('sys.tag.columns.tagType')" align="center" width="100">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.tagType | tagTypeFilter">{{ formatTagType(scope.row.tagType) }}</el-tag>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="260px" class-name="small-padding">
         <template slot-scope="scope">
           <el-button type="primary" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
-          <el-button type="success" @click="openUserDialog(scope.row)">{{ $t('sys.tag.actions.user') }}</el-button>
+          <el-button type="success" @click="openTenantDialog(scope.row)">{{ $t('sys.tag.actions.tenant') }}</el-button>
           <el-button type="primary" @click="openResourceDialog(scope.row)">{{ $t('sys.tag.actions.resource') }}</el-button>
         </template>
       </el-table-column>
@@ -51,7 +46,7 @@
 
     <pagination v-show="page.total>0" :total="page.total" :page.sync="page.currentPage" :limit.sync="page.pageSize" @pagination="search" />
 
-    <el-dialog :title="editDialog.title" :visible.sync="editDialog.base.visible || editDialog.user.visible || editDialog.resource.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false" :before-close="close">
+    <el-dialog :title="editDialog.title" :visible.sync="editDialog.base.visible || editDialog.tenant.visible || editDialog.resource.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false" :before-close="close">
       <div v-show="editDialog.base.visible">
         <el-form ref="form" :rules="formRules" :model="tag" label-position="right" label-width="150px" class="form-layout">
           <el-form-item :label="$t('sys.tag.columns.tagName')" prop="tagName">
@@ -59,11 +54,6 @@
           </el-form-item>
           <el-form-item :label="$t('sys.tag.columns.displayName')" prop="displayName">
             <el-input v-model="tag.displayName" :placeholder="$t('sys.tag.placeholder.displayName')" />
-          </el-form-item>
-          <el-form-item :label="$t('sys.tag.columns.tagType')">
-            <el-select v-model="tag.tagType">
-              <el-option v-for="item in tagTypes" :key="item.label" :value="item.value" :label="item.label" />
-            </el-select>
           </el-form-item>
           <el-form-item :label="$t('sys.tag.columns.remark')">
             <el-input v-model="tag.remark" :autosize="{ minRows: 1, maxRows: 4}" :placeholder="$t('sys.tag.placeholder.remark')" type="textarea" />
@@ -74,7 +64,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <div v-show="editDialog.user.visible" class="custom-transfer">
+      <div v-show="editDialog.tenant.visible" class="custom-transfer">
         <el-transfer
           v-model="targetKeys"
           :titles="allocateTitles"
@@ -82,7 +72,7 @@
           :format="{ noChecked: '${total}', hasChecked: '${checked}/${total}' }"
           :props="{ key: 'userName', label: 'displayName' }"
           :data="transferData"
-          :filter-placeholder="$t('sys.tag.tip.userFilterTip')"
+          :filter-placeholder="$t('sys.tag.tip.tenantFilterTip')"
           :render-content="renderFunc"
           class="transfer-class"
           style="text-align: left; display: inline-block;"
@@ -126,9 +116,9 @@
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq, getUsersReq, updateTagUserReq, getResourcesReq, updateTagResourceReq } from '@/api/sys/tag'
+import { listReq, getReq, removeReq, addReq, updateReq, getTenantsReq, updateTagTenantReq, getResourcesReq, updateTagResourceReq } from '@/api/sys/tag'
 import { treeListReq } from '@/api/sys/resource'
-import * as userApi from '@/api/sys/user'
+import * as tenantApi from '@/api/sys/tenant'
 import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
@@ -138,16 +128,6 @@ export default {
   name: 'tag',
   components: { Pagination },
   directives: { waves },
-  filters: {
-    tagTypeFilter(tagType) {
-      const tagTypeMap = {
-        0: 'success',
-        1: 'warning',
-        2: 'danger'
-      }
-      return tagTypeMap[tagType]
-    }
-  },
   data() {
     return {
       tableKey: 0,
@@ -167,7 +147,7 @@ export default {
         base: {
           visible: false
         },
-        user: {
+        tenant: {
           visible: false
         },
         resource: {
@@ -188,7 +168,6 @@ export default {
         status: 0,
         remark: null
       },
-      tagTypes: [],
       transferData: [],
       targetKeys: [],
       transferTitles: [],
@@ -239,11 +218,10 @@ export default {
         this.tag = {
           tagName: null,
           displayName: null,
-          tagType: 0,
           remark: null
         }
       } else {
-        getReq({ tagName: this.selections[0].tagName, tagType: this.selections[0].tagType }).then(res => {
+        getReq({ tagName: this.selections[0].tagName }).then(res => {
           this.tag = res.data.result
         })
       }
@@ -284,11 +262,10 @@ export default {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const tagType = this.selections[0].tagType
       const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + tagNames.join('<br>') + '</span></p>'
       this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
         .then(() => {
-          removeReq({ tagNames: tagNames, tagType: tagType }).then(res => {
+          removeReq({ tagNames: tagNames }).then(res => {
             this.$message.success(res.data.msg)
             this.search()
           })
@@ -304,23 +281,14 @@ export default {
     handleSelectionChange(val) {
       this.selections = val
     },
-    formatTagType(item) {
-      for (let i = 0; i < this.tagTypes.length; i++) {
-        const option = this.tagTypes[i]
-        if (option.value === item) {
-          return option.label
-        }
-      }
-      return item
-    },
     close() {
       this.editDialog.base.visible =
-        this.editDialog.user.visible =
+        this.editDialog.tenant.visible =
           this.editDialog.resource.visible = false
     },
-    openUserDialog(row) {
-      this.editDialog.user.visible = true
-      this.editDialog.title = this.$t('sys.tag.tip.user')
+    openTenantDialog(row) {
+      this.editDialog.tenant.visible = true
+      this.editDialog.title = this.$t('sys.tag.tip.tenant')
       this.selectRow(row)
       this.generateData()
     },
@@ -345,7 +313,7 @@ export default {
           }
         }
         this.createTree(sourceList, root)
-        getResourcesReq({ tagName: this.selections[0].tagName, tagType: this.selections[0].tagType }).then(res => {
+        getResourcesReq({ tagName: this.selections[0].tagName }).then(res => {
           res.data.result.forEach(resource => {
             this.checkAllocatedResource(resource.resourceName, root.children)
           })
@@ -381,7 +349,6 @@ export default {
     saveResources() {
       const data = {
         tagName: this.selections[0].tagName,
-        tagType: this.selections[0].tagType,
         resourceNames: this.$refs.tree.getCheckedKeys()
       }
       updateTagResourceReq(data).then(res => {
@@ -396,7 +363,7 @@ export default {
         currentPage: 1,
         pageSize: 1000
       }
-      userApi.listReq(page).then(res => {
+      tenantApi.listReq(page).then(res => {
         res.data.result.list.forEach(item => {
           this.transferData.push({
             userName: item.userName,
@@ -405,7 +372,7 @@ export default {
           })
         })
       })
-      getUsersReq({ tagName: this.selections[0].tagName, tagType: this.selections[0].tagType }).then(res => {
+      getTenantsReq({ tagName: this.selections[0].tagName }).then(res => {
         res.data.result.forEach(item => {
           this.targetKeys.push(item.userName)
         })
@@ -429,10 +396,9 @@ export default {
       }
       const data = {
         tagName: this.selections[0].tagName,
-        tagType: this.selections[0].tagType,
         userNames: this.targetKeys
       }
-      updateTagUserReq(data).then(res => {
+      updateTagTenantReq(data).then(res => {
         this.$message.success(res.data.msg)
       })
     },
@@ -444,7 +410,6 @@ export default {
     },
     loadConst() {
       load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.tagTypes = array.tagTypes
         this.transferTitles = array.transferTitles
         this.allocateTitles = array.allocateTitles
       })

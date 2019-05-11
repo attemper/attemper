@@ -17,13 +17,21 @@ import java.util.Date;
 @AllArgsConstructor
 public class Tenant{
 
-	protected String id;
+	protected String userName;
 
-	protected String name;
+	protected String displayName;
+
+	protected String password;
+
+	protected String email;
+
+	protected String mobile;
+
+	protected Integer status;
 
 	protected String sign;
 
-	protected String admin;
+	protected Boolean admin;
 
 	protected Date createTime;
 

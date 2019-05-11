@@ -1,6 +1,6 @@
 package com.github.attemper.common.result.sys.login;
 
-import com.github.attemper.common.result.sys.user.User;
+import com.github.attemper.common.result.sys.tenant.Tenant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +19,6 @@ public class LoginResult{
     protected String token;
 
     /** 登录用户的信息 */
-    protected User user;
+    protected Tenant tenant;
 
 }

@@ -1,18 +1,3 @@
-export const tagTypes = [
-  {
-    value: 0,
-    label: '角色'
-  },
-  {
-    value: 1,
-    label: '用户组'
-  },
-  {
-    value: 2,
-    label: '岗位'
-  }
-]
-
 export const resourceTypes = [
   {
     value: 0,

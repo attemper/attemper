@@ -3,7 +3,7 @@ package com.github.attemper.common.enums;
 /**
  * @author ldang
  */
-public enum UserStatus {
+public enum TenantStatus {
 
     NORMAL(0),
 
@@ -19,7 +19,7 @@ public enum UserStatus {
 
     private int status;
 
-    UserStatus(int status) {
+    TenantStatus(int status) {
         this.status = status;
     }
 
@@ -27,10 +27,10 @@ public enum UserStatus {
         return status;
     }
 
-    public static UserStatus get(int status) {
-        for (UserStatus _userStatus : UserStatus.values()) {
-            if (_userStatus.getStatus() == status) {
-                return _userStatus;
+    public static TenantStatus get(int status) {
+        for (TenantStatus item : TenantStatus.values()) {
+            if (item.getStatus() == status) {
+                return item;
             }
         }
         return null;

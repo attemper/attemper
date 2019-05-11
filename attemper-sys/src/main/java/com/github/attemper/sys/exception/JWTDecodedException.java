@@ -1,4 +1,4 @@
-package com.github.attemper.security.exception;
+package com.github.attemper.sys.exception;
 
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -6,7 +6,7 @@ import org.apache.shiro.authc.AuthenticationException;
 
 
 /**
- * jwt解码异常
+ * jwt decode exception
  * @author ldang
  */
 public class JWTDecodedException extends AuthenticationException {

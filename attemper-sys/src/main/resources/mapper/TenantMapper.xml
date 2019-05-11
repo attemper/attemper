@@ -7,34 +7,42 @@
     <select id="get" parameterType="string" resultType="com.github.attemper.common.result.sys.tenant.Tenant">
         select * from ${tablePrefix}tenant t
         <where>
-            and ID = #{1, jdbcType=VARCHAR}
+            and USER_NAME = #{1, jdbcType=VARCHAR}
         </where>
     </select>
 
-    <select id="getByAdmin" parameterType="string" resultType="com.github.attemper.common.result.sys.tenant.Tenant">
-        select * from ${tablePrefix}tenant t
-        <where>
-            and ADMIN = #{1, jdbcType=VARCHAR}
-        </where>
+    <select id="getAdmin" resultType="com.github.attemper.common.result.sys.tenant.Tenant">
+        select * from
+        ${tablePrefix}tenant t
+        where ADMIN = 1
     </select>
 
     <select id="list" parameterType="map" resultType="com.github.attemper.common.result.sys.tenant.Tenant">
         select *
         from ${tablePrefix}tenant
         <where>
-            <if test="id != null">
-                and lower(ID) like concat('%', lower(#{id, jdbcType=VARCHAR}), '%')
+            <if test="userName != null">
+                and lower(USER_NAME) like concat('%', lower(#{userName, jdbcType=VARCHAR}), '%')
             </if>
-            <if test="name != null">
-                and lower(NAME) like concat('%', lower(#{name, jdbcType=VARCHAR}), '%')
+            <if test="displayName != null">
+                and lower(DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
             </if>
-            <if test="matchAdmin != null">
-                and ADMIN = #{matchAdmin, jdbcType=VARCHAR}
+            <if test="email != null">
+                and lower(EMAIL) like concat('%', lower(#{email, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="mobile != null">
+                and lower(MOBILE) like concat('%', lower(#{mobile, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="status != null">
+                and STATUS = #{status, jdbcType=INTEGER}
+            </if>
+            <if test="matchUserName != null">
+                and USER_NAME = #{matchUserName, jdbcType=VARCHAR}
             </if>
         </where>
         <choose>
             <when test="sort == null">
-                order by ID ${direction}
+                order by USER_NAME ${direction}
             </when>
             <otherwise>
                 order by ${sort} ${direction}
@@ -46,13 +54,17 @@
         <selectKey keyProperty="count" resultType="int" order="BEFORE">
             select count(*)
             from ${tablePrefix}tenant
-            where ID = #{id, jdbcType=VARCHAR}
+            where USER_NAME = #{userName, jdbcType=VARCHAR}
         </selectKey>
         <choose>
             <when test="count == 0">
                 INSERT INTO ${tablePrefix}tenant (
-                ID,
-                NAME,
+                USER_NAME,
+                DISPLAY_NAME,
+                PASSWORD,
+                EMAIL,
+                MOBILE,
+                STATUS,
                 SIGN,
                 ADMIN,
                 CREATE_TIME,
@@ -60,8 +72,12 @@
                 )
                 VALUES
                 (
-                #{id, jdbcType=VARCHAR},
-                #{name, jdbcType=VARCHAR},
+                #{userName, jdbcType=VARCHAR},
+                #{displayName, jdbcType=VARCHAR},
+                #{password, jdbcType=VARCHAR},
+                #{email, jdbcType=VARCHAR},
+                #{mobile, jdbcType=VARCHAR},
+                #{status, jdbcType=INTEGER},
                 #{sign, jdbcType=VARCHAR},
                 #{admin, jdbcType=VARCHAR},
                 #{createTime, jdbcType=TIMESTAMP},
@@ -72,11 +88,17 @@
                 UPDATE
                 ${tablePrefix}tenant
                 SET
-                NAME = #{name, jdbcType=VARCHAR},
+                DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
+                <if test="password != null">
+                    PASSWORD = #{password, jdbcType=VARCHAR},
+                </if>
+                EMAIL = #{email, jdbcType=VARCHAR},
+                MOBILE = #{mobile, jdbcType=VARCHAR},
+                STATUS = #{status, jdbcType=INTEGER},
                 SIGN = #{sign, jdbcType=VARCHAR},
                 ADMIN = #{admin, jdbcType=VARCHAR},
                 UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP}
-                WHERE ID = #{id, jdbcType=VARCHAR}
+                WHERE USER_NAME = #{userName, jdbcType=VARCHAR}
             </otherwise>
         </choose>
     </insert>
@@ -84,11 +106,67 @@
     <delete id="delete">
         delete from ${tablePrefix}tenant
         <where>
-            ID in
-            <foreach item="id" collection="list" open="(" separator="," close=")">
-                #{id}
+            USER_NAME in
+            <foreach item="userName" collection="list" open="(" separator="," close=")">
+                #{userName}
             </foreach>
         </where>
     </delete>
 
+    <select id="getResources" parameterType="map" resultType="com.github.attemper.common.result.sys.resource.Resource">
+        SELECT r.*
+        FROM ${tablePrefix}resource r
+        JOIN ${tablePrefix}tag_resource tr
+        ON r.RESOURCE_NAME = tr.RESOURCE_NAME
+        JOIN ${tablePrefix}tag ta
+        ON tr.TAG_NAME = ta.TAG_NAME
+        JOIN ${tablePrefix}tag_tenant tt
+        ON ta.TAG_NAME = tt.TAG_NAME
+        JOIN ${tablePrefix}tenant t
+        ON tt.USER_NAME = t.USER_NAME
+        <where>
+            <include refid="condUserName"/>
+        </where>
+    </select>
+
+    <select id="getTags" parameterType="map" resultType="com.github.attemper.common.result.sys.tag.Tag">
+        select ta.*
+        from ${tablePrefix}tag ta
+        join ${tablePrefix}tag_tenant tt
+        on tt.TAG_NAME = ta.TAG_NAME
+        join ${tablePrefix}tenant t
+        on t.USER_NAME = tt.USER_NAME
+        <where>
+            <include refid="condUserName"/>
+        </where>
+        order by t.USER_NAME
+    </select>
+
+    <delete id="deleteTags" parameterType="map">
+        DELETE FROM t USING ${tablePrefix}tag_tenant t
+        <where>
+            <include refid="condUserName"/>
+        </where>
+    </delete>
+
+    <insert id="saveTags">
+        insert into ${tablePrefix}tag_tenant
+        (
+        TAG_NAME,
+        USER_NAME
+        )
+        values
+        <foreach item="tagName" collection="tagNames" separator=",">
+            (
+            #{tagName, jdbcType=VARCHAR},
+            #{userName, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <sql id="condUserName">
+        <if test="userName != null">
+            and t.USER_NAME = #{userName, jdbcType=VARCHAR}
+        </if>
+    </sql>
 </mapper>

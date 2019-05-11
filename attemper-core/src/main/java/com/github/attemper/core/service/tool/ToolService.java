@@ -1,5 +1,6 @@
 package com.github.attemper.core.service.tool;
 
+import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class ToolService {
     public Boolean ping(String uri, Integer type) {
         try {
             if (uri == null) {
-                throw new RTException(500, "uri is null");
+                throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, "uri is null");
             }
             log.debug(uri);
             uri = uri.replace("https://", "").replace("http://", "");
@@ -51,7 +52,7 @@ public class ToolService {
             }
             return true;
         } catch (Exception e) {
-            throw new RTException(500, e);
+            throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
         }
     }
 }

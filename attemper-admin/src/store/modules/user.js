@@ -1,11 +1,11 @@
-import { login, getInfo } from '@/api/sys/user'
+import { login, getInfo } from '@/api/sys/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 import { closeAllTabs } from '@/utils/tools'
 
 const state = {
   token: getToken(),
-  name: '',
+  userName: '',
   displayName: '',
   avatar: '',
   introduction: '',
@@ -19,8 +19,8 @@ const mutations = {
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_USER_NAME: (state, userName) => {
+    state.userName = userName
   },
   SET_DISPLAY_NAME: (state, displayName) => {
     state.displayName = displayName
@@ -42,8 +42,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(username.trim(), password).then(response => {
         const result = response.data.result
-        commit('SET_NAME', result.user.userName)
-        commit('SET_DISPLAY_NAME', result.user.displayName)
+        commit('SET_USER_NAME', result.tenant.userName)
+        commit('SET_DISPLAY_NAME', result.tenant.displayName)
         commit('SET_TOKEN', result.token)
         setToken(result.token)
         resolve()
@@ -62,14 +62,12 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
         const { result } = data
-        commit('SET_NAME', result.user.userName)
-        commit('SET_DISPLAY_NAME', result.user.displayName)
+        commit('SET_USER_NAME', result.tenant.userName)
+        commit('SET_DISPLAY_NAME', result.tenant.displayName)
         const roleNames = []
         if (result.tags && result.tags.length) {
           result.tags.forEach(tag => {
-            if (tag.tagType === 0) {
-              roleNames.push(tag.tagName)
-            }
+            roleNames.push(tag.tagName)
           })
           commit('SET_ROLES', roleNames)
           sessionStorage.roleNames = JSON.stringify(roleNames)

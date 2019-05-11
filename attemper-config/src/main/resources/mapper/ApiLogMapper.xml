@@ -6,7 +6,6 @@
         INSERT INTO api_log (
             ID,
             TENANT_ID,
-            USER_NAME,
             CLASS_NAME,
             METHOD,
             TAG,
@@ -24,7 +23,6 @@
         (
             #{id, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR},
-            #{userName, jdbcType=VARCHAR},
             #{className, jdbcType=VARCHAR},
             #{method, jdbcType=VARCHAR},
             #{tag, jdbcType=VARCHAR},

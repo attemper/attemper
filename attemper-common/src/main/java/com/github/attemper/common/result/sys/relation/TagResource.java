@@ -17,8 +17,6 @@ public class TagResource {
 
 	protected String tagName;
 
-	protected String tagType;
-
 	protected String resourceName;
 
 	protected String tenantId;

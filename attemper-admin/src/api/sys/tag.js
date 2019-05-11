@@ -43,25 +43,29 @@ export const getReq = (params) => {
   })
 }
 
-export const getUsersReq = (params) => {
+const TENANT_PATH = '/tenant'
+
+export const getTenantsReq = (params) => {
   return request({
-    url: APIPath.SYS + SubPath + '/user',
+    url: APIPath.SYS + SubPath + TENANT_PATH,
     method: 'get',
     params: params
   })
 }
 
-export const updateTagUserReq = (data) => {
+export const updateTagTenantReq = (data) => {
   return request({
-    url: APIPath.SYS + SubPath + '/user',
+    url: APIPath.SYS + SubPath + TENANT_PATH,
     method: 'put',
     data: data
   })
 }
 
+const RESOURCE_PATH = '/resource'
+
 export const getResourcesReq = (params) => {
   return request({
-    url: APIPath.SYS + SubPath + '/resource',
+    url: APIPath.SYS + SubPath + RESOURCE_PATH,
     method: 'get',
     params: params
   })
@@ -69,7 +73,7 @@ export const getResourcesReq = (params) => {
 
 export const updateTagResourceReq = (data) => {
   return request({
-    url: APIPath.SYS + SubPath + '/resource',
+    url: APIPath.SYS + SubPath + RESOURCE_PATH,
     method: 'put',
     data: data
   })

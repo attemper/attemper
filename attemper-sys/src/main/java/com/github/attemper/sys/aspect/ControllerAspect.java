@@ -1,28 +1,22 @@
-package com.github.attemper.web.aspect;
+package com.github.attemper.sys.aspect;
 
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.constant.GlobalConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.CommonParam;
-import com.github.attemper.common.param.sys.tenant.TenantGetParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.sys.tenant.Tenant;
-import com.github.attemper.common.result.sys.user.User;
 import com.github.attemper.config.base.annotation.IgnoreLogResult;
 import com.github.attemper.config.base.entity.ApiLog;
-import com.github.attemper.config.base.service.ApiLogService;
 import com.github.attemper.config.base.util.AspectUtil;
 import com.github.attemper.config.base.util.IPUtil;
 import com.github.attemper.config.base.util.ServletUtil;
 import com.github.attemper.config.base.util.StringUtil;
-import com.github.attemper.security.ext.service.JWTService;
+import com.github.attemper.sys.ext.service.JWTService;
 import com.github.attemper.sys.holder.TenantHolder;
-import com.github.attemper.sys.holder.UserHolder;
-import com.github.attemper.sys.service.TenantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,16 +29,11 @@ import org.springframework.stereotype.Component;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Set;
 
-/**
- * @auth ldang
- * Controller统一处理
- */
 @Slf4j
 @Component
 @Aspect
@@ -53,31 +42,15 @@ public class ControllerAspect {
     @Autowired
     private JWTService jwtService;
 
-    @Autowired
-    private TenantService tenantService;
-
     private static Validator validator = Validation
             .byProvider(HibernateValidator.class).configure().failFast(true).buildValidatorFactory().getValidator();
 
-    /**
-     * 切点<br>
-     */
-    @Pointcut("(execution(public * " + GlobalConstants.basePackageLocation + "sys.controller.*Controller.*(..)))"
-            + "||"
-            + "(execution(public * " + GlobalConstants.basePackageLocation + "core.controller..*.*Controller.*(..)))"
-            + "||"
-            + "(execution(public * " + GlobalConstants.basePackageLocation + "security.controller.*Controller.*(..)))"
+    @Pointcut("(execution(public * " + GlobalConstants.basePackageLocation + "*.controller.*Controller.*(..)))"
     )
     public void aroundController() {
 
     }
 
-    /**
-     * 环切
-     *
-     * @param joinPoint
-     * @throws Throwable
-     */
     @Around("aroundController()")
     public CommonResult around(ProceedingJoinPoint joinPoint) throws Throwable {
         ApiLog apiLog = new ApiLog();
@@ -88,17 +61,8 @@ public class ControllerAspect {
         return executeMethod(joinPoint, apiLog);
     }
 
-    /**
-     * 执行service
-     *
-     * @param joinPoint
-     * @param apiLog
-     * @return
-     * @throws Throwable
-     */
     private CommonResult executeMethod(ProceedingJoinPoint joinPoint, ApiLog apiLog) throws Throwable {
         CommonResult result = null;
-        // 校验通过
         Instant begin = Instant.now();
         try {
             result = (CommonResult) joinPoint.proceed();
@@ -120,32 +84,25 @@ public class ControllerAspect {
                 Instant end = Instant.now();
                 result.setDuration(String.valueOf(Duration.between(begin, end).toMillis() / 1000.0));// 请求耗时
             }
-            UserHolder.clear();
             TenantHolder.clear();
             AspectUtil.saveLog(apiLog, result);
         }
     }
 
-    /**
-     * 校验参数
-     *
-     * @param joinPoint
-     * @param apiLog
-     * @return
-     */
     private CommonResult checkParam(ProceedingJoinPoint joinPoint, ApiLog apiLog) {
         CommonResult result = null;
         // 处理日志的分类，方法等
         preHandleLog(joinPoint, apiLog);
-        String tenantId = ServletUtil.getHeader(CommonConstants.tenantId);
-        apiLog.setTenantId(tenantId);
-        Tenant tenant = tenantService.get(new TenantGetParam(tenantId));
+        Tenant tenant = TenantHolder.get();
         if (tenant == null) {
-            return CommonResult.putAdd(1500, tenantId);
+            String token = ServletUtil.getHeader(CommonConstants.token);
+            if (token != null) {
+                tenant = jwtService.parseToken(token);
+                TenantHolder.set(tenant);
+            }
         }
-        String sign = ServletUtil.getHeader(CommonConstants.sign);
-        if (!StringUtils.equals(sign, tenant.getSign())) {
-            return CommonResult.putAdd(1501, sign);
+        if (tenant != null) {
+            apiLog.setTenantId(tenant.getUserName());
         }
         Object[] args = joinPoint.getArgs();
         if (args != null) {
@@ -171,9 +128,6 @@ public class ControllerAspect {
                                 return CommonResult.error(codeStr);
                             }
                         }
-                        if (apiLog.getUserName() == null) {
-                            apiLog.setUserName(resolveUserNameFromParam(commonParam));
-                        }
                     }
                 }
             }
@@ -183,7 +137,6 @@ public class ControllerAspect {
 
     private void preHandleLog(ProceedingJoinPoint joinPoint, ApiLog apiLog) {
         apiLog.setIp(IPUtil.getIpAddr());
-        apiLog.setUserName(resolveUserNameFromToken());
         apiLog.setParam(StringUtil.formatToJsonStr(joinPoint.getArgs()));
 
         Class<?> clazz = joinPoint.getTarget().getClass();
@@ -201,41 +154,5 @@ public class ControllerAspect {
         }
         apiLog.setMethod(method.getName());
         AspectUtil.resolvePath(method, apiLog);
-    }
-
-    /**
-     * 从token中解析用户信息
-     * @return
-     */
-    private String resolveUserNameFromToken(){
-        String token = ServletUtil.getHeader(CommonConstants.token);
-        if (StringUtils.isNotBlank(token) && !CommonConstants._null.equals(token)
-                && !CommonConstants.undefined.equals(token) && !CommonConstants._false.equals(token)) {
-            User user = null;
-            try {
-                user = jwtService.parseTokenToUser(token);
-            } catch (Exception e) { // 很可能该接口未被shiro拦截，应当考虑白名单的设置
-                log.error(e.getMessage(), e);
-            }
-            if(user != null){
-                return user.getUserName();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 从参数中解析用户信息
-     * @param commonParam
-     * @return
-     */
-    private String resolveUserNameFromParam(CommonParam commonParam) {
-        try{
-            Field field = commonParam.getClass().getDeclaredField(CommonConstants.userName);
-            field.setAccessible(true);
-            return (String) field.get(commonParam);
-        }catch (Exception e){
-            return null;
-        }
     }
 }

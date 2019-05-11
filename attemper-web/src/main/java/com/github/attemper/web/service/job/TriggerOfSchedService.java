@@ -1,15 +1,14 @@
 package com.github.attemper.web.service.job;
 
-import com.github.attemper.sys.service.BaseServiceAdapter;
-import com.github.attemper.web.ext.trigger.*;
-import com.github.attemper.web.service.SchedulerHandler;
 import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
 import com.github.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
 import com.github.attemper.common.param.dispatch.trigger.sub.CommonTriggerParam;
 import com.github.attemper.common.param.scheduler.TriggerChangedParam;
 import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
 import com.github.attemper.core.service.job.TriggerService;
+import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.web.ext.trigger.*;
+import com.github.attemper.web.service.SchedulerHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +42,7 @@ public class TriggerOfSchedService extends BaseServiceAdapter {
     };
 
     public Void update(TriggerUpdateParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         Map<Integer, List<? extends CommonTriggerParam>> paramsOfTriggerMap = new HashMap<>();
         paramsOfTriggerMap.put(0, param.getCronTriggers());
         paramsOfTriggerMap.put(1, param.getCalendarOffsetTriggers());
@@ -74,7 +73,7 @@ public class TriggerOfSchedService extends BaseServiceAdapter {
     }
 
     public List<String> getOldTriggerNames(TriggerUpdateParam saveParam) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(saveParam);
+        Map<String, Object> paramMap = injectTenantIdToMap(saveParam);
         List<String> oldTriggerNames = new ArrayList<>();
         for (int i = 0; i < triggerHandlers.length; i++) {
             TriggerWithQuartzHandler triggerHandler = triggerHandlers[i];

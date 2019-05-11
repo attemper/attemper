@@ -23,9 +23,6 @@ public class ApiLog {
     /** 租户编号 */
     private String tenantId;
 
-    /** 用户名 */
-    private String userName;
-
     /** java类名 */
     private String className;
 

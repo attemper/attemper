@@ -2,11 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.github.attemper.sys.dao.mapper.ResourceMapper">
 
-    <select id="getAll" parameterType="map" resultType="com.github.attemper.common.result.sys.resource.Resource">
+    <select id="getAll" resultType="com.github.attemper.common.result.sys.resource.Resource">
         select * from ${tablePrefix}resource r
-        <where>
-            <include refid="condTenantId"/>
-        </where>
     </select>
 
     <insert id="save" parameterType="map">
@@ -15,7 +12,6 @@
             from ${tablePrefix}resource r
             <where>
                 <include refid="condResourceName"/>
-                <include refid="condTenantId"/>
             </where>
         </selectKey>
         <choose>
@@ -30,8 +26,7 @@
                 POSITION,
                 CREATE_TIME,
                 UPDATE_TIME,
-                EXT_ATTR,
-                TENANT_ID
+                EXT_ATTR
                 )
                 VALUES
                 (
@@ -44,8 +39,7 @@
                     #{position, jdbcType=INTEGER},
                     #{createTime, jdbcType=TIMESTAMP},
                     #{updateTime, jdbcType=TIMESTAMP},
-                    #{extAttr, jdbcType=VARCHAR},
-                    #{tenantId, jdbcType=VARCHAR}
+                #{extAttr, jdbcType=VARCHAR}
                 )
             </when>
             <otherwise>
@@ -62,7 +56,6 @@
                 EXT_ATTR = #{extAttr, jdbcType=VARCHAR}
                 <where>
                     <include refid="condResourceName"/>
-                    <include refid="condTenantId"/>
                 </where>
             </otherwise>
         </choose>
@@ -80,19 +73,12 @@
             <if test="resourceType != null">
                 and RESOURCE_TYPE = #{resourceType, jdbcType = INTEGER}
             </if>
-            <include refid="condTenantId"/>
         </where>
     </delete>
 
     <sql id="condResourceName">
         <if test="resourceName != null">
             and r.RESOURCE_NAME = #{resourceName, jdbcType=VARCHAR}
-        </if>
-    </sql>
-
-    <sql id="condTenantId">
-        <if test="tenantId != null">
-            and r.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>

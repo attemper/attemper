@@ -4,13 +4,17 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.sys.resource.ResourceRemoveParam;
 import com.github.attemper.common.param.sys.resource.ResourceSaveParam;
 import com.github.attemper.common.result.sys.resource.Resource;
+import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.sys.dao.mapper.ResourceMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -29,8 +33,7 @@ public class ResourceService extends BaseServiceAdapter {
      * @return
      */
     public List<Resource> getAll() {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(null);
-		List<Resource> sourceList = mapper.getAll(paramMap);
+        List<Resource> sourceList = mapper.getAll();
 	    List<Resource> targetList = new ArrayList<>(sourceList.size());
         Resource rootResource = findRootResource(sourceList);
         targetList.add(rootResource);
@@ -41,15 +44,14 @@ public class ResourceService extends BaseServiceAdapter {
     public Resource save(ResourceSaveParam param) {
         Resource resource = toResource(param);
         Date now = new Date();
-        resource.setCreateTime(now); //mapper中修改是不更新创建时间的
+        resource.setCreateTime(now);
         resource.setUpdateTime(now);
-        mapper.save(injectAdminTenantIdToMap(resource));
+        mapper.save(BeanUtil.bean2Map(resource));
         return resource;
     }
 
     public Void remove(ResourceRemoveParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
-        mapper.delete(paramMap);
+        mapper.delete(BeanUtil.bean2Map(param));
         return null;
     }
 
@@ -73,7 +75,7 @@ public class ResourceService extends BaseServiceAdapter {
 	    List<Resource> resources =
                 sourceList.stream().filter(resource -> resource.getParentResourceName() == null).collect(Collectors.toList());
 	    if(resources.size() != 1){
-            throw new RTException(5470); //5470
+            throw new RTException(5470);
         }
         return resources.get(0);
     }

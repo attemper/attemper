@@ -3,7 +3,7 @@ package com.github.attemper.sys.dao.mapper;
 import com.github.attemper.common.base.BaseMapper;
 import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tag.Tag;
-import com.github.attemper.common.result.sys.user.User;
+import com.github.attemper.common.result.sys.tenant.Tenant;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -18,11 +18,11 @@ import java.util.Map;
 @Repository
 public interface TagMapper extends BaseMapper<Tag> {
 
-    List<User> getUsers(Map<String, Object> paramMap);
+    List<Tenant> getTenants(Map<String, Object> paramMap);
 
-    void deleteTagUsers(Map<String, Object> paramMap);
+    void deleteTagTenants(Map<String, Object> paramMap);
 
-	void saveTagUsers(Map<String, Object> paramMap);
+    void saveTagTenants(Map<String, Object> paramMap);
 
     List<Resource> getResources(Map<String, Object> paramMap);
 

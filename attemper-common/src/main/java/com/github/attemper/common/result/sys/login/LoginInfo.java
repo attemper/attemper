@@ -1,7 +1,8 @@
-package com.github.attemper.common.result.sys.user;
+package com.github.attemper.common.result.sys.login;
 
 import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tag.Tag;
+import com.github.attemper.common.result.sys.tenant.Tenant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,15 +17,15 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfo {
+public class LoginInfo {
 
-    /** 登录用户的信息 */
-    protected User user;
+    /** logged tenant */
+    protected Tenant tenant;
 
-    /** 标签信息*/
+    /** role*/
     protected List<Tag> tags;
 
-    /** 该用户拥有的资源 */
+    /** resource */
     protected List<Resource> resources;
 
 }

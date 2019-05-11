@@ -1,8 +1,5 @@
 package com.github.attemper.common.param.sys.tag;
 
-import com.github.attemper.common.enums.TagType;
-import com.github.attemper.common.param.CommonParam;
-import com.github.attemper.common.enums.TagType;
 import com.github.attemper.common.param.CommonParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +20,6 @@ public class TagSaveParam implements CommonParam {
 
     protected String displayName;
 
-    protected Integer tagType;
-
     protected String remark;
 
     public String validate() {
@@ -33,9 +28,6 @@ public class TagSaveParam implements CommonParam {
         }
         if(StringUtils.isBlank(displayName)) {
             return "5303";
-        }
-        if(TagType.get(tagType) == null){
-            return "5321";
         }
         return null;
     }

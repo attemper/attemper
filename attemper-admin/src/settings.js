@@ -34,16 +34,6 @@ module.exports = {
   errorLog: 'production',
 
   /**
-   * @description tenant id
-   */
-  tenantId: 'attemper',
-
-  /**
-   * @description 认证签名
-   */
-  sign: '1e8c0c1cdc283425a2027bf3dbf9bfe5',
-
-  /**
    * API path
    */
   APIPath: {

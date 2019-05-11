@@ -35,41 +35,41 @@ public class JobService extends BaseServiceAdapter {
      * @return
      */
     public FlowJob get(JobGetParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.get(paramMap);
     }
 
     public Map<String, Object> list(JobListParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<FlowJob> list = (Page<FlowJob>) mapper.list(paramMap);
         return PageUtil.toResultMap(list);
     }
 
     /**
-     * list all versions by a specified job name
+     * list all versions by a specified job displayName
      *
      * @param param
      * @return
      */
     public List<FlowJob> versions(JobGetParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.versions(paramMap);
     }
 
     public Project getProject(JobGetParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.getProject(paramMap);
     }
 
     public Void saveProject(JobProjectSaveParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.saveProject(paramMap);
         return null;
     }
 
     public Map<String, Object> listArg(JobArgListParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<ArgAllocatedResult> list = (Page<ArgAllocatedResult>) mapper.listArg(paramMap);
         return PageUtil.toResultMap(list);

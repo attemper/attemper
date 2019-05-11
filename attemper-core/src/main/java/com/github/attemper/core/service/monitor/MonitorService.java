@@ -22,14 +22,14 @@ public class MonitorService extends BaseServiceAdapter {
     private JobInstanceMapper mapper;
 
     public Map<String, Object> list(JobInstanceListParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<JobInstance> list = (Page<JobInstance>) mapper.list(paramMap);
         return PageUtil.toResultMap(list);
     }
 
     public List<JobInstanceAct> listAct(JobInstanceActParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.listAct(paramMap);
     }
 }

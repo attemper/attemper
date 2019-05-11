@@ -7314,7 +7314,7 @@
 }
 
 .custom-theme .el-table--small {
-  font-size: 14px
+  font-size: 12px
 }
 
 .custom-theme .el-table--small td, .custom-theme .el-table--small th {
@@ -7322,7 +7322,7 @@
 }
 
 .custom-theme .el-table--mini {
-  font-size: 13px
+  font-size: 12px
 }
 
 .custom-theme .el-table--mini td, .custom-theme .el-table--mini th {

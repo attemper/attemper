@@ -34,7 +34,7 @@ public class CalendarOffsetTriggerWithQuartzHandler extends CalendarOffsetTrigge
             item.setTriggerType(Constants.TTYPE_CAL_OFFSET);
             Map<String, Object> map = BeanUtil.bean2Map(item);
             map.put(CommonConstants.jobName, jobName);
-            map.put(CommonConstants.tenantId, TenantHolder.get().getId());
+            map.put(CommonConstants.tenantId, TenantHolder.get().getUserName());
             mapList.add(map);
         });
         SpringContextAware.getBean(TriggerMapper.class).saveCalendarOffsetTriggers(mapList);

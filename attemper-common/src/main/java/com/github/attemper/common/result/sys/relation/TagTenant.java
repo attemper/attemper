@@ -13,11 +13,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagUser {
+public class TagTenant {
 
 	protected String tagName;
-
-	protected String tagType;
 
 	protected String userName;
 

@@ -1,13 +1,11 @@
 package com.github.attemper.sys.service;
 
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.sys.tenant.TenantGetParam;
-import com.github.attemper.common.param.sys.tenant.TenantListParam;
-import com.github.attemper.common.param.sys.tenant.TenantRemoveParam;
-import com.github.attemper.common.param.sys.tenant.TenantSaveParam;
+import com.github.attemper.common.param.sys.tenant.*;
+import com.github.attemper.common.result.sys.resource.Resource;
+import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.util.BeanUtil;
-import com.github.attemper.sys.conf.SysProperties;
 import com.github.attemper.sys.dao.mapper.TenantMapper;
 import com.github.attemper.sys.ext.service.SecretService;
 import com.github.attemper.sys.util.PageUtil;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,21 +34,18 @@ public class TenantService extends BaseServiceAdapter {
     @Autowired
     private SecretService secretService;
 
-    @Autowired
-    private SysProperties sysProperties;
-
     public Tenant get(TenantGetParam param) {
-        return mapper.get(param.getId());
+        return mapper.get(param.getUserName());
     }
 
-    public Tenant getByAdmin(String admin) {
-        return mapper.getByAdmin(admin);
+    public Tenant getAdmin() {
+        return mapper.getAdmin();
     }
 
     public Map<String, Object> list(TenantListParam param) {
-        Map<String, Object> paramMap = injectTenantIdToMap(param);
-        if (!injectUser().getUserName().equals(sysProperties.getSuperTenant().getAdmin())) {
-            paramMap.put("matchAdmin", injectUser().getUserName());  //only find current tenant of the user
+        Map<String, Object> paramMap = BeanUtil.bean2Map(param);
+        if (!StringUtils.equals(injectTenantId(), getAdmin().getUserName())) {
+            paramMap.put("matchUserName", injectTenantId());  //only find current tenant of the user
         }
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<Tenant> list = (Page<Tenant>) mapper.list(paramMap);
@@ -57,9 +53,9 @@ public class TenantService extends BaseServiceAdapter {
     }
 
     public Tenant add(TenantSaveParam param) {
-        Tenant tenant = get(new TenantGetParam(param.getId()));
+        Tenant tenant = get(new TenantGetParam(param.getUserName()));
         if(tenant != null){
-            throw new DuplicateKeyException(param.getId());
+            throw new DuplicateKeyException(param.getUserName());
         }
         tenant = toTenant(param);
         tenant.setCreateTime(new Date());
@@ -67,7 +63,7 @@ public class TenantService extends BaseServiceAdapter {
     }
 
     public Tenant update(TenantSaveParam param) {
-        Tenant tenant = get(new TenantGetParam(param.getId()));
+        Tenant tenant = get(new TenantGetParam(param.getUserName()));
         if(tenant == null){
             throw new RTException(5150);
         }
@@ -77,7 +73,7 @@ public class TenantService extends BaseServiceAdapter {
     }
 
     public Tenant save(Tenant tenant) {
-        String sign = secretService.encode(tenant.getId());
+        String sign = secretService.encode(tenant.getUserName());
         tenant.setSign(sign);
         tenant.setUpdateTime(new Date());
         mapper.save(BeanUtil.bean2Map(tenant));
@@ -85,20 +81,40 @@ public class TenantService extends BaseServiceAdapter {
     }
 
     public Void remove(TenantRemoveParam param) {
-        for (String id : param.getIds()) {
-            if (StringUtils.equals(id, sysProperties.getSuperTenant().getId())) {
-                throw new RTException(5115, id);
+        for (String userName : param.getUserNames()) {
+            if (StringUtils.equals(userName, getAdmin().getUserName())) {
+                throw new RTException(5115, userName);
             }
         }
-        mapper.delete(param.getIds());
+        mapper.delete(param.getUserNames());
         return null;
+    }
+
+    public List<Resource> getResources(TenantGetParam param) {
+        return mapper.getResources(BeanUtil.bean2Map(param));
+    }
+
+    public List<Tag> getTags(TenantGetParam param) {
+        return mapper.getTags(BeanUtil.bean2Map(param));
+    }
+
+    public void updateTags(TenantTagUpdateParam param) {
+        Map<String, Object> paramMap = BeanUtil.bean2Map(param);
+        mapper.deleteTags(paramMap);
+        if (param.getTagNames() == null || param.getTagNames().isEmpty()) {
+            return;
+        }
+        mapper.saveTags(paramMap);
     }
 
     private Tenant toTenant(TenantSaveParam param) {
         return Tenant.builder()
-                .id(param.getId())
-                .name(param.getName())
-                .admin(param.getAdmin())
+                .userName(param.getUserName())
+                .displayName(param.getDisplayName())
+                .password(param.getPassword())
+                .email(param.getEmail())
+                .mobile(param.getMobile())
+                .status(param.getStatus())
                 .build();
     }
 

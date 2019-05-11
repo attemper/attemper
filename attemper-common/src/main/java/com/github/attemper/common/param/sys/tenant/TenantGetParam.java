@@ -16,10 +16,10 @@ import org.apache.commons.lang.StringUtils;
 @AllArgsConstructor
 public class TenantGetParam implements CommonParam {
 
-    protected String id;
+    protected String userName;
 
     public String validate() {
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(userName)) {
             return "5100";
         }
         return null;

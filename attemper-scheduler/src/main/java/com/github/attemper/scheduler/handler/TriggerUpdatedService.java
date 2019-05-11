@@ -17,10 +17,9 @@ public class TriggerUpdatedService extends BaseServiceAdapter {
 
     public Void updateTrigger(TriggerChangedParam param) {
         String jobName = param.getJobName();
-        String tenantId = injectAdminTenant().getId();
         List<String> oldTriggerNames = param.getOldTriggerNames();
-        triggerHandler.unscheduleTriggers(tenantId, oldTriggerNames);
-        triggerHandler.schedule(jobName, tenantId);
+        triggerHandler.unscheduleTriggers(injectTenantId(), oldTriggerNames);
+        triggerHandler.schedule(jobName, injectTenantId());
         return null;
     }
 }

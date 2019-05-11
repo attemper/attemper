@@ -118,47 +118,15 @@ export default {
         admin: 'Please Select Administrator'
       }
     },
-    user: {
-      columns: {
-        userName: 'User Name',
-        displayName: 'Display Name',
-        password: 'Password',
-        email: 'Email',
-        mobile: 'Mobile',
-        status: 'Status'
-      },
-      rules: {
-        userName: 'User Name can not be empty',
-        displayName: 'Display Name can not be empty',
-        email: 'Email is invalid',
-        mobile: 'Mobile must be length of 11'
-      },
-      placeholder: {
-        userName: 'Please entry User Name',
-        displayName: 'Please entry Display Name',
-        password: 'Please entry Password',
-        email: 'Please entry Email',
-        mobile: 'Please entry Mobile'
-      },
-      tip: {
-        tag: 'Allocate Tag',
-        tagFilterTip: 'Tag or Display Name'
-      },
-      actions: {
-        tag: 'Tag'
-      }
-    },
     tag: {
       columns: {
         tagName: 'Tag Name',
         displayName: 'Display Name',
-        tagType: 'Tag Type',
         remark: 'Remark'
       },
       rules: {
         tagName: 'Tag Name can not be empty',
-        displayName: 'Display Name can not be empty',
-        tagType: 'Tag Type can not be empty'
+        displayName: 'Display Name can not be empty'
       },
       placeholder: {
         tagName: 'Please entry Tag Name',

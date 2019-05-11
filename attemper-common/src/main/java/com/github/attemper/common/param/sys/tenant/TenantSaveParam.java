@@ -1,11 +1,15 @@
 package com.github.attemper.common.param.sys.tenant;
 
+import com.github.attemper.common.constant.CommonConstants;
+import com.github.attemper.common.enums.TenantStatus;
 import com.github.attemper.common.param.CommonParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+
+import java.util.regex.Pattern;
 
 /**
  * @author ldang
@@ -16,21 +20,39 @@ import org.apache.commons.lang.StringUtils;
 @AllArgsConstructor
 public class TenantSaveParam implements CommonParam {
 
-    protected String id;
+    private static Pattern emailPattern;
 
-    protected String name;
+    protected String userName;
 
-    protected String admin;
+    protected String displayName;
+
+    protected String password;
+
+    protected String email;
+
+    protected String mobile;
+
+    protected Integer status;
 
     public String validate() {
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(userName)) {
             return "5100";
         }
-        if (StringUtils.isBlank(name)) {
+        if (StringUtils.isBlank(displayName)) {
             return "5103";
         }
-        if (StringUtils.isBlank(admin)) {
-            return "5106";
+        if (StringUtils.isNotBlank(email)) {
+            if (emailPattern == null) {
+                emailPattern = Pattern.compile(CommonConstants.REGEX_EMAIL);
+            }
+            for (String emailStr : email.split(",")) {
+                if (!emailPattern.matcher(emailStr).find()) {
+                    return "5118";
+                }
+            }
+        }
+        if (TenantStatus.get(status) == null) {
+            return "5121";
         }
         return null;
     }

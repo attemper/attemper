@@ -72,7 +72,7 @@
         </where>
     </delete>
 
-    <insert id="saveInfo">
+    <insert id="saveInfo" parameterType="map">
         <selectKey keyProperty="count" resultType="int" order="BEFORE">
             select count(*)
             from ${tablePrefix}project_info p

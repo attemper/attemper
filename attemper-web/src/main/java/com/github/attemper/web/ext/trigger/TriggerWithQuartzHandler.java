@@ -35,7 +35,7 @@ public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extend
         List<V> resultOfTriggers = getTriggers(jobNameWithTenantIdMap);
         deleteTriggers(jobNameWithTenantIdMap);
         if (resultOfTriggers.size() > 0) {
-            unscheduleTriggers(TenantHolder.get().getId(), resultOfTriggers.stream().map(V::getTriggerName).collect(Collectors.toList()));
+            unscheduleTriggers(TenantHolder.get().getUserName(), resultOfTriggers.stream().map(V::getTriggerName).collect(Collectors.toList()));
         }
     }
 
@@ -61,6 +61,6 @@ public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extend
             return;
         }
         saveTriggers(jobName, paramOfTriggers);
-        schedule(jobName, TenantHolder.get().getId(), paramOfTriggers);
+        schedule(jobName, TenantHolder.get().getUserName(), paramOfTriggers);
     }
 }

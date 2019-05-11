@@ -3,7 +3,6 @@ import Qs from 'qs'
 import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-import { tenantId, sign } from '@/settings'
 
 // create an axios instance
 const service = axios.create({
@@ -22,8 +21,6 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['token'] = getToken()
     }
-    config.headers['tenantId'] = tenantId
-    config.headers['sign'] = sign
     /*
     solve the array params
     qs.stringify({ id: ['b', 'c'] }, { arrayFormat: 'indices' })

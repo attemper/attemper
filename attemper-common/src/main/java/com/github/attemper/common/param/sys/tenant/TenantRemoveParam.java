@@ -18,10 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 public class TenantRemoveParam implements CommonParam {
 
-    protected List<String> ids;
+    protected List<String> userNames;
 
     public String validate() {
-        if (ids == null || ids.isEmpty() || StringUtils.isBlank(ids.get(0))) {
+        if (userNames == null || userNames.isEmpty() || StringUtils.isBlank(userNames.get(0))) {
             return "5112";
         }
         return null;

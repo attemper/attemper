@@ -1,4 +1,4 @@
-package com.github.attemper.security.ext.annotation;
+package com.github.attemper.sys.ext.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

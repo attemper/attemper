@@ -25,7 +25,7 @@ public class ArgService extends BaseServiceAdapter {
     private ArgMapper mapper;
 
     public Arg get(ArgGetParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.get(paramMap);
     }
 
@@ -50,14 +50,14 @@ public class ArgService extends BaseServiceAdapter {
     }
 
     public Map<String, Object> list(ArgListParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<Arg> list = (Page<Arg>) mapper.list(paramMap);
         return PageUtil.toResultMap(list);
     }
 
     public Void remove(ArgRemoveParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.delete(paramMap);
         return null;
     }
@@ -68,7 +68,7 @@ public class ArgService extends BaseServiceAdapter {
                 .argType(param.getArgType())
                 .argValue(param.getArgValue())
                 .remark(param.getRemark())
-                .tenantId(injectAdminTenant().getId())
+                .tenantId(injectTenantId())
                 .build();
     }
 }

@@ -6,8 +6,6 @@
         select * from ${tablePrefix}tag t
         <where>
             <include refid="condTagName"/>
-            <include refid="condTagType"/>
-            <include refid="condTenantId"/>
         </where>
     </select>
 
@@ -15,21 +13,17 @@
         INSERT INTO ${tablePrefix}tag (
         TAG_NAME,
         DISPLAY_NAME,
-        TAG_TYPE,
         CREATE_TIME,
         UPDATE_TIME,
-        REMARK,
-        TENANT_ID
+        REMARK
         )
         VALUES
         (
         #{tagName, jdbcType=VARCHAR},
         #{displayName, jdbcType=VARCHAR},
-        #{tagType, jdbcType=INTEGER},
         #{createTime, jdbcType=TIMESTAMP},
         #{updateTime, jdbcType=TIMESTAMP},
-        #{remark, jdbcType=VARCHAR},
-        #{tenantId, jdbcType=VARCHAR}
+        #{remark, jdbcType=VARCHAR}
         )
     </insert>
 
@@ -43,8 +37,6 @@
         REMARK = #{remark, jdbcType=VARCHAR}
         <where>
             <include refid="condTagName"/>
-            <include refid="condTagType"/>
-            <include refid="condTenantId"/>
         </where>
     </update>
 
@@ -57,8 +49,6 @@
                     #{tagName}
                 </foreach>
             </if>
-            <include refid="condTagType"/>
-            <include refid="condTenantId"/>
         </where>
     </delete>
 
@@ -68,8 +58,6 @@
             <if test="tagName != null">
                 and lower(TAG_NAME) like concat('%', lower(#{tagName, jdbcType=VARCHAR}), '%')
             </if>
-            <include refid="condTagType"/>
-            <include refid="condTenantId"/>
             <if test="displayName != null">
                 and lower(DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
             </if>
@@ -90,45 +78,37 @@
         </choose>
     </select>
 
-    <select id="getUsers" parameterType="map" resultType="com.github.attemper.common.result.sys.user.User">
-      select u.*
-      from ${tablePrefix}user u
-      join ${tablePrefix}tag_user tu
-        on u.USER_NAME = tu.USER_NAME and u.TENANT_ID = tu.TENANT_ID
-      join ${tablePrefix}tag t
-        on tu.TAG_NAME = t.TAG_NAME and tu.TAG_TYPE = t.TAG_TYPE and tu.TENANT_ID = t.TENANT_ID
-      <where>
-        <include refid="condTagName"/>
-        <include refid="condTagType"/>
-        <include refid="condTenantId"/>
-      </where>
-        order by u.USER_NAME
-    </select>
-
-    <delete id="deleteTagUsers" parameterType="map" >
-        DELETE FROM t using ${tablePrefix}tag_user t
+    <select id="getTenants" parameterType="map" resultType="com.github.attemper.common.result.sys.tenant.Tenant">
+        select te.*
+        from ${tablePrefix}tenant te
+        join ${tablePrefix}tag_tenant tt
+        on te.USER_NAME = tt.USER_NAME
+        join ${tablePrefix}tag t
+        on tt.TAG_NAME = t.TAG_NAME
         <where>
             <include refid="condTagName"/>
-            <include refid="condTagType"/>
-            <include refid="condTenantId"/>
+        </where>
+        order by te.USER_NAME
+    </select>
+
+    <delete id="deleteTagTenants" parameterType="map">
+        DELETE FROM t using ${tablePrefix}tag_tenant t
+        <where>
+            <include refid="condTagName"/>
         </where>
     </delete>
 
-    <insert id="saveTagUsers">
-        insert into ${tablePrefix}tag_user
-            (
-              USER_NAME,
-              TAG_NAME,
-              TAG_TYPE,
-              TENANT_ID
-            )
+    <insert id="saveTagTenants">
+        insert into ${tablePrefix}tag_tenant
+        (
+        TAG_NAME,
+        USER_NAME
+        )
         values
         <foreach item="userName" collection="userNames" separator=",">
             (
-              #{userName, jdbcType=VARCHAR},
-              #{tagName, jdbcType=VARCHAR},
-              #{tagType, jdbcType=INTEGER},
-              #{tenantId, jdbcType=VARCHAR}
+            #{tagName, jdbcType=VARCHAR},
+            #{userName, jdbcType=VARCHAR}
             )
         </foreach>
     </insert>
@@ -137,23 +117,19 @@
         select r.*
         from ${tablePrefix}resource r
         join ${tablePrefix}tag_resource tr
-        on r.RESOURCE_NAME = tr.RESOURCE_NAME and r.TENANT_ID = tr.TENANT_ID
+        on r.RESOURCE_NAME = tr.RESOURCE_NAME
         join ${tablePrefix}tag t
-        on t.TAG_NAME = tr.TAG_NAME AND t.TAG_TYPE = tr.TAG_TYPE AND t.TENANT_ID = tr.TENANT_ID
+        on t.TAG_NAME = tr.TAG_NAME
         <where>
             <include refid="condTagName"/>
-            <include refid="condTagType"/>
-            <include refid="condTenantId"/>
         </where>
         order by r.RESOURCE_NAME
     </select>
 
-    <delete id="deleteTagResources" parameterType="map" >
+    <delete id="deleteTagResources" parameterType="map">
         DELETE FROM t using ${tablePrefix}tag_resource t
         <where>
             <include refid="condTagName"/>
-            <include refid="condTagType"/>
-            <include refid="condTenantId"/>
         </where>
     </delete>
 
@@ -161,17 +137,13 @@
         insert into ${tablePrefix}tag_resource
         (
         TAG_NAME,
-        TAG_TYPE,
-        RESOURCE_NAME,
-        TENANT_ID
+        RESOURCE_NAME
         )
         values
         <foreach item="resourceName" collection="resourceNames" separator=",">
             (
             #{tagName, jdbcType=VARCHAR},
-            #{tagType, jdbcType=INTEGER},
-            #{resourceName, jdbcType=VARCHAR},
-            #{tenantId, jdbcType=VARCHAR}
+            #{resourceName, jdbcType=VARCHAR}
             )
         </foreach>
     </insert>
@@ -182,15 +154,4 @@
         </if>
     </sql>
 
-    <sql id="condTagType">
-        <if test="tagType != null">
-            and t.TAG_TYPE = #{tagType, jdbcType = INTEGER}
-        </if>
-    </sql>
-
-    <sql id="condTenantId">
-        <if test="tenantId != null">
-            and t.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
-        </if>
-    </sql>
 </mapper>

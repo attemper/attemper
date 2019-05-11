@@ -189,3 +189,9 @@ aside {
 .multiselect--active {
   z-index: 1000 !important;
 }
+
+.single-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}

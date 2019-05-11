@@ -1,14 +1,15 @@
 package com.github.attemper.sys.service;
 
-import com.github.attemper.sys.dao.mapper.TagMapper;
-import com.github.attemper.sys.util.PageUtil;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.sys.tag.*;
 import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tag.Tag;
-import com.github.attemper.common.result.sys.user.User;
+import com.github.attemper.common.result.sys.tenant.Tenant;
+import com.github.attemper.config.base.util.BeanUtil;
+import com.github.attemper.sys.dao.mapper.TagMapper;
+import com.github.attemper.sys.util.PageUtil;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -30,19 +31,19 @@ public class TagService extends BaseServiceAdapter {
 	private TagMapper mapper;
 
 	public Map<String, Object> list(TagListParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		Map<String, Object> paramMap = BeanUtil.bean2Map(param);
 		PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
 		Page<Tag> list = (Page<Tag>) mapper.list(paramMap);
 		return PageUtil.toResultMap(list);
 	}
 
 	public Tag get(TagGetParam getParam){
-        Map<String, Object> paramMap = injectTenantIdToMap(getParam);
+		Map<String, Object> paramMap = BeanUtil.bean2Map(getParam);
 	    return mapper.get(paramMap);
     }
 
 	public Tag add(TagSaveParam param) {
-		Tag user = get(new TagGetParam(param.getTagName(), param.getTagType()));
+		Tag user = get(new TagGetParam(param.getTagName()));
 		if(user != null){
 			throw new DuplicateKeyException(user.getTagName());
 		}
@@ -55,7 +56,7 @@ public class TagService extends BaseServiceAdapter {
 	}
 
 	public Tag update(TagSaveParam param) {
-		Tag tag = get(new TagGetParam(param.getTagName(), param.getTagType()));
+		Tag tag = get(new TagGetParam(param.getTagName()));
 		if(tag == null){
 			throw new RTException(5350);
 		}
@@ -67,32 +68,32 @@ public class TagService extends BaseServiceAdapter {
 	}
 
 	public Void remove(TagRemoveParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		Map<String, Object> paramMap = BeanUtil.bean2Map(param);
 		mapper.delete(paramMap);
 		return null;
 	}
 
-	public List<User> getUsers(TagGetParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
-        return mapper.getUsers(paramMap);
+	public List<Tenant> getTenants(TagGetParam param) {
+		Map<String, Object> paramMap = BeanUtil.bean2Map(param);
+		return mapper.getTenants(paramMap);
     }
 
-	public Void updateTagUsers(TagUserUpdateParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
-        mapper.deleteTagUsers(paramMap);
+	public Void updateTagTenants(TagTenantUpdateParam param) {
+		Map<String, Object> paramMap = BeanUtil.bean2Map(param);
+		mapper.deleteTagTenants(paramMap);
 		if (param.getUserNames() != null && !param.getUserNames().isEmpty()) {
-			mapper.saveTagUsers(paramMap);
+			mapper.saveTagTenants(paramMap);
         }
 		return null;
     }
 
 	public List<Resource> getResources(TagGetParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		Map<String, Object> paramMap = BeanUtil.bean2Map(param);
 		return mapper.getResources(paramMap);
 	}
 
 	public Void updateTagResources(TagResourceUpdateParam param) {
-		Map<String, Object> paramMap = injectTenantIdToMap(param);
+		Map<String, Object> paramMap = BeanUtil.bean2Map(param);
 		mapper.deleteTagResources(paramMap);
 		if (param.getResourceNames() != null && !param.getResourceNames().isEmpty()) {
 			mapper.saveTagResources(paramMap);
@@ -104,9 +105,7 @@ public class TagService extends BaseServiceAdapter {
 		return Tag.builder()
 				.tagName(param.getTagName())
 				.displayName(param.getDisplayName())
-				.tagType(param.getTagType())
 				.remark(param.getRemark())
-				.tenantId(injectTenantId())
 				.build();
 	}
 }

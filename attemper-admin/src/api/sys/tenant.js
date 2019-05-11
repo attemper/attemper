@@ -43,3 +43,19 @@ export const getReq = (params) => {
   })
 }
 
+export const getTagsReq = (params) => {
+  return request({
+    url: APIPath.SYS + SubPath + '/tag',
+    method: 'get',
+    params: params
+  })
+}
+
+export const updateTagReq = (data) => {
+  return request({
+    url: APIPath.SYS + SubPath + '/tag',
+    method: 'put',
+    data: data
+  })
+}
+

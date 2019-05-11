@@ -35,7 +35,7 @@ public class CalendarIntervalTriggerWithQuartzHandler extends CalendarIntervalTr
             }
             Map<String, Object> map = BeanUtil.bean2Map(item);
             map.put(CommonConstants.jobName, jobName);
-            map.put(CommonConstants.tenantId, TenantHolder.get().getId());
+            map.put(CommonConstants.tenantId, TenantHolder.get().getUserName());
             mapList.add(map);
         });
         SpringContextAware.getBean(TriggerMapper.class).saveCalendarIntervalTriggers(mapList);

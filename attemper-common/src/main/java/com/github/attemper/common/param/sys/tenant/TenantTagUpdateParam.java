@@ -1,6 +1,5 @@
-package com.github.attemper.common.param.sys.user;
+package com.github.attemper.common.param.sys.tenant;
 
-import com.github.attemper.common.param.CommonParam;
 import com.github.attemper.common.param.CommonParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,13 +16,15 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRemoveParam implements CommonParam {
+public class TenantTagUpdateParam implements CommonParam {
 
-    protected List<String> userNames;
+    protected String userName;
+
+    protected List<String> tagNames;
 
     public String validate() {
-        if (userNames == null || userNames.isEmpty() || StringUtils.isBlank(userNames.get(0))) {
-            return "5200";
+        if (StringUtils.isBlank(userName)) {
+            return "5100";
         }
         return null;
     }

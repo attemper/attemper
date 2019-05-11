@@ -30,6 +30,4 @@ public class Tag{
 
 	protected String remark;
 
-	protected String tenantId;
-
 }

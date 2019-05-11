@@ -34,7 +34,7 @@ public class TriggerService extends BaseServiceAdapter {
     };
 
     public TriggerResult get(TriggerGetParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         List<CronTriggerResult> cronTriggers = triggerHandlers[0].getTriggers(paramMap);
         List<CalendarOffsetTriggerResult> calendarOffsetTriggers = triggerHandlers[1].getTriggers(paramMap);
         List<DailyIntervalTriggerResult> dailyIntervalTriggers = triggerHandlers[2].getTriggers(paramMap);

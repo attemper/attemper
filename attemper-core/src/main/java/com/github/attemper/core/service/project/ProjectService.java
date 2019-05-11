@@ -5,6 +5,7 @@ import com.github.attemper.common.param.dispatch.project.*;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.common.result.dispatch.project.ProjectInfo;
 import com.github.attemper.core.dao.mapper.project.ProjectMapper;
+import com.github.attemper.sys.holder.TenantHolder;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class ProjectService extends BaseServiceAdapter {
 	private ProjectMapper mapper;
 
     public List<Project> getAll() {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(null);
+        Map<String, Object> paramMap = injectTenantIdToMap(null);
         return getAll(paramMap);
     }
 
@@ -44,12 +45,12 @@ public class ProjectService extends BaseServiceAdapter {
         Date now = new Date();
         project.setCreateTime(now);
         project.setUpdateTime(now);
-        mapper.save(injectAdminTenantIdToMap(project));
+        mapper.save(injectTenantIdToMap(project));
         return project;
     }
 
     public Void remove(ProjectRemoveParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.delete(paramMap);
         return null;
     }
@@ -73,7 +74,15 @@ public class ProjectService extends BaseServiceAdapter {
     private Project findRootProject(List<Project> sourceList) {
 	    List<Project> projects =
                 sourceList.stream().filter(project -> project.getParentProjectName() == null).collect(Collectors.toList());
-	    if(projects.size() != 1){
+        if (projects.size() == 0) {
+            ProjectSaveParam root = ProjectSaveParam.builder()
+                    .projectName("root")
+                    .displayName(TenantHolder.get().getDisplayName())
+                    .position(1)
+                    .build();
+            Project project = save(root);
+            projects.add(project);
+        } else if (projects.size() > 1) {
             throw new RTException(6570, String.valueOf(projects.size()));
         }
         return projects.get(0);
@@ -91,19 +100,19 @@ public class ProjectService extends BaseServiceAdapter {
 
 
     public Void saveInfo(ProjectInfoSaveParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.saveInfo(paramMap);
         return null;
     }
 
     public Void removeInfo(ProjectInfoRemoveParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.deleteInfo(paramMap);
         return null;
     }
 
     public List<ProjectInfo> listInfo(ProjectGetParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         return listInfo(paramMap);
     }
 

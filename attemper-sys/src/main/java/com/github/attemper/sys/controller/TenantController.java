@@ -1,19 +1,18 @@
 package com.github.attemper.sys.controller;
 
-import com.github.attemper.sys.service.TenantService;
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.sys.tenant.TenantGetParam;
-import com.github.attemper.common.param.sys.tenant.TenantListParam;
-import com.github.attemper.common.param.sys.tenant.TenantRemoveParam;
-import com.github.attemper.common.param.sys.tenant.TenantSaveParam;
+import com.github.attemper.common.param.sys.tenant.*;
 import com.github.attemper.common.result.CommonResult;
+import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
+import com.github.attemper.sys.service.TenantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,4 +60,18 @@ public class TenantController {
 		return CommonResult.putResult(service.get(param));
     }
 
+	@ApiOperation("Get tag")
+	@ApiImplicitParam(value = "UserGetParam", name = "param", dataType = "UserGetParam", required = true)
+	@GetMapping(APIPath.TenantPath.TAG_LIST)
+	public CommonResult<List<Tag>> getTags(TenantGetParam getParam) {
+		return CommonResult.putResult(service.getTags(getParam));
+	}
+
+	@ApiOperation("Update tag")
+	@ApiImplicitParam(value = "TenantTagUpdateParam", name = "param", dataType = "TenantTagUpdateParam", required = true)
+	@PutMapping(APIPath.TenantPath.TAG_UPDATE)
+	public CommonResult updateTags(@RequestBody TenantTagUpdateParam param) {
+		service.updateTags(param);
+		return CommonResult.ok();
+	}
 }

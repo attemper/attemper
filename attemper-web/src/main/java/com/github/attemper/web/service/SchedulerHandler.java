@@ -8,6 +8,7 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.property.AppProperties;
+import com.github.attemper.config.base.util.ServletUtil;
 import com.github.attemper.sys.holder.TenantHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class SchedulerHandler {
                 log.error(commonResult.getMsg());
                 return commonResult;
             }
-            throw new RTException(500, e);
+            throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
         }
     }
 
@@ -106,10 +107,8 @@ public class SchedulerHandler {
             return SpringContextAware.getBean(WebClient.class)
                     .method(method)
                     .uri(url)
-                    //.accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .header(CommonConstants.tenantId, adminTenant.getId())
-                    .header(CommonConstants.sign, adminTenant.getSign())
+                    .header(CommonConstants.token, ServletUtil.getHeader(CommonConstants.token))
                     .syncBody(param)
                     .retrieve()
                     .bodyToMono(CommonResult.class)

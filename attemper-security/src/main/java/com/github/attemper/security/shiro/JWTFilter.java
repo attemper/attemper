@@ -8,9 +8,9 @@ import com.github.attemper.config.base.entity.ApiLog;
 import com.github.attemper.config.base.service.ApiLogService;
 import com.github.attemper.config.base.util.IPUtil;
 import com.github.attemper.config.base.util.ServletUtil;
-import com.github.attemper.security.exception.JWTDecodedException;
-import com.github.attemper.security.exception.JWTExpiredException;
 import com.github.attemper.security.model.JWTToken;
+import com.github.attemper.sys.exception.JWTDecodedException;
+import com.github.attemper.sys.exception.JWTExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.shiro.SecurityUtils;
@@ -123,7 +123,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                 .responseTime(result.getResponseTime())
                 .className(this.getClass().getName())
                 .param(ServletUtil.getHeader(CommonConstants.token))
-                .tenantId(ServletUtil.getHeader(CommonConstants.tenantId))
                 .ip(IPUtil.getIpAddr())
                 .build();
         SpringContextAware.getBean(ApiLogService.class).save(apiLog);

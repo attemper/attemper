@@ -122,13 +122,13 @@ public class JobOfSchedService extends BaseServiceAdapter {
      * @return
      */
     public Void remove(JobNamesParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         param.getJobNames().forEach(item -> {
             TriggerUpdateParam triggerUpdateParam = new TriggerUpdateParam(item);
             triggerService.update(triggerUpdateParam);
         });
         mapper.delete(paramMap);
-        camundaHandler.removeDefinitionAndDeployment(param.getJobNames(), injectAdminTenant().getId());
+        camundaHandler.removeDefinitionAndDeployment(param.getJobNames(), injectTenantId());
         return null;
     }
 
@@ -177,7 +177,7 @@ public class JobOfSchedService extends BaseServiceAdapter {
                 .jobContent(saveParam.getJobContent())
                 .status(saveParam.getStatus())
                 .remark(saveParam.getRemark())
-                .tenantId(injectAdminTenant().getId())
+                .tenantId(injectTenantId())
                 .build();
     }
 
@@ -237,12 +237,11 @@ public class JobOfSchedService extends BaseServiceAdapter {
      */
     public Void manual(JobNamesParam param) {
         List<String> jobNames = param.getJobNames();
-        String tenantId = injectAdminTenant().getId();
         ExecutorService executorService = Executors.newFixedThreadPool(jobNames.size());
         for (String jobName : jobNames) {
             executorService.submit(() -> {
                 try {
-                    return SpringContextAware.getBean(JobCallingService.class).invoke(jobName, tenantId);
+                    return SpringContextAware.getBean(JobCallingService.class).invoke(jobName, injectTenantId());
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     throw e;
@@ -254,13 +253,13 @@ public class JobOfSchedService extends BaseServiceAdapter {
     }
 
     public Void addArg(JobArgAllocatedParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.addArg(paramMap);
         return null;
     }
 
     public Void removeArg(JobArgAllocatedParam param) {
-        Map<String, Object> paramMap = injectAdminTenantIdToMap(param);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.deleteArg(paramMap);
         return null;
     }

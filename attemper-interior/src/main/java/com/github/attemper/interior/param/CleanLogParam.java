@@ -1,5 +1,6 @@
 package com.github.attemper.interior.param;
 
+import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.CommonParam;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class CleanLogParam implements CommonParam {
     @Override
     public String validate() {
         if (offsetDays < 0) {
-            throw new RTException(500, String.valueOf(offsetDays));
+            throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, String.valueOf(offsetDays));
         }
         return null;
     }

@@ -1,7 +1,7 @@
 package com.github.attemper.security.conf;
 
 import com.github.attemper.security.controller.LoginController;
-import com.github.attemper.security.ext.service.JWTService;
+import com.github.attemper.sys.ext.service.JWTService;
 import com.github.attemper.security.service.LoginService;
 import com.github.attemper.security.xss.XssFilter;
 import com.github.attemper.sys.ext.service.SecretService;

@@ -75,6 +75,3 @@ eureka:
     availabilityZones:
       default: defaultZone
     preferSameZone: false
-
-superTenant:
-  id: attemper

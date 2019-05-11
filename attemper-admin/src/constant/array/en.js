@@ -1,18 +1,3 @@
-export const tagTypes = [
-  {
-    value: 0,
-    label: 'Role'
-  },
-  {
-    value: 1,
-    label: 'Group'
-  },
-  {
-    value: 2,
-    label: 'Post'
-  }
-]
-
 export const resourceTypes = [
   {
     value: 0,
