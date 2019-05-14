@@ -238,10 +238,11 @@ public class JobOfSchedService extends BaseServiceAdapter {
     public Void manual(JobNamesParam param) {
         List<String> jobNames = param.getJobNames();
         ExecutorService executorService = Executors.newFixedThreadPool(jobNames.size());
+        String tenantId = injectTenantId();
         for (String jobName : jobNames) {
             executorService.submit(() -> {
                 try {
-                    return SpringContextAware.getBean(JobCallingService.class).invoke(jobName, injectTenantId());
+                    return SpringContextAware.getBean(JobCallingService.class).invoke(jobName, tenantId);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     throw e;

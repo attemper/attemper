@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-core</artifactId>
+            <artifactId>${project.parent.artifactId}-security</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -25,6 +25,11 @@
         <dependency>
             <groupId>${sdk.groupId}</groupId>
             <artifactId>${sdk.artifactId}-common-executor2biz</artifactId>
+            <version>${sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${sdk.groupId}</groupId>
+            <artifactId>${sdk.artifactId}-common-biz2executor</artifactId>
             <version>${sdk.version}</version>
         </dependency>
         <dependency>

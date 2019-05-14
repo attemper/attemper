@@ -17,6 +17,7 @@ import com.github.attemper.sys.holder.TenantHolder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -45,7 +46,7 @@ public class ControllerAspect {
     private static Validator validator = Validation
             .byProvider(HibernateValidator.class).configure().failFast(true).buildValidatorFactory().getValidator();
 
-    @Pointcut("(execution(public * " + GlobalConstants.basePackageLocation + "*.controller.*Controller.*(..)))"
+    @Pointcut("(execution(public * " + GlobalConstants.basePackageLocation + "*.controller..*Controller.*(..)))"
     )
     public void aroundController() {
 
@@ -96,7 +97,7 @@ public class ControllerAspect {
         Tenant tenant = TenantHolder.get();
         if (tenant == null) {
             String token = ServletUtil.getHeader(CommonConstants.token);
-            if (token != null) {
+            if (StringUtils.isNotBlank(token)) {
                 tenant = jwtService.parseToken(token);
                 TenantHolder.set(tenant);
             }

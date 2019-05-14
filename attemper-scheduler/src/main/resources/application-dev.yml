@@ -34,3 +34,7 @@ app:
   snow-flake:
     data-center-id: 0
     machine-id: 10
+
+logging:
+  level:
+    com.github.attemper: debug

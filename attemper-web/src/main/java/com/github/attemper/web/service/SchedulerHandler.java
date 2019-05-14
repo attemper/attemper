@@ -5,11 +5,9 @@ import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.scheduler.TriggerChangedParam;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.config.base.util.ServletUtil;
-import com.github.attemper.sys.holder.TenantHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -44,7 +42,7 @@ public class SchedulerHandler {
     public CommonResult<Void> updateTrigger(TriggerChangedParam param) {
         List<String> urls = buildUrls(APIPath.SchedulerPath.TRIGGER);
         List<Callable<CommonResult>> callers = new ArrayList<>(urls.size());
-        urls.forEach(url -> callers.add(new SchedulerCaller(HttpMethod.PUT, url, param, TenantHolder.get())));
+        urls.forEach(url -> callers.add(new SchedulerCaller(HttpMethod.PUT, url, param)));
         return invokeAll(callers);
     }
 
@@ -93,13 +91,10 @@ public class SchedulerHandler {
 
         private Object param;
 
-        private Tenant adminTenant;
-
-        public SchedulerCaller(HttpMethod method, String url, Object param, Tenant adminTenant) {
+        public SchedulerCaller(HttpMethod method, String url, Object param) {
             this.method = method;
             this.url = url;
             this.param = param;
-            this.adminTenant = adminTenant;
         }
 
         @Override

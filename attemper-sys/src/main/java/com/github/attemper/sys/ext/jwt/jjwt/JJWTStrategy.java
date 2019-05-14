@@ -1,7 +1,6 @@
 package com.github.attemper.sys.ext.jwt.jjwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.bean.SpringContextAware;
@@ -64,8 +63,7 @@ public class JJWTStrategy implements JWTStrategy {
         }catch (ExpiredJwtException e){
             throw new JWTExpiredException(e);
         }catch(Exception e){
-            throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
+            throw new RTException(1001, e);
         }
-
     }
 }

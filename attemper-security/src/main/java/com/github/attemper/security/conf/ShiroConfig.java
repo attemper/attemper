@@ -1,8 +1,8 @@
 package com.github.attemper.security.conf;
 
+import com.github.attemper.java.sdk.common.constant.SdkAPIPath;
 import com.github.attemper.security.shiro.CustomRealm;
 import com.github.attemper.security.shiro.JWTFilter;
-import com.github.attemper.common.constant.APIPath;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -52,8 +52,7 @@ public class ShiroConfig {
         bean.setFilters(filters);
 
         Map<String, String> filterMap = new LinkedHashMap<>();
-        filterMap.put(APIPath.LoginPath.LOGIN_BY_USERNAME_PWD, "anon");  //登录
-        filterMap.put(APIPath.TokenPath.REFRESH, "anon");  //刷新令牌
+        filterMap.put(SdkAPIPath.LoginPath.LOGIN_BY_USERNAME_PWD, "anon");  //登录
         filterMap.put("/doc.html", "anon");  //swagger2-bootstrap-ui主页
         filterMap.put("/webjars/**", "anon");  //swagger2-bootstrap-ui资源
         filterMap.put("/swagger-resources", "anon");  //swagger2元信息

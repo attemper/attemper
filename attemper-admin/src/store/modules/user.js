@@ -37,15 +37,14 @@ const mutations = {
 }
 const actions = {
   // user login
-  login({ commit }, userInfo) {
+  login({ commit, dispatch }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login(username.trim(), password).then(response => {
         const result = response.data.result
-        commit('SET_USER_NAME', result.tenant.userName)
-        commit('SET_DISPLAY_NAME', result.tenant.displayName)
         commit('SET_TOKEN', result.token)
         setToken(result.token)
+        dispatch('user/getInfo')
         resolve()
       }).catch(error => {
         reject(error)

@@ -13,6 +13,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>${sdk.groupId}</groupId>
+            <artifactId>${sdk.artifactId}-common</artifactId>
+            <version>${sdk.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

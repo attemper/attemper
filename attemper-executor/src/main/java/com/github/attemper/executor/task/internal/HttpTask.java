@@ -5,6 +5,7 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.common.result.dispatch.project.ProjectInfo;
 import com.github.attemper.config.base.bean.SpringContextAware;
+import com.github.attemper.config.base.conf.LocalServerConfig;
 import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.executor.constant.PropertyConstants;
 import com.github.attemper.executor.service.operate.JobOfExeService;
@@ -68,12 +69,13 @@ public abstract class HttpTask implements JavaDelegate {
     private Object buildParamMap(DelegateExecution execution) {
         ExecutionParam executionParam = new ExecutionParam();
         executionParam
-                .setActInstId(execution.getActivityInstanceId())
                 .setParentActInstId(execution.getParentActivityInstanceId())
                 .setExecutionId(execution.getId())
                 .setProcInstId(execution.getProcessInstanceId())
                 .setActId(execution.getCurrentActivityId())
-                .setActName(execution.getCurrentActivityName());
+                .setActName(execution.getCurrentActivityName())
+                .setRequestPath(SpringContextAware.getBean(LocalServerConfig.class).getRequestPath())
+                .setActInstId(execution.getActivityInstanceId());
         if (subUrl == null) { // router
             RouterParam routerParam = new RouterParam();
             routerParam.setBizParamMap(execution.getVariables());

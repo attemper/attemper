@@ -6,8 +6,6 @@ server:
         min-spare-threads: 30
     port: 5220
     connection-timeout: 5s
-    servlet:
-        context-path: /${spring.application.name}
 
 spring:
     application: 

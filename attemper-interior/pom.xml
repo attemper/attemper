@@ -23,6 +23,11 @@
             <version>${sdk.version}</version>
         </dependency>
         <dependency>
+            <groupId>${sdk.groupId}</groupId>
+            <artifactId>${sdk.artifactId}-micro-biz2executor</artifactId>
+            <version>${sdk.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
             <exclusions>

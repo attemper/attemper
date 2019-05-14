@@ -165,23 +165,37 @@
 
     <update id="updateAct" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstanceAct">
         UPDATE ${tablePrefix}job_execution_act j
-        SET
-        STATUS = #{status, jdbcType=INTEGER},
-        END_TIME = #{endTime, jdbcType=TIMESTAMP},
-        DURATION = #{duration, jdbcType=INTEGER},
-        LOG_KEY = #{logKey, jdbcType=VARCHAR},
-        LOG_TEXT = #{logText, jdbcType=VARCHAR}
+        <set>
+            STATUS = #{status, jdbcType=INTEGER},
+            END_TIME = #{endTime, jdbcType=TIMESTAMP},
+            DURATION = #{duration, jdbcType=INTEGER},
+            <if test="logKey != null">
+                LOG_KEY = IF(LOG_KEY IS NULL, #{logKey, jdbcType=VARCHAR}, concat(LOG_KEY, ',',
+                #{logKey, jdbcType=VARCHAR})),
+            </if>
+            <if test="logText != null">
+                LOG_TEXT = IF(LOG_TEXT IS NULL, #{logText, jdbcType=VARCHAR}, concat(LOG_TEXT, ',',
+                #{logText, jdbcType=VARCHAR})),
+            </if>
+        </set>
         <where>
             <include refid="condActInstId"/>
         </where>
         ;
         UPDATE ${tablePrefix}job_instance_act j
-        SET
-        STATUS = #{status, jdbcType=INTEGER},
-        END_TIME = #{endTime, jdbcType=TIMESTAMP},
-        DURATION = #{duration, jdbcType=INTEGER},
-        LOG_KEY = #{logKey, jdbcType=VARCHAR},
-        LOG_TEXT = #{logText, jdbcType=VARCHAR}
+        <set>
+            STATUS = #{status, jdbcType=INTEGER},
+            END_TIME = #{endTime, jdbcType=TIMESTAMP},
+            DURATION = #{duration, jdbcType=INTEGER},
+            <if test="logKey != null">
+                LOG_KEY = IF(LOG_KEY IS NULL, #{logKey, jdbcType=VARCHAR}, concat(LOG_KEY, ',',
+                #{logKey, jdbcType=VARCHAR})),
+            </if>
+            <if test="logText != null">
+                LOG_TEXT = IF(LOG_TEXT IS NULL, #{logText, jdbcType=VARCHAR}, concat(LOG_TEXT, ',',
+                #{logText, jdbcType=VARCHAR})),
+            </if>
+        </set>
         <where>
             <include refid="condActInstId"/>
         </where>
@@ -255,6 +269,38 @@
             </if>
         </where>
     </select>
+
+    <update id="appendLog" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstanceAct">
+        UPDATE ${tablePrefix}job_execution_act j
+        <set>
+            <if test="logKey != null">
+                LOG_KEY = IF(LOG_KEY IS NULL, #{logKey, jdbcType=VARCHAR}, concat(LOG_KEY, ',',
+                #{logKey, jdbcType=VARCHAR})),
+            </if>
+            <if test="logText != null">
+                LOG_TEXT = IF(LOG_TEXT IS NULL, #{logText, jdbcType=VARCHAR}, concat(LOG_TEXT, ',',
+                #{logText, jdbcType=VARCHAR})),
+            </if>
+        </set>
+        <where>
+            <include refid="condActInstId"/>
+        </where>
+        ;
+        UPDATE ${tablePrefix}job_instance_act j
+        <set>
+            <if test="logKey != null">
+                LOG_KEY = IF(LOG_KEY IS NULL, #{logKey, jdbcType=VARCHAR}, concat(LOG_KEY, ',',
+                #{logKey, jdbcType=VARCHAR})),
+            </if>
+            <if test="logText != null">
+                LOG_TEXT = IF(LOG_TEXT IS NULL, #{logText, jdbcType=VARCHAR}, concat(LOG_TEXT, ',',
+                #{logText, jdbcType=VARCHAR})),
+            </if>
+        </set>
+        <where>
+            <include refid="condActInstId"/>
+        </where>
+    </update>
 
     <sql id="condId">
         <if test="id != null">

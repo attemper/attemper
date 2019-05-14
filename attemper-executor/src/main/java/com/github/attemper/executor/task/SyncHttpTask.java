@@ -2,7 +2,7 @@ package com.github.attemper.executor.task;
 
 import com.github.attemper.executor.task.internal.HttpTask;
 import com.github.attemper.java.sdk.common.executor2biz.constant.Executor2BizAPIPath;
-import com.github.attemper.java.sdk.common.executor2biz.result.TaskResult;
+import com.github.attemper.java.sdk.common.result.execution.TaskResult;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.web.reactive.function.client.WebClient;
 

@@ -2,6 +2,7 @@ package com.github.attemper.security.shiro;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.attemper.common.constant.CommonConstants;
+import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.entity.ApiLog;
@@ -12,6 +13,7 @@ import com.github.attemper.security.model.JWTToken;
 import com.github.attemper.sys.exception.JWTDecodedException;
 import com.github.attemper.sys.exception.JWTExpiredException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
@@ -39,7 +41,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-        if ((WebUtils.toHttp(request).getHeader(CommonConstants.token) == null)) {
+        if (StringUtils.isBlank(WebUtils.toHttp(request).getHeader(CommonConstants.token))) {
             return printError(response, 1002);
         }
         return super.preHandle(request, response);
@@ -67,12 +69,12 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) {
         try{
             executeLogin(request, response);
-        }catch (JWTDecodedException e){
-            //log.error(e.getMessage(), e);
+        } catch (JWTDecodedException e) {
             return printError(response, 1001);
-        }catch (JWTExpiredException e){
-            //log.error(e.getMessage(), e);
+        } catch (JWTExpiredException e) {
             return printError(response, 1000);
+        } catch (RTException e) {
+            return printError(response, e.getCode());
         }
         return true;
     }

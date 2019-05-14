@@ -3,7 +3,7 @@ package com.github.attemper.interior.controller;
 import com.github.attemper.interior.service.RouterService;
 import com.github.attemper.java.sdk.common.executor2biz.constant.Executor2BizAPIPath;
 import com.github.attemper.java.sdk.common.executor2biz.param.RouterParam;
-import com.github.attemper.java.sdk.common.executor2biz.result.TaskResult;
+import com.github.attemper.java.sdk.common.result.execution.TaskResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

@@ -19,4 +19,6 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
 
     List<JobInstanceAct> listAct(Map<String, Object> paramMap);
 
+    void appendLog(JobInstanceAct jobInstanceAct);
+
 }

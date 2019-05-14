@@ -51,8 +51,4 @@ public class JWTService {
     public Tenant parseToken(String token) throws JWTExpiredException, JWTDecodedException {
         return jwtStrategy.parseToken(token);
     }
-
-    public boolean verify(String token, Tenant tenant) {
-        return jwtStrategy.verify(token, tenant);
-    }
 }

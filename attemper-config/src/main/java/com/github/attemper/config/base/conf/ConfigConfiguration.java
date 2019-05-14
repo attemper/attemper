@@ -36,6 +36,7 @@ import org.springframework.context.annotation.Configuration;
 
         //swagger2配置
         Swagger2Config.class,
+        LocalServerConfig.class,
 
         //bean factory bean
         SpringContextAware.class,

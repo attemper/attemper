@@ -5,17 +5,9 @@ package com.github.attemper.common.constant;
  */
 public interface CommonConstants {
 
-    String undefined = "undefined";
-
-    String _null = "null";
-
-    String _false = "false";
-
     int OK = 200;
 
     int INTERNAL_SERVER_ERROR = 500;
-
-    String APPLICATION_JSON = "application/json";
 
     String page = "page";
 
@@ -25,19 +17,11 @@ public interface CommonConstants {
 
     String tenantId = "tenantId";
 
-    String sign = "sign";
-
     String header = "header";
 
     String token = "token";
 
-    String code = "code";
-
-    String msg = "msg";
-
     String duration = "duration";
-
-    String responseTime = "responseTime";
 
     String result = "result";
 

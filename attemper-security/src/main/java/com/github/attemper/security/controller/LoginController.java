@@ -1,10 +1,11 @@
 package com.github.attemper.security.controller;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.sys.login.LoginParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.sys.login.LoginInfo;
-import com.github.attemper.common.result.sys.login.LoginResult;
+import com.github.attemper.java.sdk.common.constant.SdkAPIPath;
+import com.github.attemper.java.sdk.common.param.sys.login.LoginParam;
+import com.github.attemper.java.sdk.common.result.sys.login.LoginResult;
 import com.github.attemper.security.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -24,7 +25,7 @@ public class LoginController {
 
     @ApiOperation("Login by userName and password")
     @ApiImplicitParam(value = "LoginParam", name = "param", dataType = "LoginParam", required = true)
-    @PostMapping(APIPath.LoginPath.LOGIN_BY_USERNAME_PWD)
+    @PostMapping(SdkAPIPath.LoginPath.LOGIN_BY_USERNAME_PWD)
     public CommonResult<LoginResult> login(@RequestBody LoginParam param) {
         return CommonResult.putResult(service.login(param));
     }

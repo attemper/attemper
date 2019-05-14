@@ -2,7 +2,7 @@ package com.github.attemper.executor.task;
 
 import com.github.attemper.executor.task.internal.HttpTask;
 import com.github.attemper.java.sdk.common.executor2biz.constant.Executor2BizAPIPath;
-import com.github.attemper.java.sdk.common.executor2biz.result.LogResult;
+import com.github.attemper.java.sdk.common.result.execution.LogResult;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -19,9 +19,9 @@ public class AsyncHttpTask extends HttpTask {
         System.out.println("start execution:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ":" + execution.getCurrentActivityName());
         LogResult logResult = super.invoke(webClient, execution, LogResult.class);
         System.out.println(logResult);
-        synchronized (execution.getId().intern()) {
+        synchronized (execution.getActivityInstanceId().intern()) { // lock
             try {
-                execution.getId().intern().wait(120000L);
+                execution.getActivityInstanceId().intern().wait(120000L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

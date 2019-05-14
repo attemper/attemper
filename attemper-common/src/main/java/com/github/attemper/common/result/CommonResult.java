@@ -1,50 +1,20 @@
 package com.github.attemper.common.result;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.property.StatusProperty;
-import lombok.Data;
+import com.github.attemper.java.sdk.common.result.BaseResult;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 返回数据封装类
  * @auth ldang
  */
-@Data
-public class CommonResult<T> implements Serializable {
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 状态码
-	 */
-	protected int code;
-
-	/**
-	 * 状态信息
-	 */
-	protected String msg;
-
-	/**
-	 * 响应时刻，字符串格式 yyyy-MM-dd HH:mm:ss SSS
-	 */
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	protected Date responseTime;
-
-	/**
-	 * 处理耗时，单位秒
-	 */
-	protected String duration;
-
-	/**
-	 * 数据实体
-	 */
-	protected T result;
+public class CommonResult<T> extends BaseResult<T> implements Serializable {
 	
 	public CommonResult() {
-		this.responseTime = new Date();
+		super();
 	}
 
     /**

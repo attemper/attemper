@@ -39,7 +39,7 @@ module.exports = {
         target: `http://localhost:5210`,
         changeOrigin: true,
         pathRewrite: {
-          '^/api': '/attemper/api'
+          '^/api': '/api'
         }
       }
     },

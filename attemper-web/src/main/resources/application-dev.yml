@@ -19,17 +19,12 @@ eureka:
 app:
   scheduler:
     name: scheduler
-    context-path: ${app.scheduler.name}
     delayedInSecond: 5
   web:
     enable-scheduling: false
   snow-flake:
     data-center-id: 0
     machine-id: 1
-
-logging:
-  level:
-    com.github.attemper.core.dao.mapper: debug
 
 grpc:
     server:
@@ -40,3 +35,7 @@ org:
   quartz:
     jobStore:
       isClustered: true
+
+logging:
+  level:
+    com.github.attemper: debug
