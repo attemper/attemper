@@ -7,7 +7,8 @@ export default {
     user: '用户管理',
     tag: '标签管理',
     resource: '资源管理',
-    job: '任务管理',
+    calendar: '日历管理',
+    dispatch: '调度管理',
     arg: '参数管理',
     project: '服务信息',
     flowJob: '任务设计',
@@ -103,7 +104,8 @@ export default {
     manual: '发起',
     showCurrent: '显示当前',
     showAll: '显示全部',
-    highSearch: '高级查询'
+    highSearch: '高级查询',
+    exclude: '排除'
   },
   tip: {
     search: '请输入查询关键字',
@@ -113,24 +115,31 @@ export default {
     saveConfirm: '确定保存',
     manualWithNoVersion: '流程未被发布，不能手动发起'
   },
+  columns: {
+    displayName: '中文名',
+    remark: '备注'
+  },
+  rules: {
+    displayName: '中文名不能为空'
+  },
+  placeholders: {
+    displayName: '请输入中文名',
+    remark: '请输入备注'
+  },
   sys: {
     tenant: {
       columns: {
         userName: '编号',
-        displayName: '中文名',
         password: '密码',
         email: '邮箱',
         mobile: '手机号',
-        status: '状态',
-        sign: '认证码'
+        status: '状态'
       },
       rules: {
-        userName: '租户编号不能为空',
-        displayName: '租户中文名不能为空'
+        userName: '租户编号不能为空'
       },
       placeholder: {
         userName: '请输入租户编号',
-        displayName: '请输入租户中文名',
         password: '请输入密码',
         email: '请输入邮箱',
         mobile: '请输入手机号'
@@ -138,18 +147,13 @@ export default {
     },
     tag: {
       columns: {
-        tagName: '角色名称',
-        displayName: '中文名称',
-        remark: '备注'
+        tagName: '角色名称'
       },
       rules: {
-        tagName: '角色名称不能为空',
-        displayName: '中文名不能为空'
+        tagName: '角色名称不能为空'
       },
       placeholder: {
-        tagName: '请输入角色名称',
-        displayName: '请输入中文名',
-        remark: '请输入备注'
+        tagName: '请输入角色名称'
       },
       tip: {
         tenant: '分配租户',
@@ -164,52 +168,22 @@ export default {
         allocateTenant: '分配租户',
         allocateResource: '分配资源'
       }
-    },
-    resource: {
-      title: {
-        left: '资源树',
-        right: '详情'
-      },
-      label: {
-        resourceName: '资源名称',
-        displayName: '中文名称',
-        resourceType: '资源类型',
-        uri: 'URI',
-        icon: '图标',
-        position: '位置'
-      },
-      rules: {
-        resourceName: '资源名称不能为空',
-        displayName: '中文名称不能为空'
-      },
-      placeholder: {
-        resourceName: '请输入资源名称',
-        displayName: '请输入中文名称',
-        uri: '请输入URI',
-        icon: '请输入图标'
-      },
-      tip: {
-        searchKey: '资源名称/中文名称',
-        resourceRemoveWarning: '请先删除子节点'
-      }
     }
   },
-  job: {
-    title: '任务',
+  dispatch: {
+    title: '调度',
     sort: {
       nameAsc: '按任务名称升序',
       nameDesc: '按任务名称降序'
     },
     rules: {
       jobName: '任务名称不能为空',
-      displayName: '中文名称不能为空',
       status: '状态不能为空'
     },
     columns: {
       reversion: '模型版本',
       version: '发布版本',
       jobName: '任务名称',
-      displayName: '中文名称',
       status: '状态',
       createTime: '创建时间',
       updateTime: '最近修改时间',
@@ -218,7 +192,6 @@ export default {
     },
     placeholder: {
       jobName: '请输入任务名称',
-      displayName: '请输入中文名称',
       status: '请选择状态',
       remark: '请输入备注'
     },
@@ -302,14 +275,12 @@ export default {
       columns: {
         argName: '参数名称',
         argType: '参数类型',
-        argValue: '参数值',
-        remark: '备注'
+        argValue: '参数值'
       },
       placeholder: {
         argName: '请输入参数名称',
         argType: '请选择参数类型',
-        argValue: '请输入参数值',
-        remark: '请输入备注'
+        argValue: '请输入参数值'
       },
       rules: {
         argName: '参数名称不能为空',
@@ -324,17 +295,14 @@ export default {
       },
       label: {
         projectName: '项目名称',
-        displayName: '中文名称',
         contextPath: 'contextPath',
         position: '位置'
       },
       rules: {
-        projectName: '项目名称不能为空',
-        displayName: '中文名称不能为空'
+        projectName: '项目名称不能为空'
       },
       placeholder: {
         projectName: '请输入项目名称',
-        displayName: '请输入中文名称',
         contextPath: '请输入contextPath'
       },
       tip: {

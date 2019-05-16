@@ -1,7 +1,6 @@
 package com.github.attemper.sys.dao.mapper;
 
 import com.github.attemper.common.base.BaseMapper;
-import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import org.apache.ibatis.annotations.Mapper;
@@ -23,7 +22,7 @@ public interface TenantMapper extends BaseMapper<Tenant> {
 
     Tenant getAdmin();
 
-    List<Resource> getResources(Map<String, Object> paramMap);
+    List<String> getResources(Map<String, Object> paramMap);
 
     List<Tag> getTags(Map<String, Object> paramMap);
 

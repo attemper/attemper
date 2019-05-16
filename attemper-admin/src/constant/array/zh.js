@@ -1,22 +1,3 @@
-export const resourceTypes = [
-  {
-    value: 0,
-    label: '目录'
-  },
-  {
-    value: 1,
-    label: '菜单'
-  },
-  {
-    value: 2,
-    label: '按钮'
-  },
-  {
-    value: 3,
-    label: '区块'
-  }
-]
-
 export const statuses = [
   {
     value: 0,
@@ -44,29 +25,6 @@ export const jobStatuses = [
   {
     label: '一次性',
     value: 3
-  }
-]
-
-export const calendars = [
-  {
-    label: '自然日',
-    value: 5
-  },
-  {
-    label: '工作日',
-    value: 10
-  },
-  {
-    label: '中国法定节假日',
-    value: 15
-  },
-  {
-    label: 'A股交易日',
-    value: 20
-  },
-  {
-    label: '港股交易日',
-    value: 25
   }
 ]
 
@@ -249,4 +207,15 @@ export const transferTitles = [
 export const allocateTitles = [
   '待分配',
   '已分配'
+]
+
+export const calendarTypes = [
+  {
+    label: '日期维度',
+    value: 0
+  },
+  {
+    label: '时间维度',
+    value: 1
+  }
 ]

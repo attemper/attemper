@@ -4,7 +4,6 @@ import com.github.attemper.common.enums.TenantStatus;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.sys.tenant.TenantGetParam;
 import com.github.attemper.common.result.sys.login.LoginInfo;
-import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.java.sdk.common.param.sys.login.LoginParam;
@@ -49,7 +48,7 @@ public class LoginService extends BaseServiceAdapter {
         TenantGetParam getParam = new TenantGetParam(injectTenantId());
         Tenant tenant = tenantService.get(getParam);
         List<Tag> tags = tenantService.getTags(getParam);
-        List<Resource> resources = tenantService.getResources(getParam);
+        List<String> resources = tenantService.getResources(getParam);
         return LoginInfo.builder()
                 .tenant(tenant)
                 .resources(resources)

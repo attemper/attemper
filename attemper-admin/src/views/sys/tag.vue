@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="page.tagName" :placeholder="$t('sys.tag.columns.tagName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
-      <el-input v-model="page.displayName" :placeholder="$t('sys.tag.columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
       <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
@@ -30,7 +30,7 @@
           <span>{{ scope.row.tagName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('sys.tag.columns.displayName')" min-width="150px">
+      <el-table-column :label="$t('columns.displayName')" min-width="150px">
         <template slot-scope="scope">
           <span>{{ scope.row.displayName }}</span>
         </template>
@@ -52,11 +52,11 @@
           <el-form-item :label="$t('sys.tag.columns.tagName')" prop="tagName">
             <el-input v-model="tag.tagName" :placeholder="$t('sys.tag.placeholder.tagName')" />
           </el-form-item>
-          <el-form-item :label="$t('sys.tag.columns.displayName')" prop="displayName">
-            <el-input v-model="tag.displayName" :placeholder="$t('sys.tag.placeholder.displayName')" />
+          <el-form-item :label="$t('columns.displayName')" prop="displayName">
+            <el-input v-model="tag.displayName" :placeholder="$t('placeholders.displayName')" />
           </el-form-item>
-          <el-form-item :label="$t('sys.tag.columns.remark')">
-            <el-input v-model="tag.remark" :autosize="{ minRows: 1, maxRows: 4}" :placeholder="$t('sys.tag.placeholder.remark')" type="textarea" />
+          <el-form-item :label="$t('columns.remark')">
+            <el-input v-model="tag.remark" :autosize="{ minRows: 1, maxRows: 4}" :placeholder="$t('placeholders.remark')" type="textarea" />
           </el-form-item>
           <el-form-item>
             <el-button type="info" @click="editDialog.base.visible = false">{{ $t('actions.cancel') }}</el-button>
@@ -90,7 +90,7 @@
             :data="treeData"
             :expand-on-click-node="false"
             :default-checked-keys="checkedKeys"
-            :default-expanded-keys="checkedKeys"
+            default-expand-all
             show-checkbox
             check-on-click-node
             check-strictly
@@ -117,12 +117,13 @@
 
 <script>
 import { listReq, getReq, removeReq, addReq, updateReq, getTenantsReq, updateTagTenantReq, getResourcesReq, updateTagResourceReq } from '@/api/sys/tag'
-import { treeListReq } from '@/api/sys/resource'
+import { asyncRouterMap } from '@/router'
 import * as tenantApi from '@/api/sys/tenant'
 import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
-// import { parseTime } from '@/utils'
+import { generateTitleByVm, translateByVm } from '@/utils/i18n'
+import { injectIcon } from '@/utils/tools'
 
 export default {
   name: 'tag',
@@ -186,7 +187,7 @@ export default {
   methods: {
     setFormRules() {
       this.formRules.tagName[0].message = this.$t('sys.tag.rules.tagName')
-      this.formRules.displayName[0].message = this.$t('sys.tag.rules.displayName')
+      this.formRules.displayName[0].message = this.$t('rules.displayName')
     },
     search() {
       this.listLoading = true
@@ -301,25 +302,51 @@ export default {
     initTreeData() {
       this.treeData =
         this.checkedKeys = []
-      treeListReq().then(res => {
-        const sourceList = res.data.result
-        let root
-        for (let i = 0; i < sourceList.length; i++) {
-          const resource = sourceList[i]
-          if (!resource.parentResourceName) {
-            root = resource
-            root.expand = true
-            break
+      const rootResource = {
+        resourceName: 'root',
+        parentResourceName: null,
+        displayName: '根节点',
+        icon: 'tree'
+      }
+      this.createResourceTree(asyncRouterMap, rootResource)
+      getResourcesReq({ tagName: this.selections[0].tagName }).then(res => {
+        res.data.result.forEach(resourceName => {
+          this.checkAllocatedResource(resourceName, rootResource.children)
+        })
+        this.treeData = [rootResource]
+      })
+    },
+    createResourceTree(routerList, currentResource) {
+      for (let i = 0; i < routerList.length; i++) {
+        if (routerList[i].path !== '*' && routerList[i].path.indexOf(':') === -1) {
+          const resource = {
+            resourceName: routerList[i].name,
+            parentResourceName: currentResource.resourceName,
+            displayName: generateTitleByVm(this, routerList[i].meta.title),
+            icon: injectIcon(routerList[i].meta.icon)
+          }
+          if (routerList[i].meta && routerList[i].meta.buttons && routerList[i].meta.buttons.length > 0) {
+            if (!resource.children) {
+              resource.children = []
+            }
+            routerList[i].meta.buttons.forEach(btn => {
+              const btnResource = {
+                resourceName: resource.resourceName + '-' + btn,
+                parentResourceName: resource.resourceName,
+                displayName: translateByVm(this, 'actions.' + btn)
+              }
+              resource.children.push(btnResource)
+            })
+          }
+          if (!currentResource.children) {
+            currentResource.children = []
+          }
+          currentResource.children.push(resource)
+          if (routerList[i].children) {
+            this.createResourceTree(routerList[i].children, resource)
           }
         }
-        this.createTree(sourceList, root)
-        getResourcesReq({ tagName: this.selections[0].tagName }).then(res => {
-          res.data.result.forEach(resource => {
-            this.checkAllocatedResource(resource.resourceName, root.children)
-          })
-          this.treeData = [root]
-        })
-      })
+      }
     },
     checkAllocatedResource(key, children) {
       for (let i = 0; i < children.length; i++) {
@@ -328,21 +355,6 @@ export default {
           this.checkedKeys.push(child.resourceName)
         } else if (child.children) {
           this.checkAllocatedResource(key, child.children)
-        }
-      }
-    },
-    createTree(sourceList, cell) {
-      for (let i = 0; i < sourceList.length; i++) {
-        const resource = sourceList[i]
-        if (resource.parentResourceName === cell.resourceName) {
-          if (resource.resourceType === 0) {
-            resource.expand = true
-          }
-          if (!cell.children) {
-            cell.children = []
-          }
-          cell.children.push(resource)
-          this.createTree(sourceList, resource)
         }
       }
     },

@@ -19,7 +19,8 @@ const sysRouter = {
     meta: {
       title: 'tenant',
       icon: 'tenant',
-      noCache: false
+      noCache: false,
+      buttons: ['add', 'update', 'remove']
     }
   },
   {
@@ -29,16 +30,6 @@ const sysRouter = {
     meta: {
       title: 'tag',
       icon: 'tag',
-      noCache: false
-    }
-  },
-  {
-    path: 'resource',
-    component: () => import('@/views/sys/resource'),
-    name: 'resource',
-    meta: {
-      title: 'resource',
-      icon: 'resource',
       noCache: false
     }
   }

@@ -2,7 +2,6 @@ package com.github.attemper.sys.service;
 
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.sys.tenant.*;
-import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.util.BeanUtil;
@@ -38,6 +37,11 @@ public class TenantService extends BaseServiceAdapter {
         return mapper.get(param.getUserName());
     }
 
+    /**
+     * get super admin
+     *
+     * @return
+     */
     public Tenant getAdmin() {
         return mapper.getAdmin();
     }
@@ -73,8 +77,6 @@ public class TenantService extends BaseServiceAdapter {
     }
 
     public Tenant save(Tenant tenant) {
-        String sign = secretService.encode(tenant.getUserName());
-        tenant.setSign(sign);
         tenant.setUpdateTime(new Date());
         mapper.save(BeanUtil.bean2Map(tenant));
         return tenant;
@@ -90,7 +92,7 @@ public class TenantService extends BaseServiceAdapter {
         return null;
     }
 
-    public List<Resource> getResources(TenantGetParam param) {
+    public List<String> getResources(TenantGetParam param) {
         return mapper.getResources(BeanUtil.bean2Map(param));
     }
 

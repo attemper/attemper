@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="page.userName" :placeholder="$t('sys.tenant.columns.userName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
-      <el-input v-model="page.displayName" :placeholder="$t('sys.tenant.columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-button v-access="'tenant-add'" class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
       <el-button v-access="'tenant-remove'" :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
@@ -30,9 +30,14 @@
           <span>{{ scope.row.userName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('sys.tenant.columns.displayName')" min-width="150px">
+      <el-table-column :label="$t('columns.displayName')" min-width="150px">
         <template slot-scope="scope">
           <span class="single-line">{{ scope.row.displayName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('sys.tenant.columns.status')" align="center" width="100">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column :label="$t('sys.tenant.columns.email')" min-width="100px">
@@ -43,16 +48,6 @@
       <el-table-column :label="$t('sys.tenant.columns.mobile')" min-width="100px">
         <template slot-scope="scope">
           <span class="single-line">{{ scope.row.mobile }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('sys.tenant.columns.status')" align="center" width="100">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('sys.tenant.columns.sign')" min-width="200px">
-        <template slot-scope="scope">
-          <span>{{ scope.row.sign }}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="canUpdate" :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
@@ -79,22 +74,22 @@
           <el-form-item :label="$t('sys.tenant.columns.userName')" prop="userName">
             <el-input v-model="tenant.userName" :placeholder="$t('sys.tenant.placeholder.userName')" />
           </el-form-item>
-          <el-form-item :label="$t('sys.tenant.columns.displayName')" prop="displayName">
-            <el-input v-model="tenant.displayName" :placeholder="$t('sys.tenant.placeholder.displayName')" />
+          <el-form-item :label="$t('columns.displayName')" prop="displayName">
+            <el-input v-model="tenant.displayName" :placeholder="$t('placeholders.displayName')" />
           </el-form-item>
           <el-form-item :label="$t('sys.tenant.columns.password')">
             <el-input v-model="tenant.password" :placeholder="$t('sys.tenant.placeholder.password')" type="password" />
+          </el-form-item>
+          <el-form-item :label="$t('sys.tenant.columns.status')">
+            <el-select v-model="tenant.status">
+              <el-option v-for="item in statuses" :key="item.label" :value="item.value" :label="item.label" />
+            </el-select>
           </el-form-item>
           <el-form-item :label="$t('sys.tenant.columns.email')" prop="email">
             <el-input v-model="tenant.email" :placeholder="$t('sys.tenant.placeholder.email')" />
           </el-form-item>
           <el-form-item :label="$t('sys.tenant.columns.mobile')" prop="mobile">
             <el-input v-model="tenant.mobile" :placeholder="$t('sys.tenant.placeholder.mobile')" />
-          </el-form-item>
-          <el-form-item :label="$t('sys.tenant.columns.status')">
-            <el-select v-model="tenant.status">
-              <el-option v-for="item in statuses" :key="item.label" :value="item.value" :label="item.label" />
-            </el-select>
           </el-form-item>
           <el-form-item>
             <el-button type="info" @click="editDialog.base.visible = false">{{ $t('actions.cancel') }}</el-button>
@@ -182,7 +177,7 @@ export default {
   methods: {
     setFormRules() {
       this.formRules.userName[0].message = this.$t('sys.tenant.rules.userName')
-      this.formRules.displayName[0].message = this.$t('sys.tenant.rules.displayName')
+      this.formRules.displayName[0].message = this.$t('rules.displayName')
     },
     search() {
       this.listLoading = true

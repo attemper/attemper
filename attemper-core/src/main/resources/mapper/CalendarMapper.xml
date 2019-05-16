@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.attemper.core.dao.mapper.calendar.CalendarMapper">
+
+    <insert id="saveDay" parameterType="map">
+        <selectKey keyProperty="count" resultType="int" order="BEFORE">
+            select count(*)
+            from ${tablePrefix}calendar_day cd
+            <where>
+                <include refid="condCalendarName"/>
+                <include refid="condDayName"/>
+                <include refid="condTenantId"/>
+            </where>
+        </selectKey>
+        <choose>
+            <when test="count == 0">
+                INSERT INTO ${tablePrefix}calendar_day (
+                CALENDAR_NAME,
+                DAY_NAME,
+                REMARK,
+                TENANT_ID
+                )
+                VALUES
+                (
+                #{calendarName, jdbcType=VARCHAR},
+                #{dayName, jdbcType=VARCHAR},
+                #{remark, jdbcType=VARCHAR},
+                #{tenantId, jdbcType=VARCHAR}
+                )
+            </when>
+            <otherwise>
+                UPDATE
+                ${tablePrefix}calendar_day cd
+                SET
+                REMARK = #{remark, jdbcType=VARCHAR}
+                <where>
+                    <include refid="condCalendarName"/>
+                    <include refid="condDayName"/>
+                    <include refid="condTenantId"/>
+                </where>
+            </otherwise>
+        </choose>
+    </insert>
+
+    <select id="list" parameterType="map" resultType="com.github.attemper.common.result.dispatch.calendar.CalendarInfo">
+        SELECT *
+        FROM ${tablePrefix}calendar
+        <where>
+            <include refid="condTenantId"/>
+        </where>
+        order by POSITION
+    </select>
+
+    <select id="listDay" parameterType="map" resultType="com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig">
+        SELECT cd.DAY_NAME, cd.REMARK
+        FROM ${tablePrefix}calendar c
+        JOIN ${tablePrefix}calendar_day cd
+        USING(CALENDAR_NAME, TENANT_ID)
+        <where>
+            <include refid="condCalendarName"/>
+            <include refid="condTenantId"/>
+        </where>
+        ORDER BY DAY_NAME DESC
+    </select>
+
+    <delete id="deleteDay" parameterType="map">
+        DELETE FROM cd USING ${tablePrefix}calendar_day cd
+        <where>
+            <include refid="condCalendarName"/>
+            <include refid="condDayName"/>
+        </where>
+    </delete>
+
+    <sql id="condDayName">
+        <if test="dayName != null">
+            and DAY_NAME = #{dayName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condCalendarName">
+        <if test="calendarName != null">
+            and CALENDAR_NAME = #{calendarName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        and (TENANT_ID = '' or TENANT_ID = #{tenantId, jdbcType=VARCHAR})
+    </sql>
+
+</mapper>

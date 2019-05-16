@@ -1,4 +1,5 @@
 <script>
+import { injectIcon } from '@/utils/tools'
 export default {
   name: 'MenuItem',
   functional: true,
@@ -17,7 +18,8 @@ export default {
     const vnodes = []
 
     if (icon) {
-      vnodes.push(<svg-icon icon-class={icon}/>)
+      const iconStr = injectIcon(icon)
+      vnodes.push(<svg-icon icon-class={iconStr}/>)
     }
 
     if (title) {

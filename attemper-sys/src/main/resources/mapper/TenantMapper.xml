@@ -65,7 +65,6 @@
                 EMAIL,
                 MOBILE,
                 STATUS,
-                SIGN,
                 ADMIN,
                 CREATE_TIME,
                 UPDATE_TIME
@@ -78,7 +77,6 @@
                 #{email, jdbcType=VARCHAR},
                 #{mobile, jdbcType=VARCHAR},
                 #{status, jdbcType=INTEGER},
-                #{sign, jdbcType=VARCHAR},
                 #{admin, jdbcType=VARCHAR},
                 #{createTime, jdbcType=TIMESTAMP},
                 #{updateTime, jdbcType=TIMESTAMP}
@@ -95,7 +93,6 @@
                 EMAIL = #{email, jdbcType=VARCHAR},
                 MOBILE = #{mobile, jdbcType=VARCHAR},
                 STATUS = #{status, jdbcType=INTEGER},
-                SIGN = #{sign, jdbcType=VARCHAR},
                 ADMIN = #{admin, jdbcType=VARCHAR},
                 UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP}
                 WHERE USER_NAME = #{userName, jdbcType=VARCHAR}
@@ -113,11 +110,9 @@
         </where>
     </delete>
 
-    <select id="getResources" parameterType="map" resultType="com.github.attemper.common.result.sys.resource.Resource">
-        SELECT r.*
-        FROM ${tablePrefix}resource r
-        JOIN ${tablePrefix}tag_resource tr
-        ON r.RESOURCE_NAME = tr.RESOURCE_NAME
+    <select id="getResources" parameterType="map" resultType="java.lang.String">
+        SELECT tr.RESOURCE_NAME
+        FROM ${tablePrefix}tag_resource tr
         JOIN ${tablePrefix}tag ta
         ON tr.TAG_NAME = ta.TAG_NAME
         JOIN ${tablePrefix}tag_tenant tt

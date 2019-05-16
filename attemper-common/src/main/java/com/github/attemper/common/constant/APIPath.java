@@ -66,31 +66,15 @@ public class APIPath {
 
         public static final String GET = API_PATH + SYS + SUB_PATH + _GET;
 
+        public static final String RESOURCE = "/resource";
+
         public static final String TENANT_LIST = API_PATH + SYS + SUB_PATH + TenantPath.SUB_PATH + _LIST;
 
-        public static final String RESOURCE_LIST = API_PATH + SYS + SUB_PATH + ResourcePath.SUB_PATH + _LIST;
+        public static final String RESOURCE_LIST = API_PATH + SYS + SUB_PATH + RESOURCE + _LIST;
 
         public static final String TENANT_UPDATE = API_PATH + SYS + SUB_PATH + TenantPath.SUB_PATH + _UPDATE;
 
-        public static final String RESOURCE_UPDATE = API_PATH + SYS + SUB_PATH + ResourcePath.SUB_PATH + _UPDATE;
-    }
-
-    public static final class ResourcePath {
-        public static final String SUB_PATH = "/resource";
-
-        /*public static final String LIST = API_PATH + SYS + SUB_PATH + _LIST;
-
-        public static final String ADD = API_PATH + SYS + SUB_PATH + _ADD;*/
-
-        public static final String UPDATE = API_PATH + SYS + SUB_PATH + _UPDATE;
-
-        public static final String SAVE = API_PATH + SYS + SUB_PATH + _SAVE;
-
-        public static final String REMOVE = API_PATH + SYS + SUB_PATH + _REMOVE;
-
-        //public static final String GET = API_PATH + SYS + SUB_PATH + _GET;
-
-        public static final String TREE_LIST = API_PATH + SYS + SUB_PATH + "/treeList";
+        public static final String RESOURCE_UPDATE = API_PATH + SYS + SUB_PATH + RESOURCE + _UPDATE;
     }
 
     public static final class JobPath {
@@ -149,6 +133,28 @@ public class APIPath {
 
         public static final String REMOVE = API_PATH + DISPATCH + SUB_PATH + _REMOVE;
 
+    }
+
+    public static final class CalendarPath {
+        public static final String SUB_PATH = "/calendar";
+
+        private static final String DAY = "/day";
+
+        private static final String TIME = "/time";
+
+        public static final String LIST = API_PATH + DISPATCH + SUB_PATH + _LIST;
+
+        public static final String SAVE_DAY = API_PATH + DISPATCH + SUB_PATH + DAY + _SAVE;
+
+        public static final String SAVE_TIME = API_PATH + DISPATCH + SUB_PATH + TIME + _SAVE;
+
+        public static final String LIST_DAY = API_PATH + DISPATCH + SUB_PATH + DAY + _LIST;
+
+        public static final String LIST_TIME = API_PATH + DISPATCH + SUB_PATH + TIME + _LIST;
+
+        public static final String REMOVE_DAY = API_PATH + DISPATCH + SUB_PATH + DAY + _REMOVE;
+
+        public static final String REMOVE_TIME = API_PATH + DISPATCH + SUB_PATH + TIME + _REMOVE;
     }
 
     public static final class ProjectPath {

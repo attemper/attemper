@@ -42,3 +42,7 @@ export const canAccess = (value) => {
 export const closeAllTabs = () => {
   store.dispatch('tagsView/delAllViews').then()
 }
+
+export const injectIcon = (icon) => {
+  return icon + (icon === 'calendar' ? new Date().getDate() : '')
+}

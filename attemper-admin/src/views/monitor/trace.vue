@@ -51,14 +51,6 @@
                 <el-form-item>
                   <date-time-generator @update="page.upperEndTime = $event" @change="search" />
                 </el-form-item>
-                <!--<el-form-item :label="$t('job.columns.remark')">
-                  <el-input
-                    v-model="job.remark"
-                    :autosize="{ minRows: 2, maxRows: 4}"
-                    :placeholder="$t('job.placeholder.remark')"
-                    type="textarea"
-                  />
-                </el-form-item>-->
               </el-form>
               <el-button v-if="showAll" slot="reference" class="filter-item" style="float: right;" type="primary" @click="visible = !visible">{{ $t('actions.highSearch') }}</el-button>
             </el-popover>
@@ -112,12 +104,12 @@
 
 <script>
 import { listReq, listActReq } from '@/api/monitor/monitor'
-import { getReq } from '@/api/job/flowJob'
+import { getReq } from '@/api/dispatch/flowJob'
 import BpmnViewer from 'bpmn-js'
 import minimapModule from 'diagram-js-minimap'
 // import { diff } from 'bpmn-js-differ' // https://github.com/bpmn-io/bpmn-js-differ
 import customTranslate from '@/utils/customTranslate'
-import customElementTemplate from '../job/element-templates/custom'
+import customElementTemplate from '../dispatch/element-templates/custom'
 import Pagination from '@/components/Pagination'
 import { getVersionByDefinition } from './scripts/support'
 import { load } from '@/constant'

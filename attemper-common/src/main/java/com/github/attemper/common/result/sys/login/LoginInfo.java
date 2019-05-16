@@ -1,6 +1,5 @@
 package com.github.attemper.common.result.sys.login;
 
-import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import lombok.AllArgsConstructor;
@@ -26,6 +25,6 @@ public class LoginInfo {
     protected List<Tag> tags;
 
     /** resource */
-    protected List<Resource> resources;
+    protected List<String> resources;
 
 }

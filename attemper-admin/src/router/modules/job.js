@@ -3,19 +3,19 @@
 import Layout from '@/layout'
 
 const jobRouter = {
-  name: 'job',
-  path: '/job',
+  name: 'dispatch',
+  path: '/dispatch',
   component: Layout,
-  redirect: '/job/index',
+  redirect: '/dispatch/index',
   alwaysShow: true, // will always show the root menu
   meta: {
-    title: 'job',
-    icon: 'job'
+    title: 'dispatch',
+    icon: 'dispatch'
   },
   children: [
     {
       path: 'flowJob',
-      component: () => import('@/views/job/flowJob'),
+      component: () => import('@/views/dispatch/flowJob'),
       name: 'flowJob',
       meta: {
         title: 'flowJob',
@@ -25,7 +25,7 @@ const jobRouter = {
     },
     {
       path: 'arg',
-      component: () => import('@/views/job/arg'),
+      component: () => import('@/views/dispatch/arg'),
       name: 'arg',
       meta: {
         title: 'arg',
@@ -35,7 +35,7 @@ const jobRouter = {
     },
     {
       path: 'project',
-      component: () => import('@/views/job/project'),
+      component: () => import('@/views/dispatch/project'),
       name: 'project',
       meta: {
         title: 'project',
@@ -44,8 +44,18 @@ const jobRouter = {
       }
     },
     {
+      path: 'calendar',
+      component: () => import('@/views/dispatch/calendar'),
+      name: 'calendar',
+      meta: {
+        title: 'calendar',
+        icon: 'calendar',
+        noCache: false
+      }
+    },
+    {
       path: 'flow/:key',
-      component: () => import('@/views/job/flow'),
+      component: () => import('@/views/dispatch/flow'),
       name: 'flow',
       hidden: true,
       meta: {

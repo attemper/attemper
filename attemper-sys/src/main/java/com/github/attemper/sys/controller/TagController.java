@@ -3,7 +3,6 @@ package com.github.attemper.sys.controller;
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.param.sys.tag.*;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.sys.service.TagService;
@@ -75,10 +74,10 @@ public class TagController {
 		return CommonResult.putResult(service.updateTagTenants(param));
     }
 
-	@ApiOperation("Add resources of tag")
+	@ApiOperation("Get resources of tag")
 	@ApiImplicitParam(value = "TagGetParam", name = "param", dataType = "TagGetParam", required = true)
 	@GetMapping(APIPath.TagPath.RESOURCE_LIST)
-	public CommonResult<List<Resource>> getResources(TagGetParam param) {
+	public CommonResult<List<String>> getResources(TagGetParam param) {
 		return CommonResult.putResult(service.getResources(param));
 	}
 

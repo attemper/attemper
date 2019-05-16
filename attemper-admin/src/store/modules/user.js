@@ -44,7 +44,7 @@ const actions = {
         const result = response.data.result
         commit('SET_TOKEN', result.token)
         setToken(result.token)
-        dispatch('user/getInfo')
+        dispatch('getInfo')
         resolve()
       }).catch(error => {
         reject(error)
@@ -73,8 +73,8 @@ const actions = {
         }
         const resourceNames = []
         if (result.resources && result.resources.length) {
-          result.resources.forEach(resource => {
-            resourceNames.push(resource.resourceName)
+          result.resources.forEach(resourceName => {
+            resourceNames.push(resourceName)
           })
           commit('SET_RESOURCE_NAMES', resourceNames)
           sessionStorage.resourceNames = JSON.stringify(resourceNames)

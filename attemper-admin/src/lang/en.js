@@ -104,18 +104,15 @@ export default {
       columns: {
         id: 'ID',
         name: 'Name',
-        sign: 'Sign',
         admin: 'Administrator'
       },
       rules: {
         id: 'The Tenant ID can not be empty',
-        name: 'The Tenant Name can not be empty',
-        admin: 'The Administrator can not be empty'
+        name: 'The Tenant Name can not be empty'
       },
       placeholder: {
         id: 'Please entry Tenant ID',
-        name: 'Please entry Tenant Name',
-        admin: 'Please Select Administrator'
+        name: 'Please entry Tenant Name'
       }
     },
     tag: {

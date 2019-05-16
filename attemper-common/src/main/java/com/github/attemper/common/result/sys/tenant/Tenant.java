@@ -29,8 +29,6 @@ public class Tenant{
 
 	protected Integer status;
 
-	protected String sign;
-
 	protected Boolean admin;
 
 	protected Date createTime;

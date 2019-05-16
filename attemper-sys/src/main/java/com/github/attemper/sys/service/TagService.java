@@ -2,7 +2,6 @@ package com.github.attemper.sys.service;
 
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.sys.tag.*;
-import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.util.BeanUtil;
@@ -87,7 +86,7 @@ public class TagService extends BaseServiceAdapter {
 		return null;
     }
 
-	public List<Resource> getResources(TagGetParam param) {
+	public List<String> getResources(TagGetParam param) {
 		Map<String, Object> paramMap = BeanUtil.bean2Map(param);
 		return mapper.getResources(paramMap);
 	}

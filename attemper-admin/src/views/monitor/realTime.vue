@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="page.jobName" :placeholder="$t('job.columns.jobName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
-      <el-input v-model="page.displayName" :placeholder="$t('job.columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.jobName" :placeholder="$t('dispatch.columns.jobName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
       <el-select v-model="page.status" :placeholder="$t('monitor.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
         <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
@@ -31,14 +31,6 @@
           <el-form-item>
             <date-time-generator @update="page.upperEndTime = $event" @change="search" />
           </el-form-item>
-          <!--<el-form-item :label="$t('job.columns.remark')">
-            <el-input
-              v-model="job.remark"
-              :autosize="{ minRows: 2, maxRows: 4}"
-              :placeholder="$t('job.placeholder.remark')"
-              type="textarea"
-            />
-          </el-form-item>-->
         </el-form>
         <el-button slot="reference" class="filter-item" style="float: right;" type="primary">{{ $t('actions.highSearch') }}</el-button>
       </el-popover>
@@ -59,12 +51,12 @@
         type="selection"
         width="40"
       />
-      <el-table-column :label="$t('job.columns.jobName')" min-width="100px">
+      <el-table-column :label="$t('dispatch.columns.jobName')" min-width="100px">
         <template slot-scope="scope">
-          <el-tag type="primary" @click="openTrace(scope.row)">{{ scope.row.jobName || '-' }}</el-tag>
+          <el-link type="primary" @click="openTrace(scope.row)">{{ scope.row.jobName || '-' }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('job.columns.displayName')" min-width="150px">
+      <el-table-column :label="$t('columns.displayName')" min-width="150px">
         <template slot-scope="scope">
           <span>{{ scope.row.displayName }}</span>
         </template>

@@ -113,17 +113,15 @@
         </foreach>
     </insert>
 
-    <select id="getResources" parameterType="map" resultType="com.github.attemper.common.result.sys.resource.Resource">
-        select r.*
-        from ${tablePrefix}resource r
-        join ${tablePrefix}tag_resource tr
-        on r.RESOURCE_NAME = tr.RESOURCE_NAME
+    <select id="getResources" parameterType="map" resultType="string">
+        select tr.RESOURCE_NAME
+        from ${tablePrefix}tag_resource tr
         join ${tablePrefix}tag t
         on t.TAG_NAME = tr.TAG_NAME
         <where>
             <include refid="condTagName"/>
         </where>
-        order by r.RESOURCE_NAME
+        order by tr.RESOURCE_NAME
     </select>
 
     <delete id="deleteTagResources" parameterType="map">

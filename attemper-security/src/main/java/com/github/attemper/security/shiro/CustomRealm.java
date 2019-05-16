@@ -2,7 +2,6 @@ package com.github.attemper.security.shiro;
 
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.sys.tenant.TenantGetParam;
-import com.github.attemper.common.result.sys.resource.Resource;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.security.model.JWTToken;
@@ -62,8 +61,8 @@ public class CustomRealm extends AuthorizingRealm {
         Tenant tenant = (Tenant) principals.getPrimaryPrincipal();
         Set<String> resourcePermissions = new HashSet<>();
         TenantService tenantService = SpringContextAware.getBean(TenantService.class);
-        List<Resource> resources = tenantService.getResources(new TenantGetParam(tenant.getUserName()));
-        resources.forEach(resource -> resourcePermissions.add(resource.getResourceName()));
+        List<String> resources = tenantService.getResources(new TenantGetParam(tenant.getUserName()));
+        resources.forEach(resource -> resourcePermissions.add(resource));
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.setStringPermissions(resourcePermissions);
         return simpleAuthorizationInfo;

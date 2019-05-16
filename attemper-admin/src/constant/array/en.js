@@ -1,22 +1,3 @@
-export const resourceTypes = [
-  {
-    value: 0,
-    label: 'Folder'
-  },
-  {
-    value: 1,
-    label: 'Menu'
-  },
-  {
-    value: 2,
-    label: 'Button'
-  },
-  {
-    value: 3,
-    label: 'Block'
-  }
-]
-
 export const statuses = [
   {
     value: 0,
@@ -44,29 +25,6 @@ export const jobStatuses = [
   {
     label: 'Disposible',
     value: 3
-  }
-]
-
-export const calendars = [
-  {
-    label: 'Nature Calendar',
-    value: 5
-  },
-  {
-    label: 'Working Calendar',
-    value: 10
-  },
-  {
-    label: 'China Legal',
-    value: 15
-  },
-  {
-    label: 'China-SH/SZ Stock',
-    value: 20
-  },
-  {
-    label: 'China-HK Stock',
-    value: 25
   }
 ]
 
@@ -249,4 +207,15 @@ export const transferTitles = [
 export const allocateTitles = [
   'exclude',
   'included'
+]
+
+export const calendarTypes = [
+  {
+    label: 'date',
+    value: 0
+  },
+  {
+    label: 'time',
+    value: 1
+  }
 ]
