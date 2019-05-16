@@ -5,7 +5,7 @@ import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.dao.mapper.ApiLogMapper;
 import com.github.attemper.config.base.datasource.DataSourceConfig;
 import com.github.attemper.config.base.datasource.DataSourceProperties;
-import com.github.attemper.config.base.exception.GlobalExceptionAdvicer;
+import com.github.attemper.config.base.exception.GlobalExceptionAdvisor;
 import com.github.attemper.config.base.id.SnowFlakeIdGenerator;
 import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.config.base.service.ApiLogService;
@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Configuration;
         DataSourceConfig.class,
 
         //全局异常处理
-        GlobalExceptionAdvicer.class,
+        GlobalExceptionAdvisor.class,
 
         //swagger2配置
         Swagger2Config.class,

@@ -52,7 +52,8 @@
         order by POSITION
     </select>
 
-    <select id="listDay" parameterType="map" resultType="com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig">
+    <select id="listDay" parameterType="map"
+            resultType="com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig">
         SELECT cd.DAY_NAME, cd.REMARK
         FROM ${tablePrefix}calendar c
         JOIN ${tablePrefix}calendar_day cd

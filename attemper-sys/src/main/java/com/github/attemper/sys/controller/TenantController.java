@@ -9,6 +9,7 @@ import com.github.attemper.sys.service.TenantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,19 +26,21 @@ public class TenantController {
 	@Autowired
 	private TenantService service;
 
-	@ApiOperation("Add tenant")
-	@ApiImplicitParam(value = "TenantSaveParam", name = "param", dataType = "TenantSaveParam", required = true)
-	@PostMapping(APIPath.TenantPath.ADD)
-	public CommonResult<Tenant> add(@RequestBody TenantSaveParam param) {
-		return CommonResult.putResult(service.add(param));
-	}
+    @RequiresPermissions("tenant-add")
+    @ApiOperation("Add tenant")
+    @ApiImplicitParam(value = "TenantSaveParam", name = "param", dataType = "TenantSaveParam", required = true)
+    @PostMapping(APIPath.TenantPath.ADD)
+    public CommonResult<Tenant> add(@RequestBody TenantSaveParam param) {
+        return CommonResult.putResult(service.add(param));
+    }
 
-	@ApiOperation("Update tenant")
-	@ApiImplicitParam(value = "TenantSaveParam", name = "param", dataType = "TenantSaveParam", required = true)
-	@PutMapping(APIPath.TenantPath.UPDATE)
-	public CommonResult<Tenant> update(@RequestBody TenantSaveParam param) {
-		return CommonResult.putResult(service.update(param));
-	}
+    @RequiresPermissions("tenant-update")
+    @ApiOperation("Update tenant")
+    @ApiImplicitParam(value = "TenantSaveParam", name = "param", dataType = "TenantSaveParam", required = true)
+    @PutMapping(APIPath.TenantPath.UPDATE)
+    public CommonResult<Tenant> update(@RequestBody TenantSaveParam param) {
+        return CommonResult.putResult(service.update(param));
+    }
 
 	@ApiOperation("List tenants")
 	@ApiImplicitParam(value = "TenantListParam", name = "param", dataType = "TenantListParam", required = true)
@@ -46,12 +49,13 @@ public class TenantController {
 		return CommonResult.putResult(service.list(param));
 	}
 
-	@ApiOperation("Remove tenants")
-	@ApiImplicitParam(value = "TenantRemoveParam", name = "param", dataType = "TenantRemoveParam", required = true)
-	@DeleteMapping(APIPath.TenantPath.REMOVE)
-	public CommonResult<Void> remove(@RequestBody TenantRemoveParam param) {
-		return CommonResult.putResult(service.remove(param));
-	}
+    @RequiresPermissions("tenant-remove")
+    @ApiOperation("Remove tenants")
+    @ApiImplicitParam(value = "TenantRemoveParam", name = "param", dataType = "TenantRemoveParam", required = true)
+    @DeleteMapping(APIPath.TenantPath.REMOVE)
+    public CommonResult<Void> remove(@RequestBody TenantRemoveParam param) {
+        return CommonResult.putResult(service.remove(param));
+    }
 
 	@ApiOperation("Get tenant")
 	@ApiImplicitParam(value = "TenantGetParam", name = "param", dataType = "TenantGetParam", required = true)

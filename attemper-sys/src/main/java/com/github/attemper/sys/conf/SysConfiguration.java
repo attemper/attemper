@@ -6,6 +6,7 @@ import com.github.attemper.sys.controller.TagController;
 import com.github.attemper.sys.controller.TenantController;
 import com.github.attemper.sys.dao.mapper.TagMapper;
 import com.github.attemper.sys.dao.mapper.TenantMapper;
+import com.github.attemper.sys.exception.SysExceptionAdvisor;
 import com.github.attemper.sys.ext.service.SecretService;
 import com.github.attemper.sys.service.TagService;
 import com.github.attemper.sys.service.TenantService;
@@ -18,6 +19,8 @@ import org.springframework.context.annotation.Import;
         ConfigConfiguration.class
 })
 @ComponentScan(basePackageClasses = {
+        SysExceptionAdvisor.class,
+
         ControllerAspect.class,
 
         //mapper
