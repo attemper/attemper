@@ -19,12 +19,8 @@ export const jobStatuses = [
     value: 1
   },
   {
-    label: '临时',
+    label: '删除',
     value: 2
-  },
-  {
-    label: '一次性',
-    value: 3
   }
 ]
 

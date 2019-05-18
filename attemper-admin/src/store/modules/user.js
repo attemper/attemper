@@ -7,8 +7,8 @@ const state = {
   token: getToken(),
   userName: '',
   displayName: '',
+  admin: null,
   avatar: '',
-  introduction: '',
   roles: [],
   resourceNames: []
 }
@@ -16,14 +16,14 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
-  },
   SET_USER_NAME: (state, userName) => {
     state.userName = userName
   },
   SET_DISPLAY_NAME: (state, displayName) => {
     state.displayName = displayName
+  },
+  SET_ADMIN: (state, admin) => {
+    state.admin = admin
   },
   SET_RESOURCE_NAMES: (state, resourceNames) => {
     state.resourceNames = resourceNames
@@ -63,6 +63,7 @@ const actions = {
         const { result } = data
         commit('SET_USER_NAME', result.tenant.userName)
         commit('SET_DISPLAY_NAME', result.tenant.displayName)
+        commit('SET_ADMIN', result.tenant.admin)
         const roleNames = []
         if (result.tags && result.tags.length) {
           result.tags.forEach(tag => {

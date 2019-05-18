@@ -36,8 +36,8 @@
             <if test="status != null">
                 and STATUS = #{status, jdbcType=INTEGER}
             </if>
-            <if test="matchUserName != null">
-                and USER_NAME = #{matchUserName, jdbcType=VARCHAR}
+            <if test="tenantId != null">
+                and USER_NAME = #{tenantId, jdbcType=VARCHAR}
             </if>
         </where>
         <choose>

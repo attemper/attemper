@@ -1,4 +1,4 @@
-export { parseTime, formatTime, parseDuration, renderJobInstanceStatus } from '@/utils'
+export { parseTime, formatTime, parseDuration, renderJobInstanceStatus, renderJobStatus } from '@/utils'
 
 /**
  * Show plural label if time is plural number

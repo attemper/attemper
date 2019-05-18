@@ -6,6 +6,7 @@ import com.github.attemper.core.controller.job.JobController;
 import com.github.attemper.core.controller.job.TriggerController;
 import com.github.attemper.core.controller.monitor.MonitorController;
 import com.github.attemper.core.controller.project.ProjectController;
+import com.github.attemper.core.controller.statistics.CountController;
 import com.github.attemper.core.controller.tool.ToolController;
 import com.github.attemper.core.dao.mapper.arg.ArgMapper;
 import com.github.attemper.core.dao.mapper.calendar.CalendarMapper;
@@ -14,12 +15,14 @@ import com.github.attemper.core.dao.mapper.job.TriggerMapper;
 import com.github.attemper.core.dao.mapper.monitor.JobExecutionMapper;
 import com.github.attemper.core.dao.mapper.monitor.JobInstanceMapper;
 import com.github.attemper.core.dao.mapper.project.ProjectMapper;
+import com.github.attemper.core.dao.mapper.statistics.CountMapper;
 import com.github.attemper.core.service.arg.ArgService;
 import com.github.attemper.core.service.calendar.CalendarService;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.core.service.job.TriggerService;
 import com.github.attemper.core.service.monitor.MonitorService;
 import com.github.attemper.core.service.project.ProjectService;
+import com.github.attemper.core.service.statistics.CountService;
 import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.sys.conf.SysConfiguration;
 import org.hibernate.validator.HibernateValidator;
@@ -46,6 +49,7 @@ import javax.validation.ValidatorFactory;
         JobExecutionMapper.class,
         JobInstanceMapper.class,
         CalendarMapper.class,
+        CountMapper.class,
 
         //service
         JobService.class,
@@ -55,6 +59,7 @@ import javax.validation.ValidatorFactory;
         ToolService.class,
         MonitorService.class,
         CalendarService.class,
+        CountService.class,
 
         //controller
         JobController.class,
@@ -63,7 +68,8 @@ import javax.validation.ValidatorFactory;
         ProjectController.class,
         ToolController.class,
         MonitorController.class,
-        CalendarController.class
+        CalendarController.class,
+        CountController.class
 })
 public class CoreConfiguration {
 

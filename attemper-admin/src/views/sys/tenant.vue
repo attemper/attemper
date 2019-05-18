@@ -254,6 +254,11 @@ export default {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
+      const adminTenant = this.selections.find(item => item.admin)
+      if (adminTenant) {
+        this.$message.warning(this.$t('tip.adminTenantCannotBeRemoved') + ':' + adminTenant.userName)
+        return
+      }
       const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + userNames.join('<br>') + '</span></p>'
       this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
         .then(() => {

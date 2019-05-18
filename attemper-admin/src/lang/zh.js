@@ -4,14 +4,13 @@ export default {
     dashboard: '首页',
     sys: '系统管理',
     tenant: '租户管理',
-    user: '用户管理',
     tag: '标签管理',
     resource: '资源管理',
     calendar: '日历管理',
     dispatch: '调度管理',
     arg: '参数管理',
     project: '服务信息',
-    flowJob: '任务设计',
+    flowJob: '任务编排',
     monitor: '监控管理',
     realTime: '实时监控',
     history: '历史监控',
@@ -113,7 +112,8 @@ export default {
     confirmMsg: '确定操作',
     selectData: '请选中要操作的数据',
     saveConfirm: '确定保存',
-    manualWithNoVersion: '流程未被发布，不能手动发起'
+    manualWithNoVersion: '流程未被发布，不能手动发起',
+    adminTenantCannotBeRemoved: '超管租户不能删除'
   },
   columns: {
     displayName: '中文名',
@@ -322,6 +322,11 @@ export default {
       record: '记录',
       log: '日志'
     }
+  },
+  statistics: {
+    instance: '实例',
+    job: '任务',
+    tenant: '租户'
   },
   navbar: {
     logOut: '退出登录',

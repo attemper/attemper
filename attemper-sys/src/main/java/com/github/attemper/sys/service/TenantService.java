@@ -6,7 +6,7 @@ import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.sys.dao.mapper.TenantMapper;
-import com.github.attemper.sys.ext.service.SecretService;
+import com.github.attemper.sys.store.Store;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -30,9 +30,6 @@ public class TenantService extends BaseServiceAdapter {
     @Autowired
     private TenantMapper mapper;
 
-    @Autowired
-    private SecretService secretService;
-
     public Tenant get(TenantGetParam param) {
         return mapper.get(param.getUserName());
     }
@@ -47,10 +44,7 @@ public class TenantService extends BaseServiceAdapter {
     }
 
     public Map<String, Object> list(TenantListParam param) {
-        Map<String, Object> paramMap = BeanUtil.bean2Map(param);
-        if (!StringUtils.equals(injectTenantId(), getAdmin().getUserName())) {
-            paramMap.put("matchUserName", injectTenantId());  //only find current tenant of the user
-        }
+        Map<String, Object> paramMap = injectTenantIdExceptAdminToMap(param);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<Tenant> list = (Page<Tenant>) mapper.list(paramMap);
         return PageUtil.toResultMap(list);
@@ -84,7 +78,7 @@ public class TenantService extends BaseServiceAdapter {
 
     public Void remove(TenantRemoveParam param) {
         for (String userName : param.getUserNames()) {
-            if (StringUtils.equals(userName, getAdmin().getUserName())) {
+            if (StringUtils.equals(userName, Store.getAdminTenant().getUserName())) {
                 throw new RTException(5115, userName);
             }
         }

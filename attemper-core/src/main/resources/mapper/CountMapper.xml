@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.attemper.core.dao.mapper.statistics.CountMapper">
+
+    <select id="getTenantCount" resultType="int">
+        SELECT COUNT(*)
+        FROM ${tablePrefix}tenant
+    </select>
+
+    <select id="getJobCount" parameterType="map" resultType="map">
+        SELECT STATUS as status, COUNT(*) as count
+        FROM ${tablePrefix}job t
+        <where>
+            <include refid="condTenantId"/>
+        </where>
+        GROUP BY STATUS
+    </select>
+
+    <select id="getJobInstanceCount" parameterType="map" resultType="map">
+        SELECT STATUS as status, COUNT(*) as count
+        FROM ${tablePrefix}job_instance t
+        <where>
+            <include refid="condTenantId"/>
+        </where>
+        GROUP BY STATUS
+    </select>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and t.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+</mapper>

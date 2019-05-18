@@ -19,12 +19,8 @@ export const jobStatuses = [
     value: 1
   },
   {
-    label: 'Transient',
+    label: 'DELETED',
     value: 2
-  },
-  {
-    label: 'Disposible',
-    value: 3
   }
 ]
 

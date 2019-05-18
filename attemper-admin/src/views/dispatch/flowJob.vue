@@ -76,7 +76,7 @@
       </el-table-column>
       <el-table-column :label="$t('dispatch.columns.status')" align="center" class-name="status-col" width="100">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
+          <el-tag :type="scope.row.status | renderJobStatus">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
       <!--<el-table-column v-if="showCreateTime" :label="$t('dispatch.columns.createTime')" width="110px" align="center">
@@ -261,17 +261,6 @@ export default {
     CalendarIntervalTrigger
   },
   directives: { waves },
-  filters: {
-    statusFilter(item) {
-      const map = {
-        0: 'success',
-        1: 'danger',
-        2: 'warning',
-        3: ''
-      }
-      return map[item]
-    }
-  },
   data() {
     return {
       tableKey: 0,
@@ -610,7 +599,6 @@ export default {
         this.dayTimeUnit = array.dayTimeUnit
         this.overDayTimeUnits = array.overDayTimeUnits
         this.daysOfWeek = array.daysOfWeek
-        // this.calendars = array.calendars
       })
       load(`./common.js`).then((array) => {
         this.argTypes = array.argTypes

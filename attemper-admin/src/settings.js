@@ -39,6 +39,7 @@ module.exports = {
   APIPath: {
     SYS: 'sys',
     DISPATCH: 'dispatch',
+    STATISTICS: 'statistics',
     LIST: '',
     SAVE: '',
     ADD: '',

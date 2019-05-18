@@ -10,9 +10,13 @@ import com.github.attemper.sys.exception.SysExceptionAdvisor;
 import com.github.attemper.sys.ext.service.SecretService;
 import com.github.attemper.sys.service.TagService;
 import com.github.attemper.sys.service.TenantService;
+import com.github.attemper.sys.store.Store;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 @Import({
@@ -37,4 +41,12 @@ import org.springframework.context.annotation.Import;
         TagController.class,
 })
 public class SysConfiguration {
+
+    @Autowired
+    private TenantService tenantService;
+
+    @PostConstruct
+    public void initAdminTenant() {
+        Store.setAdminTenant(tenantService.getAdmin());
+    }
 }

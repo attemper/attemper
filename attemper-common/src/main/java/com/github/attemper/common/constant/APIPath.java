@@ -13,6 +13,8 @@ public class APIPath {
 
     private static final String DISPATCH = "/dispatch";
 
+    private static final String STATISTICS = "/statistics";
+
     public static final String SCHEDULER = "/scheduler";
 
     public static final String _SAVE = SdkAPIPath._SAVE;
@@ -203,6 +205,16 @@ public class APIPath {
 
             public static final String LIST = API_PATH + DISPATCH + SUB_PATH + TOTAL + _LIST;
         }*/
+    }
+
+    public static final class CountPath {
+        private static final String SUB_PATH = "/count";
+
+        public static final String TENANT = API_PATH + STATISTICS + SUB_PATH + TenantPath.SUB_PATH;
+
+        public static final String JOB = API_PATH + STATISTICS + SUB_PATH + JobPath.SUB_PATH;
+
+        public static final String INSTANCE = API_PATH + STATISTICS + SUB_PATH + "/instance";
     }
 
     public static final class ToolPath {
