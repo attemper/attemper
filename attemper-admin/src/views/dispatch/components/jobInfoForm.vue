@@ -7,16 +7,19 @@
     label-width="150px"
     class="form-layout"
   >
-    <el-form-item :label="$t('dispatch.columns.jobName')" prop="jobName">
-      <el-input v-model="job.jobName" :placeholder="$t('dispatch.placeholder.jobName')" />
+    <el-form-item :label="$t('dispatch.job.columns.jobName')" prop="jobName">
+      <el-input v-model="job.jobName" :placeholder="$t('dispatch.job.placeholder.jobName')" />
     </el-form-item>
     <el-form-item :label="$t('columns.displayName')" prop="displayName">
       <el-input v-model="job.displayName" :placeholder="$t('placeholder.displayName')" />
     </el-form-item>
-    <el-form-item :label="$t('dispatch.columns.status')" prop="status">
-      <el-select v-model="job.status" :placeholder="$t('dispatch.placeholder.status')" class="filter-item">
+    <el-form-item :label="$t('dispatch.job.columns.status')" prop="status">
+      <el-select v-model="job.status" :placeholder="$t('dispatch.job.placeholder.status')" class="filter-item">
         <el-option v-for="item in jobStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
+    </el-form-item>
+    <el-form-item :label="$t('dispatch.job.columns.timeout')">
+      <el-input-number v-model="job.timeout" :precision="0" :min="900" :step="900" controls-position="right" />
     </el-form-item>
     <el-form-item :label="$t('columns.remark')">
       <el-input
@@ -60,9 +63,9 @@ export default {
   },
   methods: {
     setFormRules() {
-      this.rules.jobName[0].message = this.$t('dispatch.rules.jobName')
+      this.rules.jobName[0].message = this.$t('dispatch.job.rules.jobName')
       this.rules.displayName[0].message = this.$t('rules.displayName')
-      this.rules.status[0].message = this.$t('dispatch.rules.status')
+      this.rules.status[0].message = this.$t('dispatch.job.rules.status')
     },
     save() {
       this.$refs.baseForm.validate((valid) => {

@@ -24,6 +24,8 @@ public class FlowJob {
 
     protected Integer status;
 
+    protected Integer timeout;
+
     protected Integer maxReversion;
 
     protected Integer maxVersion;

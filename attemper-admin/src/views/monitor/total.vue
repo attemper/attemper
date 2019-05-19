@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="page.jobName" :placeholder="$t('dispatch.columns.jobName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.jobName" :placeholder="$t('dispatch.job.columns.jobName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
       <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
       <el-select v-model="page.status" :placeholder="$t('monitor.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
         <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
@@ -51,7 +51,7 @@
         type="selection"
         width="40"
       />
-      <el-table-column :label="$t('dispatch.columns.jobName')" min-width="100px">
+      <el-table-column :label="$t('dispatch.job.columns.jobName')" min-width="100px">
         <template slot-scope="scope">
           <el-link type="primary" @click="openTrace(scope.row)">{{ scope.row.jobName || '-' }}</el-link>
         </template>

@@ -172,34 +172,33 @@ export default {
   },
   dispatch: {
     title: '调度',
-    sort: {
-      nameAsc: '按任务名称升序',
-      nameDesc: '按任务名称降序'
-    },
-    rules: {
-      jobName: '任务名称不能为空',
-      status: '状态不能为空'
-    },
-    columns: {
-      reversion: '模型版本',
-      version: '发布版本',
-      jobName: '任务名称',
-      status: '状态',
-      createTime: '创建时间',
-      updateTime: '最近修改时间',
-      deploymentTime: '最近发布时间',
-      remark: '备注'
-    },
-    placeholder: {
-      jobName: '请输入任务名称',
-      status: '请选择状态',
-      remark: '请输入备注'
-    },
-    actions: {
-      design: '设计',
-      param: '参数',
-      trigger: '触发器',
-      project: '项目'
+    job: {
+      rules: {
+        jobName: '任务名称不能为空',
+        status: '状态不能为空'
+      },
+      columns: {
+        reversion: '模型版本',
+        version: '发布版本',
+        jobName: '任务名称',
+        status: '状态',
+        timeout: '超时时间',
+        createTime: '创建时间',
+        updateTime: '最近修改时间',
+        deploymentTime: '最近发布时间',
+        remark: '备注'
+      },
+      placeholder: {
+        jobName: '请输入任务名称',
+        status: '请选择状态',
+        remark: '请输入备注'
+      },
+      actions: {
+        design: '设计',
+        param: '参数',
+        trigger: '触发器',
+        project: '项目'
+      }
     },
     flowJob: {
       btn: {

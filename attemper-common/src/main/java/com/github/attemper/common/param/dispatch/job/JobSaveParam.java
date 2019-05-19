@@ -1,7 +1,6 @@
 package com.github.attemper.common.param.dispatch.job;
 
 import com.github.attemper.common.param.CommonParam;
-import com.github.attemper.common.param.CommonParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +23,8 @@ public class JobSaveParam implements CommonParam {
     protected String jobContent;
 
     protected Integer status;
+
+    protected Integer timeout;
 
     protected String remark;
 

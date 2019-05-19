@@ -92,7 +92,7 @@ public class JobOfSchedService extends BaseServiceAdapter {
         FlowJob updatedJob = toBaseJob(param);
         updatedJob.setCreateTime(flowJob.getCreateTime());
         updatedJob.setMaxVersion(flowJob.getMaxVersion());
-        if (checkNeedSave(flowJob, updatedJob)) {  // status remark
+        if (checkNeedSave(flowJob, updatedJob)) {  // base info
             updatedJob.setMaxReversion(flowJob.getMaxReversion());
         } else {  //job content
             if (StringUtils.equals(param.getJobContent(), flowJob.getJobContent())) {
@@ -167,7 +167,9 @@ public class JobOfSchedService extends BaseServiceAdapter {
      * @return
      */
     private boolean checkNeedSave(FlowJob flowJob, FlowJob updatedJob) {
-        return flowJob.getStatus() != updatedJob.getStatus() || !StringUtils.equals(flowJob.getRemark(), updatedJob.getRemark());
+        return flowJob.getStatus() != updatedJob.getStatus()
+                || flowJob.getTimeout() != updatedJob.getTimeout()
+                || !StringUtils.equals(flowJob.getRemark(), updatedJob.getRemark());
     }
 
     private FlowJob toBaseJob(JobSaveParam saveParam) {
@@ -176,6 +178,7 @@ public class JobOfSchedService extends BaseServiceAdapter {
                 .displayName(saveParam.getDisplayName())
                 .jobContent(saveParam.getJobContent())
                 .status(saveParam.getStatus())
+                .timeout(saveParam.getTimeout())
                 .remark(saveParam.getRemark())
                 .tenantId(injectTenantId())
                 .build();
@@ -204,9 +207,11 @@ public class JobOfSchedService extends BaseServiceAdapter {
         FlowJob sourceJob = jobService.get(JobGetParam.builder().jobName(param.getJobName()).reversion(param.getReversion()).build());
         FlowJob targetJob = jobService.get(JobGetParam.builder().jobName(targetJobParam.getJobName()).build());
         if (targetJob != null) { // add its reversion with new model
-            JobSaveParam saveParam = JobSaveParam.builder().jobName(targetJob.getJobName())
-                    .displayName(targetJob.getDisplayName()).status(targetJob.getStatus()).remark(targetJob.getRemark())
-                    .jobContent(sourceJob.getJobContent()).build();
+            JobSaveParam saveParam = JobSaveParam.builder()
+                    .jobName(targetJob.getJobName()).displayName(targetJob.getDisplayName())
+                    .status(targetJob.getStatus()).timeout(targetJob.getTimeout())
+                    .remark(targetJob.getRemark()).jobContent(sourceJob.getJobContent())
+                    .build();
             return update(saveParam);
         }
         //add new model with reversion of 1
@@ -222,8 +227,9 @@ public class JobOfSchedService extends BaseServiceAdapter {
      */
     public FlowJob exchange(JobGetParam param) {
         FlowJob oldReversionJob = jobService.get(param);
-        JobSaveParam saveParam = JobSaveParam.builder().jobName(oldReversionJob.getJobName())
-                .displayName(oldReversionJob.getDisplayName()).status(oldReversionJob.getStatus())
+        JobSaveParam saveParam = JobSaveParam.builder()
+                .jobName(oldReversionJob.getJobName()).displayName(oldReversionJob.getDisplayName())
+                .status(oldReversionJob.getStatus()).timeout(oldReversionJob.getTimeout())
                 .remark(oldReversionJob.getRemark()).jobContent(oldReversionJob.getJobContent()).build();
         update(saveParam);
         return jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());

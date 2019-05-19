@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="page.jobName" :placeholder="$t('dispatch.columns.jobName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.jobName" :placeholder="$t('dispatch.job.columns.jobName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
       <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
-      <el-select v-model="page.status" :placeholder="$t('dispatch.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
+      <el-select v-model="page.status" :placeholder="$t('dispatch.job.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
         <el-option v-for="item in jobStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
@@ -19,7 +19,7 @@
         <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
       </el-button>
       <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>
-      <el-checkbox v-model="showCreateTime" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">{{ $t('dispatch.columns.createTime') }}</el-checkbox>-->
+      <el-checkbox v-model="showCreateTime" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">{{ $t('dispatch.job.columns.createTime') }}</el-checkbox>-->
     </div>
 
     <el-table
@@ -37,13 +37,13 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
-            <el-form-item :label="$t('dispatch.columns.createTime')">
+            <el-form-item :label="$t('dispatch.job.columns.createTime')">
               <span>{{ props.row.createTime }}</span>
             </el-form-item>
-            <el-form-item :label="$t('dispatch.columns.updateTime')">
+            <el-form-item :label="$t('dispatch.job.columns.updateTime')">
               <span>{{ props.row.updateTime }}</span>
             </el-form-item>
-            <el-form-item :label="$t('dispatch.columns.deploymentTime')">
+            <el-form-item :label="$t('dispatch.job.columns.deploymentTime')">
               <span>{{ props.row.deploymentTime }}</span>
             </el-form-item>
           </el-form>
@@ -53,13 +53,13 @@
         type="selection"
         width="40"
       />
-      <el-table-column :label="$t('dispatch.columns.version')" align="center" width="80px">
+      <el-table-column :label="$t('dispatch.job.columns.version')" align="center" width="80px">
         <template slot-scope="scope">
           <el-button :type="scope.row.maxVersion ? 'success' : 'info'" @click="openDesignDialog(scope.row)">{{ scope.row.maxVersion || '-' }}</el-button>
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('dispatch.columns.jobName')"
+        :label="$t('dispatch.job.columns.jobName')"
         prop="jobName"
         sortable="custom"
         align="center"
@@ -74,16 +74,16 @@
           <span>{{ scope.row.displayName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('dispatch.columns.status')" align="center" class-name="status-col" width="100">
+      <el-table-column :label="$t('dispatch.job.columns.status')" align="center" class-name="status-col" width="100">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | renderJobStatus">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
-      <!--<el-table-column v-if="showCreateTime" :label="$t('dispatch.columns.createTime')" width="110px" align="center">
+      <el-table-column :label="$t('dispatch.job.columns.timeout')" width="90px">
         <template slot-scope="scope">
-          <span>{{ scope.row.createTime }}</span>
+          <span>{{ scope.row.timeout }}</span>
         </template>
-      </el-table-column>-->
+      </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <div style="padding-top: 6px;">
@@ -91,19 +91,19 @@
               type="primary"
               @click="openParamDialog(scope.row)"
             >
-              {{ $t('dispatch.actions.param') }}
+              {{ $t('dispatch.job.actions.param') }}
             </el-button>
             <el-button
               type="success"
               @click="openTriggerDialog(scope.row)"
             >
-              {{ $t('dispatch.actions.trigger') }}
+              {{ $t('dispatch.job.actions.trigger') }}
             </el-button>
             <el-button
               type="info"
               @click="openProjectDialog(scope.row)"
             >
-              {{ $t('dispatch.actions.project') }}
+              {{ $t('dispatch.job.actions.project') }}
             </el-button>
           </div>
         </template>
@@ -300,6 +300,7 @@ export default {
         jobName: undefined,
         displayName: '',
         status: 0,
+        timeout: 7200,
         remark: '',
         jobContent: ''
       },
@@ -373,6 +374,7 @@ export default {
           jobName: undefined,
           displayName: '',
           status: 0,
+          timeout: 7200,
           remark: ''
         }
       } else {
@@ -433,7 +435,7 @@ export default {
         })
     },
     openTriggerDialog(row) {
-      this.editDialog.title = this.$t('dispatch.actions.trigger')
+      this.editDialog.title = this.$t('dispatch.job.actions.trigger')
       this.triggerTab.timeTrigger.activeTabName = '0'
       this.selectRow(row)
       this.editDialog.trigger.visible = true
@@ -477,7 +479,7 @@ export default {
       })
     },
     openParamDialog(row) {
-      this.editDialog.title = this.$t('dispatch.actions.param')
+      this.editDialog.title = this.$t('dispatch.job.actions.param')
       this.selectRow(row)
       this.editDialog.param.visible = true
       this.argSearch()
@@ -509,7 +511,7 @@ export default {
       this.argSearch()
     },
     openProjectDialog(row) {
-      this.editDialog.title = this.$t('dispatch.actions.project')
+      this.editDialog.title = this.$t('dispatch.job.actions.project')
       this.selectRow(row)
       this.editDialog.project.visible = true
       if (this.$refs.projectTree) {
@@ -549,29 +551,6 @@ export default {
           })
         })
     },
-    /* handleDownload() {
-          this.downloadLoading = true
-            import('@/vendor/Export2Excel').then(excel => {
-              const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-              const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-              const data = this.formatJson(filterVal, this.list)
-              excel.export_json_to_excel({
-                header: tHeader,
-                data,
-                filename: 'table-list'
-              })
-              this.downloadLoading = false
-            })
-        },
-        formatJson(filterVal, jsonData) {
-          return jsonData.map(v => filterVal.map(j => {
-            if (j === 'timestamp') {
-              return parseTime(v[j])
-            } else {
-              return v[j]
-            }
-          }))
-        }, */
     formatStatus(item) {
       for (let i = 0; i < this.jobStatuses.length; i++) {
         const option = this.jobStatuses[i]
@@ -614,7 +593,7 @@ export default {
       return item
     },
     openDesignDialog(row) {
-      this.editDialog.title = this.$t('dispatch.actions.design')
+      this.editDialog.title = this.$t('dispatch.job.actions.design')
       this.selectRow(row)
       this.openDesignJobFlow()
     },

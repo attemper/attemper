@@ -14,7 +14,7 @@
     <div class="custom-bottom">
       <el-select
         v-model="currentReversion"
-        :placeholder="$t('dispatch.columns.reversion') + '-' + $t('dispatch.columns.version')"
+        :placeholder="$t('dispatch.job.columns.reversion') + '-' + $t('dispatch.job.columns.version')"
         class="filter-item"
         style="width: 160px"
         @change="changeJob"
