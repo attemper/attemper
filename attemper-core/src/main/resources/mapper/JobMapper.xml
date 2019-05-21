@@ -135,7 +135,7 @@
     <select id="versions" parameterType="map" resultType="com.github.attemper.common.result.dispatch.job.FlowJob">
         <!-- tip: do not return job content here because the column may be too big -->
         SELECT
-        ji.JOB_NAME,j.DISPLAY_NAME, j.TIMEOUT ji.UPDATE_TIME, ji.DEPLOYMENT_TIME, ji.TENANT_ID,
+        ji.JOB_NAME,j.DISPLAY_NAME, j.TIMEOUT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME, ji.TENANT_ID,
         j.MAX_REVERSION, j.MAX_VERSION, ji.REVERSION, ji.VERSION, j.STATUS, j.CREATE_TIME, j.REMARK
         FROM
         ${tablePrefix}job j JOIN ${tablePrefix}job_info ji USING (JOB_NAME, TENANT_ID)
