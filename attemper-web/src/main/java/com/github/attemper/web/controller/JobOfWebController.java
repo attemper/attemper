@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * @author ldang
  */
@@ -20,6 +22,13 @@ public class JobOfWebController {
 
     @Autowired
     private JobOfWebService service;
+
+    @ApiOperation("List jobs")
+    @ApiImplicitParam(value = "JobListParam", name = "param", dataType = "JobListParam", required = true)
+    @GetMapping(APIPath.JobPath.LIST)
+    public CommonResult<Map<String, Object>> list(JobListParam param) {
+        return CommonResult.putResult(service.list(param));
+    }
 
     @ApiOperation("Add job")
     @ApiImplicitParam(value = "JobSaveParam", name = "param", dataType = "JobSaveParam", required = true)

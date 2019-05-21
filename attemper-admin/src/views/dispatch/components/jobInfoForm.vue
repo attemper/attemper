@@ -13,8 +13,8 @@
     <el-form-item :label="$t('columns.displayName')" prop="displayName">
       <el-input v-model="job.displayName" :placeholder="$t('placeholders.displayName')" />
     </el-form-item>
-    <el-form-item :label="$t('dispatch.job.columns.status')" prop="status">
-      <el-select v-model="job.status" :placeholder="$t('dispatch.job.placeholder.status')" class="filter-item">
+    <el-form-item :label="$t('columns.status')" prop="status">
+      <el-select v-model="job.status" class="filter-item">
         <el-option v-for="item in jobStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </el-form-item>
@@ -51,8 +51,7 @@ export default {
     return {
       rules: {
         jobName: [{ required: true, trigger: 'blur' }],
-        displayName: [{ required: true, trigger: 'blur' }],
-        status: [{ required: true, trigger: 'blur' }]
+        displayName: [{ required: true, trigger: 'blur' }]
       },
       jobStatuses: []
     }
@@ -65,7 +64,6 @@ export default {
     setFormRules() {
       this.rules.jobName[0].message = this.$t('dispatch.job.rules.jobName')
       this.rules.displayName[0].message = this.$t('rules.displayName')
-      this.rules.status[0].message = this.$t('dispatch.job.rules.status')
     },
     save() {
       this.$refs.baseForm.validate((valid) => {

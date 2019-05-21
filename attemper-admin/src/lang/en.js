@@ -259,12 +259,6 @@ export default {
         daysOfWeek: 'Week Days',
         innerOffset: 'Inner Offset',
         outerOffset: 'Outer Offset'
-      },
-      tip: {
-        noTrigger: 'no trigger can be saved',
-        triggerNameNotBlank: 'The triggerName can not be blank',
-        startAfterEndTime: 'The startTime can not be after endTime',
-        cronExpressionInvalid: 'The cron expression is invalid'
       }
     }
   },

@@ -3,7 +3,6 @@ package com.github.attemper.core.controller.job;
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.param.dispatch.job.JobArgListParam;
 import com.github.attemper.common.param.dispatch.job.JobGetParam;
-import com.github.attemper.common.param.dispatch.job.JobListParam;
 import com.github.attemper.common.param.dispatch.job.JobProjectSaveParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.job.FlowJob;
@@ -30,13 +29,6 @@ public class JobController {
 	
 	@Autowired
 	private JobService service;
-
-	@ApiOperation("List jobs")
-	@ApiImplicitParam(value = "JobListParam", name = "param", dataType = "JobListParam", required = true)
-	@GetMapping(APIPath.JobPath.LIST)
-	public CommonResult<Map<String, Object>> list(JobListParam param) {
-		return CommonResult.putResult(service.list(param));
-	}
 
 	@ApiOperation("Get job")
 	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)

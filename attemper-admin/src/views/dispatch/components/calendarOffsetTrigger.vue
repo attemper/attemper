@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { isBlank, startAfterEndTime } from '.././scripts/support'
+import { isBlank } from '.././scripts/support'
 import CommonTrigger from './mixins/commonTrigger'
 
 const CALENDAR_OFFSET_OBJ = {
@@ -108,20 +108,12 @@ export default {
       this.put(CALENDAR_OFFSET_OBJ)
     },
     validateThenSet(trigger) {
+      if (!trigger.calendarOffsetTriggers) {
+        trigger.calendarOffsetTriggers = []
+      }
       for (let i = 0; i < this.triggerArray.length; i++) {
         const item = this.triggerArray[i]
-        if (JSON.stringify(item) !== JSON.stringify(CALENDAR_OFFSET_OBJ)) {
-          if (isBlank(item.triggerName)) {
-            this.$message.error(this.$t('dispatch.trigger.tip.triggerNameNotBlank') + ':' + JSON.stringify(item))
-            return false
-          }
-          if (startAfterEndTime(item.startTime, item.endTime)) {
-            this.$message.error(this.$t('dispatch.trigger.tip.startAfterEndTime') + ':' + item.triggerName)
-            return false
-          }
-          if (!trigger.calendarOffsetTriggers) {
-            trigger.calendarOffsetTriggers = []
-          }
+        if (!isBlank(item.triggerName)) {
           trigger.calendarOffsetTriggers.push(item)
         }
       }

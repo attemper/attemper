@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-input v-model="page.jobName" :placeholder="$t('dispatch.job.columns.jobName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
       <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
-      <el-select v-model="page.status" :placeholder="$t('dispatch.job.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
+      <el-select v-model="page.status" :placeholder="$t('columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
         <el-option v-for="item in jobStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
@@ -74,9 +74,14 @@
           <span>{{ scope.row.displayName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('dispatch.job.columns.status')" align="center" class-name="status-col" width="100">
+      <el-table-column :label="$t('columns.status')" align="center" class-name="status-col" width="100">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | renderJobStatus">{{ formatStatus(scope.row.status) }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('dispatch.job.columns.nextFireTime')" width="120px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.nextFireTime }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.job.columns.timeout')" width="90px">
@@ -524,7 +529,6 @@ export default {
       const result1 = this.$refs.calendarOffsetTrigger.validateThenSet(trigger)
       const result2 = this.$refs.dailyIntervalTrigger.validateThenSet(trigger)
       const result3 = this.$refs.calendarIntervalTrigger.validateThenSet(trigger)
-      // this.$message.warning(this.$t('dispatch.trigger.tip.noTrigger'))
       if (result0 && result1 && result2 && result3) {
         triggerApi.updateReq(trigger).then(res => {
           this.$message.success(res.data.msg)

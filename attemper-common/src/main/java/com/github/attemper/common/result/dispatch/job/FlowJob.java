@@ -40,6 +40,8 @@ public class FlowJob {
 
     protected Date deploymentTime;
 
+    protected Date nextFireTime;
+
     protected String remark;
 
     protected String tenantId;

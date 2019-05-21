@@ -34,7 +34,7 @@
                 label-width="100px"
                 style="height: 100%"
               >
-                <el-form-item :label="$t('monitor.columns.status')">
+                <el-form-item :label="$t('columns.status')">
                   <el-select v-if="showAll" v-model="page.status" :placeholder="$t('monitor.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 150px" @change="search">
                     <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
                   </el-select>

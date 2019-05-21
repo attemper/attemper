@@ -117,6 +117,7 @@ export default {
   },
   columns: {
     displayName: '中文名',
+    status: '状态',
     remark: '备注'
   },
   rules: {
@@ -132,8 +133,7 @@ export default {
         userName: '编号',
         password: '密码',
         email: '邮箱',
-        mobile: '手机号',
-        status: '状态'
+        mobile: '手机号'
       },
       rules: {
         userName: '租户编号不能为空'
@@ -174,14 +174,13 @@ export default {
     title: '调度',
     job: {
       rules: {
-        jobName: '任务名称不能为空',
-        status: '状态不能为空'
+        jobName: '任务名称不能为空'
       },
       columns: {
         reversion: '模型版本',
         version: '发布版本',
         jobName: '任务名称',
-        status: '状态',
+        nextFireTime: '下次执行时间',
         timeout: '超时时间',
         createTime: '创建时间',
         updateTime: '最近修改时间',
@@ -190,7 +189,6 @@ export default {
       },
       placeholder: {
         jobName: '请输入任务名称',
-        status: '请选择状态',
         remark: '请输入备注'
       },
       actions: {
@@ -223,7 +221,7 @@ export default {
           title: '时间',
           cron: 'CronTab',
           calendarOffset: '日程偏移',
-          dailyInterval: '日间周期',
+          dailyInterval: '每日周期',
           calendarInterval: '日历周期'
         },
         event: {
@@ -263,10 +261,6 @@ export default {
         outerOffset: '日程外偏移量'
       },
       tip: {
-        noTrigger: '没有触发器需要保存',
-        triggerNameNotBlank: '触发器名称不能为空',
-        startAfterEndTime: '开始时间不能晚于结束时间',
-        cronExpressionInvalid: 'cron表达式格式非法',
         jobNotPublished: '任务未被发布，无法使用触发器'
       }
     },
@@ -312,7 +306,6 @@ export default {
   },
   monitor: {
     columns: {
-      status: '状态',
       startTime: '开始时间',
       endTime: '结束时间',
       duration: '执行时长'

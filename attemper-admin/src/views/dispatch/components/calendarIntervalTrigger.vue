@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { isBlank, startAfterEndTime } from '.././scripts/support'
+import { isBlank } from '.././scripts/support'
 import CommonTrigger from './mixins/commonTrigger'
 
 const CALENDAR_INTERVAL_OBJ = {
@@ -124,20 +124,12 @@ export default {
       this.put(CALENDAR_INTERVAL_OBJ)
     },
     validateThenSet(trigger) {
+      if (!trigger.calendarIntervalTriggers) {
+        trigger.calendarIntervalTriggers = []
+      }
       for (let i = 0; i < this.triggerArray.length; i++) {
         const item = this.triggerArray[i]
-        if (JSON.stringify(item) !== JSON.stringify(CALENDAR_INTERVAL_OBJ)) {
-          if (isBlank(item.triggerName)) {
-            this.$message.error(this.$t('dispatch.trigger.tip.triggerNameNotBlank') + ':' + JSON.stringify(item))
-            return false
-          }
-          if (startAfterEndTime(item.startTime, item.endTime)) {
-            this.$message.error(this.$t('dispatch.trigger.tip.startAfterEndTime') + ':' + item.triggerName)
-            return false
-          }
-          if (!trigger.calendarIntervalTriggers) {
-            trigger.calendarIntervalTriggers = []
-          }
+        if (!isBlank(item.triggerName)) {
           trigger.calendarIntervalTriggers.push(item)
         }
       }

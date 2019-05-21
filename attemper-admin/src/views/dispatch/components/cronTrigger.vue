@@ -65,7 +65,7 @@
 <script>
 import CronInput from 'vue-cron-generator/src/components/cron-input'
 import { DEFAULT_CRON_EXPRESSION } from 'vue-cron-generator/src/constant/filed'
-import { isBlank, startAfterEndTime } from '.././scripts/support'
+import { isBlank } from '.././scripts/support'
 import CommonTrigger from './mixins/commonTrigger'
 
 const CRON_OBJ = {
@@ -104,24 +104,12 @@ export default {
       this.triggerArray[index].expression = DEFAULT_CRON_EXPRESSION
     },
     validateThenSet(trigger) {
+      if (!trigger.cronTriggers) {
+        trigger.cronTriggers = []
+      }
       for (let i = 0; i < this.triggerArray.length; i++) {
         const item = this.triggerArray[i]
-        if (JSON.stringify(item) !== JSON.stringify(CRON_OBJ)) {
-          if (isBlank(item.triggerName)) {
-            this.$message.error(this.$t('dispatch.trigger.tip.triggerNameNotBlank') + ':' + JSON.stringify(item))
-            return false
-          }
-          if (startAfterEndTime(item.startTime, item.endTime)) {
-            this.$message.error(this.$t('dispatch.trigger.tip.startAfterEndTime') + ':' + item.triggerName)
-            return false
-          }
-          if (isBlank(item.expression)) { // TODO need regex validation
-            this.$message.error(this.$t('dispatch.trigger.tip.cronExpressionInvalid') + ':' + item.triggerName)
-            return false
-          }
-          if (!trigger.cronTriggers) {
-            trigger.cronTriggers = []
-          }
+        if (!isBlank(item.triggerName)) {
           trigger.cronTriggers.push(item)
         }
       }

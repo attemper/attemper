@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { next, isBlank, startAfterEndTime } from '.././scripts/support'
+import { isBlank } from '.././scripts/support'
 import CommonTrigger from './mixins/commonTrigger'
 
 const DAILY_INTERVAL_OBJ = {
@@ -129,23 +129,12 @@ export default {
       this.put(DAILY_INTERVAL_OBJ)
     },
     validateThenSet(trigger) {
+      if (!trigger.dailyIntervalTriggers) {
+        trigger.dailyIntervalTriggers = []
+      }
       for (let i = 0; i < this.triggerArray.length; i++) {
         const item = this.triggerArray[i]
-        if (JSON.stringify(item) !== JSON.stringify(DAILY_INTERVAL_OBJ)) {
-          if (isBlank(item.triggerName)) {
-            this.$message.error(this.$t('dispatch.trigger.tip.triggerNameNotBlank') + ':' + JSON.stringify(item))
-            return false
-          }
-          if (startAfterEndTime(item.startTime, item.endTime)) {
-            this.$message.error(this.$t('dispatch.trigger.tip.startAfterEndTime') + ':' + item.triggerName)
-            return false
-          }
-          if (isBlank(item.triggerName)) {
-            item.triggerName = next()
-          }
-          if (!trigger.dailyIntervalTriggers) {
-            trigger.dailyIntervalTriggers = []
-          }
+        if (!isBlank(item.triggerName)) {
           item.daysOfWeek = item.daysOfWeekArr.join(',')
           trigger.dailyIntervalTriggers.push(item)
         }

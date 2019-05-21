@@ -2,30 +2,36 @@ package com.github.attemper.web.service.job;
 
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.job.*;
+import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
 import com.github.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
 import com.github.attemper.common.result.dispatch.job.FlowJob;
+import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
+import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.scheduler.service.JobCallingService;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.core.service.job.JobService;
+import com.github.attemper.core.service.job.TriggerService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
+import com.github.attemper.sys.util.PageUtil;
 import com.github.attemper.web.service.CamundaHandler;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.quartz.*;
+import org.quartz.spi.OperableTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,10 +50,53 @@ public class JobOfWebService extends BaseServiceAdapter {
     private JobMapper mapper;
 
     @Autowired
-    private TriggerOfWebService triggerService;
+    private TriggerService triggerService;
+
+    @Autowired
+    private TriggerOfWebService triggerOfWebService;
 
     @Autowired
     private CamundaHandler camundaHandler;
+
+    @Autowired
+    private Scheduler scheduler;
+
+    public Map<String, Object> list(JobListParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
+        Page<FlowJob> list = (Page<FlowJob>) mapper.list(paramMap);
+        list.forEach(job -> setNextFireTime(job));
+        return PageUtil.toResultMap(list);
+    }
+
+    private void setNextFireTime(FlowJob job) {
+        List<Date> allTriggerDates = new ArrayList<>();
+        TriggerResult triggerResult = triggerService.get(new TriggerGetParam(job.getJobName()));
+        allTriggerDates.addAll(getNextDateList(triggerResult.getCronTriggers()));
+        allTriggerDates.addAll(getNextDateList(triggerResult.getCalendarOffsetTriggers()));
+        allTriggerDates.addAll(getNextDateList(triggerResult.getDailyIntervalTriggers()));
+        allTriggerDates.addAll(getNextDateList(triggerResult.getCalendarIntervalTriggers()));
+        if (allTriggerDates.size() > 0) {
+            Collections.sort(allTriggerDates);
+            job.setNextFireTime(allTriggerDates.get(0));
+        }
+    }
+
+    private List<Date> getNextDateList(List<? extends CommonTriggerResult> list) {
+        List<Date> nextDateList = new ArrayList<>();
+        if (list != null) {
+            try {
+                for (CommonTriggerResult item : list) {
+                    Trigger trigger = scheduler.getTrigger(new TriggerKey(item.getTriggerName(), injectTenantId()));
+                    nextDateList.addAll(TriggerUtils.computeFireTimes((OperableTrigger) trigger, null, 1));// TODO calendar
+                }
+            } catch (SchedulerException e) {
+                log.error(e.getMessage(), e);
+                throw new RTException(6150, e);
+            }
+        }
+        return nextDateList;
+    }
 
     public FlowJob add(JobSaveParam param) {
         FlowJob flowJob = jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
@@ -125,7 +174,7 @@ public class JobOfWebService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         param.getJobNames().forEach(item -> {
             TriggerUpdateParam triggerUpdateParam = new TriggerUpdateParam(item);
-            triggerService.update(triggerUpdateParam);
+            triggerOfWebService.update(triggerUpdateParam);
         });
         mapper.delete(paramMap);
         camundaHandler.removeDefinitionAndDeployment(param.getJobNames(), injectTenantId());

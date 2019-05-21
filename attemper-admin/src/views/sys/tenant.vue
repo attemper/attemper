@@ -35,7 +35,7 @@
           <span class="single-line">{{ scope.row.displayName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('sys.tenant.columns.status')" align="center" width="100">
+      <el-table-column :label="$t('columns.status')" align="center" width="100">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
@@ -80,7 +80,7 @@
           <el-form-item :label="$t('sys.tenant.columns.password')">
             <el-input v-model="tenant.password" :placeholder="$t('sys.tenant.placeholder.password')" type="password" />
           </el-form-item>
-          <el-form-item :label="$t('sys.tenant.columns.status')">
+          <el-form-item :label="$t('columns.status')">
             <el-select v-model="tenant.status">
               <el-option v-for="item in statuses" :key="item.label" :value="item.value" :label="item.label" />
             </el-select>

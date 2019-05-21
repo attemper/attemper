@@ -2,7 +2,6 @@ package com.github.attemper.core.service.job;
 
 import com.github.attemper.common.param.dispatch.job.JobArgListParam;
 import com.github.attemper.common.param.dispatch.job.JobGetParam;
-import com.github.attemper.common.param.dispatch.job.JobListParam;
 import com.github.attemper.common.param.dispatch.job.JobProjectSaveParam;
 import com.github.attemper.common.result.dispatch.job.ArgAllocatedResult;
 import com.github.attemper.common.result.dispatch.job.FlowJob;
@@ -29,6 +28,9 @@ public class JobService extends BaseServiceAdapter {
     @Autowired
     private JobMapper mapper;
 
+    @Autowired
+    private TriggerService triggerService;
+
     /**
      * get job by jobName
      * @param param
@@ -37,13 +39,6 @@ public class JobService extends BaseServiceAdapter {
     public FlowJob get(JobGetParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.get(paramMap);
-    }
-
-    public Map<String, Object> list(JobListParam param) {
-        Map<String, Object> paramMap = injectTenantIdToMap(param);
-        PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
-        Page<FlowJob> list = (Page<FlowJob>) mapper.list(paramMap);
-        return PageUtil.toResultMap(list);
     }
 
     /**
