@@ -9,12 +9,16 @@ import com.github.attemper.config.base.exception.GlobalExceptionAdvisor;
 import com.github.attemper.config.base.id.SnowFlakeIdGenerator;
 import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.config.base.service.ApiLogService;
+import org.apache.ibatis.mapping.DatabaseIdProvider;
+import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Properties;
 
 /**
  * @author ldang
@@ -57,4 +61,14 @@ public class ConfigConfiguration {
                 appProperties.getSnowFlake().getMachineId());
     }
 
+    @Bean
+    public DatabaseIdProvider getDatabaseIdProvider() {
+        DatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();
+        Properties properties = new Properties();
+        properties.setProperty("MySQL", "mysql");
+        properties.setProperty("Oracle", "oracle");
+        properties.setProperty("DB2", "db2");
+        databaseIdProvider.setProperties(properties);
+        return databaseIdProvider;
+    }
 }

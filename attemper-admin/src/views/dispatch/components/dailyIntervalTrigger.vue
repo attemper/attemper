@@ -76,6 +76,13 @@
                 />
               </el-select>
             </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.calendar')">
+              <el-select v-model="item.calendarNames" multiple>
+                <el-option-group v-for="group in calendarGroups" :key="group.label" :label="group.label">
+                  <el-option v-for="cell in group.options" :key="cell.calendarName" :label="cell.displayName" :value="cell.calendarName" />
+                </el-option-group>
+              </el-select>
+            </el-form-item>
           </el-form>
         </el-col>
       </el-row>

@@ -62,28 +62,28 @@ public class TagController {
 
 	@ApiOperation("Get users of tag")
 	@ApiImplicitParam(value = "TagGetParam", name = "param", dataType = "TagGetParam", required = true)
-	@GetMapping(APIPath.TagPath.TENANT_LIST)
+	@GetMapping(APIPath.TagPath.LIST_TENANT)
 	public CommonResult<List<Tenant>> getUsers(TagGetParam param) {
 		return CommonResult.putResult(service.getTenants(param));
 	}
 
 	@ApiOperation("Update users of tag")
 	@ApiImplicitParam(value = "TagTenantUpdateParam", name = "param", dataType = "TagTenantUpdateParam", required = true)
-	@PutMapping(APIPath.TagPath.TENANT_UPDATE)
+	@PutMapping(APIPath.TagPath.UPDATE_TENANT)
 	public CommonResult<Void> updateTagTenants(@RequestBody TagTenantUpdateParam param) {
 		return CommonResult.putResult(service.updateTagTenants(param));
     }
 
 	@ApiOperation("Get resources of tag")
 	@ApiImplicitParam(value = "TagGetParam", name = "param", dataType = "TagGetParam", required = true)
-	@GetMapping(APIPath.TagPath.RESOURCE_LIST)
+	@GetMapping(APIPath.TagPath.LIST_RESOURCE)
 	public CommonResult<List<String>> getResources(TagGetParam param) {
 		return CommonResult.putResult(service.getResources(param));
 	}
 
 	@ApiOperation("Update resources of tag")
 	@ApiImplicitParam(value = "TagResourceUpdateParam", name = "param", dataType = "TagResourceUpdateParam", required = true)
-	@PutMapping(APIPath.TagPath.RESOURCE_UPDATE)
+	@PutMapping(APIPath.TagPath.UPDATE_RESOURCE)
 	public CommonResult<Void> updateTagResources(@RequestBody TagResourceUpdateParam param) {
 		return CommonResult.putResult(service.updateTagResources(param));
 	}

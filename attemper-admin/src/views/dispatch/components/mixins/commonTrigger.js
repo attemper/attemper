@@ -2,14 +2,14 @@ import { next } from '../.././scripts/support'
 
 export default {
   props: {
-    initTriggerArray: {
+    calendarGroups: {
       type: Array,
       default: null
     }
   },
   data() {
     return {
-      triggerArray: this.initTriggerArray
+      triggerArray: []
     }
   },
   methods: {

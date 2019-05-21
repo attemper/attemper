@@ -66,14 +66,14 @@ public class TenantController {
 
 	@ApiOperation("Get tag")
 	@ApiImplicitParam(value = "UserGetParam", name = "param", dataType = "UserGetParam", required = true)
-	@GetMapping(APIPath.TenantPath.TAG_LIST)
+	@GetMapping(APIPath.TenantPath.LIST_TAG)
 	public CommonResult<List<Tag>> getTags(TenantGetParam getParam) {
 		return CommonResult.putResult(service.getTags(getParam));
 	}
 
 	@ApiOperation("Update tag")
 	@ApiImplicitParam(value = "TenantTagUpdateParam", name = "param", dataType = "TenantTagUpdateParam", required = true)
-	@PutMapping(APIPath.TenantPath.TAG_UPDATE)
+	@PutMapping(APIPath.TenantPath.UPDATE_TAG)
 	public CommonResult updateTags(@RequestBody TenantTagUpdateParam param) {
 		service.updateTags(param);
 		return CommonResult.ok();

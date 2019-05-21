@@ -1,6 +1,7 @@
 package com.github.attemper.core.dao.mapper.job;
 
 import com.github.attemper.common.base.BaseMapper;
+import com.github.attemper.common.result.dispatch.calendar.CalendarInfo;
 import com.github.attemper.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.CronTriggerResult;
@@ -41,4 +42,11 @@ public interface TriggerMapper extends BaseMapper<Object> {
     void deleteCalendarIntervalTriggers(Map<String, Object> paramMap);
 
     void saveCalendarIntervalTriggers(List<Map<String, Object>> list);
+
+    List<CalendarInfo> getCalendars(Map<String, Object> paramMap);
+
+    int deleteTriggerCalendars(Map<String, Object> paramMap);
+
+    void saveTriggerCalendars(Map<String, Object> paramMap);
+
 }

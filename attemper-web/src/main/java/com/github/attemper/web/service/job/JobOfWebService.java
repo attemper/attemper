@@ -35,7 +35,7 @@ import java.util.concurrent.Executors;
 @Slf4j
 @Service
 @Transactional
-public class JobOfSchedService extends BaseServiceAdapter {
+public class JobOfWebService extends BaseServiceAdapter {
 
     @Autowired
     private JobService jobService;
@@ -44,7 +44,7 @@ public class JobOfSchedService extends BaseServiceAdapter {
     private JobMapper mapper;
 
     @Autowired
-    private TriggerOfSchedService triggerService;
+    private TriggerOfWebService triggerService;
 
     @Autowired
     private CamundaHandler camundaHandler;

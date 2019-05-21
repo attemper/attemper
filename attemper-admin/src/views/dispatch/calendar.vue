@@ -81,12 +81,6 @@ export default {
         })
         this.currentCalendar = Object.assign({}, res.data.result[0])
         this.getCalendarConfigs()
-        /*,
-        {
-          day: '2019-05-16',
-          highlight: true,
-          dates: new Date(2019, 4, 16)
-        }*/
       })
     },
     save() {

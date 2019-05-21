@@ -3,7 +3,7 @@ package com.github.attemper.web.controller;
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.web.service.job.TriggerOfSchedService;
+import com.github.attemper.web.service.job.TriggerOfWebService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Api("Trigger")
 @RestController
-public class TriggerOfSchedController {
+public class TriggerOfWebController {
 	
 	@Autowired
-	private TriggerOfSchedService service;
+	private TriggerOfWebService service;
 
 	@ApiOperation("Update trigger")
 	@ApiImplicitParam(value = "TriggerUpdateParam", name = "param", dataType = "TriggerUpdateParam", required = true)
@@ -28,5 +28,4 @@ public class TriggerOfSchedController {
 	public CommonResult<Void> update(@RequestBody TriggerUpdateParam param) {
 		return CommonResult.putResult(service.update(param));
 	}
-
 }

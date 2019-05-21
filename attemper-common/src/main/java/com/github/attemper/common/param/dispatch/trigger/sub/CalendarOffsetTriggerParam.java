@@ -1,5 +1,6 @@
 package com.github.attemper.common.param.dispatch.trigger.sub;
 
+import com.github.attemper.java.sdk.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,4 +24,11 @@ public class CalendarOffsetTriggerParam extends CommonTriggerParam{
 
     protected boolean reversed;
 
+    @Override
+    public String validate() {
+        if (StringUtils.isBlank(timeUnit)) {
+            return "6121";
+        }
+        return super.validate();
+    }
 }

@@ -18,3 +18,13 @@ export const getReq = (params) => {
     params: params
   })
 }
+
+const CALENDAR_PATH = '/calendar'
+
+export const getCalendarsReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + SubPath + CALENDAR_PATH + APIPath.GET,
+    method: 'get',
+    params: params
+  })
+}

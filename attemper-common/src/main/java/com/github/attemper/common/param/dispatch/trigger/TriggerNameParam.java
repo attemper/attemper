@@ -1,30 +1,19 @@
-package com.github.attemper.common.param.dispatch.trigger.sub;
+package com.github.attemper.common.param.dispatch.trigger;
 
 import com.github.attemper.common.param.CommonParam;
 import com.github.attemper.java.sdk.common.util.StringUtils;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.List;
-
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class CommonTriggerParam implements CommonParam {
+public class TriggerNameParam implements CommonParam {
 
     protected String triggerName;
-
-    protected String triggerType;
-
-    protected String description;
-
-    protected Date startTime;
-
-    protected Date endTime;
-
-    protected List<String> calendarNames;
 
     @Override
     public String validate() {

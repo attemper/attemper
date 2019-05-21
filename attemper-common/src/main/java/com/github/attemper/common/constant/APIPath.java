@@ -49,9 +49,9 @@ public class APIPath {
 
         public static final String GET = API_PATH + SYS + SUB_PATH + _GET;
 
-        public static final String TAG_LIST = API_PATH + SYS + SUB_PATH + TagPath.SUB_PATH + _LIST;
+        public static final String LIST_TAG = API_PATH + SYS + SUB_PATH + TagPath.SUB_PATH + _LIST;
 
-        public static final String TAG_UPDATE = API_PATH + SYS + SUB_PATH + TagPath.SUB_PATH + _UPDATE;
+        public static final String UPDATE_TAG = API_PATH + SYS + SUB_PATH + TagPath.SUB_PATH + _UPDATE;
 
     }
 
@@ -70,13 +70,13 @@ public class APIPath {
 
         public static final String RESOURCE = "/resource";
 
-        public static final String TENANT_LIST = API_PATH + SYS + SUB_PATH + TenantPath.SUB_PATH + _LIST;
+        public static final String LIST_TENANT = API_PATH + SYS + SUB_PATH + TenantPath.SUB_PATH + _LIST;
 
-        public static final String RESOURCE_LIST = API_PATH + SYS + SUB_PATH + RESOURCE + _LIST;
+        public static final String LIST_RESOURCE = API_PATH + SYS + SUB_PATH + RESOURCE + _LIST;
 
-        public static final String TENANT_UPDATE = API_PATH + SYS + SUB_PATH + TenantPath.SUB_PATH + _UPDATE;
+        public static final String UPDATE_TENANT = API_PATH + SYS + SUB_PATH + TenantPath.SUB_PATH + _UPDATE;
 
-        public static final String RESOURCE_UPDATE = API_PATH + SYS + SUB_PATH + RESOURCE + _UPDATE;
+        public static final String UPDATE_RESOURCE = API_PATH + SYS + SUB_PATH + RESOURCE + _UPDATE;
     }
 
     public static final class JobPath {
@@ -120,6 +120,9 @@ public class APIPath {
         public static final String UPDATE = API_PATH + DISPATCH + SUB_PATH + _UPDATE;
 
         public static final String GET = API_PATH + DISPATCH + SUB_PATH + _GET;
+
+        public static final String GET_CALENDAR = API_PATH + DISPATCH + SUB_PATH + CalendarPath.SUB_PATH + _GET;
+
     }
 
     public static final class ArgPath {
@@ -168,7 +171,7 @@ public class APIPath {
 
         public static final String REMOVE = API_PATH + SYS + SUB_PATH + _REMOVE;
 
-        public static final String TREE_LIST = API_PATH + SYS + SUB_PATH + "/treeList";
+        public static final String LIST_TREE = API_PATH + SYS + SUB_PATH + "/treeList";
 
         private static final String INFO = "/info";
 

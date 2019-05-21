@@ -11,7 +11,7 @@
       <el-input v-model="job.jobName" :placeholder="$t('dispatch.job.placeholder.jobName')" />
     </el-form-item>
     <el-form-item :label="$t('columns.displayName')" prop="displayName">
-      <el-input v-model="job.displayName" :placeholder="$t('placeholder.displayName')" />
+      <el-input v-model="job.displayName" :placeholder="$t('placeholders.displayName')" />
     </el-form-item>
     <el-form-item :label="$t('dispatch.job.columns.status')" prop="status">
       <el-select v-model="job.status" :placeholder="$t('dispatch.job.placeholder.status')" class="filter-item">
@@ -19,7 +19,7 @@
       </el-select>
     </el-form-item>
     <el-form-item :label="$t('dispatch.job.columns.timeout')">
-      <el-input-number v-model="job.timeout" :precision="0" :min="900" :step="900" controls-position="right" />
+      <el-input-number v-model="job.timeout" :precision="0" :min="60" :step="60" controls-position="right" />
     </el-form-item>
     <el-form-item :label="$t('columns.remark')">
       <el-input

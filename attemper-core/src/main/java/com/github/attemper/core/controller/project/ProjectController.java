@@ -25,7 +25,7 @@ public class ProjectController {
 	private ProjectService service;
 
 	@ApiOperation("Get project tree list")
-	@GetMapping(APIPath.ProjectPath.TREE_LIST)
+	@GetMapping(APIPath.ProjectPath.LIST_TREE)
 	public CommonResult<List<Project>> getTreeList() {
 		return CommonResult.putResult(service.getAll());
 	}

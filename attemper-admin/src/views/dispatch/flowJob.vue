@@ -140,28 +140,28 @@
             -->
         <el-tabs v-model="triggerTab.timeTrigger.activeTabName" tab-position="left">
           <el-tab-pane :label="$t('dispatch.trigger.tab.time.cron')" name="0">
-            <CronTrigger ref="cronTrigger" :init-trigger-array="trigger.cronTriggers" :time-zones="timeZones" />
+            <CronTrigger ref="cronTrigger" :time-zones="timeZones" :calendar-groups="calendarGroups" />
           </el-tab-pane>
           <el-tab-pane :label="$t('dispatch.trigger.tab.time.calendarOffset')" name="1">
-            <CalendarOffsetTrigger ref="calendarOffsetTrigger" :init-trigger-array="trigger.calendarOffsetTriggers" :over-day-time-units="overDayTimeUnits" />
+            <CalendarOffsetTrigger ref="calendarOffsetTrigger" :over-day-time-units="overDayTimeUnits" :calendar-groups="calendarGroups" />
           </el-tab-pane>
           <el-tab-pane :label="$t('dispatch.trigger.tab.time.dailyInterval')" name="2">
             <DailyIntervalTrigger
               ref="dailyIntervalTrigger"
-              :init-trigger-array="trigger.dailyIntervalTriggers"
               :milli-second-time-units="milliSecondTimeUnits"
               :in-day-time-units="inDayTimeUnits"
               :days-of-week="daysOfWeek"
+              :calendar-groups="calendarGroups"
             />
           </el-tab-pane>
           <el-tab-pane :label="$t('dispatch.trigger.tab.time.calendarInterval')" name="3">
             <CalendarIntervalTrigger
               ref="calendarIntervalTrigger"
-              :init-trigger-array="trigger.calendarIntervalTriggers"
               :day-time-unit="dayTimeUnit"
               :in-day-time-units="inDayTimeUnits"
               :over-day-time-units="overDayTimeUnits"
               :time-zones="timeZones"
+              :calendar-groups="calendarGroups"
             />
           </el-tab-pane>
         </el-tabs>
@@ -236,6 +236,7 @@
 
 <script>
 import { listReq, removeReq, addReq, updateReq, publishReq, manualReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/flowJob'
+import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/sys/tool'
 import waves from '@/directive/waves' // Waves directive
@@ -334,7 +335,9 @@ export default {
         dailyIntervalTriggers: [],
         calendarIntervalTriggers: []
       },
-      timeZones: []
+      timeZones: [],
+      calendarGroups: [],
+      calendarTypes: []
     }
   },
   created() {
@@ -439,41 +442,38 @@ export default {
       this.triggerTab.timeTrigger.activeTabName = '0'
       this.selectRow(row)
       this.editDialog.trigger.visible = true
+      this.initCalendarGroups()
       triggerApi.getReq({ jobName: this.job.jobName }).then(res => {
         const result = res.data.result
         if (result.cronTriggers && result.cronTriggers.length > 0) {
-          this.trigger.cronTriggers = result.cronTriggers
-          this.$refs.cronTrigger.triggerArray = this.trigger.cronTriggers
+          this.$refs.cronTrigger.triggerArray = result.cronTriggers
           this.triggerTab.timeTrigger.activeTabName = '0'
         } else {
-          this.trigger.cronTriggers = this.$refs.cronTrigger.triggerArray = []
+          this.$refs.cronTrigger.triggerArray = []
           this.$refs.cronTrigger.add()
         }
         if (result.calendarOffsetTriggers && result.calendarOffsetTriggers.length > 0) {
-          this.trigger.calendarOffsetTriggers = result.calendarOffsetTriggers
-          this.$refs.calendarOffsetTrigger.triggerArray = this.trigger.calendarOffsetTriggers
+          this.$refs.calendarOffsetTrigger.triggerArray = result.calendarOffsetTriggers
           this.triggerTab.timeTrigger.activeTabName = '1'
         } else {
-          this.trigger.calendarOffsetTriggers = this.$refs.calendarOffsetTrigger.triggerArray = []
+          this.$refs.calendarOffsetTrigger.triggerArray = []
           this.$refs.calendarOffsetTrigger.add()
         }
         if (result.dailyIntervalTriggers && result.dailyIntervalTriggers.length > 0) {
           result.dailyIntervalTriggers.forEach(item => {
             item.daysOfWeekArr = item.daysOfWeek.split(',')
           })
-          this.trigger.dailyIntervalTriggers = result.dailyIntervalTriggers
-          this.$refs.dailyIntervalTrigger.triggerArray = this.trigger.dailyIntervalTriggers
+          this.$refs.dailyIntervalTrigger.triggerArray = result.dailyIntervalTriggers
           this.triggerTab.timeTrigger.activeTabName = '2'
         } else {
-          this.trigger.dailyIntervalTriggers = this.$refs.dailyIntervalTrigger.triggerArray = []
+          this.$refs.dailyIntervalTrigger.triggerArray = []
           this.$refs.dailyIntervalTrigger.add()
         }
         if (result.calendarIntervalTriggers && result.calendarIntervalTriggers.length > 0) {
-          this.trigger.calendarIntervalTriggers = result.calendarIntervalTriggers
-          this.$refs.calendarIntervalTrigger.triggerArray = this.trigger.calendarIntervalTriggers
+          this.$refs.calendarIntervalTrigger.triggerArray = result.calendarIntervalTriggers
           this.triggerTab.timeTrigger.activeTabName = '3'
         } else {
-          this.trigger.calendarIntervalTriggers = this.$refs.calendarIntervalTrigger.triggerArray = []
+          this.$refs.calendarIntervalTrigger.triggerArray = []
           this.$refs.calendarIntervalTrigger.add()
         }
       })
@@ -578,6 +578,7 @@ export default {
         this.dayTimeUnit = array.dayTimeUnit
         this.overDayTimeUnits = array.overDayTimeUnits
         this.daysOfWeek = array.daysOfWeek
+        this.calendarTypes = array.calendarTypes
       })
       load(`./common.js`).then((array) => {
         this.argTypes = array.argTypes
@@ -632,6 +633,18 @@ export default {
             this.$message.success(res.data.msg)
           })
         })
+    },
+    initCalendarGroups() {
+      this.calendarGroups = []
+      calendarApi.listReq().then(res => {
+        this.calendarTypes.forEach(type => {
+          const options = res.data.result.filter(item => item.type === type.value)
+          this.calendarGroups.push({
+            label: type.label,
+            options: options && options.length > 0 ? options : []
+          })
+        })
+      })
     }
   }
 }

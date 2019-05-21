@@ -5,6 +5,7 @@ import com.github.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
 import com.github.attemper.common.param.dispatch.trigger.sub.CommonTriggerParam;
 import com.github.attemper.common.param.scheduler.TriggerChangedParam;
 import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
+import com.github.attemper.core.dao.mapper.job.TriggerMapper;
 import com.github.attemper.core.service.job.TriggerService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.web.ext.trigger.*;
@@ -24,7 +25,10 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
-public class TriggerOfSchedService extends BaseServiceAdapter {
+public class TriggerOfWebService extends BaseServiceAdapter {
+
+    @Autowired
+    private TriggerMapper mapper;
 
     @Autowired
     private SchedulerHandler schedulerHandler;
@@ -53,11 +57,14 @@ public class TriggerOfSchedService extends BaseServiceAdapter {
         triggerChangedParam.setOldTriggerNames(getOldTriggerNames(param));
         for (int i = 0; i < triggerHandlers.length; i++) {
             TriggerWithQuartzHandler triggerHandler = triggerHandlers[i];
-            /*triggerHandler.getTriggers(paramMap);
-            triggerHandler.deleteTriggers(paramMap);
-            triggerHandler.saveTriggers(param.getJobName(), paramsOfTriggerMap.get(i));*/
             triggerHandler.deleteAndUnschedule(paramMap);
             triggerHandler.saveAndSchedule(param.getJobName(), paramsOfTriggerMap.get(i));
+            List<? extends CommonTriggerParam> list = paramsOfTriggerMap.get(i);
+            if (list != null) {
+                for (CommonTriggerParam item : list) {
+                    updateTriggerCalendar(item);
+                }
+            }
         }
         callScheduler(triggerChangedParam);
         return null;
@@ -84,5 +91,14 @@ public class TriggerOfSchedService extends BaseServiceAdapter {
 
     private List<String> toList(List<? extends CommonTriggerResult> oldResultOfTriggers) {
         return oldResultOfTriggers.stream().map(CommonTriggerResult::getTriggerName).collect(Collectors.toList());
+    }
+
+    public int updateTriggerCalendar(CommonTriggerParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        int deletedRows = mapper.deleteTriggerCalendars(paramMap);
+        if (param.getCalendarNames() != null && !param.getCalendarNames().isEmpty()) {
+            mapper.saveTriggerCalendars(paramMap);
+        }
+        return deletedRows;
     }
 }

@@ -1,10 +1,10 @@
 package com.github.attemper.web.controller;
 
-import com.github.attemper.web.service.job.JobOfSchedService;
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.param.dispatch.job.*;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.job.FlowJob;
+import com.github.attemper.web.service.job.JobOfWebService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api("Job")
 @RestController
-public class JobOfSchedController {
+public class JobOfWebController {
 
     @Autowired
-    private JobOfSchedService service;
+    private JobOfWebService service;
 
     @ApiOperation("Add job")
     @ApiImplicitParam(value = "JobSaveParam", name = "param", dataType = "JobSaveParam", required = true)

@@ -239,7 +239,7 @@ export default {
         timeUnit: '时间单位',
         timeRange: '起止时间',
         timeRangeOfDay: '当日起止时刻',
-        // calendar: 'Calendar',
+        calendar: '日历',
         interval: '周期',
         startTimeOfDay: '当日开始时刻',
         repeatCount: '重复次数',
