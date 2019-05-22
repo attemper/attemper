@@ -56,6 +56,7 @@ public class TriggerUpdateParam implements CommonParam {
     private String validaFieldParam(List<? extends CommonTriggerParam> list) {
         if (list != null) {
             for (CommonTriggerParam item : list) {
+                item.preHandle();
                 String code = item.validate();
                 if (item.validate() != null) {
                     return code;

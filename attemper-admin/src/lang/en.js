@@ -205,7 +205,7 @@ export default {
       param: 'Param',
       trigger: 'Trigger'
     },
-    flowJob: {
+    flow: {
       btn: {
         xml: 'XML',
         svg: 'SVG'

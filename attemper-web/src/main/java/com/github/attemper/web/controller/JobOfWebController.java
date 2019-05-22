@@ -3,7 +3,7 @@ package com.github.attemper.web.controller;
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.param.dispatch.job.*;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.common.result.dispatch.job.FlowJob;
+import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.web.service.job.JobOfWebService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -33,14 +33,14 @@ public class JobOfWebController {
     @ApiOperation("Add job")
     @ApiImplicitParam(value = "JobSaveParam", name = "param", dataType = "JobSaveParam", required = true)
     @PostMapping(APIPath.JobPath.ADD)
-    public CommonResult<FlowJob> add(@RequestBody JobSaveParam param) {
+    public CommonResult<Job> add(@RequestBody JobSaveParam param) {
         return CommonResult.putResult(service.add(param));
     }
 
     @ApiOperation("Update job")
     @ApiImplicitParam(value = "JobSaveParam", name = "param", dataType = "JobSaveParam", required = true)
     @PutMapping(APIPath.JobPath.UPDATE)
-    public CommonResult<FlowJob> update(@RequestBody JobSaveParam param) {
+    public CommonResult<Job> update(@RequestBody JobSaveParam param) {
         return CommonResult.putResult(service.update(param));
     }
 
@@ -61,14 +61,14 @@ public class JobOfWebController {
     @ApiOperation("Copy job")
     @ApiImplicitParam(value = "JobCopyParam", name = "param", dataType = "JobCopyParam", required = true)
     @PutMapping(APIPath.JobPath.COPY)
-    public CommonResult<FlowJob> copy(@RequestBody JobCopyParam param) {
+    public CommonResult<Job> copy(@RequestBody JobCopyParam param) {
         return CommonResult.putResult(service.copy(param));
     }
 
     @ApiOperation("Exchange current reversion to the latest reversion")
     @ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
     @PutMapping(APIPath.JobPath.EXCHANGE)
-    public CommonResult<FlowJob> exchange(@RequestBody JobGetParam param) {
+    public CommonResult<Job> exchange(@RequestBody JobGetParam param) {
         return CommonResult.putResult(service.exchange(param));
     }
 

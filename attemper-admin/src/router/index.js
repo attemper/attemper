@@ -12,7 +12,7 @@ import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
 import sysRouter from './modules/sys'
-import jobRouter from './modules/job'
+import dispatchRouter from './modules/dispatch'
 import monitorRouter from './modules/monitor'
 
 /**
@@ -415,7 +415,7 @@ export const devRouterMap = [
 
 export const asyncRouterMap = [
   sysRouter,
-  jobRouter,
+  dispatchRouter,
   monitorRouter,
   { path: '*', redirect: '/404', hidden: true }
 ]

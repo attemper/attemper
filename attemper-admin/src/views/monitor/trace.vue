@@ -104,7 +104,7 @@
 
 <script>
 import { listReq, listActReq } from '@/api/monitor/monitor'
-import { getReq } from '@/api/dispatch/flowJob'
+import { getReq } from '@/api/dispatch/job'
 import BpmnViewer from 'bpmn-js'
 import minimapModule from 'diagram-js-minimap'
 // import { diff } from 'bpmn-js-differ' // https://github.com/bpmn-io/bpmn-js-differ

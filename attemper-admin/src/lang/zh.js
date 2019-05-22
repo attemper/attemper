@@ -10,7 +10,7 @@ export default {
     dispatch: '调度管理',
     arg: '参数管理',
     project: '服务信息',
-    flowJob: '任务编排',
+    job: '任务编排',
     monitor: '监控管理',
     realTime: '实时监控',
     history: '历史监控',
@@ -198,7 +198,7 @@ export default {
         project: '项目'
       }
     },
-    flowJob: {
+    flow: {
       btn: {
         xml: 'XML',
         svg: 'SVG'

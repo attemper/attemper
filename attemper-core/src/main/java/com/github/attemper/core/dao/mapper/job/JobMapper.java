@@ -2,7 +2,7 @@ package com.github.attemper.core.dao.mapper.job;
 
 import com.github.attemper.common.base.BaseMapper;
 import com.github.attemper.common.result.dispatch.job.ArgAllocatedResult;
-import com.github.attemper.common.result.dispatch.job.FlowJob;
+import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -15,13 +15,13 @@ import java.util.Map;
  */
 @Mapper
 @Repository
-public interface JobMapper extends BaseMapper<FlowJob> {
+public interface JobMapper extends BaseMapper<Job> {
 
-    void addInfo(FlowJob flowJob);
+    void addInfo(Job job);
 
-    void updateInfo(FlowJob flowJob);
+    void updateInfo(Job job);
 
-    List<FlowJob> versions(Map<String, Object> paramMap);
+    List<Job> versions(Map<String, Object> paramMap);
 
     Project getProject(Map<String, Object> paramMap);
 

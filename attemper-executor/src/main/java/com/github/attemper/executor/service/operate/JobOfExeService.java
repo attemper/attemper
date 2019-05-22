@@ -1,7 +1,7 @@
 package com.github.attemper.executor.service.operate;
 
 import com.github.attemper.common.constant.CommonConstants;
-import com.github.attemper.common.result.dispatch.job.FlowJob;
+import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.executor.service.BaseOfExeServiceAdapter;
@@ -16,7 +16,7 @@ public class JobOfExeService extends BaseOfExeServiceAdapter {
     @Autowired
     private JobMapper mapper;
 
-    public FlowJob get(String jobName, String tenantId) {
+    public Job get(String jobName, String tenantId) {
         return mapper.get(toJobNameMap(toTenantIdMap(tenantId), jobName));
     }
 

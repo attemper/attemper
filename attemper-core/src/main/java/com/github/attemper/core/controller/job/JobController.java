@@ -5,7 +5,7 @@ import com.github.attemper.common.param.dispatch.job.JobArgListParam;
 import com.github.attemper.common.param.dispatch.job.JobGetParam;
 import com.github.attemper.common.param.dispatch.job.JobProjectSaveParam;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.common.result.dispatch.job.FlowJob;
+import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.core.service.job.JobService;
 import io.swagger.annotations.Api;
@@ -33,14 +33,14 @@ public class JobController {
 	@ApiOperation("Get job")
 	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
 	@GetMapping(APIPath.JobPath.GET)
-	public CommonResult<FlowJob> get(JobGetParam param) {
+	public CommonResult<Job> get(JobGetParam param) {
 		return CommonResult.putResult(service.get(param));
 	}
 
 	@ApiOperation("List jobs by versions")
 	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
 	@GetMapping(APIPath.JobPath.VERSIONS)
-	public CommonResult<List<FlowJob>> listVersions(JobGetParam param) {
+	public CommonResult<List<Job>> listVersions(JobGetParam param) {
 		return CommonResult.putResult(service.versions(param));
 	}
 

@@ -36,4 +36,12 @@ public abstract class CommonTriggerParam implements CommonParam {
         }
         return null;
     }
+
+    @Override
+    public void preHandle() {
+        Date now = new Date();
+        if (startTime == null || startTime.before(now)) {
+            startTime = new Date(now.getTime() + 3000L);
+        }
+    }
 }

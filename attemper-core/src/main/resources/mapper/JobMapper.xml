@@ -4,7 +4,7 @@
 
 <mapper namespace="com.github.attemper.core.dao.mapper.job.JobMapper">
 
-    <insert id="add" parameterType="com.github.attemper.common.result.dispatch.job.FlowJob">
+    <insert id="add" parameterType="com.github.attemper.common.result.dispatch.job.Job">
         INSERT INTO ${tablePrefix}job (
             JOB_NAME,
             DISPLAY_NAME,
@@ -28,7 +28,7 @@
         )
     </insert>
 
-    <insert id="addInfo" parameterType="com.github.attemper.common.result.dispatch.job.FlowJob">
+    <insert id="addInfo" parameterType="com.github.attemper.common.result.dispatch.job.Job">
         INSERT INTO ${tablePrefix}job_info (
             JOB_NAME,
             JOB_CONTENT,
@@ -48,7 +48,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.github.attemper.common.result.dispatch.job.FlowJob">
+    <update id="update" parameterType="com.github.attemper.common.result.dispatch.job.Job">
         UPDATE ${tablePrefix}job j
         SET
         STATUS = #{status, jdbcType=INTEGER},
@@ -62,7 +62,7 @@
         </where>
     </update>
 
-    <update id="updateInfo" parameterType="com.github.attemper.common.result.dispatch.job.FlowJob">
+    <update id="updateInfo" parameterType="com.github.attemper.common.result.dispatch.job.Job">
         UPDATE ${tablePrefix}job_info j
         SET
         VERSION = #{version, jdbcType=INTEGER},
@@ -76,7 +76,7 @@
         </where>
     </update>
 
-    <select id="get" parameterType="map" resultType="com.github.attemper.common.result.dispatch.job.FlowJob">
+    <select id="get" parameterType="map" resultType="com.github.attemper.common.result.dispatch.job.Job">
         <include refid="jobAndInfoSql"/>
         <where>
             <include refid="condJobName"/>
@@ -90,7 +90,7 @@
         </if>
     </select>
 
-    <select id="list" parameterType="map" resultType="com.github.attemper.common.result.dispatch.job.FlowJob">
+    <select id="list" parameterType="map" resultType="com.github.attemper.common.result.dispatch.job.Job">
         SELECT * FROM (
         <include refid="jobAndInfoSql"/>
         JOIN
@@ -132,7 +132,7 @@
         </choose>
     </select>
 
-    <select id="versions" parameterType="map" resultType="com.github.attemper.common.result.dispatch.job.FlowJob">
+    <select id="versions" parameterType="map" resultType="com.github.attemper.common.result.dispatch.job.Job">
         <!-- tip: do not return job content here because the column may be too big -->
         SELECT
         ji.JOB_NAME,j.DISPLAY_NAME, j.TIMEOUT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME, ji.TENANT_ID,

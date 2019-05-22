@@ -1,6 +1,6 @@
 package com.github.attemper.executor.service.instance;
 
-import com.github.attemper.common.result.dispatch.job.FlowJob;
+import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.monitor.JobInstance;
 import com.github.attemper.common.result.dispatch.monitor.JobInstanceAct;
 import com.github.attemper.core.dao.mapper.monitor.JobInstanceMapper;
@@ -23,9 +23,9 @@ public class JobInstanceOfExeService extends BaseOfExeServiceAdapter {
 
     public void add(JobInstance jobInstance) {
         if (jobInstance.getDisplayName() == null) {
-            FlowJob flowJob = jobOfExeService.get(jobInstance.getJobName(), jobInstance.getTenantId());
-            if (flowJob != null) {
-                jobInstance.setDisplayName(flowJob.getDisplayName());
+            Job job = jobOfExeService.get(jobInstance.getJobName(), jobInstance.getTenantId());
+            if (job != null) {
+                jobInstance.setDisplayName(job.getDisplayName());
             }
         }
         mapper.add(jobInstance);

@@ -14,12 +14,12 @@ const jobRouter = {
   },
   children: [
     {
-      path: 'flowJob',
-      component: () => import('@/views/dispatch/flowJob'),
-      name: 'flowJob',
+      path: 'job',
+      component: () => import('@/views/dispatch/job'),
+      name: 'job',
       meta: {
-        title: 'flowJob',
-        icon: 'flowJob',
+        title: 'job',
+        icon: 'job',
         noCache: false
       }
     },

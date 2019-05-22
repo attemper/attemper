@@ -4,7 +4,7 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.job.*;
 import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
 import com.github.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
-import com.github.attemper.common.result.dispatch.job.FlowJob;
+import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
@@ -64,12 +64,12 @@ public class JobOfWebService extends BaseServiceAdapter {
     public Map<String, Object> list(JobListParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
-        Page<FlowJob> list = (Page<FlowJob>) mapper.list(paramMap);
+        Page<Job> list = (Page<Job>) mapper.list(paramMap);
         list.forEach(job -> setNextFireTime(job));
         return PageUtil.toResultMap(list);
     }
 
-    private void setNextFireTime(FlowJob job) {
+    private void setNextFireTime(Job job) {
         List<Date> allTriggerDates = new ArrayList<>();
         TriggerResult triggerResult = triggerService.get(new TriggerGetParam(job.getJobName()));
         allTriggerDates.addAll(getNextDateList(triggerResult.getCronTriggers()));
@@ -98,24 +98,24 @@ public class JobOfWebService extends BaseServiceAdapter {
         return nextDateList;
     }
 
-    public FlowJob add(JobSaveParam param) {
-        FlowJob flowJob = jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
-        if (flowJob != null) {
+    public Job add(JobSaveParam param) {
+        Job job = jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
+        if (job != null) {
             throw new DuplicateKeyException(param.getJobName());
         }
-        flowJob = toBaseJob(param);
+        job = toBaseJob(param);
         Date now = new Date();
-        flowJob.setCreateTime(now);
-        flowJob.setUpdateTime(now);
-        flowJob.setMaxReversion(1);
-        flowJob.setReversion(1);
+        job.setCreateTime(now);
+        job.setUpdateTime(now);
+        job.setMaxReversion(1);
+        job.setReversion(1);
         if (param.getJobContent() == null) {
-            BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(flowJob.getJobName())
-                    .name(flowJob.getDisplayName())
+            BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(job.getJobName())
+                    .name(job.getDisplayName())
                     .startEvent()
                     .id("StartEvent_1")
                     .done();
-            flowJob.setJobContent(Bpmn.convertToString(modelInstance));
+            job.setJobContent(Bpmn.convertToString(modelInstance));
         } else {
             BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(param.getJobContent().getBytes()));
             Collection<Process> modelElements = bpmnModelInstance.getModelElementsByType(Process.class);
@@ -123,39 +123,39 @@ public class JobOfWebService extends BaseServiceAdapter {
                 process.builder().id(param.getJobName()).name(param.getDisplayName());
                 break;
             }
-            flowJob.setJobContent(Bpmn.convertToString(bpmnModelInstance));
+            job.setJobContent(Bpmn.convertToString(bpmnModelInstance));
         }
-        mapper.add(flowJob);
-        mapper.addInfo(flowJob);
-        return flowJob;
+        mapper.add(job);
+        mapper.addInfo(job);
+        return job;
     }
 
-    public FlowJob update(JobSaveParam param) {
-        FlowJob flowJob = jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
-        if (flowJob == null) {
+    public Job update(JobSaveParam param) {
+        Job job = jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
+        if (job == null) {
             return add(param); // Equivalent to copy then add
         }
-        if (!StringUtils.equals(param.getDisplayName(), flowJob.getDisplayName())) {
+        if (!StringUtils.equals(param.getDisplayName(), job.getDisplayName())) {
             throw new RTException(6080);
         }
-        FlowJob updatedJob = toBaseJob(param);
-        updatedJob.setCreateTime(flowJob.getCreateTime());
-        updatedJob.setMaxVersion(flowJob.getMaxVersion());
-        if (checkNeedSave(flowJob, updatedJob)) {  // base info
-            updatedJob.setMaxReversion(flowJob.getMaxReversion());
+        Job updatedJob = toBaseJob(param);
+        updatedJob.setCreateTime(job.getCreateTime());
+        updatedJob.setMaxVersion(job.getMaxVersion());
+        if (checkNeedSave(job, updatedJob)) {  // base info
+            updatedJob.setMaxReversion(job.getMaxReversion());
         } else {  //job content
-            if (StringUtils.equals(param.getJobContent(), flowJob.getJobContent())) {
+            if (StringUtils.equals(param.getJobContent(), job.getJobContent())) {
                 throw new RTException(6056);
             }
             updatedJob.setUpdateTime(new Date());
             updatedJob.setDeploymentTime(null);
-            if (flowJob.getVersion() == null) {
-                updatedJob.setMaxReversion(flowJob.getReversion());
-                updatedJob.setReversion(flowJob.getReversion());
+            if (job.getVersion() == null) {
+                updatedJob.setMaxReversion(job.getReversion());
+                updatedJob.setReversion(job.getReversion());
                 mapper.updateInfo(updatedJob);
             } else {
-                updatedJob.setMaxReversion(flowJob.getReversion() + 1);
-                updatedJob.setReversion(flowJob.getReversion() + 1);
+                updatedJob.setMaxReversion(job.getReversion() + 1);
+                updatedJob.setReversion(job.getReversion() + 1);
                 updatedJob.setVersion(null);
                 mapper.addInfo(updatedJob);
             }
@@ -191,19 +191,19 @@ public class JobOfWebService extends BaseServiceAdapter {
     public Void publish(JobPublishParam param) {
         List<String> jobNames = param.getJobNames();
         jobNames.forEach(jobName -> {
-            FlowJob flowJob = validateAndGet(jobName);  //the newest reversion job
-            if (flowJob.getVersion() != null) {
+            Job job = validateAndGet(jobName);  //the newest reversion job
+            if (job.getVersion() != null) {
                 throw new RTException(6054, jobName);
             }
-            Deployment deployment = camundaHandler.createDefault(flowJob);
-            int maxVersion = flowJob.getMaxVersion() == null ? 1 : flowJob.getMaxVersion() + 1;
-            flowJob.setUpdateTime(deployment.getDeploymentTime());
-            flowJob.setDeploymentTime(deployment.getDeploymentTime());
-            flowJob.setVersion(maxVersion);
-            flowJob.setMaxReversion(flowJob.getMaxReversion());
-            flowJob.setMaxVersion(maxVersion);
-            mapper.update(flowJob);
-            mapper.updateInfo(flowJob);
+            Deployment deployment = camundaHandler.createDefault(job);
+            int maxVersion = job.getMaxVersion() == null ? 1 : job.getMaxVersion() + 1;
+            job.setUpdateTime(deployment.getDeploymentTime());
+            job.setDeploymentTime(deployment.getDeploymentTime());
+            job.setVersion(maxVersion);
+            job.setMaxReversion(job.getMaxReversion());
+            job.setMaxVersion(maxVersion);
+            mapper.update(job);
+            mapper.updateInfo(job);
         });
         return null;
     }
@@ -211,18 +211,18 @@ public class JobOfWebService extends BaseServiceAdapter {
     /**
      * 判断是否需要更新模型版本
      *
-     * @param flowJob
+     * @param job
      * @param updatedJob
      * @return
      */
-    private boolean checkNeedSave(FlowJob flowJob, FlowJob updatedJob) {
-        return flowJob.getStatus() != updatedJob.getStatus()
-                || flowJob.getTimeout() != updatedJob.getTimeout()
-                || !StringUtils.equals(flowJob.getRemark(), updatedJob.getRemark());
+    private boolean checkNeedSave(Job job, Job updatedJob) {
+        return job.getStatus() != updatedJob.getStatus()
+                || job.getTimeout() != updatedJob.getTimeout()
+                || !StringUtils.equals(job.getRemark(), updatedJob.getRemark());
     }
 
-    private FlowJob toBaseJob(JobSaveParam saveParam) {
-        return FlowJob.builder()
+    private Job toBaseJob(JobSaveParam saveParam) {
+        return Job.builder()
                 .jobName(saveParam.getJobName())
                 .displayName(saveParam.getDisplayName())
                 .jobContent(saveParam.getJobContent())
@@ -233,16 +233,16 @@ public class JobOfWebService extends BaseServiceAdapter {
                 .build();
     }
 
-    private FlowJob validateAndGet(String jobName) {
+    private Job validateAndGet(String jobName) {
         JobGetParam jobGetParam = JobGetParam.builder().jobName(jobName).build();
-        FlowJob flowJob = jobService.get(jobGetParam);
-        if (flowJob == null) {
+        Job job = jobService.get(jobGetParam);
+        if (job == null) {
             throw new RTException(6050, jobName);
         }
-        if (StringUtils.isBlank(flowJob.getJobContent())) {
+        if (StringUtils.isBlank(job.getJobContent())) {
             throw new RTException(6053, jobName);
         }
-        return flowJob;
+        return job;
     }
 
     /**
@@ -251,10 +251,10 @@ public class JobOfWebService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public FlowJob copy(JobCopyParam param) {
+    public Job copy(JobCopyParam param) {
         JobSaveParam targetJobParam = param.getTargetJobParam();
-        FlowJob sourceJob = jobService.get(JobGetParam.builder().jobName(param.getJobName()).reversion(param.getReversion()).build());
-        FlowJob targetJob = jobService.get(JobGetParam.builder().jobName(targetJobParam.getJobName()).build());
+        Job sourceJob = jobService.get(JobGetParam.builder().jobName(param.getJobName()).reversion(param.getReversion()).build());
+        Job targetJob = jobService.get(JobGetParam.builder().jobName(targetJobParam.getJobName()).build());
         if (targetJob != null) { // add its reversion with new model
             JobSaveParam saveParam = JobSaveParam.builder()
                     .jobName(targetJob.getJobName()).displayName(targetJob.getDisplayName())
@@ -274,8 +274,8 @@ public class JobOfWebService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public FlowJob exchange(JobGetParam param) {
-        FlowJob oldReversionJob = jobService.get(param);
+    public Job exchange(JobGetParam param) {
+        Job oldReversionJob = jobService.get(param);
         JobSaveParam saveParam = JobSaveParam.builder()
                 .jobName(oldReversionJob.getJobName()).displayName(oldReversionJob.getDisplayName())
                 .status(oldReversionJob.getStatus()).timeout(oldReversionJob.getTimeout())

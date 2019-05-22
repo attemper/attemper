@@ -79,7 +79,7 @@
           <el-tag :type="scope.row.status | renderJobStatus">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('dispatch.job.columns.nextFireTime')" width="120px">
+      <el-table-column :label="$t('dispatch.job.columns.nextFireTime')" width="160px">
         <template slot-scope="scope">
           <span>{{ scope.row.nextFireTime }}</span>
         </template>
@@ -240,7 +240,7 @@
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq, publishReq, manualReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/flowJob'
+import { listReq, removeReq, addReq, updateReq, publishReq, manualReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/sys/tool'
@@ -256,7 +256,7 @@ import CalendarIntervalTrigger from './components/calendarIntervalTrigger'
 import ProjectTree from './components/projectTree'
 
 export default {
-  name: 'flowJob',
+  name: 'job',
   components: {
     ProjectTree,
     Pagination,

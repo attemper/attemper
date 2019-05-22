@@ -5,10 +5,10 @@
     <ul class="buttons">
       <li>{{ $t('actions.download') }}</li>
       <li>
-        <a ref="exportBPMN" :title="$t('dispatch.flowJob.title.xml')" href="javascript:">{{ $t('dispatch.flowJob.btn.xml') }}</a>
+        <a ref="exportBPMN" :title="$t('dispatch.flow.title.xml')" href="javascript:">{{ $t('dispatch.flow.btn.xml') }}</a>
       </li>
       <li>
-        <a ref="exportSvg" :title="$t('dispatch.flowJob.title.svg')" href="javascript:">{{ $t('dispatch.flowJob.btn.svg') }}</a>
+        <a ref="exportSvg" :title="$t('dispatch.flow.title.svg')" href="javascript:">{{ $t('dispatch.flow.btn.svg') }}</a>
       </li>
     </ul>
     <div class="custom-bottom">
@@ -30,14 +30,14 @@
             <el-button :disabled="job.maxReversion !== currentReversion" icon="el-icon-check" type="success" @click="save" />
           </span>
         </el-tooltip>
-        <el-tooltip :content="$t('dispatch.flowJob.tip.exchange')" effect="dark" placement="top">
+        <el-tooltip :content="$t('dispatch.flow.tip.exchange')" effect="dark" placement="top">
           <span style="margin-left: 10px;">
             <el-button :disabled="job.maxReversion === currentReversion" type="warning" @click="exchange">
               <svg-icon icon-class="exchange" />
             </el-button>
           </span>
         </el-tooltip>
-        <el-tooltip :content="$t('dispatch.flowJob.tip.copy')" effect="dark" placement="top-start">
+        <el-tooltip :content="$t('dispatch.flow.tip.copy')" effect="dark" placement="top-start">
           <span style="margin-left: 10px;">
             <el-button type="primary" @click="openCopyDialog">
               <svg-icon icon-class="copy" />
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { getReq, updateReq, versionsReq, copyReq, exchangeReq } from '@/api/dispatch/flowJob'
+import { getReq, updateReq, versionsReq, copyReq, exchangeReq } from '@/api/dispatch/job'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import propertiesPanelModule from 'bpmn-js-properties-panel'
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
@@ -190,17 +190,17 @@ export default {
       })
     },
     openCopyDialog() {
-      this.editDialog.title = this.$t('dispatch.flowJob.tip.copy')
+      this.editDialog.title = this.$t('dispatch.flow.tip.copy')
       this.editDialog.visible = true
       this.targetJobParam = Object.assign({}, this.job)
     },
     // copy job with current reversion to another job(if the target was existent, will add its reversion)
     copy() {
       if (this.job.jobName === this.targetJobParam.jobName) {
-        this.$message.error(this.$t('dispatch.flowJob.tip.jobNameNotChanged'))
+        this.$message.error(this.$t('dispatch.flow.tip.jobNameNotChanged'))
         return
       }
-      const msg = '<p>' + this.$t('dispatch.flowJob.tip.copyConfirm') + '?</p>'
+      const msg = '<p>' + this.$t('dispatch.flow.tip.copyConfirm') + '?</p>'
       this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
         .then(() => {
           const data = {
@@ -217,7 +217,7 @@ export default {
     },
     // exchange current reversion to the latest
     exchange() {
-      const msg = '<p>' + this.$t('dispatch.flowJob.tip.exchangeConfirm') + '?</p>'
+      const msg = '<p>' + this.$t('dispatch.flow.tip.exchangeConfirm') + '?</p>'
       this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
         .then(() => {
           exchangeReq(this.job).then(res => {

@@ -4,7 +4,7 @@ import com.github.attemper.common.param.dispatch.job.JobArgListParam;
 import com.github.attemper.common.param.dispatch.job.JobGetParam;
 import com.github.attemper.common.param.dispatch.job.JobProjectSaveParam;
 import com.github.attemper.common.result.dispatch.job.ArgAllocatedResult;
-import com.github.attemper.common.result.dispatch.job.FlowJob;
+import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.sys.service.BaseServiceAdapter;
@@ -36,7 +36,7 @@ public class JobService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public FlowJob get(JobGetParam param) {
+    public Job get(JobGetParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.get(paramMap);
     }
@@ -47,7 +47,7 @@ public class JobService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public List<FlowJob> versions(JobGetParam param) {
+    public List<Job> versions(JobGetParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.versions(paramMap);
     }

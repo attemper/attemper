@@ -14,7 +14,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlowJob {
+public class Job {
 
     protected String jobName;
 
