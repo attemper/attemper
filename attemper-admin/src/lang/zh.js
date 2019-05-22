@@ -273,7 +273,8 @@ export default {
       placeholder: {
         argName: '请输入参数名称',
         argType: '请选择参数类型',
-        argValue: '请输入参数值'
+        argValue: '请输入参数值',
+        genericType: '基本数据类型'
       },
       rules: {
         argName: '参数名称不能为空',

@@ -195,3 +195,12 @@ aside {
   text-overflow: ellipsis;
   white-space: nowrap
 }
+
+.form {
+  &-layout {
+    width: 500px;
+    min-height: 350px;
+    margin-top: 20px;
+    margin-left: 50px;
+  }
+}

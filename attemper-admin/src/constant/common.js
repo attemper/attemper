@@ -1,14 +1,14 @@
-export const argTypes = [
+export const genericTypes = [
   {
     label: 'String',
     value: 0
   },
   {
-    label: 'Integer',
+    label: 'Boolean',
     value: 1
   },
   {
-    label: 'Boolean',
+    label: 'Integer',
     value: 2
   },
   {
@@ -26,7 +26,10 @@ export const argTypes = [
   {
     label: 'DateTime',
     value: 6
-  },
+  }
+]
+
+export const rawTypes = [
   {
     label: 'List',
     value: 7
@@ -34,9 +37,18 @@ export const argTypes = [
   {
     label: 'Map',
     value: 8
-  },
+  }
+]
+
+export const specTypes = [
   {
     label: 'Sql',
     value: 9
   }
+]
+
+export const argTypes = [
+  ...genericTypes,
+  ...rawTypes,
+  ...specTypes
 ]

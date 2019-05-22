@@ -88,14 +88,3 @@ export default {
   }
 }
 </script>
-
-<style rel="stylesheet/scss" lang="scss">
-  .form {
-    &-layout {
-    width: 500px;
-    min-height: 350px;
-    margin-top: 20px;
-    margin-left: 50px;
-    }
-  }
-</style>

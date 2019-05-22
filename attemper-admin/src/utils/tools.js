@@ -46,3 +46,7 @@ export const closeAllTabs = () => {
 export const injectIcon = (icon) => {
   return icon + (icon === 'calendar' ? new Date().getDate() : '')
 }
+
+export const isBlank = (str) => {
+  return !str || str.trim() === ''
+}

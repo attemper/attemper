@@ -2,8 +2,8 @@ package com.github.attemper.common.enums;
 
 public enum ArgType {
     STRING(0),
-    INTEGER(1),
-    BOOLEAN(2),
+    BOOLEAN(1),
+    INTEGER(2),
     DOUBLE(3),
     LONG(4),
     DATE(5),

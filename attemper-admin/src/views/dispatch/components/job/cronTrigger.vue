@@ -16,6 +16,9 @@
                 <el-button slot="append" icon="el-icon-minus" @click="removeId(item, index)" />
               </el-input>
             </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.expression')">
+              <cron-input v-model="item.expression" :size="size" @change="change($event, index)" @reset="reset($event, index)" />
+            </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.timeRange')">
               <el-col :span="11">
                 <el-date-picker
@@ -33,28 +36,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                 />
               </el-col>
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.interval')">
-              <el-input-number v-model="item.interval" :placeholder="$t('dispatch.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right" />
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.timeUnit')">
-              <el-select v-model="item.timeUnit" :placeholder="$t('dispatch.trigger.placeholder.timeUnit')">
-                <el-option
-                  v-for="ele in inDayTimeUnits.concat(dayTimeUnit).concat(overDayTimeUnits)"
-                  :key="ele.value"
-                  :label="ele.label"
-                  :value="ele.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.repeatCount')">
-              <el-input-number v-model="item.repeatCount" :placeholder="$t('dispatch.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" />
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.preserveDayLight')">
-              <el-switch v-model="item.preserveDayLight" />
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.skipDayIfNoHour')">
-              <el-switch v-model="item.skipDayIfNoHour" />
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.timeZone')">
               <el-select v-model="item.timeZoneId" filterable>
@@ -82,55 +63,54 @@
 </template>
 
 <script>
-import { isBlank } from '.././scripts/support'
+import CronInput from 'vue-cron-generator/src/components/cron-input'
+import { DEFAULT_CRON_EXPRESSION } from 'vue-cron-generator/src/constant/filed'
+import { isBlank } from '@/utils/tools'
 import CommonTrigger from './mixins/commonTrigger'
 
-const CALENDAR_INTERVAL_OBJ = {
+const CRON_OBJ = {
   triggerName: '',
-  // calendar: null,
+  expression: DEFAULT_CRON_EXPRESSION,
   startTime: null,
   endTime: null,
-  interval: 1,
-  timeUnit: 'DAY',
-  repeatCount: -1,
-  preserveDayLight: false,
-  skipDayIfNoHour: false,
   timeZoneId: null
 }
 
 export default {
-  name: 'CalendarIntervalTrigger',
+  name: 'CronTrigger',
+  components: {
+    CronInput
+  },
   mixins: [CommonTrigger],
   props: {
-    dayTimeUnit: {
-      type: Array,
-      default: null
-    },
-    inDayTimeUnits: {
-      type: Array,
-      default: null
-    },
-    overDayTimeUnits: {
-      type: Array,
-      default: null
-    },
     timeZones: {
       type: Array,
       default: null
     }
   },
+  computed: {
+    size() {
+      return localStorage.getItem('size')
+    }
+  },
   methods: {
     add() {
-      this.put(CALENDAR_INTERVAL_OBJ)
+      this.put(CRON_OBJ)
+    },
+    change(newCron, index) {
+      this.triggerArray[index].expression = newCron
+    },
+    reset(oldCron, index) {
+      this.triggerArray[index].expression = DEFAULT_CRON_EXPRESSION
     },
     validateThenSet(trigger) {
-      if (!trigger.calendarIntervalTriggers) {
-        trigger.calendarIntervalTriggers = []
+      if (!trigger.cronTriggers) {
+        trigger.cronTriggers = []
       }
       for (let i = 0; i < this.triggerArray.length; i++) {
         const item = this.triggerArray[i]
         if (!isBlank(item.triggerName)) {
-          trigger.calendarIntervalTriggers.push(item)
+          trigger.cronTriggers.push(item)
         }
       }
       return true
@@ -140,5 +120,5 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  @import ".././styles/jobs.scss";
+  @import "../../styles/jobs";
 </style>

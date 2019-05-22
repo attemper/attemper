@@ -67,6 +67,7 @@ public class ArgService extends BaseServiceAdapter {
                 .argName(param.getArgName())
                 .argType(param.getArgType())
                 .argValue(param.getArgValue())
+                .genericType(param.getGenericType())
                 .remark(param.getRemark())
                 .tenantId(injectTenantId())
                 .build();

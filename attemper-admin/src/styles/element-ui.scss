@@ -78,6 +78,10 @@
   display: inline-flex !important;
 }
 
+.el-form-item {
+  margin-bottom: 20px;
+}
+
 .el-table--medium {
   font-size: 15px;
 }
@@ -88,4 +92,16 @@
 
 .el-table--mini {
   font-size: 13px;
+}
+
+.el-button--medium {
+  padding: 9px 14px;
+}
+
+.el-button--small {
+  padding: 8px 12px;
+}
+
+.el-button--mini {
+  padding: 7px 10px;
 }

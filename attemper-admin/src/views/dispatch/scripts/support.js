@@ -1,4 +1,5 @@
 import IdGenerator from 'ids'
+import { isBlank } from '@/utils/tools'
 
 export const getDefinitions = (bpmnModeler) => {
   return bpmnModeler._definitions
@@ -37,10 +38,6 @@ export const getTimeStr = () => {
     (hour < 10 ? '0' + hour : hour) +
     (min < 10 ? '0' + min : min) +
     (sec < 10 ? '0' + sec : sec)
-}
-
-export const isBlank = (str) => {
-  return !str || str.trim() === ''
 }
 
 export const startAfterEndTime = (startTimeStr, endTimeStr) => {

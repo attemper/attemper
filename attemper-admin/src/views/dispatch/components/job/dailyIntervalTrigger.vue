@@ -34,17 +34,29 @@
                 />
               </el-col>
             </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.startTimeOfDay')">
-              <el-time-picker
-                v-model="item.startTimeOfDay"
-                :placeholder="$t('dispatch.trigger.placeholder.startTimeOfDay')"
-                value-format="HH:mm:ss"
-              />
+            <el-form-item :label="$t('dispatch.trigger.title.timeRangeOfDay')">
+              <el-col :span="11">
+                <el-time-picker
+                  v-model="item.startTimeOfDay"
+                  :placeholder="$t('dispatch.trigger.placeholder.startTimeOfDay')"
+                  value-format="HH:mm:ss"
+                />
+              </el-col>
+              <el-col :span="11" :offset="1">
+                <el-time-picker
+                  v-model="item.endTimeOfDay"
+                  :placeholder="$t('dispatch.trigger.placeholder.endTimeOfDay')"
+                  value-format="HH:mm:ss"
+                />
+              </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.interval')">
+              <el-input-number v-model="item.interval" :placeholder="$t('dispatch.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right" />
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.timeUnit')">
               <el-select v-model="item.timeUnit" :placeholder="$t('dispatch.trigger.placeholder.timeUnit')" filterable>
                 <el-option
-                  v-for="ele in overDayTimeUnits"
+                  v-for="ele in milliSecondTimeUnits.concat(inDayTimeUnits)"
                   :key="ele.value"
                   :label="ele.label"
                   :value="ele.value"
@@ -54,14 +66,15 @@
             <el-form-item :label="$t('dispatch.trigger.title.repeatCount')">
               <el-input-number v-model="item.repeatCount" :placeholder="$t('dispatch.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" />
             </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.reversed')">
-              <el-switch v-model="item.reversed" />
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.innerOffset')">
-              <el-input-number v-model="item.innerOffset" :placeholder="$t('dispatch.trigger.placeholder.innerOffset')" :precision="0" :min="0" :step="1" controls-position="right" />
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.outerOffset')">
-              <el-input-number v-model="item.outerOffset" :placeholder="$t('dispatch.trigger.placeholder.outerOffset')" :precision="0" :min="0" :step="1" controls-position="right" />
+            <el-form-item :label="$t('dispatch.trigger.title.daysOfWeek')">
+              <el-select v-model="item.daysOfWeekArr" :placeholder="$t('dispatch.trigger.placeholder.daysOfWeek')" multiple filterable collapse-tags style="width: 160px;">
+                <el-option
+                  v-for="ele in daysOfWeek"
+                  :key="ele.value"
+                  :label="ele.label"
+                  :value="ele.value"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.calendar')">
               <el-select v-model="item.calendarNames" multiple>
@@ -79,42 +92,51 @@
 </template>
 
 <script>
-import { isBlank } from '.././scripts/support'
+import { isBlank } from '@/utils/tools'
 import CommonTrigger from './mixins/commonTrigger'
 
-const CALENDAR_OFFSET_OBJ = {
+const DAILY_INTERVAL_OBJ = {
   triggerName: '',
   startTime: null,
   endTime: null,
-  startTimeOfDay: '08:00:00',
-  timeUnit: 'WEEK',
+  startTimeOfDay: '00:00:00',
+  endTimeOfDay: '23:59:59',
+  interval: 1,
+  timeUnit: 'MINUTE',
   repeatCount: -1,
-  reversed: false,
-  innerOffset: 0,
-  outerOffset: 0
+  daysOfWeekArr: [1, 2, 3, 4, 5, 6, 7]
 }
 
 export default {
-  name: 'CalendarOffsetTrigger',
+  name: 'DailyIntervalTrigger',
   mixins: [CommonTrigger],
   props: {
-    overDayTimeUnits: {
+    milliSecondTimeUnits: {
+      type: Array,
+      default: null
+    },
+    inDayTimeUnits: {
+      type: Array,
+      default: null
+    },
+    daysOfWeek: {
       type: Array,
       default: null
     }
   },
   methods: {
     add() {
-      this.put(CALENDAR_OFFSET_OBJ)
+      this.put(DAILY_INTERVAL_OBJ)
     },
     validateThenSet(trigger) {
-      if (!trigger.calendarOffsetTriggers) {
-        trigger.calendarOffsetTriggers = []
+      if (!trigger.dailyIntervalTriggers) {
+        trigger.dailyIntervalTriggers = []
       }
       for (let i = 0; i < this.triggerArray.length; i++) {
         const item = this.triggerArray[i]
         if (!isBlank(item.triggerName)) {
-          trigger.calendarOffsetTriggers.push(item)
+          item.daysOfWeek = item.daysOfWeekArr.join(',')
+          trigger.dailyIntervalTriggers.push(item)
         }
       }
       return true
@@ -124,5 +146,5 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  @import ".././styles/jobs.scss";
+  @import "../../styles/jobs";
 </style>

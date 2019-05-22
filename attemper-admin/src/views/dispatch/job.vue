@@ -248,13 +248,20 @@ import waves from '@/directive/waves' // Waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
-import JobInfoForm from './components/jobInfoForm'
-import CronTrigger from './components/cronTrigger'
-import CalendarOffsetTrigger from './components/calendarOffsetTrigger'
-import DailyIntervalTrigger from './components/dailyIntervalTrigger'
-import CalendarIntervalTrigger from './components/calendarIntervalTrigger'
-import ProjectTree from './components/projectTree'
-
+import JobInfoForm from './components/job/jobInfoForm'
+import CronTrigger from './components/job/cronTrigger'
+import CalendarOffsetTrigger from './components/job/calendarOffsetTrigger'
+import DailyIntervalTrigger from './components/job/dailyIntervalTrigger'
+import CalendarIntervalTrigger from './components/job/calendarIntervalTrigger'
+import ProjectTree from './components/job/projectTree'
+const DEF_OBJ = {
+  jobName: undefined,
+  displayName: '',
+  status: 0,
+  timeout: 7200,
+  remark: '',
+  jobContent: ''
+}
 export default {
   name: 'job',
   components: {
@@ -302,14 +309,7 @@ export default {
       daysOfWeek: [],
       /* sortOptions: [{ label: this.$t('dispatch.sort.nameAsc'), key: 'JOB_NAME' }, { label: this.$t('dispatch.sort.nameDesc'), key: 'JOB_NAME DESC' }],*/
       showCreateTime: false,
-      job: {
-        jobName: undefined,
-        displayName: '',
-        status: 0,
-        timeout: 7200,
-        remark: '',
-        jobContent: ''
-      },
+      job: DEF_OBJ,
       editDialog: {
         oper: undefined,
         title: undefined,
@@ -378,13 +378,7 @@ export default {
     },
     reset() {
       if (this.editDialog.oper !== 'update' && (!this.selections || !this.selections.length || !this.selections[0].jobName)) {
-        this.job = {
-          jobName: undefined,
-          displayName: '',
-          status: 0,
-          timeout: 7200,
-          remark: ''
-        }
+        this.job = DEF_OBJ
       } else {
         this.job = Object.assign({}, this.selections[0])
       }

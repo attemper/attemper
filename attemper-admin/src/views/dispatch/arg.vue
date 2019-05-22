@@ -64,12 +64,28 @@
             <el-input v-model="arg.argName" :placeholder="$t('dispatch.arg.placeholder.argName')" />
           </el-form-item>
           <el-form-item :label="$t('dispatch.arg.columns.argType')">
-            <el-select v-model="arg.argType">
-              <el-option v-for="item in argTypes" :key="item.label" :value="item.value" :label="item.label" />
-            </el-select>
+            <el-row>
+              <el-col :span="16">
+                <el-select v-model="arg.argType">
+                  <el-option v-for="item in argTypes" :key="item.label" :value="item.value" :label="item.label" />
+                </el-select>
+              </el-col>
+              <el-col :span="8">
+                <el-select v-model="arg.genericType" :disabled="!(rawTypes.find(cell => cell.value === arg.argType))" :placeholder="$t('dispatch.arg.placeholder.genericType')">
+                  <el-option v-for="item in genericTypes" :key="item.label" :value="item.value" :label="item.label" />
+                </el-select>
+              </el-col>
+            </el-row>
           </el-form-item>
           <el-form-item :label="$t('dispatch.arg.columns.argValue')" prop="argValue">
-            <el-input v-model="arg.argValue" :placeholder="$t('dispatch.arg.placeholder.argValue')" />
+            <string-input v-if="arg.argType === 0" v-model="arg.argValue" />
+            <boolean-input v-else-if="arg.argType === 1" ref="booleanInput" v-model="arg.argValue" @change="change" />
+            <number-input v-else-if="arg.argType === 2" v-model="arg.argValue" :min="-2147483648" :max="2147483647" :step="1" :precision="0" />
+            <number-input v-else-if="arg.argType === 3" v-model="arg.argValue" :min="4.9000000e-324" :max="1.797693e+308" :step="1" :precision="5" />
+            <number-input v-else-if="arg.argType === 4" v-model="arg.argValue" :min="-9223372036854774808" :max="9223372036854774807" :step="1" :precision="0" />
+            <list-input v-else-if="arg.argType === 7" ref="listInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
+            <map-input v-else-if="arg.argType === 8" ref="mapInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
+            <string-input v-else v-model="arg.argValue" />
           </el-form-item>
           <el-form-item :label="$t('columns.remark')" prop="mobile">
             <el-input v-model="arg.remark" type="textarea" :rows="1" :placeholder="$t('placeholders.remark')" />
@@ -85,14 +101,25 @@
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/dispatch/arg'
+import { listReq, removeReq, addReq, updateReq } from '@/api/dispatch/arg'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import { load } from '@/constant'
-
+import StringInput from './components/arg/StringInput'
+import NumberInput from './components/arg/NumberInput'
+import BooleanInput from './components/arg/BooleanInput'
+import ListInput from './components/arg/ListInput'
+import MapInput from './components/arg/MapInput'
+const DEF_OBJ = {
+  argName: null,
+  argType: 0,
+  argValue: null,
+  genericType: null,
+  remark: null
+}
 export default {
   name: 'arg',
-  components: { Pagination },
+  components: { MapInput, ListInput, BooleanInput, NumberInput, StringInput, Pagination },
   directives: { waves },
   data() {
     return {
@@ -106,7 +133,6 @@ export default {
         argName: undefined,
         argValue: undefined,
         argType: null,
-        remark: null,
         sort: 'ARG_NAME'
       },
       editDialog: {
@@ -127,13 +153,10 @@ export default {
           { required: false, trigger: 'blur', len: 255 }
         ]
       },
-      arg: {
-        argName: null,
-        argType: 0,
-        argValue: null,
-        remark: null
-      },
+      arg: DEF_OBJ,
       argTypes: [],
+      genericTypes: [],
+      rawTypes: [],
       selections: []
     }
   },
@@ -173,18 +196,13 @@ export default {
       this.search()
     },
     reset() {
+      let obj
       if (!this.selections || !this.selections.length || !this.selections[0].argName) {
-        this.arg = {
-          argName: null,
-          argType: 0,
-          argValue: null,
-          remark: null
-        }
+        obj = DEF_OBJ
       } else {
-        getReq({ argName: this.selections[0].argName }).then(res => {
-          this.arg = res.data.result
-        })
+        obj = this.selections[0]
       }
+      this.arg = Object.assign({}, obj)
     },
     update(row) {
       if (row == null) {
@@ -198,6 +216,15 @@ export default {
       this.editDialog.base.visible = true
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
+        if (this.$refs.booleanInput) {
+          this.$refs.booleanInput.initValue(this.arg.argValue)
+        }
+        if (this.$refs.listInput) {
+          this.$refs.listInput.initValue(this.arg.argValue)
+        }
+        if (this.$refs.mapInput) {
+          this.$refs.mapInput.initValue(this.arg.argValue)
+        }
       })
     },
     save() {
@@ -253,49 +280,16 @@ export default {
       }
       return item
     },
+    change(val) {
+      this.arg.argValue = val
+    },
     loadConst() {
       load(`./common.js`).then((array) => {
+        this.genericTypes = array.genericTypes
+        this.rawTypes = array.rawTypes
         this.argTypes = array.argTypes
       })
     }
   }
 }
 </script>
-
-<style lang="scss">
-  .form{
-    &-layout{
-      width: 400px;
-      min-height: 350px;
-      margin-top: 20px;
-      margin-left:50px;
-    }
-  }
-  .custom-transfer {
-    height: 500px;
-    text-align: center;
-    margin-top: 20px;
-  }
-  .transfer-footer {
-    margin-left: 20px;
-    padding: 5px 5px;
-  }
-  .transfer-class {
-    .el-transfer-panel {
-      border: 1px solid #ebeef5;
-      border-radius: 4px;
-      overflow: hidden;
-      background: #fff;
-      display: inline-block;
-      vertical-align: middle;
-      width: 360px;
-      height: 500px;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-      position: relative;
-    }
-    .el-transfer-panel__list.is-filterable {
-      height: 100%;
-    }
-  }
-</style>

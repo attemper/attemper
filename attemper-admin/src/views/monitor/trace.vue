@@ -109,7 +109,7 @@ import BpmnViewer from 'bpmn-js'
 import minimapModule from 'diagram-js-minimap'
 // import { diff } from 'bpmn-js-differ' // https://github.com/bpmn-io/bpmn-js-differ
 import customTranslate from '@/utils/customTranslate'
-import customElementTemplate from '../dispatch/element-templates/custom'
+import customElementTemplate from '../dispatch/components/job/element-templates/custom'
 import Pagination from '@/components/Pagination'
 import { getVersionByDefinition } from './scripts/support'
 import { load } from '@/constant'

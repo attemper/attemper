@@ -20,6 +20,8 @@ public class ArgSaveParam implements CommonParam {
 
     protected String argValue;
 
+    protected Integer genericType;
+
     protected String remark;
 
     public String validate() {

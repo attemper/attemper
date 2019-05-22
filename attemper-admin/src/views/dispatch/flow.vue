@@ -71,11 +71,11 @@ import minimapModule from 'diagram-js-minimap'
 // import { diff } from 'bpmn-js-differ' // https://github.com/bpmn-io/bpmn-js-differ
 import prioritiesModule from 'bpmn-js-task-priorities/lib/priorities'
 import customTranslate from '@/utils/customTranslate'
-import JobInfoForm from './components/jobInfoForm'
+import JobInfoForm from './components/job/jobInfoForm'
 import {
   getTimeStr
 } from './scripts/support'
-import customElementTemplate from './element-templates/custom'
+import customElementTemplate from './components/job/element-templates/custom'
 
 export default {
   name: 'flow',

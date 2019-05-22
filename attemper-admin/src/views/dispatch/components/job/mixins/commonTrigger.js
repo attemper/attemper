@@ -1,4 +1,4 @@
-import { next } from '../.././scripts/support'
+import { next } from '../../../scripts/support'
 
 export default {
   props: {

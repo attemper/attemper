@@ -301,14 +301,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-  .form{
-    &-layout{
-      width: 400px;
-      min-height: 350px;
-      margin-top: 20px;
-      margin-left:50px;
-    }
-  }
-</style>

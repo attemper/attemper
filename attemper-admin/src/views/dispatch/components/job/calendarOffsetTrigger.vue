@@ -16,9 +16,6 @@
                 <el-button slot="append" icon="el-icon-minus" @click="removeId(item, index)" />
               </el-input>
             </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.expression')">
-              <cron-input v-model="item.expression" :size="size" @change="change($event, index)" @reset="reset($event, index)" />
-            </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.timeRange')">
               <el-col :span="11">
                 <el-date-picker
@@ -37,15 +34,34 @@
                 />
               </el-col>
             </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.timeZone')">
-              <el-select v-model="item.timeZoneId" filterable>
+            <el-form-item :label="$t('dispatch.trigger.title.startTimeOfDay')">
+              <el-time-picker
+                v-model="item.startTimeOfDay"
+                :placeholder="$t('dispatch.trigger.placeholder.startTimeOfDay')"
+                value-format="HH:mm:ss"
+              />
+            </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.timeUnit')">
+              <el-select v-model="item.timeUnit" :placeholder="$t('dispatch.trigger.placeholder.timeUnit')" filterable>
                 <el-option
-                  v-for="ele in timeZones"
-                  :key="ele"
-                  :label="ele"
-                  :value="ele"
+                  v-for="ele in overDayTimeUnits"
+                  :key="ele.value"
+                  :label="ele.label"
+                  :value="ele.value"
                 />
               </el-select>
+            </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.repeatCount')">
+              <el-input-number v-model="item.repeatCount" :placeholder="$t('dispatch.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" />
+            </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.reversed')">
+              <el-switch v-model="item.reversed" />
+            </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.innerOffset')">
+              <el-input-number v-model="item.innerOffset" :placeholder="$t('dispatch.trigger.placeholder.innerOffset')" :precision="0" :min="0" :step="1" controls-position="right" />
+            </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.outerOffset')">
+              <el-input-number v-model="item.outerOffset" :placeholder="$t('dispatch.trigger.placeholder.outerOffset')" :precision="0" :min="0" :step="1" controls-position="right" />
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.calendar')">
               <el-select v-model="item.calendarNames" multiple>
@@ -63,54 +79,42 @@
 </template>
 
 <script>
-import CronInput from 'vue-cron-generator/src/components/cron-input'
-import { DEFAULT_CRON_EXPRESSION } from 'vue-cron-generator/src/constant/filed'
-import { isBlank } from '.././scripts/support'
+import { isBlank } from '@/utils/tools'
 import CommonTrigger from './mixins/commonTrigger'
 
-const CRON_OBJ = {
+const CALENDAR_OFFSET_OBJ = {
   triggerName: '',
-  expression: DEFAULT_CRON_EXPRESSION,
   startTime: null,
   endTime: null,
-  timeZoneId: null
+  startTimeOfDay: '08:00:00',
+  timeUnit: 'WEEK',
+  repeatCount: -1,
+  reversed: false,
+  innerOffset: 0,
+  outerOffset: 0
 }
 
 export default {
-  name: 'CronTrigger',
-  components: {
-    CronInput
-  },
+  name: 'CalendarOffsetTrigger',
   mixins: [CommonTrigger],
   props: {
-    timeZones: {
+    overDayTimeUnits: {
       type: Array,
       default: null
     }
   },
-  computed: {
-    size() {
-      return localStorage.getItem('size')
-    }
-  },
   methods: {
     add() {
-      this.put(CRON_OBJ)
-    },
-    change(newCron, index) {
-      this.triggerArray[index].expression = newCron
-    },
-    reset(oldCron, index) {
-      this.triggerArray[index].expression = DEFAULT_CRON_EXPRESSION
+      this.put(CALENDAR_OFFSET_OBJ)
     },
     validateThenSet(trigger) {
-      if (!trigger.cronTriggers) {
-        trigger.cronTriggers = []
+      if (!trigger.calendarOffsetTriggers) {
+        trigger.calendarOffsetTriggers = []
       }
       for (let i = 0; i < this.triggerArray.length; i++) {
         const item = this.triggerArray[i]
         if (!isBlank(item.triggerName)) {
-          trigger.cronTriggers.push(item)
+          trigger.calendarOffsetTriggers.push(item)
         }
       }
       return true
@@ -120,5 +124,5 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  @import ".././styles/jobs.scss";
+  @import "../../styles/jobs";
 </style>

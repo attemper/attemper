@@ -7,6 +7,7 @@
             ARG_NAME,
             ARG_TYPE,
             ARG_VALUE,
+            GENERIC_TYPE,
             REMARK,
             TENANT_ID
         )
@@ -15,6 +16,7 @@
             #{argName, jdbcType=VARCHAR},
             #{argType, jdbcType=INTEGER},
             #{argValue, jdbcType=VARCHAR},
+            #{genericType, jdbcType=INTEGER},
             #{remark, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
         );
@@ -25,6 +27,7 @@
         ${tablePrefix}arg
         SET
         ARG_TYPE = #{argType, jdbcType=INTEGER},
+        GENERIC_TYPE = #{genericType, jdbcType=INTEGER},
         ARG_VALUE = #{argValue, jdbcType=VARCHAR},
         REMARK = #{remark, jdbcType=VARCHAR}
         <where>
@@ -34,14 +37,8 @@
     </update>
 
     <select id="get" parameterType="map" resultType="com.github.attemper.common.result.dispatch.arg.Arg">
-        SELECT
-        ARG_NAME,
-        ARG_TYPE,
-        ARG_VALUE,
-        REMARK,
-        TENANT_ID
-        FROM
-        ${tablePrefix}arg
+        SELECT *
+        FROM ${tablePrefix}arg
         <where>
             <include refid="condArgName"/>
             <include refid="condTenantId"/>

@@ -46,5 +46,12 @@ module.exports = {
     UPDATE: '',
     REMOVE: '',
     GET: '/get'
+  },
+  /**
+   * app config
+   */
+  alias: {
+    comma: ',,',
+    colon: '::'
   }
 }
