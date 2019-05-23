@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="page.userName" :placeholder="$t('sys.tenant.columns.userName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
-      <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.userName" :placeholder="$t('sys.tenant.columns.userName')" class="filter-item search-input" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" class="filter-item search-input" @keyup.enter.native="search" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-button v-access="'tenant-add'" class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
       <el-button v-access="'tenant-remove'" :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
@@ -81,7 +81,7 @@
             <el-input v-model="tenant.password" :placeholder="$t('sys.tenant.placeholder.password')" type="password" />
           </el-form-item>
           <el-form-item :label="$t('columns.status')">
-            <el-select v-model="tenant.status">
+            <el-select v-model="tenant.status" style="width: 100%;">
               <el-option v-for="item in statuses" :key="item.label" :value="item.value" :label="item.label" />
             </el-select>
           </el-form-item>
@@ -102,14 +102,21 @@
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq } from '@/api/sys/tenant'
+import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/sys/tenant'
 import waves from '@/directive/waves' // Waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import access from '@/directive/access/index.js'
 import { canAccess } from '@/utils/tools'
 import { load } from '@/constant'
-
+const DEF_OBJ = {
+  userName: null,
+  displayName: null,
+  password: null,
+  email: null,
+  mobile: null,
+  status: 0
+}
 export default {
   name: 'tenant',
   components: { Pagination },
@@ -155,14 +162,7 @@ export default {
           { required: true, trigger: 'blur' }
         ]
       },
-      tenant: {
-        userName: null,
-        displayName: null,
-        password: null,
-        email: null,
-        mobile: null,
-        status: 0
-      },
+      tenant: DEF_OBJ,
       statuses: [],
       downloadLoading: false,
       selections: [],
@@ -206,16 +206,11 @@ export default {
     },
     reset() {
       if (!this.selections || !this.selections.length || !this.selections[0].userName) {
-        this.tenant = {
-          userName: null,
-          displayName: null,
-          password: null,
-          email: null,
-          mobile: null,
-          status: 0
-        }
+        this.tenant = DEF_OBJ
       } else {
-        this.tenant = this.selections[0]
+        getReq({ userName: this.selections[0].userName }).then(res => {
+          this.tenant = res.data.result
+        })
       }
     },
     update(row) {

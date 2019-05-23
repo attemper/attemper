@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="page.jobName" :placeholder="$t('dispatch.job.columns.jobName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
-      <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
-      <el-select v-model="page.status" :placeholder="$t('columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 160px">
+      <el-input v-model="page.jobName" :placeholder="$t('dispatch.job.columns.jobName')" class="filter-item search-input" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" class="filter-item search-input" @keyup.enter.native="search" />
+      <el-select v-model="page.status" :placeholder="$t('columns.status')" multiple clearable collapse-tags class="filter-item search-select">
         <el-option v-for="item in jobStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
@@ -133,7 +133,7 @@
       :before-close="close"
     >
       <div v-show="editDialog.base.visible">
-        <job-info-form ref="jobInfoForm" :job="job" @save="save" @cancel="editDialog.base.visible = false" />
+        <job-info-form ref="jobInfoForm" :job="job" @save="save" />
       </div>
       <div v-show="editDialog.trigger.visible">
         <!--
@@ -193,11 +193,11 @@
       </div>
       <div v-show="editDialog.param.visible">
         <div class="filter-container">
-          <el-input v-model="argPage.argName" :placeholder="$t('dispatch.arg.columns.argName')" style="width: 100px;" class="filter-item" @keyup.enter.native="argSearch" />
-          <el-select v-model="argPage.argType" :placeholder="$t('dispatch.arg.columns.argType')" clearable collapse-tags class="filter-item" style="width: 160px">
+          <el-input v-model="argPage.argName" :placeholder="$t('dispatch.arg.columns.argName')" class="filter-item search-input" @keyup.enter.native="argSearch" />
+          <el-select v-model="argPage.argType" :placeholder="$t('dispatch.arg.columns.argType')" clearable collapse-tags class="filter-item search-select">
             <el-option v-for="item in argTypes" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-input v-model="argPage.argValue" :placeholder="$t('dispatch.arg.columns.argValue')" style="width: 100px;" class="filter-item" @keyup.enter.native="argSearch" />
+          <el-input v-model="argPage.argValue" :placeholder="$t('dispatch.arg.columns.argValue')" class="filter-item search-input" @keyup.enter.native="argSearch" />
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="argSearch">{{ $t('actions.search') }}</el-button>
         </div>
 
@@ -240,7 +240,7 @@
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq, publishReq, manualReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
+import { listReq, getReq, removeReq, addReq, updateReq, publishReq, manualReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/sys/tool'
@@ -380,7 +380,9 @@ export default {
       if (this.editDialog.oper !== 'update' && (!this.selections || !this.selections.length || !this.selections[0].jobName)) {
         this.job = DEF_OBJ
       } else {
-        this.job = Object.assign({}, this.selections[0])
+        getReq({ jobName: this.selections[0].jobName }).then(res => {
+          this.job = res.data.result
+        })
       }
     },
     close() {

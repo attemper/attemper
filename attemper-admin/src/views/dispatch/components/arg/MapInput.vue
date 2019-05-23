@@ -5,16 +5,16 @@
         <el-button icon="el-icon-plus" type="success" @click="add" />
         <el-button v-show="options.length>1" icon="el-icon-minus" type="danger" @click="remove(index)" />
       </el-col>
-      <el-col :span="8">
-        <string-input v-model="item.key" />
+      <el-col :span="7">
+        <string-input v-model="item.key" :placeholder="$t('dispatch.arg.placeholder.mapKey')" />
       </el-col>
-      <el-col :span="8">
-        <string-input v-if="genericType === 0" v-model="item.val" />
+      <el-col :span="8" :offset="1">
+        <string-input v-if="genericType === 0" v-model="item.val" :placeholder="$t('dispatch.arg.placeholder.mapValue')" />
         <boolean-input v-else-if="genericType === 1" ref="booleanInput" v-model="item.val" @change="item.val = $event" />
         <number-input v-else-if="genericType === 2" v-model="item.val" :min="-2147483648" :max="2147483647" :step="1" :precision="0" />
         <number-input v-else-if="genericType === 3" v-model="item.val" :min="4.9000000e-324" :max="1.797693e+308" :step="1" :precision="5" />
         <number-input v-else-if="genericType === 4" v-model="item.val" :min="-9223372036854774808" :max="9223372036854774807" :step="1" :precision="0" />
-        <string-input v-else v-model="item.val" />
+        <string-input v-else v-model="item.val" :placeholder="$t('dispatch.arg.placeholder.argValue')" />
       </el-col>
     </el-row>
   </div>

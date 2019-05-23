@@ -34,6 +34,16 @@ const jobRouter = {
       }
     },
     {
+      path: 'datasource',
+      component: () => import('@/views/dispatch/datasource'),
+      name: 'datasource',
+      meta: {
+        title: 'datasource',
+        icon: 'datasource',
+        noCache: false
+      }
+    },
+    {
       path: 'project',
       component: () => import('@/views/dispatch/project'),
       name: 'project',

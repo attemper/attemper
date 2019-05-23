@@ -1,16 +1,22 @@
 package com.github.attemper.common.enums;
 
 public enum ArgType {
+    // generic type
     STRING(0),
     BOOLEAN(1),
     INTEGER(2),
     DOUBLE(3),
     LONG(4),
-    DATE(5),
-    DATETIME(6),
-    LIST(7),
-    MAP(8),
-    SQL(9);
+    DATE(10),
+    TIME(11),
+    DATETIME(12),
+
+    // raw type
+    LIST(20),
+    MAP(21),
+
+    // spec type
+    SQL(30);
 
     ArgType(int type) {
         this.type = type;

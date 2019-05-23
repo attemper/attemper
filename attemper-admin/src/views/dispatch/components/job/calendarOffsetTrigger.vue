@@ -23,14 +23,16 @@
                   :placeholder="$t('dispatch.trigger.placeholder.startTime')"
                   type="datetime"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  style="width: 100%;"
                 />
               </el-col>
-              <el-col :span="11" :offset="1">
+              <el-col :span="11" :offset="2">
                 <el-date-picker
                   v-model="item.endTime"
                   :placeholder="$t('dispatch.trigger.placeholder.endTime')"
                   type="datetime"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  style="width: 100%;"
                 />
               </el-col>
             </el-form-item>
@@ -39,10 +41,11 @@
                 v-model="item.startTimeOfDay"
                 :placeholder="$t('dispatch.trigger.placeholder.startTimeOfDay')"
                 value-format="HH:mm:ss"
+                style="width: 100%;"
               />
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.timeUnit')">
-              <el-select v-model="item.timeUnit" :placeholder="$t('dispatch.trigger.placeholder.timeUnit')" filterable>
+              <el-select v-model="item.timeUnit" :placeholder="$t('dispatch.trigger.placeholder.timeUnit')" filterable style="width: 100%;">
                 <el-option
                   v-for="ele in overDayTimeUnits"
                   :key="ele.value"
@@ -52,23 +55,23 @@
               </el-select>
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.repeatCount')">
-              <el-input-number v-model="item.repeatCount" :placeholder="$t('dispatch.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" />
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.reversed')">
-              <el-switch v-model="item.reversed" />
+              <el-input-number v-model="item.repeatCount" :placeholder="$t('dispatch.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" style="width: 100%;" />
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.innerOffset')">
-              <el-input-number v-model="item.innerOffset" :placeholder="$t('dispatch.trigger.placeholder.innerOffset')" :precision="0" :min="0" :step="1" controls-position="right" />
+              <el-input-number v-model="item.innerOffset" :placeholder="$t('dispatch.trigger.placeholder.innerOffset')" :precision="0" :min="0" :step="1" controls-position="right" style="width: 100%;" />
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.outerOffset')">
-              <el-input-number v-model="item.outerOffset" :placeholder="$t('dispatch.trigger.placeholder.outerOffset')" :precision="0" :min="0" :step="1" controls-position="right" />
+              <el-input-number v-model="item.outerOffset" :placeholder="$t('dispatch.trigger.placeholder.outerOffset')" :precision="0" :min="0" :step="1" controls-position="right" style="width: 100%;" />
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.calendar')">
-              <el-select v-model="item.calendarNames" multiple>
+              <el-select v-model="item.calendarNames" multiple style="width: 100%;">
                 <el-option-group v-for="group in calendarGroups" :key="group.label" :label="group.label">
                   <el-option v-for="cell in group.options" :key="cell.calendarName" :label="cell.displayName" :value="cell.calendarName" />
                 </el-option-group>
               </el-select>
+            </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.reversed')">
+              <el-switch v-model="item.reversed" />
             </el-form-item>
           </el-form>
         </el-col>

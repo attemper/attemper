@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.attemper.core.dao.mapper.datasource.DataSourceMapper">
+    <insert id="add" parameterType="com.github.attemper.common.result.dispatch.datasource.DataSourceInfo">
+        INSERT INTO ${tablePrefix}datasource (
+            DB_NAME,
+            DRIVER_CLASS_NAME,
+            JDBC_URL,
+            USER_NAME,
+            PASSWORD,
+            REMARK,
+            TENANT_ID
+        )
+        VALUES
+        (
+            #{dbName, jdbcType=VARCHAR},
+            #{driverClassName, jdbcType=VARCHAR},
+            #{jdbcUrl, jdbcType=VARCHAR},
+            #{userName, jdbcType=VARCHAR},
+            #{password, jdbcType=VARCHAR},
+            #{remark, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+        );
+    </insert>
+
+    <update id="update" parameterType="com.github.attemper.common.result.dispatch.datasource.DataSourceInfo">
+        UPDATE
+        ${tablePrefix}datasource
+        SET
+        DRIVER_CLASS_NAME = #{driverClassName, jdbcType=VARCHAR},
+        JDBC_URL = #{jdbcUrl, jdbcType=VARCHAR},
+        USER_NAME = #{userName, jdbcType=VARCHAR},
+        PASSWORD = #{password, jdbcType=VARCHAR},
+        REMARK = #{remark, jdbcType=VARCHAR}
+        <where>
+            <include refid="condDbName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </update>
+
+    <select id="get" parameterType="map"
+            resultType="com.github.attemper.common.result.dispatch.datasource.DataSourceInfo">
+        SELECT *
+        FROM ${tablePrefix}datasource
+        <where>
+            <include refid="condDbName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <select id="list" parameterType="map"
+            resultType="com.github.attemper.common.result.dispatch.datasource.DataSourceInfo">
+        SELECT *
+        FROM ${tablePrefix}datasource
+        <where>
+            <if test="dbName != null">
+                and lower(DB_NAME) like concat('%', lower(#{dbName, jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="driverClassName != null">
+                and DRIVER_CLASS_NAME = #{driverClassName, jdbcType=VARCHAR}
+            </if>
+            <if test="jdbcUrl != null">
+                and lower(JDBC_URL) like concat('%', lower(#{jdbcUrl, jdbcType = VARCHAR}), '%')
+            </if>
+            <if test="userName != null">
+                and lower(USER_NAME) like concat('%', lower(#{userName, jdbcType = VARCHAR}), '%')
+            </if>
+            <include refid="condTenantId"/>
+        </where>
+        <choose>
+            <when test="sort == null">
+                order by DB_NAME ${direction}
+            </when>
+            <otherwise>
+                order by ${sort} ${direction}
+            </otherwise>
+        </choose>
+    </select>
+
+    <delete id="delete" parameterType="map">
+        DELETE <include refid="dbNamesSql"/>
+    </delete>
+
+    <select id="getByNames" parameterType="map"
+            resultType="com.github.attemper.common.result.dispatch.datasource.DataSourceInfo">
+        SELECT * <include refid="dbNamesSql"/>
+    </select>
+
+    <sql id="dbNamesSql">
+        FROM ${tablePrefix}datasource
+        <where>
+            DB_NAME in
+            <foreach item="dbName" collection="dbNames" open="(" separator="," close=")">
+                #{dbName}
+            </foreach>
+            <include refid="condTenantId"/>
+        </where>
+    </sql>
+
+    <sql id="condDbName">
+        <if test="dbName != null">
+            and DB_NAME = #{dbName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+</mapper>

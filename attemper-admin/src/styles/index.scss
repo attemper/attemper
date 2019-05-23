@@ -181,6 +181,15 @@ aside {
   }
 }
 
+.search {
+  &-input {
+    width: 100px;
+  }
+  &-select {
+    width: 160px;
+  }
+}
+
 //refine vue-multiselect plugin
 .multiselect {
   line-height: 16px;

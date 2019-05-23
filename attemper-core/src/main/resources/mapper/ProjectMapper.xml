@@ -62,12 +62,10 @@
     <delete id="delete" parameterType="map">
         delete from p USING ${tablePrefix}project p
         <where>
-            <if test="projectNames != null">
-                PROJECT_NAME in
-                <foreach item="projectName" collection="projectNames" open="(" separator="," close=")">
-                    #{projectName}
-                </foreach>
-            </if>
+            PROJECT_NAME in
+            <foreach item="projectName" collection="projectNames" open="(" separator="," close=")">
+                #{projectName}
+            </foreach>
             <include refid="condTenantId"/>
         </where>
     </delete>

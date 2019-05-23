@@ -28,9 +28,6 @@ public class JobService extends BaseServiceAdapter {
     @Autowired
     private JobMapper mapper;
 
-    @Autowired
-    private TriggerService triggerService;
-
     /**
      * get job by jobName
      * @param param

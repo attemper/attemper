@@ -23,22 +23,24 @@
                   :placeholder="$t('dispatch.trigger.placeholder.startTime')"
                   type="datetime"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  style="width: 100%;"
                 />
               </el-col>
-              <el-col :span="11" :offset="1">
+              <el-col :span="11" :offset="2">
                 <el-date-picker
                   v-model="item.endTime"
                   :placeholder="$t('dispatch.trigger.placeholder.endTime')"
                   type="datetime"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  style="width: 100%;"
                 />
               </el-col>
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.interval')">
-              <el-input-number v-model="item.interval" :placeholder="$t('dispatch.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right" />
+              <el-input-number v-model="item.interval" :placeholder="$t('dispatch.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right" style="width: 100%;" />
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.timeUnit')">
-              <el-select v-model="item.timeUnit" :placeholder="$t('dispatch.trigger.placeholder.timeUnit')">
+              <el-select v-model="item.timeUnit" :placeholder="$t('dispatch.trigger.placeholder.timeUnit')" style="width: 100%;">
                 <el-option
                   v-for="ele in inDayTimeUnits.concat(dayTimeUnit).concat(overDayTimeUnits)"
                   :key="ele.value"
@@ -48,16 +50,17 @@
               </el-select>
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.repeatCount')">
-              <el-input-number v-model="item.repeatCount" :placeholder="$t('dispatch.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" />
+              <el-input-number v-model="item.repeatCount" :placeholder="$t('dispatch.trigger.placeholder.repeatCount')" :precision="0" :min="-1" :step="1" controls-position="right" style="width: 100%;" />
             </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.preserveDayLight')">
-              <el-switch v-model="item.preserveDayLight" />
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.skipDayIfNoHour')">
-              <el-switch v-model="item.skipDayIfNoHour" />
+            <el-form-item :label="$t('dispatch.trigger.title.calendar')">
+              <el-select v-model="item.calendarNames" multiple style="width: 100%;">
+                <el-option-group v-for="group in calendarGroups" :key="group.label" :label="group.label">
+                  <el-option v-for="cell in group.options" :key="cell.calendarName" :label="cell.displayName" :value="cell.calendarName" />
+                </el-option-group>
+              </el-select>
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.timeZone')">
-              <el-select v-model="item.timeZoneId" filterable>
+              <el-select v-model="item.timeZoneId" filterable style="width: 100%;">
                 <el-option
                   v-for="ele in timeZones"
                   :key="ele"
@@ -66,12 +69,11 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.calendar')">
-              <el-select v-model="item.calendarNames" multiple>
-                <el-option-group v-for="group in calendarGroups" :key="group.label" :label="group.label">
-                  <el-option v-for="cell in group.options" :key="cell.calendarName" :label="cell.displayName" :value="cell.calendarName" />
-                </el-option-group>
-              </el-select>
+            <el-form-item :label="$t('dispatch.trigger.title.preserveDayLight')">
+              <el-switch v-model="item.preserveDayLight" />
+            </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.skipDayIfNoHour')">
+              <el-switch v-model="item.skipDayIfNoHour" />
             </el-form-item>
           </el-form>
         </el-col>

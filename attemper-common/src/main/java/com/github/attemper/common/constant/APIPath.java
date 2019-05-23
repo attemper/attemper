@@ -140,6 +140,23 @@ public class APIPath {
 
     }
 
+    public static final class DataSourcePath {
+        public static final String SUB_PATH = "/datasource";
+
+        public static final String ADD = API_PATH + DISPATCH + SUB_PATH + _ADD;
+
+        public static final String UPDATE = API_PATH + DISPATCH + SUB_PATH + _UPDATE;
+
+        public static final String LIST = API_PATH + DISPATCH + SUB_PATH + _LIST;
+
+        public static final String GET = API_PATH + DISPATCH + SUB_PATH + _GET;
+
+        public static final String REMOVE = API_PATH + DISPATCH + SUB_PATH + _REMOVE;
+
+        public static final String TEST_CONNECTION = API_PATH + DISPATCH + SUB_PATH + "/test";
+
+    }
+
     public static final class CalendarPath {
         public static final String SUB_PATH = "/calendar";
 

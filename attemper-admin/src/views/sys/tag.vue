@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="page.tagName" :placeholder="$t('sys.tag.columns.tagName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
-      <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.tagName" :placeholder="$t('sys.tag.columns.tagName')" class="filter-item search-input" @keyup.enter.native="search" />
+      <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" class="filter-item search-input" @keyup.enter.native="search" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
       <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
@@ -56,7 +56,7 @@
             <el-input v-model="tag.displayName" :placeholder="$t('placeholders.displayName')" />
           </el-form-item>
           <el-form-item :label="$t('columns.remark')">
-            <el-input v-model="tag.remark" :autosize="{ minRows: 1, maxRows: 4}" :placeholder="$t('placeholders.remark')" type="textarea" />
+            <el-input v-model="tag.remark" :autosize="{ minRows: 1, maxRows: 5}" :placeholder="$t('placeholders.remark')" type="textarea" />
           </el-form-item>
           <el-form-item>
             <el-button type="info" @click="editDialog.base.visible = false">{{ $t('actions.cancel') }}</el-button>
@@ -124,7 +124,11 @@ import Pagination from '@/components/Pagination' // Secondary package based on e
 import { load } from '@/constant'
 import { generateTitleByVm, translateByVm } from '@/utils/i18n'
 import { injectIcon } from '@/utils/tools'
-
+const DEF_OBJ = {
+  tagName: null,
+  displayName: null,
+  remark: null
+}
 export default {
   name: 'tag',
   components: { Pagination },
@@ -163,12 +167,7 @@ export default {
           { required: true, trigger: 'blur' }
         ]
       },
-      tag: {
-        tagName: null,
-        displayName: null,
-        status: 0,
-        remark: null
-      },
+      tag: DEF_OBJ,
       transferData: [],
       targetKeys: [],
       transferTitles: [],
@@ -216,11 +215,7 @@ export default {
     },
     reset() {
       if (!this.selections || !this.selections.length || !this.selections[0].tagName) {
-        this.tag = {
-          tagName: null,
-          displayName: null,
-          remark: null
-        }
+        this.tag = DEF_OBJ
       } else {
         getReq({ tagName: this.selections[0].tagName }).then(res => {
           this.tag = res.data.result

@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="page.argName" :placeholder="$t('dispatch.arg.columns.argName')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
-      <el-select v-model="page.argType" :placeholder="$t('dispatch.arg.columns.argType')" clearable collapse-tags class="filter-item" style="width: 160px">
+      <el-input v-model="page.argName" :placeholder="$t('dispatch.arg.columns.argName')" class="filter-item search-input" @keyup.enter.native="search" />
+      <el-select v-model="page.argType" :placeholder="$t('dispatch.arg.columns.argType')" clearable collapse-tags class="filter-item search-select">
         <el-option v-for="item in argTypes" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-input v-model="page.argValue" :placeholder="$t('dispatch.arg.columns.argValue')" style="width: 100px;" class="filter-item" @keyup.enter.native="search" />
+      <el-input v-model="page.argValue" :placeholder="$t('dispatch.arg.columns.argValue')" class="filter-item search-input" @keyup.enter.native="search" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
       <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
@@ -35,7 +35,7 @@
       </el-table-column>
       <el-table-column :label="$t('dispatch.arg.columns.argType')" align="center" width="100">
         <template slot-scope="scope">
-          <span>{{ formatArgType(scope.row.argType) }}</span>
+          <span>{{ formatType(scope.row.argType) }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.arg.columns.argValue')" min-width="150px">
@@ -65,33 +65,40 @@
           </el-form-item>
           <el-form-item :label="$t('dispatch.arg.columns.argType')">
             <el-row>
-              <el-col :span="16">
-                <el-select v-model="arg.argType">
+              <el-col :span="isRaw || isSql ? 15 : 24">
+                <el-select v-model="arg.argType" style="width: 100%;" @change="argTypeChanged">
                   <el-option v-for="item in argTypes" :key="item.label" :value="item.value" :label="item.label" />
                 </el-select>
               </el-col>
-              <el-col :span="8">
-                <el-select v-model="arg.genericType" :disabled="!(rawTypes.find(cell => cell.value === arg.argType))" :placeholder="$t('dispatch.arg.placeholder.genericType')">
+              <el-col v-if="isRaw" :span="8" :offset="1">
+                <el-select v-model="arg.genericType" :placeholder="$t('dispatch.arg.placeholder.genericType')">
                   <el-option v-for="item in genericTypes" :key="item.label" :value="item.value" :label="item.label" />
+                </el-select>
+              </el-col>
+              <el-col v-if="isSql" :span="8" :offset="1">
+                <el-select v-model="arg.dbName" :placeholder="$t('dispatch.datasource.placeholder.dbName')">
+                  <el-option v-for="item in dataSources" :key="item.dbName" :value="item.dbName" :label="item.dbName" />
                 </el-select>
               </el-col>
             </el-row>
           </el-form-item>
           <el-form-item :label="$t('dispatch.arg.columns.argValue')" prop="argValue">
-            <string-input v-if="arg.argType === 0" v-model="arg.argValue" />
+            <string-input v-if="arg.argType === 0" v-model="arg.argValue" :placeholder="$t('dispatch.arg.placeholder.argValue')" />
             <boolean-input v-else-if="arg.argType === 1" ref="booleanInput" v-model="arg.argValue" @change="change" />
             <number-input v-else-if="arg.argType === 2" v-model="arg.argValue" :min="-2147483648" :max="2147483647" :step="1" :precision="0" />
             <number-input v-else-if="arg.argType === 3" v-model="arg.argValue" :min="4.9000000e-324" :max="1.797693e+308" :step="1" :precision="5" />
             <number-input v-else-if="arg.argType === 4" v-model="arg.argValue" :min="-9223372036854774808" :max="9223372036854774807" :step="1" :precision="0" />
-            <list-input v-else-if="arg.argType === 7" ref="listInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
-            <map-input v-else-if="arg.argType === 8" ref="mapInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
-            <string-input v-else v-model="arg.argValue" />
+            <date-input v-else-if="arg.argType === 10" v-model="arg.argValue" />
+            <time-input v-else-if="arg.argType === 11" v-model="arg.argValue" />
+            <date-time-input v-else-if="arg.argType === 12" v-model="arg.argValue" />
+            <list-input v-else-if="arg.argType === 20" ref="listInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
+            <map-input v-else-if="arg.argType === 21" ref="mapInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
+            <string-input v-else v-model="arg.argValue" :placeholder="$t('dispatch.arg.placeholder.argValue')" />
           </el-form-item>
-          <el-form-item :label="$t('columns.remark')" prop="mobile">
-            <el-input v-model="arg.remark" type="textarea" :rows="1" :placeholder="$t('placeholders.remark')" />
+          <el-form-item :label="$t('columns.remark')">
+            <el-input v-model="arg.remark" type="textarea" :autosize="{ minRows: 1, maxRows: 5}" :placeholder="$t('placeholders.remark')" />
           </el-form-item>
           <el-form-item>
-            <el-button type="info" @click="editDialog.base.visible = false">{{ $t('actions.cancel') }}</el-button>
             <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
           </el-form-item>
         </el-form>
@@ -101,7 +108,8 @@
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq } from '@/api/dispatch/arg'
+import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/dispatch/arg'
+import * as dataSourceApi from '@/api/dispatch/datasource'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import { load } from '@/constant'
@@ -110,16 +118,20 @@ import NumberInput from './components/arg/NumberInput'
 import BooleanInput from './components/arg/BooleanInput'
 import ListInput from './components/arg/ListInput'
 import MapInput from './components/arg/MapInput'
+import DateInput from './components/arg/DateInput'
+import DateTimeInput from './components/arg/DateTimeInput'
+import TimeInput from './components/arg/TimeInput'
 const DEF_OBJ = {
   argName: null,
   argType: 0,
   argValue: null,
-  genericType: null,
-  remark: null
+  genericType: 0,
+  remark: null,
+  dbName: null
 }
 export default {
   name: 'arg',
-  components: { MapInput, ListInput, BooleanInput, NumberInput, StringInput, Pagination },
+  components: { TimeInput, DateTimeInput, DateInput, MapInput, ListInput, BooleanInput, NumberInput, StringInput, Pagination },
   directives: { waves },
   data() {
     return {
@@ -157,7 +169,16 @@ export default {
       argTypes: [],
       genericTypes: [],
       rawTypes: [],
-      selections: []
+      selections: [],
+      dataSources: []
+    }
+  },
+  computed: {
+    isRaw() {
+      return this.rawTypes.find(cell => cell.value === this.arg.argType)
+    },
+    isSql() {
+      return this.arg.argType === 30
     }
   },
   created() {
@@ -196,13 +217,22 @@ export default {
       this.search()
     },
     reset() {
-      let obj
       if (!this.selections || !this.selections.length || !this.selections[0].argName) {
-        obj = DEF_OBJ
+        this.arg = DEF_OBJ
       } else {
-        obj = this.selections[0]
+        getReq({ argName: this.selections[0].argName }).then(res => {
+          this.arg = res.data.result
+          if (this.$refs.booleanInput) {
+            this.$refs.booleanInput.initValue(this.arg.argValue)
+          }
+          if (this.$refs.listInput) {
+            this.$refs.listInput.initValue(this.arg.argValue)
+          }
+          if (this.$refs.mapInput) {
+            this.$refs.mapInput.initValue(this.arg.argValue)
+          }
+        })
       }
-      this.arg = Object.assign({}, obj)
     },
     update(row) {
       if (row == null) {
@@ -216,15 +246,6 @@ export default {
       this.editDialog.base.visible = true
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
-        if (this.$refs.booleanInput) {
-          this.$refs.booleanInput.initValue(this.arg.argValue)
-        }
-        if (this.$refs.listInput) {
-          this.$refs.listInput.initValue(this.arg.argValue)
-        }
-        if (this.$refs.mapInput) {
-          this.$refs.mapInput.initValue(this.arg.argValue)
-        }
       })
     },
     save() {
@@ -233,7 +254,7 @@ export default {
           const request = (this.editDialog.oper === 'add' ? addReq(this.arg) : updateReq(this.arg))
           request.then(res => {
             this.$message.success(res.data.msg)
-            this.editDialog.base.visible = false
+            this.close()
             this.search()
           })
         }
@@ -271,7 +292,7 @@ export default {
     close() {
       this.editDialog.base.visible = false
     },
-    formatArgType(item) {
+    formatType(item) {
       for (let i = 0; i < this.argTypes.length; i++) {
         const option = this.argTypes[i]
         if (option.value === item) {
@@ -279,6 +300,13 @@ export default {
         }
       }
       return item
+    },
+    argTypeChanged() {
+      if (this.arg.argType === 30) {
+        dataSourceApi.listReq().then(res => {
+          this.dataSources = res.data.result.list
+        })
+      }
     },
     change(val) {
       this.arg.argValue = val

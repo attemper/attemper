@@ -9,6 +9,7 @@ export default {
     calendar: '日历管理',
     dispatch: '调度管理',
     arg: '参数管理',
+    datasource: '数据源管理',
     project: '服务信息',
     job: '任务编排',
     monitor: '监控管理',
@@ -104,7 +105,8 @@ export default {
     showCurrent: '显示当前',
     showAll: '显示全部',
     highSearch: '高级查询',
-    exclude: '排除'
+    exclude: '排除',
+    connectTest: '连接测试'
   },
   tip: {
     search: '请输入查询关键字',
@@ -272,13 +274,38 @@ export default {
       },
       placeholder: {
         argName: '请输入参数名称',
-        argType: '请选择参数类型',
         argValue: '请输入参数值',
-        genericType: '基本数据类型'
+        genericType: '基本数据类型',
+        mapKey: '请输入key',
+        mapValue: '请输入value'
       },
       rules: {
         argName: '参数名称不能为空',
         argValue: '参数值不能为空'
+      }
+    },
+    datasource: {
+      columns: {
+        dbName: '数据源名称',
+        driverClassName: '驱动',
+        jdbcUrl: '连接信息',
+        userName: '用户名',
+        password: '密码'
+      },
+      placeholder: {
+        dbName: '请输入数据源名称',
+        jdbcUrl: '请输入连接信息',
+        userName: '请输入用户名',
+        password: '请输入密码'
+      },
+      rules: {
+        dbName: '数据源名称不能为空',
+        jdbcUrl: '连接信息不能为空'
+      },
+      tip: {
+        testResult: '测试结果',
+        testSuccess: '成功：',
+        testError: '不成功：'
       }
     },
     project: {

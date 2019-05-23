@@ -14,23 +14,22 @@
       <el-input v-model="job.displayName" :placeholder="$t('placeholders.displayName')" />
     </el-form-item>
     <el-form-item :label="$t('columns.status')" prop="status">
-      <el-select v-model="job.status" class="filter-item">
+      <el-select v-model="job.status" class="filter-item" style="width: 100%;">
         <el-option v-for="item in jobStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </el-form-item>
     <el-form-item :label="$t('dispatch.job.columns.timeout')">
-      <el-input-number v-model="job.timeout" :precision="0" :min="60" :step="60" controls-position="right" />
+      <el-input-number v-model="job.timeout" :precision="0" :min="60" :step="60" controls-position="right" style="width: 100%;" />
     </el-form-item>
     <el-form-item :label="$t('columns.remark')">
       <el-input
         v-model="job.remark"
-        :autosize="{ minRows: 2, maxRows: 4}"
+        :autosize="{ minRows: 1, maxRows: 5}"
         :placeholder="$t('placeholders.remark')"
         type="textarea"
       />
     </el-form-item>
     <el-form-item>
-      <el-button type="info" @click="cancel">{{ $t('actions.cancel') }}</el-button>
       <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
     </el-form-item>
   </el-form>
@@ -71,9 +70,6 @@ export default {
           this.$emit('save', this.job)
         }
       })
-    },
-    cancel() {
-      this.$emit('cancel')
     },
     clearValidate() {
       this.$nextTick(() => {

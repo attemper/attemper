@@ -21,29 +21,33 @@ export const genericTypes = [
   },
   {
     label: 'Date',
-    value: 5
+    value: 10
+  },
+  {
+    label: 'Time',
+    value: 11
   },
   {
     label: 'DateTime',
-    value: 6
+    value: 12
   }
 ]
 
 export const rawTypes = [
   {
     label: 'List',
-    value: 7
+    value: 20
   },
   {
     label: 'Map',
-    value: 8
+    value: 21
   }
 ]
 
 export const specTypes = [
   {
     label: 'Sql',
-    value: 9
+    value: 30
   }
 ]
 
@@ -51,4 +55,35 @@ export const argTypes = [
   ...genericTypes,
   ...rawTypes,
   ...specTypes
+]
+
+export const dbInfos = [
+  {
+    label: 'MySQL',
+    value: 'com.mysql.jdbc.Driver'
+  },
+  {
+    label: 'Oracle',
+    value: 'oracle.jdbc.driver.OracleDriver'
+  },
+  {
+    label: 'Sql Server',
+    value: 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
+  },
+  {
+    label: 'PostgreSql',
+    value: 'org.postgresql.Driver'
+  },
+  {
+    label: 'DB2',
+    value: 'com.ibm.db2.jdbc.app.DB2Driver'
+  },
+  {
+    label: 'Sybase',
+    value: 'com.sybase.jdbc.SybDriver'
+  },
+  {
+    label: 'Access',
+    value: 'sun.jdbc.odbc.JdbcOdbcDriver'
+  }
 ]

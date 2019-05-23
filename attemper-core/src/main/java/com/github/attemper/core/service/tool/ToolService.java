@@ -3,6 +3,7 @@ package com.github.attemper.core.service.tool;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -53,6 +54,25 @@ public class ToolService {
             return true;
         } catch (Exception e) {
             throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
+        }
+    }
+
+    public String testConnection(String driverClassName, String jdbcUrl, String userName, String password) {
+        HikariDataSource dataSource = new HikariDataSource();
+        try {
+            dataSource.setMinimumIdle(2);
+            dataSource.setMaximumPoolSize(2);
+            dataSource.setDriverClassName(driverClassName);
+            dataSource.setJdbcUrl(jdbcUrl);
+            dataSource.setUsername(userName);
+            dataSource.setPassword(password);
+            dataSource.getConnection();
+            return null;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return e.getMessage();
+        } finally {
+            dataSource.close();
         }
     }
 }

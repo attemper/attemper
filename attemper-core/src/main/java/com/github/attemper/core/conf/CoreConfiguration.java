@@ -2,6 +2,7 @@ package com.github.attemper.core.conf;
 
 import com.github.attemper.core.controller.arg.ArgController;
 import com.github.attemper.core.controller.calendar.CalendarController;
+import com.github.attemper.core.controller.datasource.DataSourceController;
 import com.github.attemper.core.controller.job.JobController;
 import com.github.attemper.core.controller.job.TriggerController;
 import com.github.attemper.core.controller.monitor.MonitorController;
@@ -10,6 +11,7 @@ import com.github.attemper.core.controller.statistics.CountController;
 import com.github.attemper.core.controller.tool.ToolController;
 import com.github.attemper.core.dao.mapper.arg.ArgMapper;
 import com.github.attemper.core.dao.mapper.calendar.CalendarMapper;
+import com.github.attemper.core.dao.mapper.datasource.DataSourceMapper;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.core.dao.mapper.job.TriggerMapper;
 import com.github.attemper.core.dao.mapper.monitor.JobExecutionMapper;
@@ -18,6 +20,7 @@ import com.github.attemper.core.dao.mapper.project.ProjectMapper;
 import com.github.attemper.core.dao.mapper.statistics.CountMapper;
 import com.github.attemper.core.service.arg.ArgService;
 import com.github.attemper.core.service.calendar.CalendarService;
+import com.github.attemper.core.service.datasource.DataSourceService;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.core.service.job.TriggerService;
 import com.github.attemper.core.service.monitor.MonitorService;
@@ -45,6 +48,7 @@ import javax.validation.ValidatorFactory;
         JobMapper.class,
         TriggerMapper.class,
         ArgMapper.class,
+        DataSourceMapper.class,
         ProjectMapper.class,
         JobExecutionMapper.class,
         JobInstanceMapper.class,
@@ -54,6 +58,7 @@ import javax.validation.ValidatorFactory;
         //service
         JobService.class,
         ArgService.class,
+        DataSourceService.class,
         TriggerService.class,
         ProjectService.class,
         ToolService.class,
@@ -64,6 +69,7 @@ import javax.validation.ValidatorFactory;
         //controller
         JobController.class,
         ArgController.class,
+        DataSourceController.class,
         TriggerController.class,
         ProjectController.class,
         ToolController.class,

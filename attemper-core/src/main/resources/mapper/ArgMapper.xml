@@ -76,12 +76,10 @@
     <delete id="delete" parameterType="map">
         delete from ${tablePrefix}arg
         <where>
-            <if test="argNames != null">
-                ARG_NAME in
-                <foreach item="argName" collection="argNames" open="(" separator="," close=")">
-                    #{argName}
-                </foreach>
-            </if>
+            ARG_NAME in
+            <foreach item="argName" collection="argNames" open="(" separator="," close=")">
+                #{argName}
+            </foreach>
             <include refid="condTenantId"/>
         </where>
     </delete>

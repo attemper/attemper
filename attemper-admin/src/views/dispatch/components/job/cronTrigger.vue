@@ -26,32 +26,34 @@
                   :placeholder="$t('dispatch.trigger.placeholder.startTime')"
                   type="datetime"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  style="width: 100%;"
                 />
               </el-col>
-              <el-col :span="11" :offset="1">
+              <el-col :span="11" :offset="2">
                 <el-date-picker
                   v-model="item.endTime"
                   :placeholder="$t('dispatch.trigger.placeholder.endTime')"
                   type="datetime"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  style="width: 100%;"
                 />
               </el-col>
             </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.calendar')">
+              <el-select v-model="item.calendarNames" multiple style="width: 100%;">
+                <el-option-group v-for="group in calendarGroups" :key="group.label" :label="group.label">
+                  <el-option v-for="cell in group.options" :key="cell.calendarName" :label="cell.displayName" :value="cell.calendarName" />
+                </el-option-group>
+              </el-select>
+            </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.timeZone')">
-              <el-select v-model="item.timeZoneId" filterable>
+              <el-select v-model="item.timeZoneId" filterable style="width: 100%;">
                 <el-option
                   v-for="ele in timeZones"
                   :key="ele"
                   :label="ele"
                   :value="ele"
                 />
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.calendar')">
-              <el-select v-model="item.calendarNames" multiple>
-                <el-option-group v-for="group in calendarGroups" :key="group.label" :label="group.label">
-                  <el-option v-for="cell in group.options" :key="cell.calendarName" :label="cell.displayName" :value="cell.calendarName" />
-                </el-option-group>
               </el-select>
             </el-form-item>
           </el-form>

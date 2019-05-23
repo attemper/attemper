@@ -57,7 +57,7 @@
               <el-input v-model="project.contextPath" :placeholder="$t('dispatch.project.placeholder.contextPath')" />
             </el-form-item>
             <el-form-item :label="$t('dispatch.project.label.position')">
-              <el-input-number v-model="project.position" />
+              <el-input-number v-model="project.position" controls-position="right" />
             </el-form-item>
           </el-form>
           <el-row>

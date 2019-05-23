@@ -10,10 +10,10 @@ import javax.sql.DataSource;
 @ConfigurationProperties(prefix = "spring.datasource.hikari")
 public class DataSourceProperties {
 
-	private HikariDataSource first;
-	private HikariDataSource second;
+	private DataSource first;
+	private DataSource second;
 
-	public HikariDataSource getFirst() {
+	public DataSource getFirst() {
 		return first;
 	}
 
@@ -21,11 +21,11 @@ public class DataSourceProperties {
         return second;
     }
 
-    public void setFirst(HikariDataSource first) {
+	public void setFirst(HikariDataSource first) {
 		this.first = first;
 	}
-    
-    public void setSecond(HikariDataSource second) {
+
+	public void setSecond(HikariDataSource second) {
 		this.second = second;
 	}
 }

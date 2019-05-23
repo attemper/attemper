@@ -153,12 +153,10 @@
         JOIN ${tablePrefix}job_info ji
         USING (job_name, tenant_id)
         <where>
-            <if test="jobNames != null">
-                JOB_NAME in
-                <foreach item="jobName" collection="jobNames" open="(" separator="," close=")">
-                    #{jobName}
-                </foreach>
-            </if>
+            JOB_NAME in
+            <foreach item="jobName" collection="jobNames" open="(" separator="," close=")">
+                #{jobName}
+            </foreach>
             <include refid="condTenantId"/>
         </where>
     </delete>
