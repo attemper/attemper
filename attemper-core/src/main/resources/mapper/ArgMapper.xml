@@ -84,6 +84,43 @@
         </where>
     </delete>
 
+    <select id="getDatasource" parameterType="map"
+            resultType="com.github.attemper.common.result.dispatch.datasource.DataSourceInfo">
+        select d.*
+        from ${tablePrefix}datasource d
+        join ${tablePrefix}arg_datasource ad
+        USING (DB_NAME, TENANT_ID)
+        join ${tablePrefix}arg a
+        USING (ARG_NAME, TENANT_ID)
+        <where>
+            <include refid="condArgName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <delete id="deleteArgDatasource" parameterType="map">
+        DELETE FROM t using ${tablePrefix}arg_datasource t
+        <where>
+            <include refid="condArgName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
+    <insert id="saveArgDatasource" parameterType="map">
+        insert into ${tablePrefix}arg_datasource
+        (
+        ARG_NAME,
+        DB_NAME,
+        TENANT_ID
+        )
+        values
+        (
+        #{argName, jdbcType=VARCHAR},
+        #{dbName, jdbcType=VARCHAR},
+        #{tenantId, jdbcType=VARCHAR}
+        )
+    </insert>
+
     <sql id="condArgName">
         <if test="argName != null">
             and ARG_NAME = #{argName, jdbcType=VARCHAR}

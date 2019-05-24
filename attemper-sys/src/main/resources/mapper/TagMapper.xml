@@ -98,7 +98,7 @@
         </where>
     </delete>
 
-    <insert id="saveTagTenants">
+    <insert id="saveTagTenants" parameterType="map">
         insert into ${tablePrefix}tag_tenant
         (
         TAG_NAME,

@@ -63,7 +63,7 @@ public class TagController {
 	@ApiOperation("Get users of tag")
 	@ApiImplicitParam(value = "TagGetParam", name = "param", dataType = "TagGetParam", required = true)
 	@GetMapping(APIPath.TagPath.LIST_TENANT)
-	public CommonResult<List<Tenant>> getUsers(TagGetParam param) {
+	public CommonResult<List<Tenant>> getTenants(TagGetParam param) {
 		return CommonResult.putResult(service.getTenants(param));
 	}
 

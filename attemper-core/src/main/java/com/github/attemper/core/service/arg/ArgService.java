@@ -1,10 +1,8 @@
 package com.github.attemper.core.service.arg;
 
-import com.github.attemper.common.param.dispatch.arg.ArgGetParam;
-import com.github.attemper.common.param.dispatch.arg.ArgListParam;
-import com.github.attemper.common.param.dispatch.arg.ArgRemoveParam;
-import com.github.attemper.common.param.dispatch.arg.ArgSaveParam;
+import com.github.attemper.common.param.dispatch.arg.*;
 import com.github.attemper.common.result.dispatch.arg.Arg;
+import com.github.attemper.common.result.dispatch.datasource.DataSourceInfo;
 import com.github.attemper.core.dao.mapper.arg.ArgMapper;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
@@ -71,5 +69,19 @@ public class ArgService extends BaseServiceAdapter {
                 .remark(param.getRemark())
                 .tenantId(injectTenantId())
                 .build();
+    }
+
+    public DataSourceInfo getDatasource(ArgGetParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        return mapper.getDatasource(paramMap);
+    }
+
+    public Void updateArgDatasource(ArgDatasourceSaveParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        mapper.deleteArgDatasource(paramMap);
+        if (param.getDbName() != null && !param.getDbName().isEmpty()) {
+            mapper.saveArgDatasource(paramMap);
+        }
+        return null;
     }
 }

@@ -1,12 +1,10 @@
 package com.github.attemper.core.controller.arg;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.arg.ArgGetParam;
-import com.github.attemper.common.param.dispatch.arg.ArgListParam;
-import com.github.attemper.common.param.dispatch.arg.ArgRemoveParam;
-import com.github.attemper.common.param.dispatch.arg.ArgSaveParam;
+import com.github.attemper.common.param.dispatch.arg.*;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.arg.Arg;
+import com.github.attemper.common.result.dispatch.datasource.DataSourceInfo;
 import com.github.attemper.core.service.arg.ArgService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -58,4 +56,17 @@ public class ArgController {
         return CommonResult.putResult(service.remove(param));
     }
 
+    @ApiOperation("Get dataSource of arg")
+    @ApiImplicitParam(value = "ArgGetParam", name = "param", dataType = "ArgGetParam", required = true)
+    @GetMapping(APIPath.ArgPath.GET_DATASOURCE)
+    public CommonResult<DataSourceInfo> getDatasource(ArgGetParam param) {
+        return CommonResult.putResult(service.getDatasource(param));
+    }
+
+    @ApiOperation("Update dataSource of arg")
+    @ApiImplicitParam(value = "ArgDatasourceSaveParam", name = "param", dataType = "ArgDatasourceSaveParam", required = true)
+    @PutMapping(APIPath.ArgPath.UPDATE_DATASOURCE)
+    public CommonResult<Void> updateArgDatasource(@RequestBody ArgDatasourceSaveParam param) {
+        return CommonResult.putResult(service.updateArgDatasource(param));
+    }
 }

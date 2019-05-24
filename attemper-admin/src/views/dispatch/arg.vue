@@ -76,7 +76,7 @@
                 </el-select>
               </el-col>
               <el-col v-if="isSql" :span="11" :offset="1">
-                <el-select v-model="arg.dbName" :placeholder="$t('dispatch.datasource.placeholder.dbName')" clearable filterable>
+                <el-select v-model="dbName" :placeholder="$t('dispatch.datasource.placeholder.dbName')" clearable filterable>
                   <el-option v-for="item in dataSources" :key="item.dbName" :value="item.dbName" :label="item.dbName" />
                 </el-select>
               </el-col>
@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/dispatch/arg'
+import { listReq, getReq, removeReq, addReq, updateReq, getDatasourceReq, updateArgDatasourceReq } from '@/api/dispatch/arg'
 import * as dataSourceApi from '@/api/dispatch/datasource'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
@@ -126,8 +126,7 @@ const DEF_OBJ = {
   argType: 0,
   argValue: null,
   genericType: 0,
-  remark: null,
-  dbName: null
+  remark: null
 }
 export default {
   name: 'arg',
@@ -170,6 +169,7 @@ export default {
       genericTypes: [],
       rawTypes: [],
       selections: [],
+      dbName: null,
       dataSources: []
     }
   },
@@ -221,7 +221,7 @@ export default {
         this.arg = DEF_OBJ
       } else {
         getReq({ argName: this.selections[0].argName }).then(res => {
-          this.arg = res.data.result
+          this.arg = Object.assign({}, res.data.result)
           if (this.$refs.booleanInput) {
             this.$refs.booleanInput.initValue(this.arg.argValue)
           }
@@ -230,6 +230,9 @@ export default {
           }
           if (this.$refs.mapInput) {
             this.$refs.mapInput.initValue(this.arg.argValue)
+          }
+          if (this.isSql) {
+            this.getDatabases()
           }
         })
       }
@@ -253,9 +256,17 @@ export default {
         if (valid) {
           const request = (this.editDialog.oper === 'add' ? addReq(this.arg) : updateReq(this.arg))
           request.then(res => {
-            this.$message.success(res.data.msg)
-            this.close()
-            this.search()
+            if (this.isSql) {
+              updateArgDatasourceReq({ argName: this.arg.argName, dbName: this.dbName }).then(response => {
+                this.$message.success(response.data.msg)
+                this.close()
+                this.search()
+              })
+            } else {
+              this.$message.success(res.data.msg)
+              this.close()
+              this.search()
+            }
           })
         }
       })
@@ -302,11 +313,19 @@ export default {
       return item
     },
     argTypeChanged() {
-      if (this.arg.argType === 30) {
-        dataSourceApi.listReq({ pageSize: 1000 }).then(res => {
-          this.dataSources = res.data.result.list
-        })
+      if (this.isSql) {
+        this.getDatabases()
       }
+    },
+    getDatabases() {
+      dataSourceApi.listReq({ pageSize: 1000 }).then(res => {
+        this.dataSources = res.data.result.list
+        if (this.arg.argName) {
+          getDatasourceReq({ argName: this.arg.argName }).then(response => {
+            this.dbName = response.data.result ? response.data.result.dbName : null
+          })
+        }
+      })
     },
     change(val) {
       this.arg.argValue = val

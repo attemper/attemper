@@ -40,3 +40,19 @@ export const getReq = (params) => {
     params: params
   })
 }
+
+export const getDatasourceReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.ARG + APIPath.DATASOURCE + APIPath.GET,
+    method: 'get',
+    params: params
+  })
+}
+
+export const updateArgDatasourceReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.ARG + APIPath.DATASOURCE,
+    method: 'put',
+    data: data
+  })
+}

@@ -138,6 +138,9 @@ public class APIPath {
 
         public static final String REMOVE = API_PATH + DISPATCH + SUB_PATH + _REMOVE;
 
+        public static final String GET_DATASOURCE = API_PATH + DISPATCH + SUB_PATH + DataSourcePath.SUB_PATH + _GET;
+
+        public static final String UPDATE_DATASOURCE = API_PATH + DISPATCH + SUB_PATH + DataSourcePath.SUB_PATH + _UPDATE;
     }
 
     public static final class DataSourcePath {
