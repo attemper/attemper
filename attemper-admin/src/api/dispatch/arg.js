@@ -1,11 +1,9 @@
 import request from '@/utils/request'
 import { APIPath } from '@/settings'
 
-export const SubPath = '/arg'
-
 export const addReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + SubPath + APIPath.ADD,
+    url: APIPath.DISPATCH + APIPath.ARG + APIPath.ADD,
     method: 'post',
     data: data
   })
@@ -13,7 +11,7 @@ export const addReq = (data) => {
 
 export const updateReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + SubPath + APIPath.UPDATE,
+    url: APIPath.DISPATCH + APIPath.ARG + APIPath.UPDATE,
     method: 'put',
     data: data
   })
@@ -21,7 +19,7 @@ export const updateReq = (data) => {
 
 export const listReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + SubPath + APIPath.LIST,
+    url: APIPath.DISPATCH + APIPath.ARG + APIPath.LIST,
     method: 'get',
     params: params
   })
@@ -29,7 +27,7 @@ export const listReq = (params) => {
 
 export const removeReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + SubPath + APIPath.REMOVE,
+    url: APIPath.DISPATCH + APIPath.ARG + APIPath.REMOVE,
     method: 'delete',
     data: data
   })
@@ -37,7 +35,7 @@ export const removeReq = (data) => {
 
 export const getReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + SubPath + APIPath.GET,
+    url: APIPath.DISPATCH + APIPath.ARG + APIPath.GET,
     method: 'get',
     params: params
   })

@@ -1,11 +1,9 @@
 import request from '@/utils/request'
 import { APIPath } from '@/settings'
 
-const SubPath = '/project'
-
 export const treeListReq = (params) => {
   return request({
-    url: APIPath.SYS + SubPath + '/treeList',
+    url: APIPath.SYS + APIPath.PROJECT + '/treeList',
     method: 'get',
     params: params
   })
@@ -13,7 +11,7 @@ export const treeListReq = (params) => {
 
 export const saveReq = (data) => {
   return request({
-    url: APIPath.SYS + SubPath + APIPath.ADD,
+    url: APIPath.SYS + APIPath.PROJECT + APIPath.ADD,
     method: 'post',
     data: data
   })
@@ -21,7 +19,7 @@ export const saveReq = (data) => {
 
 export const removeReq = (data) => {
   return request({
-    url: APIPath.SYS + SubPath + APIPath.REMOVE,
+    url: APIPath.SYS + APIPath.PROJECT + APIPath.REMOVE,
     method: 'delete',
     data: data
   })
@@ -31,7 +29,7 @@ const INFO = '/info'
 
 export const listInfoReq = (params) => {
   return request({
-    url: APIPath.SYS + SubPath + INFO + APIPath.LIST,
+    url: APIPath.SYS + APIPath.PROJECT + INFO + APIPath.LIST,
     method: 'get',
     params: params
   })
@@ -39,7 +37,7 @@ export const listInfoReq = (params) => {
 
 export const saveInfoReq = (data) => {
   return request({
-    url: APIPath.SYS + SubPath + INFO + APIPath.ADD,
+    url: APIPath.SYS + APIPath.PROJECT + INFO + APIPath.ADD,
     method: 'post',
     data: data
   })
@@ -47,7 +45,7 @@ export const saveInfoReq = (data) => {
 
 export const removeInfoReq = (data) => {
   return request({
-    url: APIPath.SYS + SubPath + INFO + APIPath.REMOVE,
+    url: APIPath.SYS + APIPath.PROJECT + INFO + APIPath.REMOVE,
     method: 'delete',
     data: data
   })

@@ -1,15 +1,13 @@
 import request from '@/utils/request'
 import { APIPath } from '@/settings'
 
-const SubPath = '/login'
-
 export function login(userName, password) {
   const data = {
     userName,
     password
   }
   return request({
-    url: APIPath.SYS + SubPath,
+    url: APIPath.SYS + APIPath.LOGIN,
     data,
     method: 'post'
   })
@@ -17,14 +15,14 @@ export function login(userName, password) {
 
 export function logout() {
   return request({
-    url: APIPath.SYS + SubPath + '/logout',
+    url: APIPath.SYS + APIPath.LOGIN + '/logout',
     method: 'post'
   })
 }
 
 export function getInfo() {
   return request({
-    url: APIPath.SYS + SubPath + '/info',
+    url: APIPath.SYS + APIPath.LOGIN + '/info',
     params: {},
     method: 'get'
   })

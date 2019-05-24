@@ -1,11 +1,9 @@
 import request from '@/utils/request'
 import { APIPath } from '@/settings'
 
-export const SubPath = '/monitor'
-
 export const listReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + SubPath + APIPath.LIST,
+    url: APIPath.DISPATCH + APIPath.MONITOR + APIPath.LIST,
     method: 'get',
     params: params
   })
@@ -13,7 +11,7 @@ export const listReq = (params) => {
 
 export const listActReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + SubPath + APIPath.LIST + '/act',
+    url: APIPath.DISPATCH + APIPath.MONITOR + APIPath.LIST + '/act',
     method: 'get',
     params: params
   })

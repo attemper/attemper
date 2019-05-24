@@ -65,18 +65,18 @@
           </el-form-item>
           <el-form-item :label="$t('dispatch.arg.columns.argType')">
             <el-row>
-              <el-col :span="isRaw || isSql ? 15 : 24">
+              <el-col :span="isRaw || isSql ? 12 : 24">
                 <el-select v-model="arg.argType" style="width: 100%;" @change="argTypeChanged">
                   <el-option v-for="item in argTypes" :key="item.label" :value="item.value" :label="item.label" />
                 </el-select>
               </el-col>
-              <el-col v-if="isRaw" :span="8" :offset="1">
+              <el-col v-if="isRaw" :span="11" :offset="1">
                 <el-select v-model="arg.genericType" :placeholder="$t('dispatch.arg.placeholder.genericType')">
                   <el-option v-for="item in genericTypes" :key="item.label" :value="item.value" :label="item.label" />
                 </el-select>
               </el-col>
-              <el-col v-if="isSql" :span="8" :offset="1">
-                <el-select v-model="arg.dbName" :placeholder="$t('dispatch.datasource.placeholder.dbName')">
+              <el-col v-if="isSql" :span="11" :offset="1">
+                <el-select v-model="arg.dbName" :placeholder="$t('dispatch.datasource.placeholder.dbName')" clearable filterable>
                   <el-option v-for="item in dataSources" :key="item.dbName" :value="item.dbName" :label="item.dbName" />
                 </el-select>
               </el-col>
@@ -303,7 +303,7 @@ export default {
     },
     argTypeChanged() {
       if (this.arg.argType === 30) {
-        dataSourceApi.listReq().then(res => {
+        dataSourceApi.listReq({ pageSize: 1000 }).then(res => {
           this.dataSources = res.data.result.list
         })
       }

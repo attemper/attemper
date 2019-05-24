@@ -1,11 +1,9 @@
 import request from '@/utils/request'
 import { APIPath } from '@/settings'
 
-const SubPath = '/tenant'
-
 export const listReq = (params) => {
   return request({
-    url: APIPath.SYS + SubPath + APIPath.LIST,
+    url: APIPath.SYS + APIPath.TENANT + APIPath.LIST,
     method: 'get',
     params: params
   })
@@ -13,7 +11,7 @@ export const listReq = (params) => {
 
 export const addReq = (data) => {
   return request({
-    url: APIPath.SYS + SubPath + APIPath.ADD,
+    url: APIPath.SYS + APIPath.TENANT + APIPath.ADD,
     method: 'post',
     data: data
   })
@@ -21,7 +19,7 @@ export const addReq = (data) => {
 
 export const updateReq = (data) => {
   return request({
-    url: APIPath.SYS + SubPath + APIPath.UPDATE,
+    url: APIPath.SYS + APIPath.TENANT + APIPath.UPDATE,
     method: 'put',
     data: data
   })
@@ -29,7 +27,7 @@ export const updateReq = (data) => {
 
 export const removeReq = (data) => {
   return request({
-    url: APIPath.SYS + SubPath + APIPath.REMOVE,
+    url: APIPath.SYS + APIPath.TENANT + APIPath.REMOVE,
     method: 'delete',
     data: data
   })
@@ -37,7 +35,7 @@ export const removeReq = (data) => {
 
 export const getReq = (params) => {
   return request({
-    url: APIPath.SYS + SubPath + APIPath.GET,
+    url: APIPath.SYS + APIPath.TENANT + APIPath.GET,
     method: 'get',
     params: params
   })
@@ -45,7 +43,7 @@ export const getReq = (params) => {
 
 export const getTagsReq = (params) => {
   return request({
-    url: APIPath.SYS + SubPath + '/tag',
+    url: APIPath.SYS + APIPath.TENANT + '/tag',
     method: 'get',
     params: params
   })
@@ -53,7 +51,7 @@ export const getTagsReq = (params) => {
 
 export const updateTagReq = (data) => {
   return request({
-    url: APIPath.SYS + SubPath + '/tag',
+    url: APIPath.SYS + APIPath.TENANT + '/tag',
     method: 'put',
     data: data
   })
