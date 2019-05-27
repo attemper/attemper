@@ -17,18 +17,20 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 
 app:
+  web:
+    enable-scheduling: false
   scheduler:
     name: scheduler
     delayedInSecond: 5
-  web:
-    enable-scheduling: false
+  executor:
+    name: executor
   snow-flake:
     data-center-id: 0
     machine-id: 1
 
 grpc:
     server:
-      name: executor
+      name: ${app.executor.name}
       port: 5231
 
 org:

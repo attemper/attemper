@@ -25,6 +25,7 @@
                 PARENT_PROJECT_NAME,
                 DISPLAY_NAME,
                 CONTEXT_PATH,
+                BIND_EXECUTOR,
                 POSITION,
                 CREATE_TIME,
                 UPDATE_TIME,
@@ -32,14 +33,15 @@
                 )
                 VALUES
                 (
-                    #{projectName, jdbcType=VARCHAR},
-                    #{parentProjectName, jdbcType=VARCHAR},
-                    #{displayName, jdbcType=VARCHAR},
-                    #{contextPath, jdbcType=VARCHAR},
-                    #{position, jdbcType=INTEGER},
-                    #{createTime, jdbcType=TIMESTAMP},
-                    #{updateTime, jdbcType=TIMESTAMP},
-                    #{tenantId, jdbcType=VARCHAR}
+                #{projectName, jdbcType=VARCHAR},
+                #{parentProjectName, jdbcType=VARCHAR},
+                #{displayName, jdbcType=VARCHAR},
+                #{contextPath, jdbcType=VARCHAR},
+                #{bindExecutor, jdbcType=INTEGER},
+                #{position, jdbcType=INTEGER},
+                #{createTime, jdbcType=TIMESTAMP},
+                #{updateTime, jdbcType=TIMESTAMP},
+                #{tenantId, jdbcType=VARCHAR}
                 )
             </when>
             <otherwise>
@@ -49,6 +51,7 @@
                 PARENT_PROJECT_NAME = #{parentProjectName, jdbcType=VARCHAR},
                 DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
                 CONTEXT_PATH = #{contextPath, jdbcType=VARCHAR},
+                BIND_EXECUTOR = #{bindExecutor, jdbcType=INTEGER},
                 POSITION = #{position, jdbcType=INTEGER},
                 UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP}
                 <where>
@@ -129,6 +132,42 @@
             <include refid="condTenantId"/>
         </where>
     </select>
+
+    <select id="listExecutor" parameterType="map" resultType="string">
+        SELECT pe.EXECUTOR_URI
+        FROM ${tablePrefix}project_executor pe
+        JOIN ${tablePrefix}project p
+        USING (PROJECT_NAME, TENANT_ID)
+        <where>
+            <include refid="condProjectName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <delete id="deleteExecutors" parameterType="map">
+        DELETE FROM p USING ${tablePrefix}project_executor p
+        <where>
+            <include refid="condProjectName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
+    <insert id="addExecutors" parameterType="map">
+        insert into ${tablePrefix}project_executor
+        (
+        PROJECT_NAME,
+        EXECUTOR_URI,
+        TENANT_ID
+        )
+        values
+        <foreach item="executorUri" collection="executorUris" separator=",">
+            (
+            #{projectName, jdbcType=VARCHAR},
+            #{executorUri, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
 
     <sql id="condProjectName">
         <if test="projectName != null">

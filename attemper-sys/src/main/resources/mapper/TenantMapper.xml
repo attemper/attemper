@@ -144,7 +144,7 @@
         </where>
     </delete>
 
-    <insert id="saveTags">
+    <insert id="addTags">
         insert into ${tablePrefix}tag_tenant
         (
         TAG_NAME,

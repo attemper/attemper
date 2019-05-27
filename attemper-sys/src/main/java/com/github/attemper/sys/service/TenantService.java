@@ -94,13 +94,13 @@ public class TenantService extends BaseServiceAdapter {
         return mapper.getTags(BeanUtil.bean2Map(param));
     }
 
-    public void updateTags(TenantTagUpdateParam param) {
+    public void saveTags(TenantTagSaveParam param) {
         Map<String, Object> paramMap = BeanUtil.bean2Map(param);
         mapper.deleteTags(paramMap);
         if (param.getTagNames() == null || param.getTagNames().isEmpty()) {
             return;
         }
-        mapper.saveTags(paramMap);
+        mapper.addTags(paramMap);
     }
 
     private Tenant toTenant(TenantSaveParam param) {

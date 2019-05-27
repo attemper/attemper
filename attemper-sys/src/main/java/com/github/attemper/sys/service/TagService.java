@@ -77,11 +77,11 @@ public class TagService extends BaseServiceAdapter {
 		return mapper.getTenants(paramMap);
     }
 
-	public Void updateTagTenants(TagTenantUpdateParam param) {
+	public Void saveTenants(TagTenantSaveParam param) {
 		Map<String, Object> paramMap = BeanUtil.bean2Map(param);
-		mapper.deleteTagTenants(paramMap);
+		mapper.deleteTenants(paramMap);
 		if (param.getUserNames() != null && !param.getUserNames().isEmpty()) {
-			mapper.saveTagTenants(paramMap);
+			mapper.addTenants(paramMap);
         }
 		return null;
     }
@@ -91,11 +91,11 @@ public class TagService extends BaseServiceAdapter {
 		return mapper.getResources(paramMap);
 	}
 
-	public Void updateTagResources(TagResourceUpdateParam param) {
+	public Void saveResources(TagResourceSaveParam param) {
 		Map<String, Object> paramMap = BeanUtil.bean2Map(param);
-		mapper.deleteTagResources(paramMap);
+		mapper.deleteResources(paramMap);
 		if (param.getResourceNames() != null && !param.getResourceNames().isEmpty()) {
-			mapper.saveTagResources(paramMap);
+			mapper.addResources(paramMap);
 		}
 		return null;
 	}

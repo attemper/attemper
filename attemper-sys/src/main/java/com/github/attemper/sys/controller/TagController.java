@@ -68,10 +68,10 @@ public class TagController {
 	}
 
 	@ApiOperation("Update users of tag")
-	@ApiImplicitParam(value = "TagTenantUpdateParam", name = "param", dataType = "TagTenantUpdateParam", required = true)
-	@PutMapping(APIPath.TagPath.UPDATE_TENANT)
-	public CommonResult<Void> updateTagTenants(@RequestBody TagTenantUpdateParam param) {
-		return CommonResult.putResult(service.updateTagTenants(param));
+	@ApiImplicitParam(value = "TagTenantSaveParam", name = "param", dataType = "TagTenantSaveParam", required = true)
+	@PutMapping(APIPath.TagPath.SAVE_TENANTS)
+	public CommonResult<Void> saveTenants(@RequestBody TagTenantSaveParam param) {
+		return CommonResult.putResult(service.saveTenants(param));
     }
 
 	@ApiOperation("Get resources of tag")
@@ -82,9 +82,9 @@ public class TagController {
 	}
 
 	@ApiOperation("Update resources of tag")
-	@ApiImplicitParam(value = "TagResourceUpdateParam", name = "param", dataType = "TagResourceUpdateParam", required = true)
-	@PutMapping(APIPath.TagPath.UPDATE_RESOURCE)
-	public CommonResult<Void> updateTagResources(@RequestBody TagResourceUpdateParam param) {
-		return CommonResult.putResult(service.updateTagResources(param));
+	@ApiImplicitParam(value = "TagResourceSaveParam", name = "param", dataType = "TagResourceSaveParam", required = true)
+	@PutMapping(APIPath.TagPath.SAVE_RESOURCES)
+	public CommonResult<Void> saveResources(@RequestBody TagResourceSaveParam param) {
+		return CommonResult.putResult(service.saveResources(param));
 	}
 }

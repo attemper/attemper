@@ -94,6 +94,7 @@ public class ProjectService extends BaseServiceAdapter {
                 .parentProjectName(param.getParentProjectName())
                 .displayName(param.getDisplayName())
                 .contextPath(param.getContextPath())
+                .bindExecutor(param.getBindExecutor())
                 .position(param.getPosition())
                 .build();
     }
@@ -118,5 +119,19 @@ public class ProjectService extends BaseServiceAdapter {
 
     public List<ProjectInfo> listInfo(Map<String, Object> paramMap) {
         return mapper.listInfo(paramMap);
+    }
+
+    public List<String> listExecutor(ProjectGetParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        return mapper.listExecutor(paramMap);
+    }
+
+    public Void saveExecutors(ProjectExecutorSaveParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        mapper.deleteExecutors(paramMap);
+        if (param.getExecutorUris() != null && !param.getExecutorUris().isEmpty()) {
+            mapper.addExecutors(paramMap);
+        }
+        return null;
     }
 }

@@ -51,7 +51,7 @@ public class APIPath {
 
         public static final String LIST_TAG = API_PATH + SYS + SUB_PATH + TagPath.SUB_PATH + _LIST;
 
-        public static final String UPDATE_TAG = API_PATH + SYS + SUB_PATH + TagPath.SUB_PATH + _UPDATE;
+        public static final String SAVE_TAGS = API_PATH + SYS + SUB_PATH + TagPath.SUB_PATH + _SAVE;
 
     }
 
@@ -74,9 +74,9 @@ public class APIPath {
 
         public static final String LIST_RESOURCE = API_PATH + SYS + SUB_PATH + RESOURCE + _LIST;
 
-        public static final String UPDATE_TENANT = API_PATH + SYS + SUB_PATH + TenantPath.SUB_PATH + _UPDATE;
+        public static final String SAVE_TENANTS = API_PATH + SYS + SUB_PATH + TenantPath.SUB_PATH + _SAVE;
 
-        public static final String UPDATE_RESOURCE = API_PATH + SYS + SUB_PATH + RESOURCE + _UPDATE;
+        public static final String SAVE_RESOURCES = API_PATH + SYS + SUB_PATH + RESOURCE + _SAVE;
     }
 
     public static final class JobPath {
@@ -105,7 +105,7 @@ public class APIPath {
 
         public static final String GET_PROJECT = API_PATH + DISPATCH + SUB_PATH + "/project";
 
-        public static final String UPDATE_PROJECT = API_PATH + DISPATCH + SUB_PATH + "/project";
+        public static final String SAVE_PROJECT = API_PATH + DISPATCH + SUB_PATH + "/project";
 
         public static final String LIST_ARG = API_PATH + DISPATCH + SUB_PATH + ArgPath.SUB_PATH + _LIST;
 
@@ -140,7 +140,7 @@ public class APIPath {
 
         public static final String GET_DATASOURCE = API_PATH + DISPATCH + SUB_PATH + DataSourcePath.SUB_PATH + _GET;
 
-        public static final String UPDATE_DATASOURCE = API_PATH + DISPATCH + SUB_PATH + DataSourcePath.SUB_PATH + _UPDATE;
+        public static final String SAVE_DATASOURCE = API_PATH + DISPATCH + SUB_PATH + DataSourcePath.SUB_PATH + _SAVE;
     }
 
     public static final class DataSourcePath {
@@ -185,21 +185,27 @@ public class APIPath {
     public static final class ProjectPath {
         public static final String SUB_PATH = "/project";
 
-        public static final String UPDATE = API_PATH + SYS + SUB_PATH + _UPDATE;
+        public static final String UPDATE = API_PATH + DISPATCH + SUB_PATH + _UPDATE;
 
-        public static final String SAVE = API_PATH + SYS + SUB_PATH + _SAVE;
+        public static final String SAVE = API_PATH + DISPATCH + SUB_PATH + _SAVE;
 
-        public static final String REMOVE = API_PATH + SYS + SUB_PATH + _REMOVE;
+        public static final String REMOVE = API_PATH + DISPATCH + SUB_PATH + _REMOVE;
 
-        public static final String LIST_TREE = API_PATH + SYS + SUB_PATH + "/treeList";
+        public static final String LIST_TREE = API_PATH + DISPATCH + SUB_PATH + "/treeList";
 
         private static final String INFO = "/info";
 
-        public static final String LIST_INFO = API_PATH + SYS + SUB_PATH + INFO + _LIST;
+        public static final String LIST_INFO = API_PATH + DISPATCH + SUB_PATH + INFO + _LIST;
 
-        public static final String SAVE_INFO = API_PATH + SYS + SUB_PATH + INFO + _ADD;
+        public static final String SAVE_INFO = API_PATH + DISPATCH + SUB_PATH + INFO + _SAVE;
 
-        public static final String REMOVE_INFO = API_PATH + SYS + SUB_PATH + INFO + _REMOVE;
+        public static final String REMOVE_INFO = API_PATH + DISPATCH + SUB_PATH + INFO + _REMOVE;
+
+        private static final String EXECUTOR = "/executor";
+
+        public static final String LIST_EXECUTOR = API_PATH + DISPATCH + SUB_PATH + EXECUTOR + _LIST;
+
+        public static final String SAVE_EXECUTOR = API_PATH + DISPATCH + SUB_PATH + EXECUTOR + _SAVE;
     }
 
     public static final class MonitorPath {
@@ -243,9 +249,11 @@ public class APIPath {
     public static final class ToolPath {
         public static final String SUB_PATH = "/tool";
 
-        public static final String GET_TIME_ZONE = API_PATH + SYS + SUB_PATH + "/timeZone" + _LIST;
+        public static final String GET_TIME_ZONE = API_PATH + DISPATCH + SUB_PATH + "/timeZone" + _LIST;
 
-        public static final String PING = API_PATH + SYS + SUB_PATH + "/ping";
+        public static final String LIST_EXECUTOR_SERVICE = API_PATH + DISPATCH + SUB_PATH + "/executor" + _LIST;
+
+        public static final String PING = API_PATH + DISPATCH + SUB_PATH + "/ping";
     }
 
     public static final class SchedulerPath {

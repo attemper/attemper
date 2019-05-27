@@ -204,9 +204,9 @@
 
     <insert id="addArg" parameterType="map">
       INSERT INTO ${tablePrefix}job_arg (
-          `JOB_NAME`,
-          `ARG_NAME`,
-          `TENANT_ID`
+          JOB_NAME,
+          ARG_NAME,
+          TENANT_ID
         )
         VALUES
           (

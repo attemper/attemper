@@ -28,5 +28,5 @@ public interface TenantMapper extends BaseMapper<Tenant> {
 
     void deleteTags(Map<String, Object> paramMap);
 
-    void saveTags(Map<String, Object> paramMap);
+    void addTags(Map<String, Object> paramMap);
 }

@@ -13,6 +13,9 @@ public class AppProperties {
     private final SchedulerConfig scheduler = new SchedulerConfig();
 
     @NestedConfigurationProperty
+    private final ExecutorConfig executor = new ExecutorConfig();
+
+    @NestedConfigurationProperty
     private final SnowFlake snowFlake = new SnowFlake();
 
     public WebConfig getWeb() {
@@ -21,6 +24,10 @@ public class AppProperties {
 
     public SchedulerConfig getScheduler() {
         return scheduler;
+    }
+
+    public ExecutorConfig getExecutor() {
+        return executor;
     }
 
     public SnowFlake getSnowFlake() {
@@ -69,6 +76,18 @@ public class AppProperties {
 
         public void setDelayedInSecond(int delayedInSecond) {
             this.delayedInSecond = delayedInSecond;
+        }
+    }
+
+    public static class ExecutorConfig {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 

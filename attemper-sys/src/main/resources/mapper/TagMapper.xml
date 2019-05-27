@@ -91,14 +91,14 @@
         order by te.USER_NAME
     </select>
 
-    <delete id="deleteTagTenants" parameterType="map">
+    <delete id="deleteTenants" parameterType="map">
         DELETE FROM t using ${tablePrefix}tag_tenant t
         <where>
             <include refid="condTagName"/>
         </where>
     </delete>
 
-    <insert id="saveTagTenants" parameterType="map">
+    <insert id="addTenants" parameterType="map">
         insert into ${tablePrefix}tag_tenant
         (
         TAG_NAME,
@@ -124,14 +124,14 @@
         order by tr.RESOURCE_NAME
     </select>
 
-    <delete id="deleteTagResources" parameterType="map">
+    <delete id="deleteResources" parameterType="map">
         DELETE FROM t using ${tablePrefix}tag_resource t
         <where>
             <include refid="condTagName"/>
         </where>
     </delete>
 
-    <insert id="saveTagResources">
+    <insert id="addResources">
         insert into ${tablePrefix}tag_resource
         (
         TAG_NAME,

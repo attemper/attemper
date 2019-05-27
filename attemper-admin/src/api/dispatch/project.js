@@ -3,7 +3,7 @@ import { APIPath } from '@/settings'
 
 export const treeListReq = (params) => {
   return request({
-    url: APIPath.SYS + APIPath.PROJECT + '/treeList',
+    url: APIPath.DISPATCH + APIPath.PROJECT + '/treeList',
     method: 'get',
     params: params
   })
@@ -11,7 +11,7 @@ export const treeListReq = (params) => {
 
 export const saveReq = (data) => {
   return request({
-    url: APIPath.SYS + APIPath.PROJECT + APIPath.ADD,
+    url: APIPath.DISPATCH + APIPath.PROJECT + APIPath.SAVE,
     method: 'post',
     data: data
   })
@@ -19,7 +19,7 @@ export const saveReq = (data) => {
 
 export const removeReq = (data) => {
   return request({
-    url: APIPath.SYS + APIPath.PROJECT + APIPath.REMOVE,
+    url: APIPath.DISPATCH + APIPath.PROJECT + APIPath.REMOVE,
     method: 'delete',
     data: data
   })
@@ -29,7 +29,7 @@ const INFO = '/info'
 
 export const listInfoReq = (params) => {
   return request({
-    url: APIPath.SYS + APIPath.PROJECT + INFO + APIPath.LIST,
+    url: APIPath.DISPATCH + APIPath.PROJECT + INFO + APIPath.LIST,
     method: 'get',
     params: params
   })
@@ -37,7 +37,7 @@ export const listInfoReq = (params) => {
 
 export const saveInfoReq = (data) => {
   return request({
-    url: APIPath.SYS + APIPath.PROJECT + INFO + APIPath.ADD,
+    url: APIPath.DISPATCH + APIPath.PROJECT + INFO + APIPath.SAVE,
     method: 'post',
     data: data
   })
@@ -45,8 +45,26 @@ export const saveInfoReq = (data) => {
 
 export const removeInfoReq = (data) => {
   return request({
-    url: APIPath.SYS + APIPath.PROJECT + INFO + APIPath.REMOVE,
+    url: APIPath.DISPATCH + APIPath.PROJECT + INFO + APIPath.REMOVE,
     method: 'delete',
+    data: data
+  })
+}
+
+const EXECUTOR = '/executor'
+
+export const listExecutorReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.PROJECT + EXECUTOR + APIPath.LIST,
+    method: 'get',
+    params: params
+  })
+}
+
+export const saveExecutorReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.PROJECT + EXECUTOR + APIPath.SAVE,
+    method: 'post',
     data: data
   })
 }

@@ -3,6 +3,7 @@ package com.github.attemper.core.service.tool;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.config.base.property.AppProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,15 @@ import java.util.TimeZone;
 @Service
 public class ToolService {
 
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @Autowired
+    private AppProperties appProperties;
+
     public String[] listTimeZone() {
         return TimeZone.getAvailableIDs();
     }
-
-    @Autowired
-    private DiscoveryClient discoveryClient;
 
     public Boolean ping(String uri, Integer type) {
         try {
@@ -55,6 +59,14 @@ public class ToolService {
         } catch (Exception e) {
             throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
         }
+    }
+
+    public List<ServiceInstance> listExecutorService() {
+        return listService(appProperties.getExecutor().getName());
+    }
+
+    private List<ServiceInstance> listService(String serviceId) {
+        return discoveryClient.getInstances(serviceId);
     }
 
     public String testConnection(String driverClassName, String jdbcUrl, String userName, String password) {

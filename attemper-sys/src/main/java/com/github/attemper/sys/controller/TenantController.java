@@ -72,10 +72,10 @@ public class TenantController {
 	}
 
 	@ApiOperation("Update tag")
-	@ApiImplicitParam(value = "TenantTagUpdateParam", name = "param", dataType = "TenantTagUpdateParam", required = true)
-	@PutMapping(APIPath.TenantPath.UPDATE_TAG)
-	public CommonResult updateTags(@RequestBody TenantTagUpdateParam param) {
-		service.updateTags(param);
+	@ApiImplicitParam(value = "TenantTagSaveParam", name = "param", dataType = "TenantTagSaveParam", required = true)
+	@PutMapping(APIPath.TenantPath.SAVE_TAGS)
+	public CommonResult saveTags(@RequestBody TenantTagSaveParam param) {
+		service.saveTags(param);
 		return CommonResult.ok();
 	}
 }

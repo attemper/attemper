@@ -1,4 +1,4 @@
-package com.github.attemper.common.param.sys.tenant;
+package com.github.attemper.common.param.sys.tag;
 
 import com.github.attemper.common.param.CommonParam;
 import lombok.AllArgsConstructor;
@@ -16,15 +16,15 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TenantTagUpdateParam implements CommonParam {
+public class TagTenantSaveParam implements CommonParam {
 
-    protected String userName;
+    protected String tagName;
 
-    protected List<String> tagNames;
+    protected List<String> userNames;
 
     public String validate() {
-        if (StringUtils.isBlank(userName)) {
-            return "5100";
+        if(StringUtils.isBlank(tagName)) {
+            return "5300";
         }
         return null;
     }

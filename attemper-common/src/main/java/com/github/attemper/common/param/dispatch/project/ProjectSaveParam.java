@@ -21,6 +21,8 @@ public class ProjectSaveParam implements CommonParam {
 
     protected String contextPath;
 
+    protected Boolean bindExecutor;
+
     protected Integer position;
 
     public String validate() {

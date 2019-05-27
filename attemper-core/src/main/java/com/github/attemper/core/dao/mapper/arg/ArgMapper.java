@@ -14,7 +14,7 @@ public interface ArgMapper extends BaseMapper<Arg> {
 
     DataSourceInfo getDatasource(Map<String, Object> paramMap);
 
-    int deleteArgDatasource(Map<String, Object> paramMap);
+    int deleteDatasource(Map<String, Object> paramMap);
 
-    void saveArgDatasource(Map<String, Object> paramMap);
+    void addDatasource(Map<String, Object> paramMap);
 }

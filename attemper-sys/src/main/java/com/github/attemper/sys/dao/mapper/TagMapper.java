@@ -19,13 +19,13 @@ public interface TagMapper extends BaseMapper<Tag> {
 
     List<Tenant> getTenants(Map<String, Object> paramMap);
 
-    void deleteTagTenants(Map<String, Object> paramMap);
+    void deleteTenants(Map<String, Object> paramMap);
 
-    void saveTagTenants(Map<String, Object> paramMap);
+    void addTenants(Map<String, Object> paramMap);
 
     List<String> getResources(Map<String, Object> paramMap);
 
-	void deleteTagResources(Map<String, Object> paramMap);
+    void deleteResources(Map<String, Object> paramMap);
 
-	void saveTagResources(Map<String, Object> paramMap);
+    void addResources(Map<String, Object> paramMap);
 }

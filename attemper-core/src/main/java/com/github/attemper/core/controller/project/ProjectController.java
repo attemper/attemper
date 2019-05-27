@@ -64,4 +64,18 @@ public class ProjectController {
 	public CommonResult<Void> removeInfo(@RequestBody ProjectInfoRemoveParam param) {
 		return CommonResult.putResult(service.removeInfo(param));
 	}
+
+	@ApiOperation("Save project executor")
+	@ApiImplicitParam(value = "ProjectExecutorSaveParam", name = "param", dataType = "ProjectExecutorSaveParam", required = true)
+	@PostMapping(APIPath.ProjectPath.SAVE_EXECUTOR)
+	public CommonResult<Void> saveExecutors(@RequestBody ProjectExecutorSaveParam param) {
+		return CommonResult.putResult(service.saveExecutors(param));
+	}
+
+	@ApiOperation("List project executor")
+	@ApiImplicitParam(value = "ProjectGetParam", name = "param", dataType = "ProjectGetParam", required = true)
+	@GetMapping(APIPath.ProjectPath.LIST_EXECUTOR)
+	public CommonResult<List<String>> listExecutor(ProjectGetParam param) {
+		return CommonResult.putResult(service.listExecutor(param));
+	}
 }

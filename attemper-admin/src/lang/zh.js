@@ -316,7 +316,9 @@ export default {
       },
       label: {
         projectName: '项目名称',
-        contextPath: 'contextPath',
+        contextPath: '项目路径',
+        bindExecutor: '绑定执行器',
+        executorUri: '执行器路径',
         position: '位置'
       },
       rules: {

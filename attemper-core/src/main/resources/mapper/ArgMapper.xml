@@ -98,7 +98,7 @@
         </where>
     </select>
 
-    <delete id="deleteArgDatasource" parameterType="map">
+    <delete id="deleteDatasource" parameterType="map">
         DELETE FROM t using ${tablePrefix}arg_datasource t
         <where>
             <include refid="condArgName"/>
@@ -106,7 +106,7 @@
         </where>
     </delete>
 
-    <insert id="saveArgDatasource" parameterType="map">
+    <insert id="addDatasource" parameterType="map">
         insert into ${tablePrefix}arg_datasource
         (
         ARG_NAME,

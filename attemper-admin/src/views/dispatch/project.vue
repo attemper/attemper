@@ -56,6 +56,14 @@
             <el-form-item :label="$t('dispatch.project.label.contextPath')">
               <el-input v-model="project.contextPath" :placeholder="$t('dispatch.project.placeholder.contextPath')" />
             </el-form-item>
+            <el-form-item :label="$t('dispatch.project.label.bindExecutor')">
+              <el-switch v-model="project.bindExecutor" active-color="#13ce66" inactive-color="#ff4949" />
+            </el-form-item>
+            <el-form-item v-show="project.bindExecutor" :label="$t('dispatch.project.label.executorUri')">
+              <el-select v-model="executorUris" style="width: 100%;" multiple>
+                <el-option v-for="item in executors" :key="item.uri" :value="item.uri" :label="item.uri" />
+              </el-select>
+            </el-form-item>
             <el-form-item :label="$t('dispatch.project.label.position')">
               <el-input-number v-model="project.position" controls-position="right" />
             </el-form-item>
@@ -121,9 +129,18 @@
 </template>
 
 <script>
-import { treeListReq, saveReq, removeReq, saveInfoReq, listInfoReq, removeInfoReq } from '@/api/dispatch/project'
-import { pingReq } from '@/api/sys/tool'
+import { treeListReq, saveReq, removeReq, saveInfoReq, listInfoReq, removeInfoReq, saveExecutorReq, listExecutorReq } from '@/api/dispatch/project'
+import { listExecutorServiceReq, pingReq } from '@/api/dispatch/tool'
 import { load } from '@/constant'
+
+const DEF_OBJ = {
+  projectName: null,
+  parentProjectName: null,
+  displayName: null,
+  contextPath: null,
+  bindExecutor: false,
+  position: 0
+}
 
 const DEF_INSTANCE = {
   uri: null,
@@ -144,13 +161,7 @@ export default {
   data() {
     return {
       treeData: [],
-      project: {
-        projectName: null,
-        parentProjectName: null,
-        displayName: null,
-        contextPath: null,
-        position: 0
-      },
+      project: DEF_OBJ,
       visible: false,
       formRules: {
         projectName: [
@@ -163,7 +174,9 @@ export default {
       uriTypes: [],
       searchKey: '',
       projectInfo: Object.assign({}, DEF_INSTANCE),
-      projectInfos: []
+      projectInfos: [],
+      executorUris: [],
+      executors: []
     }
   },
   watch: {
@@ -215,8 +228,15 @@ export default {
           this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
             .then(() => {
               saveReq(this.project).then(res => {
-                this.$message.success(res.data.msg)
-                this.initTreeData()
+                saveExecutorReq(
+                  {
+                    projectName: this.project.projectName,
+                    executorUris: this.executorUris
+                  }
+                ).then(response => {
+                  this.$message.success(response.data.msg)
+                  this.initTreeData()
+                })
               })
             })
         }
@@ -224,14 +244,14 @@ export default {
     },
     append(data) {
       const position = Math.floor(Math.random() * 1000)
-      const newChild = {
-        parentProjectName: data.projectName,
-        projectName: data.projectName + '-' + position,
-        displayName: data.projectName + '-' + position,
-        contextPath: null,
-        position: position,
-        transition: true
-      }
+      const newChild = Object.assign(
+        {
+          parentProjectName: data.projectName,
+          projectName: data.projectName + '-' + position,
+          displayName: data.projectName + '-' + position,
+          position: position,
+          transition: true
+        }, DEF_OBJ)
       if (!data.children) {
         this.$set(data, 'children', [])
       }
@@ -268,6 +288,15 @@ export default {
       this.visible = true
       this.projectInfo.projectName = this.project.projectName
       this.initInfos(this.projectInfo)
+      this.initExecutor()
+    },
+    initExecutor() {
+      listExecutorServiceReq().then(res => {
+        this.executors = res.data.result
+        listExecutorReq(this.project).then(response => {
+          this.executorUris = response.data.result
+        })
+      })
     },
     filterNode(value, data) {
       if (!value) {

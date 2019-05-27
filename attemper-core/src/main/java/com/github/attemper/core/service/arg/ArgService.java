@@ -8,6 +8,7 @@ import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -76,11 +77,11 @@ public class ArgService extends BaseServiceAdapter {
         return mapper.getDatasource(paramMap);
     }
 
-    public Void updateArgDatasource(ArgDatasourceSaveParam param) {
+    public Void saveDatasource(ArgDatasourceSaveParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
-        mapper.deleteArgDatasource(paramMap);
-        if (param.getDbName() != null && !param.getDbName().isEmpty()) {
-            mapper.saveArgDatasource(paramMap);
+        mapper.deleteDatasource(paramMap);
+        if (StringUtils.isNotBlank(param.getDbName())) {
+            mapper.addDatasource(paramMap);
         }
         return null;
     }

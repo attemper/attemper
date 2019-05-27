@@ -23,4 +23,10 @@ public interface ProjectMapper extends BaseMapper<Project> {
     List<ProjectInfo> listInfo(Map<String, Object> paramMap);
 
     void deleteInfo(Map<String, Object> paramMap);
+
+    List<String> listExecutor(Map<String, Object> paramMap);
+
+    void deleteExecutors(Map<String, Object> paramMap);
+
+    void addExecutors(Map<String, Object> paramMap);
 }

@@ -19,7 +19,7 @@ public class DiscoveryClientResolverFactory extends NameResolver.Factory {
 
     @Nullable
     @Override
-    public NameResolver newNameResolver(URI uri, NameResolver.Helper helper) {
+    public NameResolver newNameResolver(URI uri, NameResolver.Args args) {
         return new DiscoveryClientNameResolver(uri.toString(), client, properties);
     }
 

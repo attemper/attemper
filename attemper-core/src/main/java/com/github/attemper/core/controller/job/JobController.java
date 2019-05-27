@@ -60,7 +60,7 @@ public class JobController {
 
 	@ApiOperation("Save project of job")
 	@ApiImplicitParam(value = "JobProjectSaveParam", name = "param", dataType = "JobProjectSaveParam", required = true)
-	@PutMapping(APIPath.JobPath.UPDATE_PROJECT)
+	@PutMapping(APIPath.JobPath.SAVE_PROJECT)
 	public CommonResult<Void> saveProject(@RequestBody JobProjectSaveParam param) {
 		return CommonResult.putResult(service.saveProject(param));
 	}

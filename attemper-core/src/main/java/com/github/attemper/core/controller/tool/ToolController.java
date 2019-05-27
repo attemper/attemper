@@ -6,8 +6,11 @@ import com.github.attemper.core.service.tool.ToolService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author ldang
@@ -23,6 +26,12 @@ public class ToolController {
     @GetMapping(APIPath.ToolPath.GET_TIME_ZONE)
     public CommonResult<String[]> listTimeZone() {
         return CommonResult.putResult(service.listTimeZone());
+    }
+
+    @ApiOperation("list services of executor")
+    @GetMapping(APIPath.ToolPath.LIST_EXECUTOR_SERVICE)
+    public CommonResult<List<ServiceInstance>> listExecutorService() {
+        return CommonResult.putResult(service.listExecutorService());
     }
 
     @ApiOperation("Ping the Internet address")

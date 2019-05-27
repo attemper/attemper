@@ -65,8 +65,8 @@ public class ArgController {
 
     @ApiOperation("Update dataSource of arg")
     @ApiImplicitParam(value = "ArgDatasourceSaveParam", name = "param", dataType = "ArgDatasourceSaveParam", required = true)
-    @PutMapping(APIPath.ArgPath.UPDATE_DATASOURCE)
-    public CommonResult<Void> updateArgDatasource(@RequestBody ArgDatasourceSaveParam param) {
-        return CommonResult.putResult(service.updateArgDatasource(param));
+    @PutMapping(APIPath.ArgPath.SAVE_DATASOURCE)
+    public CommonResult<Void> saveDatasource(@RequestBody ArgDatasourceSaveParam param) {
+        return CommonResult.putResult(service.saveDatasource(param));
     }
 }
