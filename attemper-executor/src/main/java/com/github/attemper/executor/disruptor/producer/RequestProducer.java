@@ -1,11 +1,11 @@
 package com.github.attemper.executor.disruptor.producer;
 
+import com.github.attemper.common.param.executor.JobInvokingParam;
+import com.github.attemper.common.result.CommonResult;
+import com.github.attemper.common.result.executor.JobInvokingResult;
 import com.github.attemper.executor.disruptor.container.RequestContainer;
 import com.lmax.disruptor.EventTranslatorTwoArg;
 import com.lmax.disruptor.RingBuffer;
-import com.github.atemper.grpc.invoking.JobInvokingProto;
-import com.github.atemper.grpc.invoking.JobInvokingProto.JobInvokingRequest;
-import io.grpc.stub.StreamObserver;
 
 /**
  * producer of request
@@ -18,14 +18,14 @@ public class RequestProducer {
         this.ringBuffer = ringBuffer;
     }
 
-    private static final EventTranslatorTwoArg<RequestContainer, JobInvokingRequest, StreamObserver<JobInvokingProto.JobInvokingResponse>> TRANSLATOR =
-            (event, sequence, request, responseObserver) -> {
-                event.setJobInvokingRequest(request);
-                event.setResponseObserver(responseObserver);
+    private static final EventTranslatorTwoArg<RequestContainer, JobInvokingParam, CommonResult<JobInvokingResult>> TRANSLATOR =
+            (event, sequence, param, result) -> {
+                event.setParam(param);
+                event.setResult(result);
             };
 
-    public void onData(JobInvokingRequest jobInvokingRequest, StreamObserver<JobInvokingProto.JobInvokingResponse> responseObserver) {
-        ringBuffer.publishEvent(TRANSLATOR, jobInvokingRequest, responseObserver);
+    public void onData(JobInvokingParam param, CommonResult<JobInvokingResult> result) {
+        ringBuffer.publishEvent(TRANSLATOR, param, result);
     }
 
 }

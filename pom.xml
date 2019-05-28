@@ -12,13 +12,11 @@
 		<module>${project.artifactId}-sys</module>
 		<module>${project.artifactId}-core</module>
 		<module>${project.artifactId}-security</module>
+		<module>${project.artifactId}-invoker</module>
 		<module>${project.artifactId}-web</module>
 		<module>${project.artifactId}-scheduler</module>
 		<module>${project.artifactId}-executor</module>
-		<module>${project.artifactId}-grpc</module>
 		<module>${project.artifactId}-eureka-server</module>
-		<module>${project.artifactId}-grpc-autoconfigure</module>
-		<module>${project.artifactId}-config-scheduler</module>
 		<module>${project.artifactId}-interior</module>
 	</modules>
 	<packaging>pom</packaging>
@@ -40,7 +38,6 @@
 		<camunda.spring.boot.version>3.2.1</camunda.spring.boot.version>
 		<camunda.version>7.10.0</camunda.version>
 		<disruptor.version>3.4.2</disruptor.version>
-        <grpc.version>1.21.0</grpc.version>
 		<quartz.groupId>com.github.quartz</quartz.groupId>
 		<quartz.spring.boot.version>1.0.0-SNAPSHOT</quartz.spring.boot.version>
 		<quartz.version>3.0.0-SNAPSHOT</quartz.version>
@@ -219,22 +216,6 @@
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
 				<scope>test</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>io.grpc</groupId>
-				<artifactId>grpc-netty</artifactId>
-				<version>${grpc.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.grpc</groupId>
-				<artifactId>grpc-protobuf</artifactId>
-				<version>${grpc.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.grpc</groupId>
-				<artifactId>grpc-stub</artifactId>
-				<version>${grpc.version}</version>
 			</dependency>
 
 			<dependency>

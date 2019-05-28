@@ -2,7 +2,7 @@
 package com.github.attemper.web;
 
 import com.github.attemper.common.constant.GlobalConstants;
-import com.github.attemper.config.scheduler.conf.ConfigSchedulerConfiguration;
+import com.github.attemper.invoker.conf.InvokerConfiguration;
 import com.github.attemper.security.conf.SecurityConfiguration;
 import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.mybatis.spring.annotation.MapperScan;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author ldang
  */
 @Import({
-		ConfigSchedulerConfiguration.class,
+		InvokerConfiguration.class,
 		SecurityConfiguration.class
 })
 @EnableAsync

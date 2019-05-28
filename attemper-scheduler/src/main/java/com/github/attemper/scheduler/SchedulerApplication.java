@@ -1,8 +1,8 @@
 package com.github.attemper.scheduler;
 
 import com.github.attemper.common.constant.GlobalConstants;
-import com.github.attemper.config.scheduler.conf.ConfigSchedulerConfiguration;
-import com.github.attemper.core.conf.CoreConfiguration;
+import com.github.attemper.invoker.conf.InvokerConfiguration;
+import com.github.attemper.security.conf.SecurityConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,8 +12,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Import({
-        ConfigSchedulerConfiguration.class,
-        CoreConfiguration.class
+        SecurityConfiguration.class,
+        InvokerConfiguration.class
 })
 @EnableAsync
 @EnableDiscoveryClient

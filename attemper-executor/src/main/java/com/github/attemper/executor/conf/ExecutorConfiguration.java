@@ -1,19 +1,14 @@
 package com.github.attemper.executor.conf;
 
-import com.github.attemper.executor.rpc.JobInvokingServiceImpl;
-import com.lmax.disruptor.EventHandler;
-import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.dsl.Disruptor;
-import com.lmax.disruptor.util.DaemonThreadFactory;
 import com.github.attemper.executor.camunda.history.CustomHistoryEventHandler;
 import com.github.attemper.executor.disruptor.consumer.RequestConsumer;
 import com.github.attemper.executor.disruptor.container.RequestContainer;
 import com.github.attemper.executor.disruptor.exception.RequestContainerExceptionHandler;
 import com.github.attemper.executor.disruptor.producer.RequestProducer;
-import com.github.attemper.executor.interceptor.HeaderServerInterceptor;
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
-import io.grpc.ServerInterceptors;
+import com.lmax.disruptor.EventHandler;
+import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.util.DaemonThreadFactory;
 import org.camunda.bpm.engine.impl.history.handler.CompositeDbHistoryEventHandler;
 import org.camunda.bpm.engine.impl.history.handler.HistoryEventHandler;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,16 +17,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ExecutorConfiguration {
-
-    @Value("${grpc.server.port}")
-    private int rpcPort;
-
-    @Bean
-    public Server server() {
-        return ServerBuilder.forPort(rpcPort)
-                .addService(ServerInterceptors.intercept(new JobInvokingServiceImpl(), new HeaderServerInterceptor()))
-                .build();
-    }
 
     @Value("${disruptor.buffer-size:1024}")
     private int bufferSize;

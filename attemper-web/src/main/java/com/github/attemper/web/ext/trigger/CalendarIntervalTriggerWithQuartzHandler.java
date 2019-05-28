@@ -5,9 +5,9 @@ import com.github.attemper.common.param.dispatch.trigger.sub.CalendarIntervalTri
 import com.github.attemper.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.util.BeanUtil;
-import com.github.attemper.config.scheduler.util.QuartzUtil;
 import com.github.attemper.core.dao.mapper.job.TriggerMapper;
 import com.github.attemper.core.ext.trigger.CalendarIntervalTriggerHandler;
+import com.github.attemper.invoker.util.QuartzUtil;
 import com.github.attemper.sys.holder.TenantHolder;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.Trigger;

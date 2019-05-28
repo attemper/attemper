@@ -5,8 +5,8 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.trigger.sub.CommonTriggerParam;
 import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
-import com.github.attemper.config.scheduler.util.QuartzUtil;
 import com.github.attemper.core.ext.trigger.TriggerHandlerInDatabase;
+import com.github.attemper.invoker.util.QuartzUtil;
 import com.github.attemper.sys.holder.TenantHolder;
 import org.quartz.*;
 

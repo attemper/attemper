@@ -1,7 +1,7 @@
 package com.github.attemper.executor.disruptor.exception;
 
-import com.lmax.disruptor.ExceptionHandler;
 import com.github.attemper.executor.disruptor.container.RequestContainer;
+import com.lmax.disruptor.ExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RequestContainerExceptionHandler implements ExceptionHandler<RequestContainer> {
     @Override
     public void handleEventException(Throwable throwable, long l, RequestContainer requestContainer) {
-        log.error(requestContainer.getJobInvokingRequest().getId(), throwable);
+        log.error(requestContainer.getParam().getId(), throwable);
     }
 
     @Override

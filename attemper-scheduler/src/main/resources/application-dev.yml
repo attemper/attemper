@@ -23,14 +23,10 @@ app:
     delayedInSecond: 5
   executor:
     name: executor
+    contextPath: ${app.executor.name}
   snow-flake:
     data-center-id: 0
     machine-id: 10
-
-grpc:
-    server:
-      name: ${app.executor.name}
-      port: 5231
 
 org:
   quartz:

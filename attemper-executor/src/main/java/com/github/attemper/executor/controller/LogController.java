@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class LogController {
 
     @Autowired
-    private LogService logService;
+    private LogService service;
 
     @PostMapping(Biz2ExecutorAPIPath.APPEND_LOG)
     public CommonResult<Void> appendLog(@RequestBody LogParam logParam) {
-        return CommonResult.putResult(logService.appendLog(logParam));
+        return CommonResult.putResult(service.appendLog(logParam));
     }
 
 }

@@ -1,36 +1,36 @@
 package com.github.attemper.executor.disruptor.container;
 
-import com.github.atemper.grpc.invoking.JobInvokingProto;
-import com.github.atemper.grpc.invoking.JobInvokingProto.JobInvokingRequest;
-import io.grpc.stub.StreamObserver;
+import com.github.attemper.common.param.executor.JobInvokingParam;
+import com.github.attemper.common.result.CommonResult;
+import com.github.attemper.common.result.executor.JobInvokingResult;
 
 public class RequestContainer {
 
-    private JobInvokingRequest jobInvokingRequest;
+    private JobInvokingParam param;
 
-    private StreamObserver<JobInvokingProto.JobInvokingResponse> responseObserver;
+    private CommonResult<JobInvokingResult> result;
 
     public RequestContainer() {
     }
 
-    public JobInvokingRequest getJobInvokingRequest() {
-        return jobInvokingRequest;
+    public JobInvokingParam getParam() {
+        return param;
     }
 
-    public void setJobInvokingRequest(JobInvokingRequest jobInvokingRequest) {
-        this.jobInvokingRequest = jobInvokingRequest;
+    public void setParam(JobInvokingParam param) {
+        this.param = param;
     }
 
-    public StreamObserver<JobInvokingProto.JobInvokingResponse> getResponseObserver() {
-        return responseObserver;
+    public CommonResult<JobInvokingResult> getResult() {
+        return result;
     }
 
-    public void setResponseObserver(StreamObserver<JobInvokingProto.JobInvokingResponse> responseObserver) {
-        this.responseObserver = responseObserver;
+    public void setResult(CommonResult<JobInvokingResult> result) {
+        this.result = result;
     }
 
     public void clear() {
-        jobInvokingRequest = null;
-        responseObserver = null;
+        param = null;
+        result = null;
     }
 }

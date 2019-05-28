@@ -18,11 +18,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-grpc</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>${sdk.groupId}</groupId>
             <artifactId>${sdk.artifactId}-common-executor2biz</artifactId>
             <version>${sdk.version}</version>

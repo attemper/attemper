@@ -40,6 +40,16 @@ public class ProjectService extends BaseServiceAdapter {
         return targetList;
     }
 
+    public Project getRoot() {
+        List<Project> projects = getAll();
+        return findRootProject(projects);
+    }
+
+    public Project getRoot(Map<String, Object> paramMap) {
+        List<Project> projects = getAll(paramMap);
+        return findRootProject(projects);
+    }
+
     public Project save(ProjectSaveParam param) {
         Project project = toProject(param);
         Date now = new Date();

@@ -16,10 +16,6 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
 
-grpc:
-    server:
-      port: 5231
-
 app:
   snow-flake:
     data-center-id: 0

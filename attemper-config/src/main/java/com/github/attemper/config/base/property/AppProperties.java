@@ -82,12 +82,22 @@ public class AppProperties {
     public static class ExecutorConfig {
         private String name;
 
+        private String contextPath;
+
         public String getName() {
             return name;
         }
 
         public void setName(String name) {
             this.name = name;
+        }
+        
+        public String getContextPath() {
+            return contextPath;
+        }
+
+        public void setContextPath(String contextPath) {
+            this.contextPath = contextPath;
         }
     }
 

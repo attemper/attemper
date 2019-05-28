@@ -17,6 +17,8 @@ public class APIPath {
 
     public static final String SCHEDULER = "/scheduler";
 
+    public static final String EXECUTOR = "/executor";
+
     public static final String _SAVE = SdkAPIPath._SAVE;
 
     public static final String _ADD = SdkAPIPath._ADD;
@@ -259,5 +261,10 @@ public class APIPath {
     public static final class SchedulerPath {
 
         public static final String TRIGGER = API_PATH + SCHEDULER + "/trigger";
+    }
+
+    public static final class ExecutorPath {
+
+        public static final String JOB_INVOKING = API_PATH + EXECUTOR + "/invoke";
     }
 }
