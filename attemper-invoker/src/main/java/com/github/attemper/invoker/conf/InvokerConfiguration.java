@@ -1,8 +1,8 @@
 package com.github.attemper.invoker.conf;
 
 import com.github.attemper.config.base.property.AppProperties;
-import com.github.attemper.core.conf.CoreConfiguration;
 import com.github.attemper.invoker.service.JobCallingService;
+import com.github.attemper.security.conf.SecurityConfiguration;
 import com.github.quartz.spring.boot.autoconfigure.SseQuartzAutoConfiguration;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Import({
-        CoreConfiguration.class,
+        SecurityConfiguration.class,
         SseQuartzAutoConfiguration.class
 })
 @EnableAutoConfiguration(exclude = {

@@ -70,7 +70,7 @@ public class ControllerAspect {
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             Method method = signature.getMethod();
             IgnoreLogResult ignoreLogResult = method.getAnnotation(IgnoreLogResult.class);
-            if (result.getResult() != null && (ignoreLogResult == null || !ignoreLogResult.value())) {
+            if (result != null && result.getResult() != null && (ignoreLogResult == null || !ignoreLogResult.value())) {
                 apiLog.setResult(result.getResult().toString());
             }
             return result;
