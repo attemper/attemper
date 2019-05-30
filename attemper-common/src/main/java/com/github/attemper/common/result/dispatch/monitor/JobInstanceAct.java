@@ -43,4 +43,5 @@ public class JobInstanceAct {
 
     protected String logText;
 
+    protected String bizUri;
 }

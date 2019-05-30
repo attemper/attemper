@@ -38,4 +38,6 @@ public class JobInstance {
     protected String logText;
 
     protected String tenantId;
+
+    protected String executorUri;
 }

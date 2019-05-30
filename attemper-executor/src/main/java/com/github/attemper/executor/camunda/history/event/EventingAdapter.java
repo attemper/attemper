@@ -6,10 +6,6 @@ public abstract class EventingAdapter<T extends HistoryEvent> {
 
     protected T historyEvent;
 
-    public EventingAdapter() {
-
-    }
-
     public EventingAdapter(T historyEvent) {
         this.historyEvent = historyEvent;
     }

@@ -5,188 +5,133 @@
 <mapper namespace="com.github.attemper.core.dao.mapper.monitor.JobInstanceMapper">
 
     <insert id="add" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstance">
-        INSERT INTO ${tablePrefix}job_execution (
-            ID,
-            PROC_INST_ID,
-            ROOT_PROC_INST_ID,
-            JOB_NAME,
-            DISPLAY_NAME,
-            TRIGGER_NAME,
-            PROC_DEF_ID,
-            START_TIME,
-            STATUS,
-            LOG_TEXT,
-            TENANT_ID
-        )
-        VALUES
-        (
-            #{id, jdbcType=VARCHAR},
-            #{procInstId, jdbcType=VARCHAR},
-            #{rootProcInstId, jdbcType=VARCHAR},
-            #{jobName, jdbcType=VARCHAR},
-            #{displayName, jdbcType=VARCHAR},
-            #{triggerName, jdbcType=VARCHAR},
-            #{procDefId, jdbcType=VARCHAR},
-            #{startTime, jdbcType=TIMESTAMP},
-            #{status, jdbcType=INTEGER},
-            #{logText, jdbcType=VARCHAR},
-            #{tenantId, jdbcType=VARCHAR}
-        );
-        INSERT INTO ${tablePrefix}job_instance (
-            ID,
-            PROC_INST_ID,
-            ROOT_PROC_INST_ID,
-            JOB_NAME,
-            DISPLAY_NAME,
-            TRIGGER_NAME,
-            PROC_DEF_ID,
-            START_TIME,
-            STATUS,
-            LOG_TEXT,
-            TENANT_ID
-        )
-        VALUES
-        (
-            #{id, jdbcType=VARCHAR},
-            #{procInstId, jdbcType=VARCHAR},
-            #{rootProcInstId, jdbcType=VARCHAR},
-            #{jobName, jdbcType=VARCHAR},
-            #{displayName, jdbcType=VARCHAR},
-            #{triggerName, jdbcType=VARCHAR},
-            #{procDefId, jdbcType=VARCHAR},
-            #{startTime, jdbcType=TIMESTAMP},
-            #{status, jdbcType=INTEGER},
-            #{logText, jdbcType=VARCHAR},
-            #{tenantId, jdbcType=VARCHAR}
-        )
+        INSERT INTO ${tablePrefix}job_execution
+        <include refid="insertSql"/>
+        ;
+        INSERT INTO ${tablePrefix}job_instance
+        <include refid="insertSql"/>
     </insert>
+
+    <sql id="insertSql">
+        (
+            ID,
+            PROC_INST_ID,
+            ROOT_PROC_INST_ID,
+            JOB_NAME,
+            DISPLAY_NAME,
+            TRIGGER_NAME,
+            PROC_DEF_ID,
+            START_TIME,
+            STATUS,
+            LOG_TEXT,
+            EXECUTOR_URI,
+            TENANT_ID
+        )
+        VALUES
+        (
+            #{id, jdbcType=VARCHAR},
+            #{procInstId, jdbcType=VARCHAR},
+            #{rootProcInstId, jdbcType=VARCHAR},
+            #{jobName, jdbcType=VARCHAR},
+            #{displayName, jdbcType=VARCHAR},
+            #{triggerName, jdbcType=VARCHAR},
+            #{procDefId, jdbcType=VARCHAR},
+            #{startTime, jdbcType=TIMESTAMP},
+            #{status, jdbcType=INTEGER},
+            #{logText, jdbcType=VARCHAR},
+            #{executorUri, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+        )
+    </sql>
 
     <update id="update" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstance">
         UPDATE ${tablePrefix}job_execution j
-        SET
-        PROC_INST_ID = #{procInstId, jdbcType=VARCHAR},
-        ROOT_PROC_INST_ID = #{rootProcInstId, jdbcType=VARCHAR},
-        PROC_DEF_ID = #{procDefId, jdbcType=VARCHAR},
-        END_TIME = #{endTime, jdbcType=TIMESTAMP},
-        DURATION = #{duration, jdbcType=INTEGER},
-        STATUS = #{status, jdbcType=INTEGER},
-        LOG_TEXT = #{logText, jdbcType=VARCHAR}
-        <where>
-            <include refid="condId"/>
-        </where>
+        <include refid="updateSql"/>
         ;
         UPDATE ${tablePrefix}job_instance j
-        SET
-        PROC_INST_ID = #{procInstId, jdbcType=VARCHAR},
-        ROOT_PROC_INST_ID = #{rootProcInstId, jdbcType=VARCHAR},
-        PROC_DEF_ID = #{procDefId, jdbcType=VARCHAR},
-        END_TIME = #{endTime, jdbcType=TIMESTAMP},
-        DURATION = #{duration, jdbcType=INTEGER},
-        STATUS = #{status, jdbcType=INTEGER},
-        LOG_TEXT = #{logText, jdbcType=VARCHAR}
+        <include refid="updateSql"/>
+    </update>
+
+    <sql id="updateSql">
+        <set>
+            PROC_INST_ID = #{procInstId, jdbcType=VARCHAR},
+            ROOT_PROC_INST_ID = #{rootProcInstId, jdbcType=VARCHAR},
+            PROC_DEF_ID = #{procDefId, jdbcType=VARCHAR},
+            END_TIME = #{endTime, jdbcType=TIMESTAMP},
+            DURATION = #{duration, jdbcType=INTEGER},
+            STATUS = #{status, jdbcType=INTEGER},
+            LOG_TEXT = #{logText, jdbcType=VARCHAR}
+        </set>
         <where>
             <include refid="condId"/>
         </where>
-    </update>
-
+    </sql>
 
     <insert id="addAct" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstanceAct">
-        INSERT INTO ${tablePrefix}job_execution_act (
-            ID,
-            ACT_INST_ID,
-            PARENT_ACT_INST_ID_,
-            EXECUTION_ID,
-            PROC_INST_ID,
-            ROOT_PROC_INST_ID,
-            ACT_ID,
-            ACT_NAME,
-            ACT_TYPE,
-            START_TIME,
-            END_TIME,
-            DURATION,
-            STATUS,
-            LOG_KEY,
-            LOG_TEXT
-        )
-        VALUES
-        (
-            #{id, jdbcType=VARCHAR},
-            #{actInstId, jdbcType=VARCHAR},
-            #{parentActInstId, jdbcType=VARCHAR},
-            #{executionId, jdbcType=VARCHAR},
-            #{procInstId, jdbcType=VARCHAR},
-            #{rootProcInstId, jdbcType=VARCHAR},
-            #{actId, jdbcType=VARCHAR},
-            #{actName, jdbcType=VARCHAR},
-            #{actType, jdbcType=VARCHAR},
-            #{startTime, jdbcType=TIMESTAMP},
-            #{endTime, jdbcType=TIMESTAMP},
-            #{duration, jdbcType=INTEGER},
-            #{status, jdbcType=INTEGER},
-            #{logKey, jdbcType=VARCHAR},
-            #{logText, jdbcType=VARCHAR}
-        );
-        INSERT INTO ${tablePrefix}job_instance_act (
-            ID,
-            ACT_INST_ID,
-            PARENT_ACT_INST_ID_,
-            EXECUTION_ID,
-            PROC_INST_ID,
-            ROOT_PROC_INST_ID,
-            ACT_ID,
-            ACT_NAME,
-            ACT_TYPE,
-            START_TIME,
-            END_TIME,
-            DURATION,
-            STATUS,
-            LOG_KEY,
-            LOG_TEXT
-        )
-        VALUES
-        (
-            #{id, jdbcType=VARCHAR},
-            #{actInstId, jdbcType=VARCHAR},
-            #{parentActInstId, jdbcType=VARCHAR},
-            #{executionId, jdbcType=VARCHAR},
-            #{procInstId, jdbcType=VARCHAR},
-            #{rootProcInstId, jdbcType=VARCHAR},
-            #{actId, jdbcType=VARCHAR},
-            #{actName, jdbcType=VARCHAR},
-            #{actType, jdbcType=VARCHAR},
-            #{startTime, jdbcType=TIMESTAMP},
-            #{endTime, jdbcType=TIMESTAMP},
-            #{duration, jdbcType=INTEGER},
-            #{status, jdbcType=INTEGER},
-            #{logKey, jdbcType=VARCHAR},
-            #{logText, jdbcType=VARCHAR}
-        )
+        INSERT INTO ${tablePrefix}job_execution_act
+        <include refid="insertActSql"/>
+        ;
+        INSERT INTO ${tablePrefix}job_instance_act
+        <include refid="insertActSql"/>
     </insert>
+
+    <sql id="insertActSql">
+        (
+            ID,
+            ACT_INST_ID,
+            PARENT_ACT_INST_ID_,
+            EXECUTION_ID,
+            PROC_INST_ID,
+            ROOT_PROC_INST_ID,
+            ACT_ID,
+            ACT_NAME,
+            ACT_TYPE,
+            START_TIME,
+            END_TIME,
+            DURATION,
+            STATUS,
+            LOG_KEY,
+            LOG_TEXT
+        )
+        VALUES
+        (
+            #{id, jdbcType=VARCHAR},
+            #{actInstId, jdbcType=VARCHAR},
+            #{parentActInstId, jdbcType=VARCHAR},
+            #{executionId, jdbcType=VARCHAR},
+            #{procInstId, jdbcType=VARCHAR},
+            #{rootProcInstId, jdbcType=VARCHAR},
+            #{actId, jdbcType=VARCHAR},
+            #{actName, jdbcType=VARCHAR},
+            #{actType, jdbcType=VARCHAR},
+            #{startTime, jdbcType=TIMESTAMP},
+            #{endTime, jdbcType=TIMESTAMP},
+            #{duration, jdbcType=INTEGER},
+            #{status, jdbcType=INTEGER},
+            #{logKey, jdbcType=VARCHAR},
+            #{logText, jdbcType=VARCHAR}
+        )
+    </sql>
 
     <update id="updateAct" parameterType="com.github.attemper.common.result.dispatch.monitor.JobInstanceAct">
         UPDATE ${tablePrefix}job_execution_act j
-        <set>
-            STATUS = #{status, jdbcType=INTEGER},
-            END_TIME = #{endTime, jdbcType=TIMESTAMP},
-            DURATION = #{duration, jdbcType=INTEGER},
-            <if test="logKey != null">
-                LOG_KEY = IF(LOG_KEY IS NULL, #{logKey, jdbcType=VARCHAR}, concat(LOG_KEY, ',',
-                #{logKey, jdbcType=VARCHAR})),
-            </if>
-            <if test="logText != null">
-                LOG_TEXT = IF(LOG_TEXT IS NULL, #{logText, jdbcType=VARCHAR}, concat(LOG_TEXT, ',',
-                #{logText, jdbcType=VARCHAR})),
-            </if>
-        </set>
-        <where>
-            <include refid="condActInstId"/>
-        </where>
+        <include refid="updateActSql"/>
         ;
         UPDATE ${tablePrefix}job_instance_act j
+        <include refid="updateActSql"/>
+    </update>
+
+    <sql id="updateActSql">
         <set>
-            STATUS = #{status, jdbcType=INTEGER},
-            END_TIME = #{endTime, jdbcType=TIMESTAMP},
-            DURATION = #{duration, jdbcType=INTEGER},
+            <if test="status != null">
+                STATUS = #{status, jdbcType=INTEGER},
+            </if>
+            <if test="endTime != null">
+                END_TIME = #{endTime, jdbcType=TIMESTAMP},
+            </if>
+            <if test="duration != null">
+                DURATION = #{duration, jdbcType=INTEGER},
+            </if>
             <if test="logKey != null">
                 LOG_KEY = IF(LOG_KEY IS NULL, #{logKey, jdbcType=VARCHAR}, concat(LOG_KEY, ',',
                 #{logKey, jdbcType=VARCHAR})),
@@ -199,7 +144,7 @@
         <where>
             <include refid="condActInstId"/>
         </where>
-    </update>
+    </sql>
 
     <select id="list" parameterType="map" resultType="com.github.attemper.common.result.dispatch.monitor.JobInstance">
         SELECT * FROM (

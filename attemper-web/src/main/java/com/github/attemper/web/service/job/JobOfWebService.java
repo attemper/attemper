@@ -300,7 +300,7 @@ public class JobOfWebService extends BaseServiceAdapter {
                     return SpringContextAware.getBean(JobCallingService.class).invoke(jobName, tenantId);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
-                    throw e;
+                    return null;
                 }
             });
         }

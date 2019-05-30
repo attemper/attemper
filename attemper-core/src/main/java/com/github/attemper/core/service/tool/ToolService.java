@@ -1,6 +1,5 @@
 package com.github.attemper.core.service.tool;
 
-import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.config.base.property.AppProperties;
@@ -33,10 +32,11 @@ public class ToolService {
     }
 
     public Boolean ping(String uri, Integer type) {
+        if (uri == null) {
+            log.error("uri is null");
+            return false;
+        }
         try {
-            if (uri == null) {
-                throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, "uri is null");
-            }
             log.debug(uri);
             uri = uri.replace("https://", "").replace("http://", "");
             if (type == UriType.DiscoveryClient.getType()) {
@@ -57,7 +57,8 @@ public class ToolService {
             }
             return true;
         } catch (Exception e) {
-            throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
+            log.error(e.getMessage(), e);
+            return false;
         }
     }
 

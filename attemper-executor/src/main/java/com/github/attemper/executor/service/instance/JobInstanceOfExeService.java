@@ -4,8 +4,8 @@ import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.monitor.JobInstance;
 import com.github.attemper.common.result.dispatch.monitor.JobInstanceAct;
 import com.github.attemper.core.dao.mapper.monitor.JobInstanceMapper;
+import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.executor.service.BaseOfExeServiceAdapter;
-import com.github.attemper.executor.service.operate.JobOfExeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -19,11 +19,11 @@ public class JobInstanceOfExeService extends BaseOfExeServiceAdapter {
     private JobInstanceMapper mapper;
 
     @Autowired
-    private JobOfExeService jobOfExeService;
+    private JobService jobService;
 
     public void add(JobInstance jobInstance) {
         if (jobInstance.getDisplayName() == null) {
-            Job job = jobOfExeService.get(jobInstance.getJobName(), jobInstance.getTenantId());
+            Job job = jobService.get(jobInstance.getJobName(), jobInstance.getTenantId());
             if (job != null) {
                 jobInstance.setDisplayName(job.getDisplayName());
             }

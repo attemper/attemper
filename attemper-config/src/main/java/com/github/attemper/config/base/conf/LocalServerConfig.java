@@ -32,6 +32,6 @@ public class LocalServerConfig implements ApplicationListener<WebServerInitializ
     }
 
     public String getRequestPath() {
-        return getLocalHost() + getPort();
+        return new StringBuilder(getLocalHost()).append(":").append(getPort()).toString();
     }
 }

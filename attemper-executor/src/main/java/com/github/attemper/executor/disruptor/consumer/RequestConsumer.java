@@ -6,6 +6,7 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.monitor.JobInstance;
 import com.github.attemper.common.result.executor.JobInvokingResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
+import com.github.attemper.config.base.conf.LocalServerConfig;
 import com.github.attemper.executor.disruptor.container.RequestContainer;
 import com.github.attemper.executor.service.instance.JobInstanceOfExeService;
 import com.lmax.disruptor.WorkHandler;
@@ -57,6 +58,7 @@ public class RequestConsumer implements WorkHandler<RequestContainer> {
                 .jobName(request.getJobName())
                 .triggerName(request.getTriggerName())
                 .startTime(new Date())
+                .executorUri(SpringContextAware.getBean(LocalServerConfig.class).getRequestPath())
                 .tenantId(request.getTenantId())
                 .build();
         jobInstance.setStatus(JobInstanceStatus.RUNNING.getStatus());

@@ -31,7 +31,18 @@ public class ProjectService extends BaseServiceAdapter {
         return getAll(paramMap);
     }
 
-    public List<Project> getAll(Map<String, Object> paramMap) {
+    /**
+     * get all projects by tenantId
+     *
+     * @param tenantId
+     * @return
+     */
+    public List<Project> getAll(String tenantId) {
+        Map<String, Object> paramMap = injectTenantIdToMap(null, tenantId);
+        return getAll(paramMap);
+    }
+
+    private List<Project> getAll(Map<String, Object> paramMap) {
         List<Project> sourceList = mapper.getAll(paramMap);
         List<Project> targetList = new ArrayList<>(sourceList.size());
         Project rootProject = findRootProject(sourceList);
@@ -40,12 +51,12 @@ public class ProjectService extends BaseServiceAdapter {
         return targetList;
     }
 
-    public Project getRoot() {
-        List<Project> projects = getAll();
-        return findRootProject(projects);
+    public Project getRoot(String tenantId) {
+        Map<String, Object> paramMap = injectTenantIdToMap(null, tenantId);
+        return getRoot(paramMap);
     }
 
-    public Project getRoot(Map<String, Object> paramMap) {
+    private Project getRoot(Map<String, Object> paramMap) {
         List<Project> projects = getAll(paramMap);
         return findRootProject(projects);
     }
@@ -127,12 +138,23 @@ public class ProjectService extends BaseServiceAdapter {
         return listInfo(paramMap);
     }
 
+    public List<ProjectInfo> listInfo(String projectName, String tenantId) {
+        Map<String, Object> paramMap = injectTenantIdToMap(new ProjectGetParam(projectName), tenantId);
+        return listInfo(paramMap);
+    }
+
     public List<ProjectInfo> listInfo(Map<String, Object> paramMap) {
         return mapper.listInfo(paramMap);
     }
 
     public List<String> listExecutor(ProjectGetParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
+        return mapper.listExecutor(paramMap);
+    }
+
+    public List<String> listExecutor(String projectName, String tenantId) {
+        Map<String, Object> paramMap = injectTenantIdToMap(new ProjectGetParam(projectName), tenantId);
+        ;
         return mapper.listExecutor(paramMap);
     }
 
@@ -144,4 +166,5 @@ public class ProjectService extends BaseServiceAdapter {
         }
         return null;
     }
+
 }

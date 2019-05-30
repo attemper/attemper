@@ -66,4 +66,19 @@ public class JobService extends BaseServiceAdapter {
         Page<ArgAllocatedResult> list = (Page<ArgAllocatedResult>) mapper.listArg(paramMap);
         return PageUtil.toResultMap(list);
     }
+
+    public Job get(String jobName, String tenantId) {
+        return mapper.get(injectTenantIdToMap(JobGetParam.builder().jobName(jobName).build(), tenantId));
+    }
+
+    /**
+     * get project by jobName and tenantId
+     *
+     * @param jobName
+     * @param tenantId
+     * @return
+     */
+    public Project getProject(String jobName, String tenantId) {
+        return mapper.getProject(injectTenantIdToMap(JobGetParam.builder().jobName(jobName).build(), tenantId));
+    }
 }

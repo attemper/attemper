@@ -24,6 +24,7 @@ app:
     delayedInSecond: 5
   executor:
     name: executor
+    context-path: /
   snow-flake:
     data-center-id: 0
     machine-id: 1

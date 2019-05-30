@@ -34,8 +34,4 @@ public class AsyncHttpTask extends HttpTask {
         return Executor2BizAPIPath.ROUTER_PATH_ASYNC;
     }
 
-    @Override
-    protected int injectReadTimeout() {
-        return 300;
-    }
 }

@@ -2,19 +2,23 @@ package com.github.attemper.executor.task.internal;
 
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.common.result.dispatch.job.Job;
+import com.github.attemper.common.result.dispatch.monitor.JobInstanceAct;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.common.result.dispatch.project.ProjectInfo;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.conf.LocalServerConfig;
+import com.github.attemper.core.service.job.JobService;
+import com.github.attemper.core.service.project.ProjectService;
 import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.executor.constant.PropertyConstants;
-import com.github.attemper.executor.service.operate.JobOfExeService;
-import com.github.attemper.executor.service.operate.ProjectOfExeService;
+import com.github.attemper.executor.service.instance.JobInstanceOfExeService;
 import com.github.attemper.executor.util.CamundaUtil;
 import com.github.attemper.java.sdk.common.executor2biz.param.BeanParam;
 import com.github.attemper.java.sdk.common.executor2biz.param.ExecutionParam;
 import com.github.attemper.java.sdk.common.executor2biz.param.RouterParam;
 import com.github.attemper.java.sdk.common.executor2biz.param.TaskExecutionParam;
+import com.github.attemper.java.sdk.common.result.execution.LogResult;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -28,12 +32,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 public abstract class HttpTask implements JavaDelegate {
@@ -49,20 +52,26 @@ public abstract class HttpTask implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
         String jobName = CamundaUtil.extractKeyFromProcessDefinitionId(execution.getProcessDefinitionId());
-        resolveExtensionElement(jobName, execution);
-        String url = resolveUrl(jobName, execution.getTenantId());
-        WebClient webClient = buildWebClient(url, injectReadTimeout());
+        JobService jobService = SpringContextAware.getBean(JobService.class);
+        Job job = jobService.get(jobName, execution.getTenantId());
+        resolveExtensionElement(execution);
+        String url = resolveUrl(jobName, execution.getTenantId()) + (subUrl == null ? injectRouterPath() : subUrl);
+        saveBizUrl(execution, url);
+        WebClient webClient = buildWebClient(url, job);
         executeIntern(webClient, execution);
     }
 
-    protected <V> V invoke(WebClient webClient, DelegateExecution execution, Class<V> v) {
+    protected <V extends LogResult> V invoke(WebClient webClient, DelegateExecution execution, Class<V> v) {
         return webClient
                 .method(this.requestMethod)
-                .uri(subUrl == null ? injectRouterPath() : subUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .syncBody(buildParamMap(execution))
                 .retrieve()
+                .onStatus(e -> e.is4xxClientError(), resp -> Mono.error(new RTException(resp.rawStatusCode(), resp.statusCode().getReasonPhrase())))
                 .bodyToMono(v)
+                .doOnError(WebClientResponseException.class, err -> {
+                    throw new RTException(500);
+                })
                 .block();
     }
 
@@ -92,11 +101,11 @@ public abstract class HttpTask implements JavaDelegate {
         }
     }
 
-    private WebClient buildWebClient(String url, int readTimeout) {
+    private WebClient buildWebClient(String url, Job job) {
         HttpClient httpClient = HttpClient.create()
                 .tcpConfiguration(client ->
                         client.doOnConnected(conn -> conn
-                                .addHandlerLast(new ReadTimeoutHandler(readTimeout))));
+                                .addHandlerLast(new ReadTimeoutHandler(job.getTimeout()))));
         return WebClient.builder().baseUrl(url).clientConnector(new ReactorClientHttpConnector(httpClient)).build();
     }
 
@@ -106,57 +115,32 @@ public abstract class HttpTask implements JavaDelegate {
      * @return
      */
     private String resolveUrl(String jobName, String tenantId) {
-        JobOfExeService jobOfExeService = SpringContextAware.getBean(JobOfExeService.class);
-        ProjectOfExeService projectOfExeService = SpringContextAware.getBean(ProjectOfExeService.class);
-        Project project = jobOfExeService.getProject(jobName, tenantId);
+        JobService jobService = SpringContextAware.getBean(JobService.class);
+        ProjectService projectService = SpringContextAware.getBean(ProjectService.class);
+        Project project = jobService.getProject(jobName, tenantId);
         if (project == null) {
-            // find root
-            List<Project> allProjects = projectOfExeService.getAll(tenantId);
-            if (allProjects.isEmpty()) {
-                throw new RTException(500);
-            } else {
-                for (Project item : allProjects) {
-                    if (StringUtils.isBlank(item.getParentProjectName())) {
-                        // find root already
-                        project = item;
-                        break;
-                    }
-                }
-            }
-        }
-        if (project == null) {
-            throw new RTException(500);
+            project = projectService.getRoot(tenantId);
         }
         String projectName = project.getProjectName();
-        List<ProjectInfo> allProjectInfo = projectOfExeService.listInfo(projectName, tenantId);
+        List<ProjectInfo> allProjectInfo = projectService.listInfo(projectName, tenantId);
         if (allProjectInfo.isEmpty()) {
             throw new RTException(500);
         }
 
-        List<String> urls = new ArrayList<>(4);  //may be one service has <=4 endpoint
+        Set<String> urls = new HashSet<>(4);  //may be one service has <=4 endpoint
         for (ProjectInfo item : allProjectInfo) {
             if (item.getType() == UriType.DiscoveryClient.getType()) {
                 DiscoveryClient discoveryClient = SpringContextAware.getBean(DiscoveryClient.class);
                 List<ServiceInstance> instances = discoveryClient.getInstances(item.getUri());
-                if (instances.isEmpty()) {
-                    throw new RTException(500);
-                } else {
-                    instances.forEach(instance -> {
-                        try {
-                            pingThenAdd(urls, instance.getUri().toString());
-                        } catch (RTException e) {
-                            log.error(e.getMsg(), e);
-                        }
-                    });
-                }
+                instances.forEach(instance -> {
+                    pingThenAdd(urls, instance.getUri().toString());
+                });
             }
         }
         if (urls.isEmpty()) {
             for (ProjectInfo item : allProjectInfo) {
                 if (item.getType() == UriType.IpWithPort.getType() || item.getType() == UriType.DomainName.getType()) {
                     pingThenAdd(urls, item.getUri());
-                } else {
-                    throw new RTException(500);
                 }
             }
         }
@@ -164,8 +148,7 @@ public abstract class HttpTask implements JavaDelegate {
             throw new RTException(500);
         }
         int randomIndex = (int) (Math.random() * urls.size());
-        String appUrl = urls.get(randomIndex) + optimizeContextPath(project.getContextPath());
-        return appUrl;
+        return urls.toArray()[randomIndex] + optimizeContextPath(project.getContextPath());
     }
 
     /**
@@ -173,7 +156,7 @@ public abstract class HttpTask implements JavaDelegate {
      * @param urls
      * @param uri
      */
-    private void pingThenAdd(List<String> urls, String uri) {
+    private void pingThenAdd(Set<String> urls, String uri) {
         if (SpringContextAware.getBean(ToolService.class).ping(uri, UriType.IpWithPort.getType())) {
             urls.add(uri);
         }
@@ -187,7 +170,7 @@ public abstract class HttpTask implements JavaDelegate {
         return contextPath.startsWith("/") ? contextPath : "/" + contextPath;
     }
 
-    private void resolveExtensionElement(String jobName, DelegateExecution execution) {
+    private void resolveExtensionElement(DelegateExecution execution) {
         Collection<ModelElementInstance> elements = execution.getBpmnModelElementInstance().getExtensionElements().getElements();
         elements.forEach(item -> {
             if (item instanceof CamundaPropertiesImpl) {
@@ -211,14 +194,16 @@ public abstract class HttpTask implements JavaDelegate {
         if (this.requestMethod == null) {
             this.requestMethod = HttpMethod.POST;
         }
-        /*if (this.subUrl == null) {
-            this.subUrl = "/" + jobName + "/" + execution.getCurrentActivityId();
-        }*/
+    }
+
+    private void saveBizUrl(DelegateExecution execution, String url) {
+        JobInstanceOfExeService jobInstanceOfExeService = SpringContextAware.getBean(JobInstanceOfExeService.class);
+        JobInstanceAct jobInstanceAct = JobInstanceAct.builder().actInstId(execution.getActivityInstanceId()).bizUri(url).build();
+        jobInstanceOfExeService.updateAct(jobInstanceAct);
     }
 
     protected abstract void executeIntern(WebClient webClient, DelegateExecution execution);
 
     protected abstract String injectRouterPath();
 
-    protected abstract int injectReadTimeout();
 }

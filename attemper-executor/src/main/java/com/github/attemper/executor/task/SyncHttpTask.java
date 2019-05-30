@@ -25,9 +25,4 @@ public class SyncHttpTask extends HttpTask {
     protected String injectRouterPath() {
         return Executor2BizAPIPath.ROUTER_PATH_SYNC;
     }
-
-    @Override
-    protected int injectReadTimeout() {
-        return 600;
-    }
 }
