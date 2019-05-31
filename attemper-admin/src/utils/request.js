@@ -57,7 +57,7 @@ service.interceptors.response.use(
         duration: 5 * 1000,
         showClose: true
       })
-      throw new Error(data.msg)
+      throw new Error(data.code + ':' + data.msg)
     }
     return { data, status }
   },

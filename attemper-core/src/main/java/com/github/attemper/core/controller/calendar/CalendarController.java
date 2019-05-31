@@ -1,9 +1,9 @@
 package com.github.attemper.core.controller.calendar;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.calendar.CalendarGetParam;
-import com.github.attemper.common.param.dispatch.calendar.DayCalendarConfigRemoveParam;
-import com.github.attemper.common.param.dispatch.calendar.DayCalendarConfigSaveParam;
+import com.github.attemper.common.param.dispatch.calendar.DayCalendarListParam;
+import com.github.attemper.common.param.dispatch.calendar.DayCalendarRemoveParam;
+import com.github.attemper.common.param.dispatch.calendar.DayCalendarSaveParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.calendar.CalendarInfo;
 import com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig;
@@ -30,23 +30,23 @@ public class CalendarController {
     }
 
     @ApiOperation("Save day of calendar")
-    @ApiImplicitParam(value = "DayCalendarConfigSaveParam", name = "param", dataType = "DayCalendarConfigSaveParam", required = true)
+    @ApiImplicitParam(value = "DayCalendarSaveParam", name = "param", dataType = "DayCalendarSaveParam", required = true)
     @PostMapping(APIPath.CalendarPath.SAVE_DAY)
-    public CommonResult<Void> saveDay(@RequestBody DayCalendarConfigSaveParam param) {
+    public CommonResult<Void> saveDay(@RequestBody DayCalendarSaveParam param) {
         return CommonResult.putResult(service.saveDay(param));
     }
 
     @ApiOperation("Get days of calendar")
-    @ApiImplicitParam(value = "CalendarGetParam", name = "param", dataType = "CalendarGetParam", required = true)
+    @ApiImplicitParam(value = "DayCalendarListParam", name = "param", dataType = "DayCalendarListParam", required = true)
     @GetMapping(value = APIPath.CalendarPath.LIST_DAY)
-    public CommonResult<List<DayCalendarConfig>> listDay(CalendarGetParam param) {
+    public CommonResult<List<DayCalendarConfig>> listDay(DayCalendarListParam param) {
         return CommonResult.putResult(service.listDay(param));
     }
 
     @ApiOperation("Remove day of calendar")
-    @ApiImplicitParam(value = "DayCalendarConfigRemoveParam", name = "param", dataType = "DayCalendarConfigRemoveParam", required = true)
+    @ApiImplicitParam(value = "DayCalendarRemoveParam", name = "param", dataType = "DayCalendarRemoveParam", required = true)
     @DeleteMapping(value = APIPath.CalendarPath.REMOVE_DAY)
-    public CommonResult<Void> removeDay(@RequestBody DayCalendarConfigRemoveParam param) {
+    public CommonResult<Void> removeDay(@RequestBody DayCalendarRemoveParam param) {
         return CommonResult.putResult(service.removeDay(param));
     }
 }

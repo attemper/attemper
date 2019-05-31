@@ -13,7 +13,7 @@ public class DayCalendarConfig {
 
     protected String calendarName;
 
-    protected String dayName;
+    protected Integer dayNum;
 
     protected String remark;
 

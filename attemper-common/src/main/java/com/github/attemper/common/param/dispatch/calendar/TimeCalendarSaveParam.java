@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimeCalendarConfigSaveParam extends CalendarConfigSaveParam {
+public class TimeCalendarSaveParam extends CalendarConfigSaveParam {
 
     protected String startTime;
 

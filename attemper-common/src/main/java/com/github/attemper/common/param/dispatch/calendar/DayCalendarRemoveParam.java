@@ -1,7 +1,8 @@
 package com.github.attemper.common.param.dispatch.calendar;
 
+import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.param.CommonParam;
-import com.github.attemper.java.sdk.common.util.DateUtil;
+import com.github.attemper.common.util.DateTimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,18 +13,18 @@ import org.apache.commons.lang.StringUtils;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DayCalendarConfigRemoveParam implements CommonParam {
+public class DayCalendarRemoveParam implements CommonParam {
 
     protected String calendarName;
 
-    protected String dayName;
+    protected Integer dayNum;
 
     @Override
     public String validate() {
         if (StringUtils.isBlank(calendarName)) {
             return "6700";
         }
-        if (DateUtil.parseDateStrToYYYYMMDD(dayName) == null){
+        if (DateTimeUtil.parseDateStr(String.valueOf(dayNum), CommonConstants.yyyyMMdd) == null) {
             return "6705";
         }
         return null;

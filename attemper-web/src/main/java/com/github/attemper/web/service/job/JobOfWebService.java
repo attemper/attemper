@@ -88,7 +88,9 @@ public class JobOfWebService extends BaseServiceAdapter {
             try {
                 for (CommonTriggerResult item : list) {
                     Trigger trigger = scheduler.getTrigger(new TriggerKey(item.getTriggerName(), injectTenantId()));
-                    nextDateList.addAll(TriggerUtils.computeFireTimes((OperableTrigger) trigger, null, 1));// TODO calendar
+                    if (trigger != null) {
+                        nextDateList.addAll(TriggerUtils.computeFireTimes((OperableTrigger) trigger, null, 1));// TODO calendar
+                    }
                 }
             } catch (SchedulerException e) {
                 log.error(e.getMessage(), e);

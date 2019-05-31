@@ -60,7 +60,8 @@ const jobRouter = {
       meta: {
         title: 'calendar',
         icon: 'calendar',
-        noCache: false
+        noCache: false,
+        buttons: ['saveDate']
       }
     },
     {

@@ -17,16 +17,14 @@
             <when test="count == 0">
                 INSERT INTO ${tablePrefix}calendar_day (
                 CALENDAR_NAME,
-                DAY_NAME,
-                REMARK,
-                TENANT_ID
+                DAY_NUM,
+                REMARK
                 )
                 VALUES
                 (
                 #{calendarName, jdbcType=VARCHAR},
-                #{dayName, jdbcType=VARCHAR},
-                #{remark, jdbcType=VARCHAR},
-                #{tenantId, jdbcType=VARCHAR}
+                #{dayNum, jdbcType=INTEGER},
+                #{remark, jdbcType=VARCHAR}
                 )
             </when>
             <otherwise>
@@ -54,15 +52,25 @@
 
     <select id="listDay" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig">
-        SELECT cd.DAY_NAME, cd.REMARK
+        SELECT cd.DAY_NUM, cd.REMARK
         FROM ${tablePrefix}calendar c
         JOIN ${tablePrefix}calendar_day cd
         USING(CALENDAR_NAME, TENANT_ID)
         <where>
+            <if test="lowerDayNum != null">
+                <![CDATA[
+                  AND DAY_NUM >= #{lowerDayNum, jdbcType=INTEGER}
+                ]]>
+            </if>
+            <if test="upperDayNum != null">
+                <![CDATA[
+                  AND DAY_NUM >= #{upperDayNum, jdbcType=INTEGER}
+                ]]>
+            </if>
             <include refid="condCalendarName"/>
             <include refid="condTenantId"/>
         </where>
-        ORDER BY DAY_NAME DESC
+        ORDER BY DAY_NUM
     </select>
 
     <delete id="deleteDay" parameterType="map">
@@ -74,8 +82,8 @@
     </delete>
 
     <sql id="condDayName">
-        <if test="dayName != null">
-            and DAY_NAME = #{dayName, jdbcType=VARCHAR}
+        <if test="dayNum != null">
+            and DAY_NUM = #{dayNum, jdbcType=INTEGER}
         </if>
     </sql>
 

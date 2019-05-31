@@ -14,7 +14,7 @@ public abstract class BaseServiceAdapter implements BaseService {
 
     @Override
     public String injectTenantId() {
-        return TenantHolder.get().getUserName();
+        return TenantHolder.get() != null ? TenantHolder.get().getUserName() : null;
     }
 
     protected Map<String, Object> injectTenantIdToMap(Object obj, String tenantId) {
@@ -29,7 +29,7 @@ public abstract class BaseServiceAdapter implements BaseService {
 
     protected Map<String, Object> injectTenantIdExceptAdminToMap(Object obj) {
         Map<String, Object> paramMap = obj2Map(obj);
-        if (Store.getAdminTenant().getUserName().equals(injectTenantId())) {
+        if (injectTenantId() == null || Store.getAdminTenant().getUserName().equals(injectTenantId())) {
             paramMap.put(CommonConstants.tenantId, null);
         } else {
             paramMap.put(CommonConstants.tenantId, injectTenantId());

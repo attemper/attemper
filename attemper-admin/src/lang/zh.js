@@ -106,7 +106,8 @@ export default {
     showAll: '显示全部',
     highSearch: '高级查询',
     exclude: '排除',
-    connectTest: '连接测试'
+    connectTest: '连接测试',
+    saveDate: '保存（日期修改）'
   },
   tip: {
     search: '请输入查询关键字',

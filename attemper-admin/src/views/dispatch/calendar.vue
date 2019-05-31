@@ -9,7 +9,7 @@
         </el-select>
         <el-checkbox v-model="excluded" :disabled="!dayObj" class="cell">{{ $t('actions.exclude') }}</el-checkbox>
         <el-input v-model="remark" :disabled="!dayObj" class="cell" :placeholder="$t('placeholders.remark')" />
-        <el-button :disabled="!dayObj" class="cell" type="success" @click="save">{{ $t('actions.save') }}</el-button>
+        <el-button v-access="'calendar-saveDate'" :disabled="!dayObj" class="cell" type="success" @click="saveDate">{{ $t('actions.save') }}</el-button>
       </el-aside>
       <el-main>
         <v-calendar
@@ -29,7 +29,10 @@
 <script>
 import { listReq, saveDayReq, removeDayReq, listDayReq } from '@/api/dispatch/calendar'
 import { load } from '@/constant'
+import access from '@/directive/access/index.js'
+
 export default {
+  directives: { access },
   data() {
     return {
       dayObj: null,
@@ -83,14 +86,14 @@ export default {
         this.getCalendarConfigs()
       })
     },
-    save() {
+    saveDate() {
       const operatedDay = this.formatDay(this.dayObj)
       const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + operatedDay + '</span></p>'
       this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
         .then(() => {
           const data = {
             calendarName: this.currentCalendar.calendarName,
-            dayName: operatedDay,
+            dayNum: operatedDay,
             remark: this.remark
           }
           const request = this.excluded ? saveDayReq(data) : removeDayReq(data)
@@ -109,11 +112,11 @@ export default {
         listDayReq(this.currentCalendar).then(res => {
           this.calendarConfigs = res.data.result
           this.calendarConfigs.forEach(day => {
-            const arr = day.dayName.split('-')
+            const dayNumStr = String(day.dayNum)
             const attr = {
-              day: day.dayName,
+              day: day.dayNum,
               remark: day.remark,
-              dates: new Date(parseInt(arr[0]), parseInt(arr[1]) - 1, parseInt(arr[2]))
+              dates: new Date(parseInt(dayNumStr.substring(0, 4)), parseInt(dayNumStr.substring(4, 6)) - 1, parseInt(dayNumStr.substring(6, 8)))
             }
             if (attr.dates.getDay() === 0 || attr.dates.getDay() === 6) {
               attr.highlight = 'gray'
@@ -142,10 +145,10 @@ export default {
       this.remark = target ? target.remark : null
     },
     formatDay(day) {
-      return day.year + '-' + this.addZero(day.month) + '-' + this.addZero(day.day)
+      return day.year + this.addZero(day.month) + this.addZero(day.day)
     },
     addZero(key) {
-      return key < 10 ? '0' + key : '' + key
+      return (key < 10 ? '0' : '') + key
     },
     loadConst() {
       load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
