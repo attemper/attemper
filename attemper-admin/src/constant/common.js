@@ -44,20 +44,28 @@ export const rawTypes = [
   }
 ]
 
-export const specTypes = [
+export const sqlTypes = [
   {
     label: 'Sql',
     value: 30
   }
 ]
 
+export const tradeDateTypes = [
+  {
+    label: 'Trade Date',
+    value: 40
+  }
+]
+
 export const argTypes = [
   ...genericTypes,
   ...rawTypes,
-  ...specTypes
+  ...sqlTypes,
+  ...tradeDateTypes
 ]
 
-export const dbInfos = [
+export const databases = [
   {
     label: 'MySQL',
     value: 'com.mysql.jdbc.Driver'

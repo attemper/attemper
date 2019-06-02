@@ -8,6 +8,7 @@
             ARG_TYPE,
             ARG_VALUE,
             GENERIC_TYPE,
+            ATTRIBUTE,
             REMARK,
             TENANT_ID
         )
@@ -17,6 +18,7 @@
             #{argType, jdbcType=INTEGER},
             #{argValue, jdbcType=VARCHAR},
             #{genericType, jdbcType=INTEGER},
+            #{attribute, jdbcType=VARCHAR},
             #{remark, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
         );
@@ -25,11 +27,13 @@
     <update id="update" parameterType="com.github.attemper.common.result.dispatch.arg.Arg">
         UPDATE
         ${tablePrefix}arg
-        SET
-        ARG_TYPE = #{argType, jdbcType=INTEGER},
-        GENERIC_TYPE = #{genericType, jdbcType=INTEGER},
-        ARG_VALUE = #{argValue, jdbcType=VARCHAR},
-        REMARK = #{remark, jdbcType=VARCHAR}
+        <set>
+            ARG_TYPE = #{argType, jdbcType=INTEGER},
+            GENERIC_TYPE = #{genericType, jdbcType=INTEGER},
+            ARG_VALUE = #{argValue, jdbcType=VARCHAR},
+            REMARK = #{remark, jdbcType=VARCHAR},
+            ATTRIBUTE = #{attribute, jdbcType=VARCHAR},
+        </set>
         <where>
             <include refid="condArgName"/>
             <include refid="condTenantId"/>
@@ -83,43 +87,6 @@
             <include refid="condTenantId"/>
         </where>
     </delete>
-
-    <select id="getDatasource" parameterType="map"
-            resultType="com.github.attemper.common.result.dispatch.datasource.DataSourceInfo">
-        select d.*
-        from ${tablePrefix}datasource d
-        join ${tablePrefix}arg_datasource ad
-        USING (DB_NAME, TENANT_ID)
-        join ${tablePrefix}arg a
-        USING (ARG_NAME, TENANT_ID)
-        <where>
-            <include refid="condArgName"/>
-            <include refid="condTenantId"/>
-        </where>
-    </select>
-
-    <delete id="deleteDatasource" parameterType="map">
-        DELETE FROM t using ${tablePrefix}arg_datasource t
-        <where>
-            <include refid="condArgName"/>
-            <include refid="condTenantId"/>
-        </where>
-    </delete>
-
-    <insert id="addDatasource" parameterType="map">
-        insert into ${tablePrefix}arg_datasource
-        (
-        ARG_NAME,
-        DB_NAME,
-        TENANT_ID
-        )
-        values
-        (
-        #{argName, jdbcType=VARCHAR},
-        #{dbName, jdbcType=VARCHAR},
-        #{tenantId, jdbcType=VARCHAR}
-        )
-    </insert>
 
     <sql id="condArgName">
         <if test="argName != null">

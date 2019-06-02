@@ -1,6 +1,7 @@
 package com.github.attemper.core.controller.calendar;
 
 import com.github.attemper.common.constant.APIPath;
+import com.github.attemper.common.param.dispatch.calendar.CalendarListParam;
 import com.github.attemper.common.param.dispatch.calendar.DayCalendarListParam;
 import com.github.attemper.common.param.dispatch.calendar.DayCalendarRemoveParam;
 import com.github.attemper.common.param.dispatch.calendar.DayCalendarSaveParam;
@@ -24,9 +25,10 @@ public class CalendarController {
     private CalendarService service;
 
     @ApiOperation("List calendars")
+    @ApiImplicitParam(value = "CalendarListParam", name = "param", dataType = "CalendarListParam", required = true)
     @GetMapping(APIPath.CalendarPath.LIST)
-    public CommonResult<List<CalendarInfo>> list() {
-        return CommonResult.putResult(service.list());
+    public CommonResult<List<CalendarInfo>> list(CalendarListParam param) {
+        return CommonResult.putResult(service.list(param));
     }
 
     @ApiOperation("Save day of calendar")

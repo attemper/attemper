@@ -60,7 +60,7 @@ export default {
         const list = value.split(alias.comma)
         list.forEach(item => arr.push({ val: item }))
       }
-      this.options = arr.length === 0 ? [DEF_OBJ] : arr
+      this.options = arr.length === 0 ? [Object.assign({}, DEF_OBJ)] : arr
       if (this.genericType === 1 && this.$refs.booleanInput) {
         for (let i = 0; i < this.$refs.booleanInput.length; i++) {
           this.$refs.booleanInput[i].initValue(this.options[i].val)

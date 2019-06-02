@@ -19,6 +19,8 @@ public class Arg {
 
     protected Integer genericType;
 
+    protected String attribute;
+
     protected String remark;
 
     protected String tenantId;

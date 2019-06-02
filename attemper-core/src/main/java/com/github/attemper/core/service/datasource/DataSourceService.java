@@ -71,9 +71,9 @@ public class DataSourceService extends BaseServiceAdapter {
 
     public List<ConnectionTestResult> testConnection(DataSourceNamesParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
-        List<DataSourceInfo> dataSourceInfos = mapper.getByNames(paramMap);
+        List<DataSourceInfo> dataSources = mapper.getByNames(paramMap);
         List<ConnectionTestResult> resultList = new ArrayList<>();
-        for (DataSourceInfo item : dataSourceInfos) {
+        for (DataSourceInfo item : dataSources) {
             String errorMsg = toolService.testConnection(item.getDriverClassName(), item.getJdbcUrl(), item.getUserName(), item.getPassword());
             resultList.add(ConnectionTestResult.builder().dbName(item.getDbName()).errorMsg(errorMsg).build());
         }

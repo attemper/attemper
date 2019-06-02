@@ -65,19 +65,20 @@
           </el-form-item>
           <el-form-item :label="$t('dispatch.arg.columns.argType')">
             <el-row>
-              <el-col :span="isRaw || isSql ? 12 : 24">
+              <el-col :span="isRaw || isSql || isTradeDate ? 12 : 24">
                 <el-select v-model="arg.argType" style="width: 100%;" @change="argTypeChanged">
                   <el-option v-for="item in argTypes" :key="item.label" :value="item.value" :label="item.label" />
                 </el-select>
               </el-col>
-              <el-col v-if="isRaw" :span="11" :offset="1">
-                <el-select v-model="arg.genericType" :placeholder="$t('dispatch.arg.placeholder.genericType')">
+              <el-col :span="11" :offset="1">
+                <el-select v-if="isRaw" v-model="arg.genericType" :placeholder="$t('dispatch.arg.placeholder.genericType')">
                   <el-option v-for="item in genericTypes" :key="item.label" :value="item.value" :label="item.label" />
                 </el-select>
-              </el-col>
-              <el-col v-if="isSql" :span="11" :offset="1">
-                <el-select v-model="dbName" :placeholder="$t('dispatch.datasource.placeholder.dbName')" clearable filterable>
+                <el-select v-if="isSql" v-model="dbName" :placeholder="$t('dispatch.datasource.placeholder.dbName')" clearable filterable>
                   <el-option v-for="item in dataSources" :key="item.dbName" :value="item.dbName" :label="item.dbName" />
+                </el-select>
+                <el-select v-if="isTradeDate" v-model="calendarName" :placeholder="$t('dispatch.arg.placeholder.calendarName')" clearable filterable>
+                  <el-option v-for="item in calendars" :key="item.calendarName" :value="item.calendarName" :label="item.displayName" />
                 </el-select>
               </el-col>
             </el-row>
@@ -95,21 +96,52 @@
             <map-input v-else-if="arg.argType === 21" ref="mapInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
             <string-input v-else v-model="arg.argValue" :placeholder="$t('dispatch.arg.placeholder.argValue')" />
           </el-form-item>
+          <el-form-item v-show="isTradeDate" :label="$t('tip.preview')">
+            <el-alert
+              style="padding: 0 0;"
+              :title="preview.result"
+              :type="preview.type"
+              :closable="false"
+              @dblclick.native="testTradeDate"
+            />
+          </el-form-item>
           <el-form-item :label="$t('columns.remark')">
             <el-input v-model="arg.remark" type="textarea" :autosize="{ minRows: 1, maxRows: 5}" :placeholder="$t('placeholders.remark')" />
           </el-form-item>
           <el-form-item>
+            <el-button v-if="isSql" type="primary" @click="testSql">{{ $t('actions.testSql') }}</el-button>
             <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
           </el-form-item>
         </el-form>
       </div>
     </el-dialog>
+    <el-dialog :visible.sync="showSqlResult" :center="true">
+      <el-alert :title="$t('tip.sqlResultAlertInfo').replace('{}', sqlResult.list.length)" type="success" style="margin-bottom: 8px;" :closable="false" />
+      <el-table
+        border
+        :data="sqlResult.list.slice(0, 10)"
+        style="width: 100%"
+      >
+        <el-table-column
+          v-for="(item, index) in sqlResult.columns"
+          :key="index"
+          :label="item"
+          :show-overflow-tooltip="true"
+          :width="item.length < 3 ? 50 : item.length*14"
+        >
+          <template slot-scope="scope">
+            <span>{{ scope.row[item] }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq, getDatasourceReq, updateArgDatasourceReq } from '@/api/dispatch/arg'
+import { listReq, getReq, removeReq, addReq, updateReq, testSqlReq, testTradeDateReq } from '@/api/dispatch/arg'
 import * as dataSourceApi from '@/api/dispatch/datasource'
+import * as calendarApi from '@/api/dispatch/calendar'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import { load } from '@/constant'
@@ -126,8 +158,10 @@ const DEF_OBJ = {
   argType: 0,
   argValue: null,
   genericType: 0,
+  attribute: null,
   remark: null
 }
+// const REGEX = /^([TWMSHY]{1})((([+-])([0123456789]*))?)(( ((([+-])([0123456789]*))?))?)$/g
 export default {
   name: 'arg',
   components: { TimeInput, DateTimeInput, DateInput, MapInput, ListInput, BooleanInput, NumberInput, StringInput, Pagination },
@@ -168,9 +202,23 @@ export default {
       argTypes: [],
       genericTypes: [],
       rawTypes: [],
+      sqlTypes: [],
+      tradeDateTypes: [],
+      calendarTypes: [],
       selections: [],
       dbName: null,
-      dataSources: []
+      calendarName: null,
+      dataSources: [],
+      calendars: [],
+      sqlResult: {
+        columns: [],
+        list: []
+      },
+      showSqlResult: false,
+      preview: {
+        type: 'success',
+        result: null
+      }
     }
   },
   computed: {
@@ -178,7 +226,10 @@ export default {
       return this.rawTypes.find(cell => cell.value === this.arg.argType)
     },
     isSql() {
-      return this.arg.argType === 30
+      return this.sqlTypes.find(cell => cell.value === this.arg.argType)
+    },
+    isTradeDate() {
+      return this.tradeDateTypes.find(cell => cell.value === this.arg.argType)
     }
   },
   created() {
@@ -218,7 +269,7 @@ export default {
     },
     reset() {
       if (!this.selections || !this.selections.length || !this.selections[0].argName) {
-        this.arg = DEF_OBJ
+        this.arg = Object.assign({}, DEF_OBJ)
       } else {
         getReq({ argName: this.selections[0].argName }).then(res => {
           this.arg = Object.assign({}, res.data.result)
@@ -233,6 +284,9 @@ export default {
           }
           if (this.isSql) {
             this.getDatabases()
+          }
+          if (this.isTradeDate) {
+            this.getCalendars()
           }
         })
       }
@@ -250,23 +304,59 @@ export default {
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
+      this.preview = {
+        type: 'info',
+        result: this.$t('tip.howToPreview')
+      }
+    },
+    testSql() {
+      this.sqlResult.columns = this.sqlResult.list = []
+      testSqlReq({ dbName: this.dbName, sql: this.arg.argValue, pageSize: 1000 }).then(res => {
+        if (res.data.result && res.data.result.length > 0) {
+          this.showSqlResult = true
+          for (const field in res.data.result[0]) {
+            this.sqlResult.columns.push(field)
+          }
+          this.sqlResult.list = res.data.result
+        } else {
+          this.$message.info(this.$t('tip.sqlResultNoDataInfo'))
+        }
+      })
+    },
+    testTradeDate() {
+      this.preview = {
+        type: 'warning',
+        result: this.$t('tip.previewing')
+      }
+      setTimeout(() => {
+        if (this.isTradeDate) {
+          testTradeDateReq({ calendarName: this.calendarName, expression: this.arg.argValue }).then(res => {
+            this.preview = {
+              type: 'success',
+              result: String(res.data.result)
+            }
+          })
+        }
+      }, 800)
     },
     save() {
       this.$refs.form.validate((valid) => {
+        if (this.isSql && this.arg.argValue && !this.arg.argValue.toLowerCase().startsWith('select ')) {
+          this.$message.error(this.$t('tip.notSelectSql'))
+          valid = false
+        }
         if (valid) {
+          if (this.isSql) {
+            this.arg.attribute = this.dbName
+          }
+          if (this.isTradeDate) {
+            this.arg.attribute = this.calendarName
+          }
           const request = (this.editDialog.oper === 'add' ? addReq(this.arg) : updateReq(this.arg))
           request.then(res => {
-            if (this.isSql) {
-              updateArgDatasourceReq({ argName: this.arg.argName, dbName: this.dbName }).then(response => {
-                this.$message.success(response.data.msg)
-                this.close()
-                this.search()
-              })
-            } else {
-              this.$message.success(res.data.msg)
-              this.close()
-              this.search()
-            }
+            this.$message.success(res.data.msg)
+            this.close()
+            this.search()
           })
         }
       })
@@ -315,25 +405,34 @@ export default {
     argTypeChanged() {
       if (this.isSql) {
         this.getDatabases()
+      } else if (this.isTradeDate) {
+        this.getCalendars()
       }
     },
     getDatabases() {
       dataSourceApi.listReq({ pageSize: 1000 }).then(res => {
         this.dataSources = res.data.result.list
-        if (this.arg.argName) {
-          getDatasourceReq({ argName: this.arg.argName }).then(response => {
-            this.dbName = response.data.result ? response.data.result.dbName : null
-          })
-        }
+        this.dbName = this.arg.attribute
+      })
+    },
+    getCalendars() {
+      calendarApi.listReq().then(res => {
+        this.calendars = res.data.result
+        this.calendarName = this.arg.attribute
       })
     },
     change(val) {
       this.arg.argValue = val
     },
     loadConst() {
+      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+        this.calendarTypes = array.dateCalendarTypes
+      })
       load(`./common.js`).then((array) => {
         this.genericTypes = array.genericTypes
         this.rawTypes = array.rawTypes
+        this.sqlTypes = array.sqlTypes
+        this.tradeDateTypes = array.tradeDateTypes
         this.argTypes = array.argTypes
       })
     }

@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-input v-model="page.dbName" :placeholder="$t('dispatch.datasource.columns.dbName')" class="filter-item search-input" @keyup.enter.native="search" />
       <el-select v-model="page.driverClassName" :placeholder="$t('dispatch.datasource.columns.driverClassName')" clearable collapse-tags class="filter-item search-select">
-        <el-option v-for="item in dbInfos" :key="item.value" :label="item.label" :value="item.value">
+        <el-option v-for="item in databases" :key="item.value" :label="item.label" :value="item.value">
           <span style="float: left">{{ item.label }}</span>
           <span style="float: right; color: #8492a6; font-size: 13px; margin-left: 8px;">{{ item.value }}</span>
         </el-option>
@@ -71,7 +71,7 @@
           </el-form-item>
           <el-form-item :label="$t('dispatch.datasource.columns.driverClassName')">
             <el-select v-model="datasource.driverClassName" style="width: 100%;">
-              <el-option v-for="item in dbInfos" :key="item.label" :value="item.value" :label="item.label">
+              <el-option v-for="item in databases" :key="item.label" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
                 <span style="float: right; color: #8492a6; font-size: 13px; margin-left: 8px;">{{ item.value }}</span>
               </el-option>
@@ -149,7 +149,7 @@ export default {
         ]
       },
       datasource: DEF_OBJ,
-      dbInfos: [],
+      databases: [],
       selections: []
     }
   },
@@ -237,7 +237,7 @@ export default {
     },
     reset() {
       if (!this.selections || !this.selections.length || !this.selections[0].dbName) {
-        this.datasource = DEF_OBJ
+        this.datasource = Object.assign({}, DEF_OBJ)
       } else {
         getReq({ dbName: this.selections[0].dbName }).then(res => {
           this.datasource = res.data.result
@@ -303,8 +303,8 @@ export default {
       this.editDialog.base.visible = false
     },
     formatType(item) {
-      for (let i = 0; i < this.dbInfos.length; i++) {
-        const option = this.dbInfos[i]
+      for (let i = 0; i < this.databases.length; i++) {
+        const option = this.databases[i]
         if (option.value === item) {
           return option.label + ' - ' + option.value
         }
@@ -313,7 +313,7 @@ export default {
     },
     loadConst() {
       load(`./common.js`).then((array) => {
-        this.dbInfos = array.dbInfos
+        this.databases = array.databases
       })
     }
   }

@@ -215,7 +215,7 @@ export default {
     },
     reset() {
       if (!this.selections || !this.selections.length || !this.selections[0].tagName) {
-        this.tag = DEF_OBJ
+        this.tag = Object.assign({}, DEF_OBJ)
       } else {
         getReq({ tagName: this.selections[0].tagName }).then(res => {
           this.tag = res.data.result

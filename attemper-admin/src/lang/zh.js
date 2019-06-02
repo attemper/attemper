@@ -107,7 +107,8 @@ export default {
     highSearch: '高级查询',
     exclude: '排除',
     connectTest: '连接测试',
-    saveDate: '保存（日期修改）'
+    saveDate: '保存（日期修改）',
+    testSql: '测试sql'
   },
   tip: {
     search: '请输入查询关键字',
@@ -116,7 +117,14 @@ export default {
     selectData: '请选中要操作的数据',
     saveConfirm: '确定保存',
     manualWithNoVersion: '流程未被发布，不能手动发起',
-    adminTenantCannotBeRemoved: '超管租户不能删除'
+    adminTenantCannotBeRemoved: '超管租户不能删除',
+    preview: '预览',
+    notSelectSql: '必须是查询语句(以select开头)',
+    howToPreview: '请双击预览',
+    sqlResultAlertInfo: '总条数{}(注意：最多展示前10条)',
+    sqlResultNoDataInfo: '执行成功，没有数据返回',
+    previewing: '预览中......',
+    formatError: '格式不正确'
   },
   columns: {
     displayName: '中文名',
@@ -278,7 +286,8 @@ export default {
         argValue: '请输入参数值',
         genericType: '基本数据类型',
         mapKey: '请输入key',
-        mapValue: '请输入value'
+        mapValue: '请输入value',
+        calendarName: '请选择日历'
       },
       rules: {
         argName: '参数名称不能为空',

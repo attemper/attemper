@@ -140,9 +140,9 @@ public class APIPath {
 
         public static final String REMOVE = API_PATH + DISPATCH + SUB_PATH + _REMOVE;
 
-        public static final String GET_DATASOURCE = API_PATH + DISPATCH + SUB_PATH + DataSourcePath.SUB_PATH + _GET;
+        public static final String TEST_SQL = API_PATH + DISPATCH + SUB_PATH + "/testSql";
 
-        public static final String SAVE_DATASOURCE = API_PATH + DISPATCH + SUB_PATH + DataSourcePath.SUB_PATH + _SAVE;
+        public static final String TEST_TRADE_DATE = API_PATH + DISPATCH + SUB_PATH + "/testTradeDate";
     }
 
     public static final class DataSourcePath {

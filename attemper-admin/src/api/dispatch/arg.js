@@ -41,18 +41,18 @@ export const getReq = (params) => {
   })
 }
 
-export const getDatasourceReq = (params) => {
+export const testSqlReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.ARG + APIPath.DATASOURCE + APIPath.GET,
+    url: APIPath.DISPATCH + APIPath.ARG + '/testSql',
     method: 'get',
     params: params
   })
 }
 
-export const updateArgDatasourceReq = (data) => {
+export const testTradeDateReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.ARG + APIPath.DATASOURCE,
-    method: 'put',
-    data: data
+    url: APIPath.DISPATCH + APIPath.ARG + '/testTradeDate',
+    method: 'get',
+    params: params
   })
 }

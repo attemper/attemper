@@ -205,13 +205,21 @@ export const allocateTitles = [
   '已分配'
 ]
 
-export const calendarTypes = [
+export const dateCalendarTypes = [
   {
     label: '日期维度',
     value: 0
-  },
+  }
+]
+
+export const timeCalendarTypes = [
   {
     label: '时间维度',
     value: 1
   }
+]
+
+export const calendarTypes = [
+  ...dateCalendarTypes,
+  ...timeCalendarTypes
 ]

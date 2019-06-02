@@ -70,7 +70,7 @@ public class ToolService {
         return discoveryClient.getInstances(serviceId);
     }
 
-    public String testConnection(String driverClassName, String jdbcUrl, String userName, String password) {
+    public HikariDataSource getDataSource(String driverClassName, String jdbcUrl, String userName, String password) throws Exception {
         HikariDataSource dataSource = new HikariDataSource();
         try {
             dataSource.setMinimumIdle(2);
@@ -79,13 +79,20 @@ public class ToolService {
             dataSource.setJdbcUrl(jdbcUrl);
             dataSource.setUsername(userName);
             dataSource.setPassword(password);
+            return dataSource;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    public String testConnection(String driverClassName, String jdbcUrl, String userName, String password) {
+        try (HikariDataSource dataSource = getDataSource(driverClassName, jdbcUrl, userName, password)) {
             dataSource.getConnection();
             return null;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return e.getMessage();
-        } finally {
-            dataSource.close();
         }
     }
 }

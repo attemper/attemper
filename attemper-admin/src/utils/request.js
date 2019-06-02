@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Qs from 'qs'
-import { Message } from 'element-ui'
+import { Notification } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
@@ -51,7 +51,8 @@ service.interceptors.response.use(
       if (data.code === 1000 || data.code === 1001 || data.code === 1002) {
         window.location = '/'
       }
-      Message({
+      Notification({
+        title: data.code,
         message: data.msg,
         type: 'error',
         duration: 5 * 1000,
@@ -102,7 +103,8 @@ service.interceptors.response.use(
       if (data.code === 1000 || data.code === 1001 || data.code === 1002) {
         window.location = '/'
       }
-      Message({
+      Notification({
+        title: data.code,
         message: data.msg,
         type: 'error',
         duration: 5 * 1000,

@@ -206,7 +206,7 @@ export default {
     },
     reset() {
       if (!this.selections || !this.selections.length || !this.selections[0].userName) {
-        this.tenant = DEF_OBJ
+        this.tenant = Object.assign({}, DEF_OBJ)
       } else {
         getReq({ userName: this.selections[0].userName }).then(res => {
           this.tenant = res.data.result

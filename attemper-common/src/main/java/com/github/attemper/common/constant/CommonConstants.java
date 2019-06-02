@@ -25,6 +25,10 @@ public interface CommonConstants {
 
     String result = "result";
 
+    String jobName = "jobName";
+
+    String projectName = "projectName";
+
     int DEF_CURRENT_PAGE = 1;
 
     int DEF_PAGE_SIZE = 10;
@@ -33,7 +37,7 @@ public interface CommonConstants {
 
     String REGEX_EMAIL = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?";
 
-    String jobName = "jobName";
+    String yyyyMMdd = "yyyyMMdd";
 
-    String projectName = "projectName";
+    String REGEX_TRADE_DATE = "^([TWMSHY]{1})((([+-])([0123456789]*))?)(( ((([+-])([0123456789]*))?))?)$";
 }

@@ -15,8 +15,11 @@ public enum ArgType {
     LIST(20),
     MAP(21),
 
-    // spec type
-    SQL(30);
+    // sql type
+    SQL(30),
+
+    //trade date
+    TRADE_DATE(40),;
 
     ArgType(int type) {
         this.type = type;

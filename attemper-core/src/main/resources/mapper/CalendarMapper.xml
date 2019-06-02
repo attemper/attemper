@@ -45,6 +45,9 @@
         SELECT *
         FROM ${tablePrefix}calendar
         <where>
+            <if test="type != null">
+                AND TYPE = #{type, jdbcType=INTEGER}
+            </if>
             <include refid="condTenantId"/>
         </where>
         order by POSITION
@@ -64,7 +67,7 @@
             </if>
             <if test="upperDayNum != null">
                 <![CDATA[
-                  AND DAY_NUM >= #{upperDayNum, jdbcType=INTEGER}
+                  AND DAY_NUM <= #{upperDayNum, jdbcType=INTEGER}
                 ]]>
             </if>
             <include refid="condCalendarName"/>

@@ -1,6 +1,5 @@
 package com.github.attemper.common.param.dispatch.calendar;
 
-import com.github.attemper.common.param.PageSortParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +10,7 @@ import org.apache.commons.lang.StringUtils;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DayCalendarListParam extends PageSortParam {
-
-    protected String calendarName;
+public class DayCalendarListParam extends CalendarListParam {
 
     protected Integer lowerDayNum;
 
@@ -24,6 +21,6 @@ public class DayCalendarListParam extends PageSortParam {
         if (StringUtils.isBlank(calendarName)) {
             return "6700";
         }
-        return null;
+        return super.validate();
     }
 }

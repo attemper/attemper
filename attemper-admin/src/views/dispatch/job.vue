@@ -378,7 +378,7 @@ export default {
     },
     reset() {
       if (this.editDialog.oper !== 'update' && (!this.selections || !this.selections.length || !this.selections[0].jobName)) {
-        this.job = DEF_OBJ
+        this.job = Object.assign({}, DEF_OBJ)
       } else {
         getReq({ jobName: this.selections[0].jobName }).then(res => {
           this.job = res.data.result
