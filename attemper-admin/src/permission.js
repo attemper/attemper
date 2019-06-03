@@ -32,7 +32,6 @@ function asyncAccessJudge(list, access, name) {
 
 // permission judge function
 function hasPermission(access, name) {
-  // TODO bug:应该根据role来判断，admin才可以校验所有，其他用户只能校验Constant和动态路由
   return staticAccessJudge(constantRouterMap, name) || asyncAccessJudge(asyncRouterMap, access, name) || staticAccessJudge(devRouterMap, name)
 }
 
@@ -55,7 +54,7 @@ function turnTo(to, access, next) {
   store.dispatch('tagsView/delAllViews').then()
 }*/
 
-const whiteList = ['/login', '/auth-redirect']// no redirect whitelist
+const whiteList = ['/login']// no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar

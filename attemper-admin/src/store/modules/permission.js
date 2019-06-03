@@ -1,4 +1,4 @@
-import { asyncRouterMap, devRouterMap, constantRouterMap } from '@/router'
+import { asyncRouterMap, /* devRouterMap,*/ constantRouterMap } from '@/router'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -47,14 +47,15 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }) {
     return new Promise(resolve => {
-      const roleNames = JSON.parse(sessionStorage.roleNames)
+      // const roleNames = JSON.parse(sessionStorage.roleNames)
       const resourceNames = JSON.parse(sessionStorage.resourceNames)
-      let accessedRouter
+      const accessedRouter = filterAsyncRoutes(asyncRouterMap, resourceNames)
+      /* exclude all dev menus from super admin
       if (roleNames.includes('admin')) {
         accessedRouter = asyncRouterMap.concat(devRouterMap)
       } else {
         accessedRouter = filterAsyncRoutes(asyncRouterMap, resourceNames)
-      }
+      }*/
       commit('SET_ROUTES', accessedRouter)
       resolve(constantRouterMap.concat(accessedRouter))
     })

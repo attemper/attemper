@@ -36,7 +36,7 @@ module.exports = {
     },
     proxy: {
       '/api': {
-        target: `http://localhost:5210`,
+        target: `http://127.0.0.1:5210`,
         changeOrigin: true,
         pathRewrite: {
           '^/api': '/api'
@@ -56,16 +56,6 @@ module.exports = {
     }
   },
   chainWebpack(config) {
-    const cdn = {
-      // inject tinymce into index.html
-      // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
-      js: ['https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.2/tinymce.min.js']
-    }
-    config.plugin('html')
-      .tap(args => {
-        args[0].cdn = cdn
-        return args
-      })
     config.plugins.delete('preload') // TODO: need test
     config.plugins.delete('prefetch') // TODO: need test
 

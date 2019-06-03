@@ -4,8 +4,7 @@ export default {
     dashboard: '首页',
     sys: '系统管理',
     tenant: '租户管理',
-    tag: '标签管理',
-    resource: '资源管理',
+    tag: '角色管理',
     calendar: '日历管理',
     dispatch: '调度管理',
     arg: '参数管理',
@@ -168,16 +167,16 @@ export default {
       },
       tip: {
         tenant: '分配租户',
-        resource: '分配资源',
+        resource: '分配菜单',
         tenantFilterTip: '租户编号或中文名称'
       },
       actions: {
         tenant: '租户',
-        resource: '资源'
+        resource: '菜单'
       },
       label: {
         allocateTenant: '分配租户',
-        allocateResource: '分配资源'
+        allocateResource: '分配菜单'
       }
     }
   },
