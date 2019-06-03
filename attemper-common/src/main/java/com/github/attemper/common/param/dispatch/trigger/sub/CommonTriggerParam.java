@@ -2,16 +2,12 @@ package com.github.attemper.common.param.dispatch.trigger.sub;
 
 import com.github.attemper.common.param.CommonParam;
 import com.github.attemper.java.sdk.common.util.StringUtils;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public abstract class CommonTriggerParam implements CommonParam {
 
     protected String triggerName;

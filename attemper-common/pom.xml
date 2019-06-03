@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>${sdk.groupId}</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>${sdk.artifactId}-common</artifactId>
             <version>${sdk.version}</version>
         </dependency>

@@ -6,7 +6,6 @@
 	<artifactId>attemper</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<modules>
-		<module>${project.artifactId}-admin</module>
 		<module>${project.artifactId}-common</module>
 		<module>${project.artifactId}-config</module>
 		<module>${project.artifactId}-sys</module>
@@ -32,11 +31,10 @@
 		<spring.cloud.version>Greenwich.SR1</spring.cloud.version>
 
 		<sdk.version>1.0.0-SNAPSHOT</sdk.version>
-		<sdk.groupId>${project.groupId}.java.sdk</sdk.groupId>
 		<sdk.artifactId>attemper-java-sdk</sdk.artifactId>
 
-		<camunda.spring.boot.version>3.2.1</camunda.spring.boot.version>
-		<camunda.version>7.10.0</camunda.version>
+		<camunda.spring.boot.version>3.3.1</camunda.spring.boot.version>
+		<camunda.version>7.11.0</camunda.version>
 		<disruptor.version>3.4.2</disruptor.version>
 		<quartz.groupId>com.github.quartz</quartz.groupId>
 		<quartz.spring.boot.version>1.0.0-SNAPSHOT</quartz.spring.boot.version>

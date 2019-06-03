@@ -1,7 +1,7 @@
 package com.github.attemper.web.service.job;
 
 import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
-import com.github.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
+import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
 import com.github.attemper.common.param.dispatch.trigger.sub.CommonTriggerParam;
 import com.github.attemper.common.param.scheduler.TriggerChangedParam;
 import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
@@ -45,7 +45,7 @@ public class TriggerOfWebService extends BaseServiceAdapter {
             new CalendarIntervalTriggerWithQuartzHandler()
     };
 
-    public Void update(TriggerUpdateParam param) {
+    public Void update(TriggerSaveParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         Map<Integer, List<? extends CommonTriggerParam>> paramsOfTriggerMap = new HashMap<>();
         paramsOfTriggerMap.put(0, param.getCronTriggers());
@@ -79,7 +79,7 @@ public class TriggerOfWebService extends BaseServiceAdapter {
         schedulerHandler.updateTrigger(param);
     }
 
-    public List<String> getOldTriggerNames(TriggerUpdateParam saveParam) {
+    public List<String> getOldTriggerNames(TriggerSaveParam saveParam) {
         Map<String, Object> paramMap = injectTenantIdToMap(saveParam);
         List<String> oldTriggerNames = new ArrayList<>();
         for (int i = 0; i < triggerHandlers.length; i++) {

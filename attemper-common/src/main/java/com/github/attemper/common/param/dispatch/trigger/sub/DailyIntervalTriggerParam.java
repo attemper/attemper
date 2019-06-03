@@ -1,14 +1,8 @@
 package com.github.attemper.common.param.dispatch.trigger.sub;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Builder
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class DailyIntervalTriggerParam extends CommonTriggerParam{
 
     protected String startTimeOfDay;

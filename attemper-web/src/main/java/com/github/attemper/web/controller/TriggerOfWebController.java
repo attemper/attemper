@@ -1,7 +1,7 @@
 package com.github.attemper.web.controller;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
+import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.web.service.job.TriggerOfWebService;
 import io.swagger.annotations.Api;
@@ -23,9 +23,9 @@ public class TriggerOfWebController {
 	private TriggerOfWebService service;
 
 	@ApiOperation("Update trigger")
-	@ApiImplicitParam(value = "TriggerUpdateParam", name = "param", dataType = "TriggerUpdateParam", required = true)
+	@ApiImplicitParam(value = "TriggerSaveParam", name = "param", dataType = "TriggerSaveParam", required = true)
 	@PutMapping(APIPath.TriggerPath.UPDATE)
-	public CommonResult<Void> update(@RequestBody TriggerUpdateParam param) {
+	public CommonResult<Void> update(@RequestBody TriggerSaveParam param) {
 		return CommonResult.putResult(service.update(param));
 	}
 }

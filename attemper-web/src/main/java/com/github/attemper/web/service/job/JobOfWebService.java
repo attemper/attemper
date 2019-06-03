@@ -3,7 +3,7 @@ package com.github.attemper.web.service.job;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.job.*;
 import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
-import com.github.attemper.common.param.dispatch.trigger.TriggerUpdateParam;
+import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
@@ -175,8 +175,8 @@ public class JobOfWebService extends BaseServiceAdapter {
     public Void remove(JobNamesParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         param.getJobNames().forEach(item -> {
-            TriggerUpdateParam triggerUpdateParam = new TriggerUpdateParam(item);
-            triggerOfWebService.update(triggerUpdateParam);
+            TriggerSaveParam triggerSaveParam = new TriggerSaveParam(item);
+            triggerOfWebService.update(triggerSaveParam);
         });
         mapper.delete(paramMap);
         camundaHandler.removeDefinitionAndDeployment(param.getJobNames(), injectTenantId());

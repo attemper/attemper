@@ -18,12 +18,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${sdk.groupId}</groupId>
-            <artifactId>${sdk.artifactId}-rest-executor2biz</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>${sdk.artifactId}-common-executor2biz</artifactId>
             <version>${sdk.version}</version>
         </dependency>
         <dependency>
-            <groupId>${sdk.groupId}</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>${sdk.artifactId}-micro-biz2executor</artifactId>
             <version>${sdk.version}</version>
         </dependency>

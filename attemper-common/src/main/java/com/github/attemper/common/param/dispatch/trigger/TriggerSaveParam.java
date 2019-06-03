@@ -2,19 +2,13 @@ package com.github.attemper.common.param.dispatch.trigger;
 
 import com.github.attemper.common.param.CommonParam;
 import com.github.attemper.common.param.dispatch.trigger.sub.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class TriggerUpdateParam implements CommonParam {
+public class TriggerSaveParam implements CommonParam {
 
     protected String jobName;
 
@@ -26,7 +20,7 @@ public class TriggerUpdateParam implements CommonParam {
 
     protected List<CalendarIntervalTriggerParam> calendarIntervalTriggers;
 
-    public TriggerUpdateParam(String jobName) {
+    public TriggerSaveParam(String jobName) {
         this.jobName = jobName;
     }
 
