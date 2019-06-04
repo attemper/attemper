@@ -1,6 +1,5 @@
 package com.github.attemper.executor.conf;
 
-import com.github.attemper.executor.camunda.history.CustomHistoryEventHandler;
 import com.github.attemper.executor.disruptor.consumer.RequestConsumer;
 import com.github.attemper.executor.disruptor.container.RequestContainer;
 import com.github.attemper.executor.disruptor.exception.RequestContainerExceptionHandler;
@@ -9,8 +8,6 @@ import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.util.DaemonThreadFactory;
-import org.camunda.bpm.engine.impl.history.handler.CompositeDbHistoryEventHandler;
-import org.camunda.bpm.engine.impl.history.handler.HistoryEventHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,15 +44,5 @@ public class ExecutorConfiguration {
         // Get the ring buffer from the Disruptor to be used for publishing.
         RingBuffer<RequestContainer> ringBuffer = disruptor.getRingBuffer();
         return new RequestProducer(ringBuffer);
-    }
-
-    /**
-     * add custom history event handler to CompositeDbHistoryEventHandler
-     *
-     * @return
-     */
-    @Bean
-    public HistoryEventHandler historyEventHandler() {
-        return new CompositeDbHistoryEventHandler(new CustomHistoryEventHandler());
     }
 }

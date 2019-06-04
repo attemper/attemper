@@ -15,7 +15,7 @@
       <el-button v-waves :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="publish">
         <svg-icon icon-class="publish" /> {{ $t('table.publish') }}
       </el-button>
-      <el-button style="float: right" :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" @click="manual">
+      <el-button style="float: right" :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manual">
         <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
       </el-button>
       <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>
@@ -32,6 +32,7 @@
       highlight-current-row
       style="width: 100%;"
       @selection-change="handleSelectionChange"
+      @cell-click="cellClick"
       @sort-change="sortChange"
     >
       <el-table-column type="expand">
@@ -570,6 +571,9 @@ export default {
     handleSelectionChange(val) {
       this.selections = val
     },
+    cellClick(row, column, cell, event) {
+      this.selectRow(row)
+    },
     loadConst() {
       load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
         this.jobStatuses = array.jobStatuses
@@ -631,6 +635,9 @@ export default {
         .then(() => {
           manualReq({ jobNames: jobNames }).then(res => {
             this.$message.success(res.data.msg)
+            setTimeout(() => {
+              this.$router.push({ name: 'total', replace: true })
+            }, 600)
           })
         })
     },

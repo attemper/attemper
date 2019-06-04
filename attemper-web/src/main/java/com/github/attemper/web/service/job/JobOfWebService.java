@@ -93,7 +93,6 @@ public class JobOfWebService extends BaseServiceAdapter {
                     }
                 }
             } catch (SchedulerException e) {
-                log.error(e.getMessage(), e);
                 throw new RTException(6150, e);
             }
         }
@@ -219,7 +218,7 @@ public class JobOfWebService extends BaseServiceAdapter {
      */
     private boolean checkNeedSave(Job job, Job updatedJob) {
         return job.getStatus() != updatedJob.getStatus()
-                || job.getTimeout() != updatedJob.getTimeout()
+                || !job.getTimeout().equals(updatedJob.getTimeout())
                 || !StringUtils.equals(job.getRemark(), updatedJob.getRemark());
     }
 
@@ -299,10 +298,9 @@ public class JobOfWebService extends BaseServiceAdapter {
         for (String jobName : jobNames) {
             executorService.submit(() -> {
                 try {
-                    return SpringContextAware.getBean(JobCallingService.class).invoke(jobName, tenantId);
+                    SpringContextAware.getBean(JobCallingService.class).invoke(jobName, tenantId);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
-                    return null;
                 }
             });
         }

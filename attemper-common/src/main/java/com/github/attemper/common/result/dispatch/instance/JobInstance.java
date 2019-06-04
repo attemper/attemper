@@ -1,4 +1,4 @@
-package com.github.attemper.common.result.dispatch.monitor;
+package com.github.attemper.common.result.dispatch.instance;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,9 +35,13 @@ public class JobInstance {
 
     protected Integer status;
 
-    protected String logText;
+    protected Integer code;
+
+    protected String msg;
 
     protected String tenantId;
+
+    protected String schedulerUri;
 
     protected String executorUri;
 }

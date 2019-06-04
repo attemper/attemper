@@ -20,6 +20,9 @@ public class TriggerSaveParam implements CommonParam {
 
     protected List<CalendarIntervalTriggerParam> calendarIntervalTriggers;
 
+    public TriggerSaveParam() {
+    }
+
     public TriggerSaveParam(String jobName) {
         this.jobName = jobName;
     }

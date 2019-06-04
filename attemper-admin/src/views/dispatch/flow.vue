@@ -67,9 +67,7 @@ import BpmnModeler from 'bpmn-js/lib/Modeler'
 import propertiesPanelModule from 'bpmn-js-properties-panel'
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda'
-import minimapModule from 'diagram-js-minimap'
-// import { diff } from 'bpmn-js-differ' // https://github.com/bpmn-io/bpmn-js-differ
-import prioritiesModule from 'bpmn-js-task-priorities/lib/priorities'
+import miniMapModule from 'diagram-js-minimap'
 import customTranslate from '@/utils/customTranslate'
 import JobInfoForm from './components/job/jobInfoForm'
 import {
@@ -113,8 +111,7 @@ export default {
         additionalModules: [
           propertiesProviderModule,
           propertiesPanelModule,
-          minimapModule,
-          prioritiesModule,
+          miniMapModule,
           customTranslateModule
         ],
         elementTemplates: customElementTemplate,

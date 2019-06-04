@@ -2,6 +2,7 @@ package com.github.attemper.interior;
 
 import com.github.attemper.common.constant.GlobalConstants;
 import com.github.attemper.config.base.conf.ConfigConfiguration;
+import com.github.attemper.java.sdk.micro.executor.conf.ExecutorAutoConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +11,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Import({
-        ConfigConfiguration.class
+        ConfigConfiguration.class,
+        ExecutorAutoConfiguration.class
 })
 @EnableDiscoveryClient
 @EnableTransactionManagement

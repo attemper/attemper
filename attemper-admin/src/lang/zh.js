@@ -347,7 +347,8 @@ export default {
     columns: {
       startTime: '开始时间',
       endTime: '结束时间',
-      duration: '执行时长'
+      duration: '执行时长',
+      msg: '错误信息'
     },
     label: {
       record: '记录',

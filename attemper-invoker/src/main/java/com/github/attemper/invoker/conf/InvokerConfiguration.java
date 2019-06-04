@@ -2,8 +2,8 @@ package com.github.attemper.invoker.conf;
 
 import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.invoker.service.JobCallingService;
+import com.github.attemper.quartz.spring.boot.autoconfigure.SseQuartzAutoConfiguration;
 import com.github.attemper.security.conf.SecurityConfiguration;
-import com.github.quartz.spring.boot.autoconfigure.SseQuartzAutoConfiguration;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;

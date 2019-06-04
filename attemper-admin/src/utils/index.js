@@ -350,7 +350,7 @@ export function removeClass(ele, cls) {
 }
 
 export function parseDuration(duration) {
-  if (!duration || duration === null) {
+  if (duration === undefined || duration === null) {
     return null
   }
   if (duration < 1000) {

@@ -22,7 +22,6 @@ import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -37,7 +36,6 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Service
 @Transactional
 public class ArgService extends BaseServiceAdapter {
@@ -112,7 +110,6 @@ public class ArgService extends BaseServiceAdapter {
             try {
                 targetDataSource = toolService.getDataSource(dsInfo.getDriverClassName(), dsInfo.getJdbcUrl(), dsInfo.getUserName(), dsInfo.getPassword());
             } catch (Exception e) {
-                log.error(e.getMessage(), e);
                 throw new RTException(1270, e);
             }
         } else {
@@ -122,7 +119,6 @@ public class ArgService extends BaseServiceAdapter {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(targetDataSource);
             return jdbcTemplate.queryForList(param.getSql());
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
             throw new RTException(1201, e);
         } finally {
             if (externalDB && targetDataSource != null) {
@@ -147,7 +143,6 @@ public class ArgService extends BaseServiceAdapter {
                     dateHandler.setDayOrder((Integer) scriptEngine.eval(arr[1].trim()));
                 }
             } catch (ScriptException e) {
-                log.error(e.getMessage(), e);
                 throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
             }
         }

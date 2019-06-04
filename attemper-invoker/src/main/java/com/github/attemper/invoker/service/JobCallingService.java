@@ -2,15 +2,19 @@ package com.github.attemper.invoker.service;
 
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.constant.CommonConstants;
+import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.executor.JobInvokingParam;
 import com.github.attemper.common.param.sys.tenant.TenantGetParam;
+import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.CommonResult;
+import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.common.result.dispatch.project.Project;
-import com.github.attemper.common.result.executor.JobInvokingResult;
 import com.github.attemper.common.result.sys.tenant.Tenant;
+import com.github.attemper.config.base.conf.LocalServerConfig;
 import com.github.attemper.config.base.property.AppProperties;
+import com.github.attemper.core.service.instance.JobInstanceService;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.core.service.project.ProjectService;
 import com.github.attemper.core.service.tool.ToolService;
@@ -31,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,23 +56,24 @@ public class JobCallingService {
     @Autowired
     private AppProperties appProperties;
 
-    public CommonResult<JobInvokingResult> invoke(String jobName, String tenantId) {
-        return this.invoke(jobName, null, tenantId);
+    public void invoke(String jobName, String tenantId) {
+        this.invoke(jobName, null, tenantId);
     }
 
-    public CommonResult<JobInvokingResult> invoke(String jobName, String triggerName, String tenantId) {
+    public void invoke(String jobName, String triggerName, String tenantId) {
         JobInvokingParam param = JobInvokingParam.builder()
                 .id(idGenerator.getNextId())
                 .jobName(jobName)
                 .triggerName(triggerName)
                 .tenantId(tenantId)
                 .build();
-        String baseUrl = computeUrl(jobName, tenantId);
+        String baseUrl = computeUrl(param);
         String token = Store.getTenantTokenMap().get(tenantId);
+        saveInstance(buildInstance(param, baseUrl, JobInstanceStatus.RUNNING));
         try {
-            return invokeByWebClient(baseUrl, token, param);
+            invokeByWebClient(baseUrl, token, param);
         } catch (RTException e) {
-            return invokeByWebClient(baseUrl, getToken(tenantId), param);
+            invokeByWebClient(baseUrl, getToken(tenantId), param);
         }
     }
 
@@ -77,14 +83,14 @@ public class JobCallingService {
     @Autowired
     private ProjectService projectService;
 
-    private String computeUrl(String jobName, String tenantId) {
+    private String computeUrl(JobInvokingParam param) {
         Set<String> urls = new HashSet<>();
-        Project project = jobService.getProject(jobName, tenantId);
+        Project project = jobService.getProject(param.getJobName(), param.getTenantId());
         if (project == null) {
-            project = projectService.getRoot(tenantId);
+            project = projectService.getRoot(param.getTenantId());
         }
         if (project != null && project.getBindExecutor()) {
-            List<String> targetExecutors = projectService.listExecutor(project.getProjectName(), tenantId);
+            List<String> targetExecutors = projectService.listExecutor(project.getProjectName(), param.getTenantId());
             for (String item : targetExecutors) {
                 pingThenAdd(urls, item);
             }
@@ -94,14 +100,21 @@ public class JobCallingService {
             pingThenAdd(urls, item.getUri().toString());
         }
         if (urls.isEmpty()) {
-            throw new RTException(500);
+            int code = 3005;
+            JobInstance jobInstance = buildInstance(param, null, JobInstanceStatus.FAILURE);
+            jobInstance.setEndTime(jobInstance.getStartTime());
+            jobInstance.setDuration(0L);
+            jobInstance.setCode(code);
+            jobInstance.setMsg(StatusProperty.getValue(code));
+            saveInstance(jobInstance);
+            throw new RTException(code);
         }
         int randomIndex = (int) (Math.random() * urls.size());
         return urls.toArray()[randomIndex] + appProperties.getExecutor().getContextPath();
     }
 
-    private CommonResult invokeByWebClient(String baseUrl, String token, JobInvokingParam param) {
-        return webClient
+    private void invokeByWebClient(String baseUrl, String token, JobInvokingParam param) {
+        webClient
                 .method(HttpMethod.POST)
                 .uri(baseUrl + APIPath.ExecutorPath.JOB_INVOKING)
                 .header(CommonConstants.token, token)
@@ -112,7 +125,6 @@ public class JobCallingService {
                 .bodyToMono(CommonResult.class)
                 .block();
     }
-
 
     @Autowired
     private ToolService toolService;
@@ -141,5 +153,28 @@ public class JobCallingService {
         String token = loginResult.getToken();
         Store.getTenantTokenMap().put(tenantId, token);
         return token;
+    }
+
+    @Autowired
+    private LocalServerConfig localServerConfig;
+
+    private JobInstance buildInstance(JobInvokingParam param, String executorUri, JobInstanceStatus jobInstanceStatus) {
+        return JobInstance.builder()
+                .id(param.getId())
+                .jobName(param.getJobName())
+                .triggerName(param.getTriggerName())
+                .startTime(new Date())
+                .status(jobInstanceStatus.getStatus())
+                .schedulerUri(localServerConfig.getRequestPath())
+                .executorUri(executorUri)
+                .tenantId(param.getTenantId())
+                .build();
+    }
+
+    @Autowired
+    private JobInstanceService jobInstanceService;
+
+    private void saveInstance(JobInstance jobInstance) {
+        jobInstanceService.add(jobInstance);
     }
 }

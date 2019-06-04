@@ -1,4 +1,4 @@
-package com.github.attemper.common.param.dispatch.monitor;
+package com.github.attemper.common.param.dispatch.instance;
 
 import com.github.attemper.common.param.PageSortParam;
 import lombok.Data;

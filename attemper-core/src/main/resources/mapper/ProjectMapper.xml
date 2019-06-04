@@ -114,7 +114,7 @@
     </insert>
 
     <delete id="deleteInfo">
-        delete from ${tablePrefix}project_info p
+        delete from p USING ${tablePrefix}project_info p
         <where>
             <include refid="condProjectName"/>
             <include refid="condTenantId"/>

@@ -1,23 +1,25 @@
 package com.github.attemper.executor.task.internal;
 
+import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.common.property.StatusProperty;
+import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
 import com.github.attemper.common.result.dispatch.job.Job;
-import com.github.attemper.common.result.dispatch.monitor.JobInstanceAct;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.common.result.dispatch.project.ProjectInfo;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.conf.LocalServerConfig;
+import com.github.attemper.core.service.instance.JobInstanceService;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.core.service.project.ProjectService;
 import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.executor.constant.PropertyConstants;
-import com.github.attemper.executor.service.instance.JobInstanceOfExeService;
 import com.github.attemper.executor.util.CamundaUtil;
-import com.github.attemper.java.sdk.common.executor2biz.param.BeanParam;
-import com.github.attemper.java.sdk.common.executor2biz.param.ExecutionParam;
-import com.github.attemper.java.sdk.common.executor2biz.param.RouterParam;
-import com.github.attemper.java.sdk.common.executor2biz.param.TaskExecutionParam;
+import com.github.attemper.java.sdk.common.executor.param.execution.MetaParam;
+import com.github.attemper.java.sdk.common.executor.param.execution.TaskParam;
+import com.github.attemper.java.sdk.common.executor.param.router.BeanParam;
+import com.github.attemper.java.sdk.common.executor.param.router.RouterParam;
 import com.github.attemper.java.sdk.common.result.execution.LogResult;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -55,28 +57,30 @@ public abstract class HttpTask implements JavaDelegate {
         JobService jobService = SpringContextAware.getBean(JobService.class);
         Job job = jobService.get(jobName, execution.getTenantId());
         resolveExtensionElement(execution);
-        String url = resolveUrl(jobName, execution.getTenantId()) + (subUrl == null ? injectRouterPath() : subUrl);
-        saveBizUrl(execution, url);
-        WebClient webClient = buildWebClient(url, job);
-        executeIntern(webClient, execution);
+        String url = resolveUrl(jobName, execution) + (subUrl == null ? injectRouterPath() : subUrl);
+        executeIntern(execution, job, url);
     }
 
-    protected <V extends LogResult> V invoke(WebClient webClient, DelegateExecution execution, Class<V> v) {
+    protected <V extends LogResult> V invoke(DelegateExecution execution, Job job, String url, Class<V> v) {
+        WebClient webClient = buildWebClient(job);
         return webClient
                 .method(this.requestMethod)
+                .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .syncBody(buildParamMap(execution))
                 .retrieve()
                 .onStatus(e -> e.is4xxClientError(), resp -> Mono.error(new RTException(resp.rawStatusCode(), resp.statusCode().getReasonPhrase())))
                 .bodyToMono(v)
                 .doOnError(WebClientResponseException.class, err -> {
-                    throw new RTException(500);
+                    int code = 3051;
+                    saveInstanceAct(execution, url, String.valueOf(code), StatusProperty.getValue(code) + ":" + err.getStatusCode().getReasonPhrase(), JobInstanceStatus.FAILURE);
+                    throw new RTException(code, err);
                 })
                 .block();
     }
 
     private Object buildParamMap(DelegateExecution execution) {
-        ExecutionParam executionParam = new ExecutionParam();
+        MetaParam executionParam = new MetaParam();
         executionParam
                 .setParentActInstId(execution.getParentActivityInstanceId())
                 .setExecutionId(execution.getId())
@@ -93,20 +97,20 @@ public abstract class HttpTask implements JavaDelegate {
                     CamundaUtil.extractKeyFromProcessDefinitionId(execution.getProcessDefinitionId()) : beanName);
             beanParam.setMethodName(methodName == null ? execution.getCurrentActivityId() : methodName);
             routerParam.setBeanParam(beanParam);
-            routerParam.setExecutionParam(executionParam);
+            routerParam.setMetaParam(executionParam);
             return routerParam;
         } else {
-            TaskExecutionParam<Map<String, Object>> taskCommonParam = new TaskExecutionParam<>();
-            return taskCommonParam.setExecutionParam(executionParam).setBizParam(execution.getVariables());
+            TaskParam<Map<String, Object>> taskCommonParam = new TaskParam<>();
+            return taskCommonParam.setMetaParam(executionParam).setBizParam(execution.getVariables());
         }
     }
 
-    private WebClient buildWebClient(String url, Job job) {
+    private WebClient buildWebClient(Job job) {
         HttpClient httpClient = HttpClient.create()
                 .tcpConfiguration(client ->
                         client.doOnConnected(conn -> conn
                                 .addHandlerLast(new ReadTimeoutHandler(job.getTimeout()))));
-        return WebClient.builder().baseUrl(url).clientConnector(new ReactorClientHttpConnector(httpClient)).build();
+        return WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient)).build();
     }
 
     /**
@@ -114,17 +118,19 @@ public abstract class HttpTask implements JavaDelegate {
      * @param jobName
      * @return
      */
-    private String resolveUrl(String jobName, String tenantId) {
+    private String resolveUrl(String jobName, DelegateExecution execution) {
         JobService jobService = SpringContextAware.getBean(JobService.class);
         ProjectService projectService = SpringContextAware.getBean(ProjectService.class);
-        Project project = jobService.getProject(jobName, tenantId);
+        Project project = jobService.getProject(jobName, execution.getTenantId());
         if (project == null) {
-            project = projectService.getRoot(tenantId);
+            project = projectService.getRoot(execution.getTenantId());
         }
         String projectName = project.getProjectName();
-        List<ProjectInfo> allProjectInfo = projectService.listInfo(projectName, tenantId);
+        List<ProjectInfo> allProjectInfo = projectService.listInfo(projectName, execution.getTenantId());
         if (allProjectInfo.isEmpty()) {
-            throw new RTException(500);
+            int code = 6550;
+            saveInstanceAct(execution, null, String.valueOf(code), StatusProperty.getValue(code), JobInstanceStatus.FAILURE);
+            throw new RTException(code);
         }
 
         Set<String> urls = new HashSet<>(4);  //may be one service has <=4 endpoint
@@ -145,7 +151,9 @@ public abstract class HttpTask implements JavaDelegate {
             }
         }
         if (urls.isEmpty()) {
-            throw new RTException(500);
+            int code = 3050;
+            saveInstanceAct(execution, null, String.valueOf(code), StatusProperty.getValue(code), JobInstanceStatus.FAILURE);
+            throw new RTException(code);
         }
         int randomIndex = (int) (Math.random() * urls.size());
         return urls.toArray()[randomIndex] + optimizeContextPath(project.getContextPath());
@@ -196,13 +204,20 @@ public abstract class HttpTask implements JavaDelegate {
         }
     }
 
-    private void saveBizUrl(DelegateExecution execution, String url) {
-        JobInstanceOfExeService jobInstanceOfExeService = SpringContextAware.getBean(JobInstanceOfExeService.class);
-        JobInstanceAct jobInstanceAct = JobInstanceAct.builder().actInstId(execution.getActivityInstanceId()).bizUri(url).build();
-        jobInstanceOfExeService.updateAct(jobInstanceAct);
+    protected void saveInstanceAct(DelegateExecution execution, String url, String logKey, String logText, JobInstanceStatus jobInstanceStatus) {
+        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
+        JobInstanceAct jobInstanceAct = jobInstanceService.getAct(execution.getActivityInstanceId());
+        Date now = new Date();
+        jobInstanceAct.setBizUri(url);
+        jobInstanceAct.setEndTime(now);
+        jobInstanceAct.setDuration(now.getTime() - jobInstanceAct.getStartTime().getTime());
+        jobInstanceAct.setLogKey(logKey);
+        jobInstanceAct.setLogText(logText);
+        jobInstanceAct.setStatus(jobInstanceStatus.getStatus());
+        jobInstanceService.updateAct(jobInstanceAct);
     }
 
-    protected abstract void executeIntern(WebClient webClient, DelegateExecution execution);
+    protected abstract void executeIntern(DelegateExecution execution, Job job, String url);
 
     protected abstract String injectRouterPath();
 

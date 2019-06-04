@@ -1,11 +1,11 @@
-package com.github.attemper.core.controller.monitor;
+package com.github.attemper.core.controller.instance;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.monitor.JobInstanceActParam;
-import com.github.attemper.common.param.dispatch.monitor.JobInstanceListParam;
+import com.github.attemper.common.param.dispatch.instance.JobInstanceActParam;
+import com.github.attemper.common.param.dispatch.instance.JobInstanceListParam;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.common.result.dispatch.monitor.JobInstanceAct;
-import com.github.attemper.core.service.monitor.MonitorService;
+import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
+import com.github.attemper.core.service.instance.JobInstanceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -16,23 +16,23 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-@Api("Monitor")
+@Api("JobInstance")
 @RestController
-public class MonitorController {
+public class JobInstanceController {
 
     @Autowired
-    private MonitorService service;
+    private JobInstanceService service;
 
     @ApiOperation("List job instances")
     @ApiImplicitParam(value = "JobInstanceListParam", name = "param", dataType = "JobInstanceListParam", required = true)
-    @GetMapping(APIPath.MonitorPath.LIST)
+    @GetMapping(APIPath.InstancePath.LIST)
     public CommonResult<Map<String, Object>> list(JobInstanceListParam param) {
         return CommonResult.putResult(service.list(param));
     }
 
     @ApiOperation("List all activity nodes of one instance")
     @ApiImplicitParam(value = "JobInstanceActParam", name = "param", dataType = "JobInstanceActParam", required = true)
-    @GetMapping(APIPath.MonitorPath.LIST_ACT)
+    @GetMapping(APIPath.InstancePath.LIST_ACT)
     public CommonResult<List<JobInstanceAct>> listAct(JobInstanceActParam param) {
         return CommonResult.putResult(service.listAct(param));
     }

@@ -1,4 +1,4 @@
-package com.github.attemper.common.result.dispatch.monitor;
+package com.github.attemper.common.result.dispatch.instance;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

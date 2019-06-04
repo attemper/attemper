@@ -14,18 +14,13 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>${sdk.artifactId}-micro-executor</artifactId>
+            <version>${sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>${project.parent.artifactId}-config</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>${sdk.artifactId}-common-executor2biz</artifactId>
-            <version>${sdk.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>${sdk.artifactId}-micro-biz2executor</artifactId>
-            <version>${sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

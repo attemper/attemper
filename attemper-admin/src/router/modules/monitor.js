@@ -15,37 +15,43 @@ const monitorRouter = {
   children: [
     {
       path: 'realTime',
-      component: () => import('@/views/monitor/realTime'),
+      component: () => import('@/views/instance/monitor'),
       name: 'realTime',
+      props: {
+        monitorType: 'realTime'
+      },
       meta: {
         title: 'realTime',
-        icon: 'realTime',
-        noCache: false
+        icon: 'realTime'
       }
     },
     {
       path: 'history',
-      component: () => import('@/views/monitor/history'),
+      component: () => import('@/views/instance/monitor'),
       name: 'history',
+      props: {
+        monitorType: 'history'
+      },
       meta: {
         title: 'history',
-        icon: 'history',
-        noCache: false
+        icon: 'history'
       }
     },
     {
       path: 'total',
-      component: () => import('@/views/monitor/total'),
+      component: () => import('@/views/instance/monitor'),
       name: 'total',
+      props: {
+        monitorType: 'total'
+      },
       meta: {
         title: 'total',
-        icon: 'total',
-        noCache: false
+        icon: 'total'
       }
     },
     {
       path: 'trace/:key',
-      component: () => import('@/views/monitor/trace'),
+      component: () => import('@/views/instance/trace'),
       name: 'trace',
       hidden: true,
       meta: {

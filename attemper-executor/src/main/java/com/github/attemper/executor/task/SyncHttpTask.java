@@ -1,13 +1,11 @@
 package com.github.attemper.executor.task;
 
+import com.github.attemper.common.enums.JobInstanceStatus;
+import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.executor.task.internal.HttpTask;
-import com.github.attemper.java.sdk.common.executor2biz.constant.Executor2BizAPIPath;
+import com.github.attemper.java.sdk.common.executor.constant.ExecutorAPIPath;
 import com.github.attemper.java.sdk.common.result.execution.TaskResult;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Long Connection(Keep-Alive)
@@ -15,14 +13,18 @@ import java.util.Date;
 public class SyncHttpTask extends HttpTask {
 
     @Override
-    protected void executeIntern(WebClient webClient, DelegateExecution execution) {
-        System.out.println("start execution:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ":" + execution.getCurrentActivityName());
-        TaskResult taskResult = super.invoke(webClient, execution, TaskResult.class);
-        System.out.println("end execution:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ":" + execution.getCurrentActivityName() + ":" + taskResult);
+    protected void executeIntern(DelegateExecution execution, Job job, String url) {
+        TaskResult taskResult = super.invoke(execution, job, url, TaskResult.class);
+        if (taskResult != null) {
+            saveInstanceAct(execution, url, taskResult.getLogKey(), taskResult.getLogText(),
+                    taskResult.getSuccess() ? JobInstanceStatus.SUCCESS : JobInstanceStatus.FAILURE);
+        } else {
+            saveInstanceAct(execution, url, null, null, JobInstanceStatus.SUCCESS);
+        }
     }
 
     @Override
     protected String injectRouterPath() {
-        return Executor2BizAPIPath.ROUTER_PATH_SYNC;
+        return ExecutorAPIPath.ROUTER_PATH_SYNC;
     }
 }

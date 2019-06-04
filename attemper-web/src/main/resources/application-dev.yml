@@ -22,6 +22,7 @@ app:
   scheduler:
     name: scheduler
     delayedInSecond: 5
+    context-path: /
   executor:
     name: executor
     context-path: /
@@ -37,3 +38,7 @@ org:
 logging:
   level:
     com.github.attemper: debug
+
+camunda:
+  bpm:
+    history-level: full

@@ -210,32 +210,14 @@ public class APIPath {
         public static final String SAVE_EXECUTOR = API_PATH + DISPATCH + SUB_PATH + EXECUTOR + _SAVE;
     }
 
-    public static final class MonitorPath {
-        private static final String SUB_PATH = "/monitor";
+    public static final class InstancePath {
+        private static final String SUB_PATH = "/instance";
 
         public static final String LIST = API_PATH + DISPATCH + SUB_PATH + _LIST;
 
         private static final String ACT = "/act";
 
         public static final String LIST_ACT = API_PATH + DISPATCH + SUB_PATH + _LIST + ACT;
-
-        public static final class RealTimePath {
-            public static final String REAL_TIME = "/realTime";
-
-            public static final String LIST = API_PATH + DISPATCH + SUB_PATH + REAL_TIME + _LIST;
-        }
-        /*
-        public static final class HistoryPath {
-            private static final String HISTORY = "/history";
-
-            public static final String LIST = API_PATH + DISPATCH + SUB_PATH + HISTORY + _LIST;
-        }
-
-        public static final class TotalPath {
-            public static final String TOTAL = "/total";
-
-            public static final String LIST = API_PATH + DISPATCH + SUB_PATH + TOTAL + _LIST;
-        }*/
     }
 
     public static final class CountPath {

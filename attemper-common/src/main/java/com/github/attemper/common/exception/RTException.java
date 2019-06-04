@@ -1,12 +1,14 @@
 package com.github.attemper.common.exception;
 
 import com.github.attemper.common.property.StatusProperty;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * 运行时异常
- * @auth ldang
+ * Customize RuntimeException
+ * @author ldang
  *
  */
+@Slf4j
 public class RTException extends RuntimeException {
 	
 	private static final long serialVersionUID = 1L;
@@ -22,18 +24,21 @@ public class RTException extends RuntimeException {
 		super(StatusProperty.getValue(code));
 		this.code = code;
 		this.msg = StatusProperty.getValue(code);
+		log.error(String.valueOf(code), this.msg);
 	}
 
     public RTException(int code, Throwable e) {
         super(StatusProperty.getValue(code) + ":" + e.getMessage(), e);
         this.code = code;
         this.msg = StatusProperty.getValue(code) + ":" + e.getMessage();
+		log.error(String.valueOf(code), e);
     }
 
     public RTException(int code, String msg) {
         super(StatusProperty.getValue(code) + ":" + msg);
         this.code = code;
         this.msg = StatusProperty.getValue(code) + ":" + msg;
+		log.error(String.valueOf(code), this.msg);
     }
 
 	public int getCode() {

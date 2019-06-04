@@ -29,7 +29,6 @@ public class SpringContextAware implements ApplicationContextAware {
         return context.getBean(beanClass);
     }
 
-
     /**
      * get bean by name
      *

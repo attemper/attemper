@@ -1,14 +1,13 @@
 package com.github.attemper.executor.disruptor.consumer;
 
 import com.github.attemper.common.enums.JobInstanceStatus;
+import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.executor.JobInvokingParam;
-import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.common.result.dispatch.monitor.JobInstance;
-import com.github.attemper.common.result.executor.JobInvokingResult;
+import com.github.attemper.common.property.StatusProperty;
+import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.config.base.bean.SpringContextAware;
-import com.github.attemper.config.base.conf.LocalServerConfig;
+import com.github.attemper.core.service.instance.JobInstanceService;
 import com.github.attemper.executor.disruptor.container.RequestContainer;
-import com.github.attemper.executor.service.instance.JobInstanceOfExeService;
 import com.lmax.disruptor.WorkHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -25,43 +24,30 @@ public class RequestConsumer implements WorkHandler<RequestContainer> {
     @Override
     public void onEvent(RequestContainer container) throws Exception {
         RuntimeService runtimeService = SpringContextAware.getBean(RuntimeService.class);
-        JobInvokingParam request = container.getParam();
-        JobInvokingResult responseBuilder = new JobInvokingResult(request.getId());
-        CommonResult<JobInvokingResult> commonResult;
-        saveInstance(request);
+        JobInvokingParam param = container.getParam();
         try {
-            runtimeService.startProcessInstanceByKey(request.getJobName(), request.getId());
-            commonResult = CommonResult.ok();
+            runtimeService.startProcessInstanceByKey(param.getJobName(), param.getId());
         } catch (Exception e) {
-            if (StringUtils.isNotBlank(request.getTriggerName())) {
-                commonResult = CommonResult.put(2000, e.getMessage());
+            int code;
+            if (StringUtils.isNotBlank(param.getTriggerName())) {
+                code = 2000;
             } else {
-                commonResult = CommonResult.put(2001, e.getMessage());
+                code = 2001;
             }
-            /*jobExecution.setStatus(JobInstanceStatus.FAILURE.getStatus());
-            jobExecutionOfExeService.update(jobExecution);
-            JobInstance jobInstance = JobInstance.builder()
-                    .id(request.getId())
-                    .build();
-            jobInstance.setStatus(JobInstanceStatus.FAILURE.getStatus());
-            jobInstance.setCode(responseBuilder.getCode());
-            jobExecutionOfExeService.addDetail(jobInstance);*/
+            updateInstance(param, code, StatusProperty.getValue(code) + ":" + e.getMessage());
+            throw new RTException(code, e);
         }
-        commonResult.setResult(responseBuilder);
-        container.setResult(commonResult);
     }
 
-    private void saveInstance(JobInvokingParam request) {
-        JobInstanceOfExeService jobInstanceOfExeService = SpringContextAware.getBean(JobInstanceOfExeService.class);
-        JobInstance jobInstance = JobInstance.builder()
-                .id(request.getId())
-                .jobName(request.getJobName())
-                .triggerName(request.getTriggerName())
-                .startTime(new Date())
-                .executorUri(SpringContextAware.getBean(LocalServerConfig.class).getRequestPath())
-                .tenantId(request.getTenantId())
-                .build();
-        jobInstance.setStatus(JobInstanceStatus.RUNNING.getStatus());
-        jobInstanceOfExeService.add(jobInstance);
+    private void updateInstance(JobInvokingParam param, int code, String msg) {
+        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
+        JobInstance jobInstance = jobInstanceService.get(param.getId());
+        Date now = new Date();
+        jobInstance.setEndTime(now);
+        jobInstance.setDuration(now.getTime() - jobInstance.getStartTime().getTime());
+        jobInstance.setStatus(JobInstanceStatus.FAILURE.getStatus());
+        jobInstance.setCode(code);
+        jobInstance.setMsg(msg);
+        jobInstanceService.update(jobInstance);
     }
 }

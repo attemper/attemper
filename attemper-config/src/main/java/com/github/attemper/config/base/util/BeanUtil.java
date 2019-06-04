@@ -21,7 +21,6 @@ public class BeanUtil {
         try {
             return injectObjectMapper().readValue(bean2JsonStr(obj), Map.class);
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
             throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, String.valueOf(obj));
         }
     }
@@ -30,7 +29,6 @@ public class BeanUtil {
         try {
             return injectObjectMapper().readValue(bean2JsonStr(map), t);
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
             throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, String.valueOf(map));
         }
     }
@@ -39,7 +37,6 @@ public class BeanUtil {
         try {
             return injectObjectMapper().writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            log.error(e.getMessage(), e);
             throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, String.valueOf(obj));
         }
     }

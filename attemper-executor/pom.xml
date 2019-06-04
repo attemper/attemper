@@ -19,12 +19,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>${sdk.artifactId}-common-executor2biz</artifactId>
-            <version>${sdk.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>${sdk.artifactId}-common-biz2executor</artifactId>
+            <artifactId>${sdk.artifactId}-common-executor</artifactId>
             <version>${sdk.version}</version>
         </dependency>
         <dependency>

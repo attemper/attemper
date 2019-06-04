@@ -50,7 +50,7 @@ module.exports = {
     DATASOURCE: '/datasource',
     CALENDAR: '/calendar',
     PROJECT: '/project',
-    MONITOR: '/monitor',
+    INSTANCE: '/instance',
     COUNT: '/count',
     TOOL: '/tool',
     LIST: '',

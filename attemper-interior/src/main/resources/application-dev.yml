@@ -24,3 +24,9 @@ app:
 logging:
   level:
     com.github.attemper: debug
+
+dispatch:
+  user-name: interior
+  password: 1
+  executor:
+    service-name: executor

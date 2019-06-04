@@ -35,7 +35,7 @@
                 style="height: 100%"
               >
                 <el-form-item :label="$t('columns.status')">
-                  <el-select v-if="showAll" v-model="page.status" :placeholder="$t('monitor.columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 150px" @change="search">
+                  <el-select v-if="showAll" v-model="page.status" :placeholder="$t('columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 150px" @change="search">
                     <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
                   </el-select>
                 </el-form-item>
@@ -65,7 +65,6 @@
             style="width: 100%;"
             :row-class-name="renderRecordStyle"
             @cell-click="cellClick"
-            @select="selectCheckbox"
           >
             <el-table-column
               type="selection"
@@ -103,11 +102,10 @@
 </template>
 
 <script>
-import { listReq, listActReq } from '@/api/monitor/monitor'
+import { listReq, listActReq } from '@/api/dispatch/instance'
 import { getReq } from '@/api/dispatch/job'
 import BpmnViewer from 'bpmn-js'
-import minimapModule from 'diagram-js-minimap'
-// import { diff } from 'bpmn-js-differ' // https://github.com/bpmn-io/bpmn-js-differ
+import miniMapModule from 'diagram-js-minimap'
 import customTranslate from '@/utils/customTranslate'
 import customElementTemplate from '../dispatch/components/job/element-templates/custom'
 import Pagination from '@/components/Pagination'
@@ -174,7 +172,7 @@ export default {
       this.bpmnViewer = new BpmnViewer({
         container: canvas,
         additionalModules: [
-          minimapModule,
+          miniMapModule,
           customTranslateModule
         ],
         elementTemplates: customElementTemplate,
@@ -249,11 +247,9 @@ export default {
     },
     search() {
       this.listLoading = true
-      // this.initPageStatus()
       listReq(this.page).then(response => {
         this.list = response.data.result.list
         Object.assign(this.page, response.data.result.page)
-        // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
         }, 200)
@@ -319,9 +315,6 @@ export default {
       })
     },
     cellClick(row, column, cell, event) {
-      this.selectRow(row)
-    },
-    selectCheckbox(selection, row) {
       this.selectRow(row)
     },
     bindJobContent(done) {

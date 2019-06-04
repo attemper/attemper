@@ -27,8 +27,12 @@ public abstract class CommonTriggerParam implements CommonParam {
         if (StringUtils.isBlank(triggerName)) {
             return "6100";
         }
-        if (startTime != null && endTime != null && !startTime.before(endTime)) {
-            return "6110";
+        if (endTime != null) {
+            if (!startTime.before(endTime)) {
+                return "6110";
+            } else if (!endTime.after(new Date())) {
+                return "6111";
+            }
         }
         return null;
     }
@@ -36,7 +40,7 @@ public abstract class CommonTriggerParam implements CommonParam {
     @Override
     public void preHandle() {
         Date now = new Date();
-        if (startTime == null || startTime.before(now)) {
+        if (startTime == null) {
             startTime = new Date(now.getTime() + 3000L);
         }
     }

@@ -1,16 +1,16 @@
 package com.github.attemper.executor.camunda.history.event.impl;
 
 import com.github.attemper.common.enums.JobInstanceStatus;
-import com.github.attemper.common.result.dispatch.monitor.JobInstance;
-import com.github.attemper.common.result.dispatch.monitor.JobInstanceAct;
+import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.config.base.bean.SpringContextAware;
+import com.github.attemper.core.service.instance.JobInstanceService;
 import com.github.attemper.executor.camunda.history.event.EndEventing;
 import com.github.attemper.executor.camunda.history.event.EventingAdapter;
 import com.github.attemper.executor.camunda.history.event.StartEventing;
-import com.github.attemper.executor.service.instance.JobExecutionOfExeService;
-import com.github.attemper.executor.service.instance.JobInstanceOfExeService;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.impl.history.event.HistoricProcessInstanceEventEntity;
 
+@Slf4j
 public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricProcessInstanceEventEntity> implements StartEventing<HistoricProcessInstanceEventEntity>, EndEventing<HistoricProcessInstanceEventEntity> {
 
     public HistoricProcessInstanceEventing(HistoricProcessInstanceEventEntity historyEvent) {
@@ -19,34 +19,21 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
 
     @Override
     public void start() {
-        JobInstance jobInstance = toJobInstance(historyEvent);
-        jobInstance.setStatus(JobInstanceStatus.RUNNING.getStatus());
-        JobInstanceOfExeService jobInstanceOfExeService = SpringContextAware.getBean(JobInstanceOfExeService.class);
-        jobInstanceOfExeService.update(jobInstance);
+        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
+        JobInstance jobInstance = jobInstanceService.get(historyEvent.getBusinessKey());
+        jobInstance.setProcInstId(historyEvent.getProcessInstanceId());
+        jobInstance.setRootProcInstId(historyEvent.getRootProcessInstanceId());
+        jobInstance.setProcDefId(historyEvent.getProcessDefinitionId());
+        jobInstanceService.update(jobInstance);
     }
 
     @Override
     public void end() {
-        JobInstance jobInstance = toJobInstance(historyEvent);
+        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
+        JobInstance jobInstance = jobInstanceService.get(historyEvent.getBusinessKey());
         jobInstance.setStatus(JobInstanceStatus.SUCCESS.getStatus());
-        JobInstanceOfExeService jobInstanceOfExeService = SpringContextAware.getBean(JobInstanceOfExeService.class);
-        jobInstanceOfExeService.update(jobInstance);
-
-        JobExecutionOfExeService jobExecutionOfExeService = SpringContextAware.getBean(JobExecutionOfExeService.class);
-        jobExecutionOfExeService.delete(jobInstance);
-        JobInstanceAct jobInstanceAct = JobInstanceAct.builder()
-                .rootProcInstId(historyEvent.getRootProcessInstanceId()).build();
-        jobExecutionOfExeService.deleteAct(jobInstanceAct);
-    }
-
-    private JobInstance toJobInstance(HistoricProcessInstanceEventEntity historyEvent) {
-        return JobInstance.builder()
-                .id(historyEvent.getBusinessKey())
-                .procInstId(historyEvent.getProcessInstanceId())
-                .rootProcInstId(historyEvent.getRootProcessInstanceId())
-                .procDefId(historyEvent.getProcessDefinitionId())
-                .endTime(historyEvent.getEndTime())
-                .duration(historyEvent.getDurationInMillis())
-                .build();
+        jobInstance.setEndTime(historyEvent.getEndTime());
+        jobInstance.setDuration(jobInstance.getEndTime().getTime() - jobInstance.getStartTime().getTime());
+        jobInstanceService.update(jobInstance);
     }
 }

@@ -42,15 +42,17 @@ public class SchedulerHandler {
     public CommonResult<Void> updateTrigger(TriggerChangedParam param) {
         List<String> urls = buildUrls(APIPath.SchedulerPath.TRIGGER);
         List<Callable<CommonResult>> callers = new ArrayList<>(urls.size());
-        urls.forEach(url -> callers.add(new SchedulerCaller(HttpMethod.PUT, url, param)));
+        urls.forEach(url -> callers.add(new SchedulerCaller(
+                HttpMethod.PUT,
+                url,
+                ServletUtil.getHeader(CommonConstants.token),
+                param)));
         return invokeAll(callers);
     }
 
     private CommonResult<Void> invokeAll(List<Callable<CommonResult>> callers) {
         if (callers.isEmpty()) {
-            CommonResult<Void> commonResult = CommonResult.put(3000);
-            log.error(commonResult.getMsg());
-            return commonResult;
+            throw new RTException(3000);
         }
         ExecutorService executorService = Executors.newFixedThreadPool(callers.size());
         try {
@@ -62,9 +64,7 @@ public class SchedulerHandler {
             return CommonResult.ok();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("Connection refused")) {
-                CommonResult<Void> commonResult = CommonResult.put(3001);
-                log.error(commonResult.getMsg());
-                return commonResult;
+                throw new RTException(3001, e.getMessage());
             }
             throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
         }
@@ -73,7 +73,7 @@ public class SchedulerHandler {
     private List<String> buildUrls(String uri) {
         List<ServiceInstance> instances = discoveryClient.getInstances(appProperties.getScheduler().getName());
         List<String> urls = new ArrayList<>(instances.size());
-        instances.forEach(item -> urls.add(item.getUri() + "/" + appProperties.getScheduler().getContextPath() + uri));
+        instances.forEach(item -> urls.add(item.getUri() + appProperties.getScheduler().getContextPath() + uri));
         return urls;
     }
 
@@ -89,11 +89,14 @@ public class SchedulerHandler {
 
         private String url;
 
+        private String token;
+
         private Object param;
 
-        public SchedulerCaller(HttpMethod method, String url, Object param) {
+        public SchedulerCaller(HttpMethod method, String url, String token, Object param) {
             this.method = method;
             this.url = url;
+            this.token = token;
             this.param = param;
         }
 
@@ -103,7 +106,7 @@ public class SchedulerHandler {
                     .method(method)
                     .uri(url)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .header(CommonConstants.token, ServletUtil.getHeader(CommonConstants.token))
+                    .header(CommonConstants.token, token)
                     .syncBody(param)
                     .retrieve()
                     .bodyToMono(CommonResult.class)
