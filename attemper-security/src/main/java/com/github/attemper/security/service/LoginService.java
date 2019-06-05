@@ -32,7 +32,7 @@ public class LoginService extends BaseServiceAdapter {
     public LoginResult login(LoginParam param) {
         Tenant tenant = tenantService.get(new TenantGetParam(param.getUserName()));
         if (tenant == null) {
-            throw new RTException(1300, tenant.getUserName());
+            throw new RTException(1300, param.getUserName());
         } else if (!StringUtils.equals(tenant.getPassword(), param.getPassword())) {
             throw new RTException(1301, tenant.getUserName());
         }
