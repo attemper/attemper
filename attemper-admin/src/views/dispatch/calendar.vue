@@ -7,9 +7,11 @@
             <el-option v-for="item in group.options" :key="item.calendarName" :label="item.displayName" :value="item.calendarName" />
           </el-option-group>
         </el-select>
-        <el-checkbox v-model="excluded" :disabled="!dayObj" class="cell">{{ $t('actions.exclude') }}</el-checkbox>
-        <el-input v-model="remark" :disabled="!dayObj" class="cell" :placeholder="$t('placeholders.remark')" />
-        <el-button v-access="'calendar-saveDate'" :disabled="!dayObj" class="cell" type="success" @click="saveDate">{{ $t('actions.save') }}</el-button>
+        <div v-access="'calendar-saveDate'">
+          <el-checkbox v-model="excluded" :disabled="!dayObj" class="cell">{{ $t('actions.exclude') }}</el-checkbox>
+          <el-input v-model="remark" :disabled="!dayObj" class="cell" :placeholder="$t('placeholders.remark')" />
+          <el-button :disabled="!dayObj" class="cell" type="success" @click="saveDate">{{ $t('actions.save') }}</el-button>
+        </div>
       </el-aside>
       <el-main>
         <v-calendar
