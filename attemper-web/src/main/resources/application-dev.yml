@@ -20,11 +20,11 @@ app:
   web:
     enable-scheduling: false
   scheduler:
-    name: scheduler
+    name: attemper-scheduler
     delayedInSecond: 5
     context-path: /
   executor:
-    name: executor
+    name: attemper-executor
     context-path: /
   snow-flake:
     data-center-id: 0
@@ -38,7 +38,3 @@ org:
 logging:
   level:
     com.github.attemper: debug
-
-camunda:
-  bpm:
-    history-level: full

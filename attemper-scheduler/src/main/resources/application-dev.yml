@@ -22,7 +22,7 @@ app:
   scheduler:
     delayedInSecond: 5
   executor:
-    name: executor
+    name: attemper-executor
     contextPath: /
   snow-flake:
     data-center-id: 0
