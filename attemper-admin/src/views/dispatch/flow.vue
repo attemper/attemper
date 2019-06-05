@@ -94,8 +94,8 @@ export default {
     }
   },
   created() {
+    setTimeout(() => this.bindBpmn(), 20)
     this.initJobWithVersions()
-    setTimeout(() => this.bindBpmn(), 100)
   },
   methods: {
     bindBpmn() {

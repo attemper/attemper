@@ -110,7 +110,7 @@ public class JobOfWebService extends BaseServiceAdapter {
         job.setUpdateTime(now);
         job.setMaxReversion(1);
         job.setReversion(1);
-        if (param.getJobContent() == null) {
+        if (StringUtils.isBlank(param.getJobContent())) {
             BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(job.getJobName())
                     .name(job.getDisplayName())
                     .startEvent()

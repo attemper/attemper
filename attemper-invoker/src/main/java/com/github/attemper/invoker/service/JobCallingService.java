@@ -89,7 +89,7 @@ public class JobCallingService {
         if (project == null) {
             project = projectService.getRoot(param.getTenantId());
         }
-        if (project != null && project.getBindExecutor()) {
+        if (project != null && project.getBindExecutor() != null && project.getBindExecutor()) {
             List<String> targetExecutors = projectService.listExecutor(project.getProjectName(), param.getTenantId());
             for (String item : targetExecutors) {
                 pingThenAdd(urls, item);
