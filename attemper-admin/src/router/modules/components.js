@@ -13,12 +13,6 @@ const componentsRouter = {
   },
   children: [
     {
-      path: 'tinymce',
-      component: () => import('@/views/components-demo/tinymce'),
-      name: 'TinymceDemo',
-      meta: { title: 'tinymce' }
-    },
-    {
       path: 'markdown',
       component: () => import('@/views/components-demo/markdown'),
       name: 'MarkdownDemo',

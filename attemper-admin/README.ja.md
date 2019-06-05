@@ -93,7 +93,6 @@ Become a sponsor and get your logo on our README on GitHub with a link to your s
   - Screenfull
 
 - WYSIWYG
-  - TinyMCE
   - Markdown
   - JSON
 

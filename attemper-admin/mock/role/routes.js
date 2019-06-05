@@ -137,12 +137,6 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'tinymce',
-        component: 'views/components-demo/tinymce',
-        name: 'TinymceDemo',
-        meta: { title: 'Tinymce' }
-      },
-      {
         path: 'markdown',
         component: 'views/components-demo/markdown',
         name: 'MarkdownDemo',

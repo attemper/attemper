@@ -25,7 +25,6 @@ export default {
     icons: '图标',
     components: '组件',
     componentIndex: '介绍',
-    tinymce: '富文本编辑器',
     markdown: 'Markdown',
     jsonEditor: 'JSON编辑器',
     dndList: '列表拖拽',
@@ -110,6 +109,8 @@ export default {
     testSql: '测试sql'
   },
   tip: {
+    usernameError: '请输入正确的用户名',
+    passwordError: '请输入正确的密码',
     search: '请输入查询关键字',
     confirm: '请确认',
     confirmMsg: '确定操作',
@@ -362,8 +363,10 @@ export default {
   },
   navbar: {
     logOut: '退出登录',
+    profile: '简介',
     dashboard: '首页',
     github: '项目地址',
+    docs: '文档',
     theme: '换肤',
     size: '布局大小'
   },
@@ -396,7 +399,6 @@ export default {
   },
   components: {
     documentation: '文档',
-    tinymceTips: '富文本是管理后台一个核心的功能，但同时又是一个有很多坑的地方。在选择富文本的过程中我也走了不少的弯路，市面上常见的富文本都基本用过了，最终权衡了一下选择了Tinymce。更详细的富文本比较和介绍见',
     dropzoneTips: '由于我司业务有特殊需求，而且要传七牛 所以没用第三方，选择了自己封装。代码非常的简单，具体代码你可以在这里看到 @/components/Dropzone',
     stickyTips: '当页面滚动到预设的位置会吸附在顶部',
     backToTopTips1: '页面滚动到指定位置会在右下角出现返回顶部按钮',

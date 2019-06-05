@@ -48,7 +48,7 @@
         </el-form-item>
       </el-tooltip>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">
+      <el-button :disabled="disabled" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">
         {{ $t('login.logIn') }}
       </el-button>
     </el-form>
@@ -65,21 +65,21 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error(this.$t('tip.usernameError')))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 1) {
-        callback(new Error('The password can not be less than 1 digits'))
+        callback(new Error(this.$t('tip.passwordError')))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        userName: '',
+        username: '',
         password: ''
       },
       loginRules: {
@@ -92,6 +92,11 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {}
+    }
+  },
+  computed: {
+    disabled() {
+      return this.loginForm.username.length === 0 || this.loginForm.password.length === 0
     }
   },
   watch: {
