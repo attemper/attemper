@@ -11,9 +11,12 @@ import com.github.attemper.executor.disruptor.container.RequestContainer;
 import com.lmax.disruptor.WorkHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * consumer of request
@@ -23,19 +26,40 @@ public class RequestConsumer implements WorkHandler<RequestContainer> {
 
     @Override
     public void onEvent(RequestContainer container) throws Exception {
+        RepositoryService repositoryService = SpringContextAware.getBean(RepositoryService.class);
         RuntimeService runtimeService = SpringContextAware.getBean(RuntimeService.class);
         JobInvokingParam param = container.getParam();
         try {
-            runtimeService.startProcessInstanceByKey(param.getJobName(), param.getId());
-        } catch (Exception e) {
-            int code;
-            if (StringUtils.isNotBlank(param.getTriggerName())) {
-                code = 2000;
+            List<ProcessDefinition> processDefinitions = repositoryService
+                    .createProcessDefinitionQuery()
+                    .processDefinitionKey(param.getJobName())
+                    .tenantIdIn(param.getTenantId())
+                    .list();
+            if (processDefinitions.size() == 1) {
+                ProcessDefinition processDefinition = processDefinitions.get(0);
+                runtimeService.startProcessInstanceById(processDefinition.getId(), param.getId());
+            } else if (processDefinitions.isEmpty()) {
+                log.error("process not exists:{}|{}|{}", param.getId(), param.getJobName(), param.getTenantId());
+                throw new RTException(2002);
             } else {
-                code = 2001;
+                log.error("process more than 1:{}|{}|{}", param.getId(), param.getJobName(), param.getTenantId());
+                throw new RTException(2003);
             }
-            updateInstance(param, code, StatusProperty.getValue(code) + ":" + e.getMessage());
-            throw new RTException(code, e);
+        } catch (Exception e) {
+            if (e instanceof RTException) {
+                RTException rte = (RTException) e;
+                updateInstance(param, rte.getCode(), rte.getMsg());
+                throw rte;
+            } else {
+                int code;
+                if (StringUtils.isNotBlank(param.getTriggerName())) {
+                    code = 2000;
+                } else {
+                    code = 2001;
+                }
+                updateInstance(param, code, StatusProperty.getValue(code) + ":" + e.getMessage());
+                throw new RTException(code, e);
+            }
         }
     }
 
