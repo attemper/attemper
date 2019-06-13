@@ -21,7 +21,7 @@
       },
       {
         "label": "Sub URL",
-        "description": "sub url of a http api",
+        "description": "Sub url of a http api",
         "type": "String",
         "binding": {
           "type": "camunda:property",
@@ -29,12 +29,21 @@
         }
       },
       {
-        "label": "Request Method",
-        "description": "may be GET/POST/PUT/DELETE",
+        "label": "Bean Name",
+        "description": "Bean name of a spring component",
         "type": "String",
         "binding": {
           "type": "camunda:property",
-          "name": "requestMethod"
+          "name": "beanName"
+        }
+      },
+      {
+        "label": "Method Name",
+        "description": "Method name of the bean above",
+        "type": "String",
+        "binding": {
+          "type": "camunda:property",
+          "name": "methodName"
         }
       }
     ],
@@ -74,12 +83,21 @@
         }
       },
       {
-        "label": "Request Method",
-        "description": "may be GET/POST/PUT/DELETE",
+        "label": "Bean Name",
+        "description": "Bean name of a spring component",
         "type": "String",
         "binding": {
           "type": "camunda:property",
-          "name": "requestMethod"
+          "name": "beanName"
+        }
+      },
+      {
+        "label": "Method Name",
+        "description": "Method name of the bean above",
+        "type": "String",
+        "binding": {
+          "type": "camunda:property",
+          "name": "methodName"
         }
       }
     ],

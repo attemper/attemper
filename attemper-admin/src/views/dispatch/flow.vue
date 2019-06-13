@@ -155,8 +155,7 @@ export default {
       })
     },
     save() {
-      const msg = '<p>' + this.$t('tip.saveConfirm') + '?</p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
+      this.$confirm(this.$t('tip.saveConfirm'), this.$t('tip.confirm'), { type: 'info' })
         .then(() => {
           updateReq(this.job).then(res => {
             this.$message.success(res.data.msg)
@@ -197,8 +196,7 @@ export default {
         this.$message.error(this.$t('dispatch.flow.tip.jobNameNotChanged'))
         return
       }
-      const msg = '<p>' + this.$t('dispatch.flow.tip.copyConfirm') + '?</p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
+      this.$confirm(this.$t('dispatch.flow.tip.copyConfirm'), this.$t('tip.confirm'), { type: 'info' })
         .then(() => {
           const data = {
             jobName: this.job.jobName,
@@ -214,8 +212,7 @@ export default {
     },
     // exchange current reversion to the latest
     exchange() {
-      const msg = '<p>' + this.$t('dispatch.flow.tip.exchangeConfirm') + '?</p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
+      this.$confirm(this.$t('dispatch.flow.tip.exchangeConfirm'), this.$t('tip.confirm'), { type: 'info' })
         .then(() => {
           exchangeReq(this.job).then(res => {
             this.$message.success(res.data.msg)

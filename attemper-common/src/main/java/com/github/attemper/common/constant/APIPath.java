@@ -215,6 +215,14 @@ public class APIPath {
 
         public static final String LIST = API_PATH + DISPATCH + SUB_PATH + _LIST;
 
+        public static final String RETRY = API_PATH + DISPATCH + SUB_PATH + "/retry";
+
+        public static final String TERMINATE = API_PATH + DISPATCH + SUB_PATH + "/terminate";
+
+        public static final String PAUSE = API_PATH + DISPATCH + SUB_PATH + "/pause";
+
+        public static final String ACTIVATE = API_PATH + DISPATCH + SUB_PATH + "/activate";
+
         private static final String ACT = "/act";
 
         public static final String LIST_ACT = API_PATH + DISPATCH + SUB_PATH + _LIST + ACT;
@@ -242,11 +250,19 @@ public class APIPath {
 
     public static final class SchedulerPath {
 
-        public static final String TRIGGER = API_PATH + SCHEDULER + "/trigger";
+        public static final String TRIGGER = API_PATH + SCHEDULER + TriggerPath.SUB_PATH;
+
+        public static final String CALENDAR = API_PATH + SCHEDULER + CalendarPath.SUB_PATH;
     }
 
     public static final class ExecutorPath {
 
         public static final String JOB_INVOKING = API_PATH + EXECUTOR + "/invoke";
+
+        public static final String TERMINATE = API_PATH + EXECUTOR + "/terminate";
+
+        public static final String PAUSE = API_PATH + EXECUTOR + "/pause";
+
+        public static final String ACTIVATE = API_PATH + EXECUTOR + "/activate";
     }
 }

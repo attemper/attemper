@@ -126,11 +126,15 @@
           v-for="(item, index) in sqlResult.columns"
           :key="index"
           :label="item"
-          :show-overflow-tooltip="true"
           :width="item.length < 3 ? 50 : item.length*14"
         >
           <template slot-scope="scope">
-            <span>{{ scope.row[item] }}</span>
+            <el-popover trigger="hover" placement="top">
+              <p>{{ scope.row[item] }}</p>
+              <div slot="reference">
+                <span class="single-line">{{ scope.row[item] }}</span>
+              </div>
+            </el-popover>
           </template>
         </el-table-column>
       </el-table>
@@ -153,6 +157,7 @@ import MapInput from './components/arg/MapInput'
 import DateInput from './components/arg/DateInput'
 import DateTimeInput from './components/arg/DateTimeInput'
 import TimeInput from './components/arg/TimeInput'
+import { buildMsg } from '@/utils/tools'
 const DEF_OBJ = {
   argName: null,
   argType: 0,
@@ -371,8 +376,7 @@ export default {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + argNames.join('<br>') + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+      this.$confirm(buildMsg(this, argNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           removeReq({ argNames: argNames }).then(res => {
             this.$message.success(res.data.msg)

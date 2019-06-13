@@ -10,6 +10,7 @@
             DISPLAY_NAME,
             STATUS,
             TIMEOUT,
+            CONCURRENT,
             MAX_REVERSION,
             CREATE_TIME,
             REMARK,
@@ -21,6 +22,7 @@
             #{displayName, jdbcType=VARCHAR},
             #{status, jdbcType=INTEGER},
             #{timeout, jdbcType=INTEGER},
+            #{concurrent, jdbcType=INTEGER}
             #{maxReversion, jdbcType=INTEGER},
             #{createTime, jdbcType=TIMESTAMP},
             #{remark, jdbcType=VARCHAR},
@@ -53,6 +55,7 @@
         SET
         STATUS = #{status, jdbcType=INTEGER},
         TIMEOUT = #{timeout, jdbcType=INTEGER},
+        CONCURRENT = #{concurrent, jdbcType=INTEGER},
         MAX_REVERSION = #{maxReversion, jdbcType=INTEGER},
         MAX_VERSION = #{maxVersion, jdbcType=INTEGER},
         REMARK = #{remark, jdbcType=VARCHAR}
@@ -274,7 +277,7 @@
     </sql>
 
     <sql id="jobAndInfoSql">
-        SELECT ji.JOB_NAME, j.DISPLAY_NAME, j.TIMEOUT, ji.JOB_CONTENT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME,
+        SELECT ji.JOB_NAME, j.DISPLAY_NAME, j.TIMEOUT, j.CONCURRENT, ji.JOB_CONTENT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME,
                 ji.TENANT_ID, j.MAX_REVERSION, ji.REVERSION, j.MAX_VERSION, ji.VERSION, j.STATUS, j.CREATE_TIME,
                 j.REMARK
                 from ${tablePrefix}job j

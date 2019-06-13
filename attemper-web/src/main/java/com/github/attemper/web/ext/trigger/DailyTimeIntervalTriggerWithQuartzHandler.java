@@ -1,8 +1,8 @@
 package com.github.attemper.web.ext.trigger;
 
 import com.github.attemper.common.constant.CommonConstants;
-import com.github.attemper.common.param.dispatch.trigger.sub.DailyIntervalTriggerParam;
-import com.github.attemper.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult;
+import com.github.attemper.common.param.dispatch.trigger.sub.DailyTimeIntervalTriggerParam;
+import com.github.attemper.common.result.dispatch.trigger.sub.DailyTimeIntervalTriggerResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.dao.mapper.job.TriggerMapper;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class DailyTimeIntervalTriggerWithQuartzHandler extends DailyTimeIntervalTriggerHandler implements TriggerWithQuartzHandler<DailyIntervalTriggerParam, DailyIntervalTriggerResult> {
+public class DailyTimeIntervalTriggerWithQuartzHandler extends DailyTimeIntervalTriggerHandler implements TriggerWithQuartzHandler<DailyTimeIntervalTriggerParam, DailyTimeIntervalTriggerResult> {
 
     @Override
     public void deleteTriggers(Map<String, Object> jobNameWithTenantIdMap) {
@@ -26,7 +26,7 @@ public class DailyTimeIntervalTriggerWithQuartzHandler extends DailyTimeInterval
     }
 
     @Override
-    public void saveTriggers(String jobName, List<DailyIntervalTriggerParam> paramOfTriggers) {
+    public void saveTriggers(String jobName, List<DailyTimeIntervalTriggerParam> paramOfTriggers) {
         if (paramOfTriggers == null || paramOfTriggers.isEmpty()) {
             return;
         }

@@ -106,7 +106,11 @@ export default {
     exclude: '排除',
     connectTest: '连接测试',
     saveDate: '保存（日期修改）',
-    testSql: '测试sql'
+    testSql: '测试sql',
+    retry: '重试',
+    terminate: '终止',
+    pause: '暂停',
+    activate: '激活'
   },
   tip: {
     usernameError: '请输入正确的用户名',
@@ -124,7 +128,10 @@ export default {
     sqlResultAlertInfo: '总条数{}(注意：最多展示前10条)',
     sqlResultNoDataInfo: '执行成功，没有数据返回',
     previewing: '预览中......',
-    formatError: '格式不正确'
+    formatError: '格式不正确',
+    pingError: '地址ping不通',
+    yes: '是',
+    no: '否'
   },
   columns: {
     displayName: '中文名',
@@ -193,6 +200,7 @@ export default {
         jobName: '任务名称',
         nextFireTime: '下次执行时间',
         timeout: '超时时间',
+        concurrent: '是否支持并行',
         createTime: '创建时间',
         updateTime: '最近修改时间',
         deploymentTime: '最近发布时间',
@@ -255,7 +263,8 @@ export default {
         daysOfWeek: '星期',
         innerOffset: '日程内偏移量',
         outerOffset: '日程外偏移量',
-        reversed: '是否倒数'
+        reversed: '是否倒数',
+        misfireInstruction: '误点策略'
       },
       placeholder: {
         triggerName: '触发器名称',

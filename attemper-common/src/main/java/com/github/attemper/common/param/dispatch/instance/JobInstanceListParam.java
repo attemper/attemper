@@ -1,15 +1,18 @@
 package com.github.attemper.common.param.dispatch.instance;
 
 import com.github.attemper.common.param.PageSortParam;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
-/**
- * @author ldang
- */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class JobInstanceListParam extends PageSortParam {
 
     protected String rootProcInstId;
@@ -31,6 +34,8 @@ public class JobInstanceListParam extends PageSortParam {
     protected Long lowerDuration;
 
     protected Long upperDuration;
+
+    protected boolean listChildren;
 
     @Override
     public void preHandle() {

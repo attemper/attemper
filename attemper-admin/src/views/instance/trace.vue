@@ -314,7 +314,7 @@ export default {
         }
       })
     },
-    cellClick(row, column, cell, event) {
+    clickCell(row, column, cell, event) {
       this.selectRow(row)
     },
     bindJobContent(done) {

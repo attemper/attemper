@@ -1,11 +1,7 @@
 package com.github.attemper.core.conf;
 
 import com.github.attemper.core.controller.arg.ArgController;
-import com.github.attemper.core.controller.calendar.CalendarController;
 import com.github.attemper.core.controller.datasource.DataSourceController;
-import com.github.attemper.core.controller.instance.JobInstanceController;
-import com.github.attemper.core.controller.job.JobController;
-import com.github.attemper.core.controller.job.TriggerController;
 import com.github.attemper.core.controller.project.ProjectController;
 import com.github.attemper.core.controller.statistics.CountController;
 import com.github.attemper.core.controller.tool.ToolController;
@@ -65,14 +61,10 @@ import javax.validation.ValidatorFactory;
         CountService.class,
 
         //controller
-        JobController.class,
         ArgController.class,
         DataSourceController.class,
-        TriggerController.class,
         ProjectController.class,
         ToolController.class,
-        JobInstanceController.class,
-        CalendarController.class,
         CountController.class
 })
 public class CoreConfiguration {

@@ -31,6 +31,7 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -42,8 +43,6 @@ import java.util.*;
 
 @Slf4j
 public abstract class HttpTask implements JavaDelegate {
-
-    protected HttpMethod requestMethod;
 
     protected String subUrl;
 
@@ -64,12 +63,12 @@ public abstract class HttpTask implements JavaDelegate {
     protected <V extends LogResult> V invoke(DelegateExecution execution, Job job, String url, Class<V> v) {
         WebClient webClient = buildWebClient(job);
         return webClient
-                .method(this.requestMethod)
+                .method(HttpMethod.POST)
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .syncBody(buildParamMap(execution))
                 .retrieve()
-                .onStatus(e -> e.is4xxClientError(), resp -> Mono.error(new RTException(resp.rawStatusCode(), resp.statusCode().getReasonPhrase())))
+                .onStatus(HttpStatus::is4xxClientError, resp -> Mono.error(new RTException(resp.rawStatusCode(), resp.statusCode().getReasonPhrase())))
                 .bodyToMono(v)
                 .doOnError(WebClientResponseException.class, err -> {
                     int code = 3051;
@@ -186,9 +185,7 @@ public abstract class HttpTask implements JavaDelegate {
                 cpi.getCamundaProperties().forEach(cell -> {
                     String camundaValue = cell.getCamundaValue();
                     if (camundaValue != null) {
-                        if (PropertyConstants.requestMethod.equals(cell.getCamundaName())) {
-                            this.requestMethod = HttpMethod.valueOf(camundaValue.toUpperCase());
-                        } else if (PropertyConstants.subUrl.equals(cell.getCamundaName())) {
+                        if (PropertyConstants.subUrl.equals(cell.getCamundaName())) {
                             this.subUrl = camundaValue.startsWith("/") ? camundaValue : "/" + camundaValue;
                         } else if (PropertyConstants.beanName.equals(cell.getCamundaName())) {
                             this.beanName = camundaValue;
@@ -199,9 +196,6 @@ public abstract class HttpTask implements JavaDelegate {
                 });
             }
         });
-        if (this.requestMethod == null) {
-            this.requestMethod = HttpMethod.POST;
-        }
     }
 
     protected void saveInstanceAct(DelegateExecution execution, String url, String logKey, String logText, JobInstanceStatus jobInstanceStatus) {

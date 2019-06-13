@@ -53,6 +53,15 @@
         order by POSITION
     </select>
 
+    <select id="get" parameterType="map" resultType="com.github.attemper.common.result.dispatch.calendar.CalendarInfo">
+        SELECT *
+        FROM ${tablePrefix}calendar
+        <where>
+            <include refid="condCalendarName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
     <select id="listDay" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig">
         SELECT cd.DAY_NUM, cd.REMARK

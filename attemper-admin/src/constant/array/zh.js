@@ -157,7 +157,7 @@ export const pausedJobInstanceStatus = [
   }
 ]
 
-export const todoJobInstanceStatuses = [
+export const doingJobInstanceStatuses = [
   ...runningJobInstanceStatus,
   ...pausedJobInstanceStatus
 ]
@@ -223,3 +223,47 @@ export const calendarTypes = [
   ...dateCalendarTypes,
   ...timeCalendarTypes
 ]
+
+export const baseMisfireInstructions = [
+  {
+    label: '忽略',
+    value: -1
+  },
+  {
+    label: '灵活',
+    value: 0
+  },
+  {
+    label: '立即触发',
+    value: 1
+  }
+]
+
+export const misfireInstructions = [
+  ...baseMisfireInstructions,
+  {
+    label: '不触发',
+    value: 2
+  }
+]
+
+export const simpleTriggerMisfireInstructions = [
+  ...baseMisfireInstructions,
+  {
+    label: '立即触发(以当前重复次数)',
+    value: 2
+  },
+  {
+    label: '立即触发(以剩余重复次数)',
+    value: 3
+  },
+  {
+    label: '下次触发(以剩余重复次数)',
+    value: 4
+  },
+  {
+    label: '下次触发(以当前重复次数)',
+    value: 5
+  }
+]
+

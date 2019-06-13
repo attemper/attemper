@@ -1,9 +1,8 @@
 package com.github.attemper.core.service.calendar;
 
+import com.github.attemper.common.param.dispatch.calendar.CalendarGetParam;
 import com.github.attemper.common.param.dispatch.calendar.CalendarListParam;
 import com.github.attemper.common.param.dispatch.calendar.DayCalendarListParam;
-import com.github.attemper.common.param.dispatch.calendar.DayCalendarRemoveParam;
-import com.github.attemper.common.param.dispatch.calendar.DayCalendarSaveParam;
 import com.github.attemper.common.result.dispatch.calendar.CalendarInfo;
 import com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig;
 import com.github.attemper.core.dao.mapper.calendar.CalendarMapper;
@@ -25,14 +24,9 @@ public class CalendarService extends BaseServiceAdapter {
         return mapper.list(paramMap);
     }
 
-    public Void saveDay(DayCalendarSaveParam param) {
-        mapper.saveDay(injectTenantIdExceptAdminToMap(param));
-        return null;
-    }
-
-    public Void removeDay(DayCalendarRemoveParam param) {
-        mapper.deleteDay(injectTenantIdExceptAdminToMap(param));
-        return null;
+    public CalendarInfo get(CalendarGetParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        return mapper.get(paramMap);
     }
 
     public List<DayCalendarConfig> listDay(DayCalendarListParam param) {

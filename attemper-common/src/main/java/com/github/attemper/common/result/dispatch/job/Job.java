@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author ldang
@@ -22,9 +23,11 @@ public class Job {
 
     protected String jobContent;
 
-    protected Integer status;
+    protected int status;
 
-    protected Integer timeout;
+    protected int timeout;
+
+    protected boolean concurrent;
 
     protected Integer maxReversion;
 
@@ -40,7 +43,7 @@ public class Job {
 
     protected Date deploymentTime;
 
-    protected Date nextFireTime;
+    protected List<Date> nextFireTimes;
 
     protected String remark;
 

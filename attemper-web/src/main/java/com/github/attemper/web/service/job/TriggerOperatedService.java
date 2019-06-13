@@ -5,7 +5,6 @@ import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
 import com.github.attemper.common.param.dispatch.trigger.sub.CommonTriggerParam;
 import com.github.attemper.common.param.scheduler.TriggerChangedParam;
 import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
-import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.core.dao.mapper.job.TriggerMapper;
 import com.github.attemper.core.service.job.TriggerService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
@@ -21,21 +20,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * @author ldang
- */
 @Service
 @Transactional
-public class TriggerOfWebService extends BaseServiceAdapter {
+public class TriggerOperatedService extends BaseServiceAdapter {
 
     @Autowired
     private TriggerMapper mapper;
 
     @Autowired
     private SchedulerHandler schedulerHandler;
-
-    @Autowired
-    private AppProperties appProperties;
 
     /**
      * you can't change the order of the array.<br>
@@ -70,19 +63,8 @@ public class TriggerOfWebService extends BaseServiceAdapter {
                 }
             }
         }
-        callScheduler(triggerChangedParam);
+        schedulerHandler.updateTrigger(triggerChangedParam);
         return null;
-    }
-
-    /**
-     * invoke scheduler app
-     *
-     * @param param
-     */
-    private void callScheduler(TriggerChangedParam param) {
-        if (!appProperties.getWeb().isEnableScheduling()) {
-            schedulerHandler.updateTrigger(param);
-        }
     }
 
     public List<String> getOldTriggerNames(TriggerSaveParam saveParam) {

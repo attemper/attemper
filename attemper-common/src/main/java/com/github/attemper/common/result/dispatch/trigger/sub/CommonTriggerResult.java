@@ -18,11 +18,13 @@ public class CommonTriggerResult {
 
     protected String triggerType;
 
-    protected List<String> calendarNames;
-
     protected Date startTime;
 
     protected Date endTime;
+
+    protected List<String> calendarNames;
+
+    protected Integer misfireInstruction;
 
     protected String tenantId;
 

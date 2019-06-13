@@ -4,6 +4,7 @@ import com.github.attemper.common.param.CommonParam;
 import com.github.attemper.java.sdk.common.util.StringUtils;
 import lombok.Data;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public abstract class CommonTriggerParam implements CommonParam {
     protected Date startTime;
 
     protected Date endTime;
+
+    protected Integer misfireInstruction;
 
     protected List<String> calendarNames;
 
@@ -39,9 +42,11 @@ public abstract class CommonTriggerParam implements CommonParam {
 
     @Override
     public void preHandle() {
-        Date now = new Date();
-        if (startTime == null) {
-            startTime = new Date(now.getTime() + 3000L);
+        if (misfireInstruction == null) {
+            misfireInstruction = 2;
+        }
+        if (calendarNames != null && calendarNames.size() > 0) {
+            Collections.sort(calendarNames);
         }
     }
 }

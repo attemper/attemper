@@ -5,7 +5,7 @@ import com.github.attemper.common.result.dispatch.calendar.CalendarInfo;
 import com.github.attemper.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.CronTriggerResult;
-import com.github.attemper.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult;
+import com.github.attemper.common.result.dispatch.trigger.sub.DailyTimeIntervalTriggerResult;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -31,7 +31,7 @@ public interface TriggerMapper extends BaseMapper<Object> {
 
     void saveCalendarOffsetTriggers(List<Map<String, Object>> list);
 
-    List<DailyIntervalTriggerResult> getDailyIntervalTriggers(Map<String, Object> paramMap);
+    List<DailyTimeIntervalTriggerResult> getDailyIntervalTriggers(Map<String, Object> paramMap);
 
     void deleteDailyIntervalTriggers(Map<String, Object> paramMap);
 

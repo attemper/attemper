@@ -1,5 +1,5 @@
 import { next } from '../../../scripts/support'
-
+import { load } from '@/constant'
 export default {
   props: {
     calendarGroups: {
@@ -9,8 +9,13 @@ export default {
   },
   data() {
     return {
-      triggerArray: []
+      triggerArray: [],
+      misfireInstructions: [],
+      simpleTriggerMisfireInstructions: []
     }
+  },
+  created() {
+    this.loadConst()
   },
   methods: {
     generateId(item) {
@@ -27,6 +32,12 @@ export default {
     },
     remove(index) {
       this.triggerArray.splice(index, 1)
+    },
+    loadConst() {
+      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+        this.misfireInstructions = array.misfireInstructions
+        this.simpleTriggerMisfireInstructions = array.simpleTriggerMisfireInstructions
+      })
     }
   }
 }

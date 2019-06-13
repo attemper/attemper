@@ -7,7 +7,7 @@ import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.CronTriggerResult;
-import com.github.attemper.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult;
+import com.github.attemper.common.result.dispatch.trigger.sub.DailyTimeIntervalTriggerResult;
 import com.github.attemper.core.dao.mapper.job.TriggerMapper;
 import com.github.attemper.core.ext.trigger.*;
 import com.github.attemper.sys.service.BaseServiceAdapter;
@@ -44,12 +44,12 @@ public class TriggerService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         List<CronTriggerResult> cronTriggers = triggerHandlers[0].getTriggers(paramMap);
         List<CalendarOffsetTriggerResult> calendarOffsetTriggers = triggerHandlers[1].getTriggers(paramMap);
-        List<DailyIntervalTriggerResult> dailyIntervalTriggers = triggerHandlers[2].getTriggers(paramMap);
+        List<DailyTimeIntervalTriggerResult> dailyTimeIntervalTriggers = triggerHandlers[2].getTriggers(paramMap);
         List<CalendarIntervalTriggerResult> calendarIntervalTriggers = triggerHandlers[3].getTriggers(paramMap);
         return TriggerResult.builder()
                 .cronTriggers(cronTriggers)
                 .calendarOffsetTriggers(calendarOffsetTriggers)
-                .dailyIntervalTriggers(dailyIntervalTriggers)
+                .dailyIntervalTriggers(dailyTimeIntervalTriggers)
                 .calendarIntervalTriggers(calendarIntervalTriggers)
                 .build();
     }

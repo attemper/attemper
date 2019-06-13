@@ -3,7 +3,7 @@ package com.github.attemper.common.param.dispatch.trigger.sub;
 import lombok.Data;
 
 @Data
-public class DailyIntervalTriggerParam extends CommonTriggerParam{
+public class DailyTimeIntervalTriggerParam extends CommonTriggerParam {
 
     protected String startTimeOfDay;
 

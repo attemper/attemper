@@ -3,6 +3,7 @@ package com.github.attemper.web.service;
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.common.param.dispatch.calendar.CalendarGetParam;
 import com.github.attemper.common.param.scheduler.TriggerChangedParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
@@ -15,7 +16,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -30,8 +30,7 @@ import java.util.concurrent.Future;
  */
 @Slf4j
 @Service
-@Transactional
-public class SchedulerHandler {
+public class SchedulerHandler extends CrossSystemHandler {
 
     @Autowired
     private AppProperties appProperties;
@@ -39,11 +38,25 @@ public class SchedulerHandler {
     @Autowired
     private DiscoveryClient discoveryClient;
 
+    public CommonResult<Void> saveCalendar(CalendarGetParam param) {
+        return call(APIPath.SchedulerPath.CALENDAR, param);
+    }
+
     public CommonResult<Void> updateTrigger(TriggerChangedParam param) {
-        List<String> urls = buildUrls(APIPath.SchedulerPath.TRIGGER);
+        return call(APIPath.SchedulerPath.TRIGGER, param);
+    }
+
+    private CommonResult<Void> call(String apiPath, Object param) {
+        if (appProperties.getWeb().isEnableScheduling()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Web is enable-scheduling");
+            }
+            return null;
+        }
+        List<String> urls = buildUrls(apiPath);
         List<Callable<CommonResult>> callers = new ArrayList<>(urls.size());
         urls.forEach(url -> callers.add(new SchedulerCaller(
-                HttpMethod.PUT,
+                HttpMethod.POST,
                 url,
                 ServletUtil.getHeader(CommonConstants.token),
                 param)));
@@ -75,12 +88,6 @@ public class SchedulerHandler {
         List<String> urls = new ArrayList<>(instances.size());
         instances.forEach(item -> urls.add(item.getUri() + appProperties.getScheduler().getContextPath() + uri));
         return urls;
-    }
-
-    private void preHandleResult(CommonResult commonResult) {
-        if (commonResult.getCode() != CommonConstants.OK) {
-            throw new RTException(commonResult.getCode(), commonResult.getMsg());
-        }
     }
 
     private class SchedulerCaller implements Callable<CommonResult> {

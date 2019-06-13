@@ -10,6 +10,7 @@
         <result property="triggerType" column="TRIGGER_TYPE"/>
         <result property="startTime" column="START_TIME"/>
         <result property="endTime" column="END_TIME"/>
+        <result property="misfireInstruction" column="MISFIRE_INSTRUCTION"/>
         <result property="tenantId" column="TENANT_ID"/>
         <collection property="calendarNames" ofType="string" javaType="ArrayList">
             <result column="CALENDAR_NAME"/>
@@ -140,7 +141,7 @@
     </insert>
 
     <resultMap id="dailyTimeIntervalResultMap"
-               type="com.github.attemper.common.result.dispatch.trigger.sub.DailyIntervalTriggerResult"
+               type="com.github.attemper.common.result.dispatch.trigger.sub.DailyTimeIntervalTriggerResult"
                extends="triggerResultMap">
         <result property="startTimeOfDay" column="START_TIME_OF_DAY"/>
         <result property="endTimeOfDay" column="END_TIME_OF_DAY"/>
@@ -338,6 +339,7 @@
         DESCRIPTION,
         START_TIME,
         END_TIME,
+        MISFIRE_INSTRUCTION,
         TENANT_ID
         )
         values
@@ -348,6 +350,7 @@
             #{item.description, jdbcType=VARCHAR},
             #{item.startTime, jdbcType=TIMESTAMP},
             #{item.endTime, jdbcType=TIMESTAMP},
+            #{item.misfireInstruction, jdbcType=INTEGER},
             #{item.tenantId, jdbcType=VARCHAR}
             )
         </foreach>

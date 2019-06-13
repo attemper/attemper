@@ -33,15 +33,25 @@ public class JobInstance {
 
     protected Long duration;
 
-    protected Integer status;
+    protected int status;
 
-    protected Integer code;
+    protected int code;
 
     protected String msg;
 
-    protected String tenantId;
+    /**
+     * when you retried, the parent id point to the parent id
+     */
+    protected String parentId;
+
+    /**
+     * when the job instance was retried, the retried is true
+     */
+    protected boolean retried;
 
     protected String schedulerUri;
 
     protected String executorUri;
+
+    protected String tenantId;
 }

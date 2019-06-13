@@ -123,7 +123,7 @@ import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 import { generateTitleByVm, translateByVm } from '@/utils/i18n'
-import { injectIcon } from '@/utils/tools'
+import { injectIcon, buildMsg } from '@/utils/tools'
 const DEF_OBJ = {
   tagName: null,
   displayName: null,
@@ -258,8 +258,7 @@ export default {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + tagNames.join('<br>') + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+      this.$confirm(buildMsg(this, tagNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           removeReq({ tagNames: tagNames }).then(res => {
             this.$message.success(res.data.msg)

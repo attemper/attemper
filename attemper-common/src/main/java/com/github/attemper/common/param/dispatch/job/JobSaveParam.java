@@ -26,6 +26,8 @@ public class JobSaveParam implements CommonParam {
 
     protected Integer timeout;
 
+    protected Boolean concurrent;
+
     protected String remark;
 
     public String validate() {
@@ -38,4 +40,10 @@ public class JobSaveParam implements CommonParam {
         return null;
     }
 
+    @Override
+    public void preHandle() {
+        if (concurrent == null) {
+            concurrent = false;
+        }
+    }
 }

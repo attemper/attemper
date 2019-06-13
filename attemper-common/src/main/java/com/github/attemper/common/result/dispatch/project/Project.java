@@ -25,7 +25,7 @@ public class Project {
 
 	protected String contextPath;
 
-	protected Boolean bindExecutor;
+	protected boolean bindExecutor;
 
     protected Integer position;
 

@@ -54,3 +54,12 @@ export const isBlank = (str) => {
 export const addZero = (key) => {
   return key < 10 ? '0' + key : '' + key
 }
+
+export const buildMsg = (vm, array) => {
+  const h = vm.$createElement
+  return h('p', null, [
+    h('ul', array.map(item => {
+      return h('li', { style: 'color: #F56C6C' }, item)
+    }))
+  ])
+}

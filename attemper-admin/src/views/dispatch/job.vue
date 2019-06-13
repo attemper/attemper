@@ -38,6 +38,12 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
+            <el-form-item :label="$t('dispatch.job.columns.concurrent')">
+              <el-tag :type="props.row.concurrent ? 'success' : 'info'">{{ props.row.concurrent ? $t('tip.yes') : $t('tip.no') }}</el-tag>
+            </el-form-item>
+            <el-form-item :label="$t('dispatch.job.columns.timeout')">
+              <span>{{ props.row.timeout * 1000 | parseDuration }}</span>
+            </el-form-item>
             <el-form-item :label="$t('dispatch.job.columns.createTime')">
               <span>{{ props.row.createTime }}</span>
             </el-form-item>
@@ -82,12 +88,16 @@
       </el-table-column>
       <el-table-column :label="$t('dispatch.job.columns.nextFireTime')" width="160px">
         <template slot-scope="scope">
-          <span>{{ scope.row.nextFireTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('dispatch.job.columns.timeout')" width="90px">
-        <template slot-scope="scope">
-          <span>{{ scope.row.timeout }}</span>
+          <el-popover trigger="hover" placement="left">
+            <div v-if="scope.row.nextFireTimes && scope.row.nextFireTimes.length > 0">
+              <p v-for="item in scope.row.nextFireTimes" :key="item + Math.random()">
+                {{ item }}
+              </p>
+            </div>
+            <div slot="reference">
+              <span>{{ scope.row.nextFireTimes && scope.row.nextFireTimes.length > 0 ? scope.row.nextFireTimes[0] : null }}</span>
+            </div>
+          </el-popover>
         </template>
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
@@ -241,12 +251,12 @@
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq, publishReq, manualReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
+import { listReq, /* getReq,*/ removeReq, addReq, updateReq, publishReq, manualReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/dispatch/tool'
 import waves from '@/directive/waves' // Waves directive
-// import { parseTime } from '@/utils'
+import { buildMsg } from '@/utils/tools'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { load } from '@/constant'
 import JobInfoForm from './components/job/jobInfoForm'
@@ -260,6 +270,7 @@ const DEF_OBJ = {
   displayName: '',
   status: 0,
   timeout: 7200,
+  concurrent: false,
   remark: '',
   jobContent: ''
 }
@@ -381,9 +392,7 @@ export default {
       if (this.editDialog.oper !== 'update' && (!this.selections || !this.selections.length || !this.selections[0].jobName)) {
         this.job = Object.assign({}, DEF_OBJ)
       } else {
-        getReq({ jobName: this.selections[0].jobName }).then(res => {
-          this.job = res.data.result
-        })
+        this.job = Object.assign({}, this.selections[0])
       }
     },
     close() {
@@ -430,8 +439,7 @@ export default {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + jobNames.join('<br>') + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+      this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           publishReq({ jobNames: jobNames }).then(res => {
             this.$message.success(res.data.msg)
@@ -530,6 +538,9 @@ export default {
         triggerApi.updateReq(trigger).then(res => {
           this.$message.success(res.data.msg)
           this.editDialog.trigger.visible = false
+          setTimeout(() => {
+            this.search()
+          }, 200)
         })
       }
     },
@@ -543,8 +554,7 @@ export default {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + jobNames.join('<br>') + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+      this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           removeReq({ jobNames: jobNames }).then(res => {
             this.$message.success(res.data.msg)
@@ -571,7 +581,7 @@ export default {
     handleSelectionChange(val) {
       this.selections = val
     },
-    cellClick(row, column, cell, event) {
+    clickCell(row, column, cell, event) {
       this.selectRow(row)
     },
     loadConst() {
@@ -630,8 +640,7 @@ export default {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + jobNames.join('<br>') + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+      this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           manualReq({ jobNames: jobNames }).then(res => {
             this.$message.success(res.data.msg)

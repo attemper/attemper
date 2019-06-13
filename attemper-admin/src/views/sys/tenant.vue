@@ -32,7 +32,12 @@
       </el-table-column>
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
         <template slot-scope="scope">
-          <span class="single-line">{{ scope.row.displayName }}</span>
+          <el-popover trigger="hover" placement="top">
+            <p>{{ scope.row.displayName }}</p>
+            <div slot="reference">
+              <div class="single-line">{{ scope.row.displayName }}</div>
+            </div>
+          </el-popover>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.status')" align="center" width="100">
@@ -42,12 +47,22 @@
       </el-table-column>
       <el-table-column :label="$t('sys.tenant.columns.email')" min-width="100px">
         <template slot-scope="scope">
-          <span class="single-line">{{ scope.row.email }}</span>
+          <el-popover trigger="hover" placement="top">
+            <p>{{ scope.row.email }}</p>
+            <div slot="reference">
+              <div class="single-line">{{ scope.row.email }}</div>
+            </div>
+          </el-popover>
         </template>
       </el-table-column>
       <el-table-column :label="$t('sys.tenant.columns.mobile')" min-width="100px">
         <template slot-scope="scope">
-          <span class="single-line">{{ scope.row.mobile }}</span>
+          <el-popover trigger="hover" placement="top">
+            <p>{{ scope.row.mobile }}</p>
+            <div slot="reference">
+              <div class="single-line">{{ scope.row.mobile }}</div>
+            </div>
+          </el-popover>
         </template>
       </el-table-column>
       <el-table-column v-if="canUpdate" :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
@@ -104,7 +119,7 @@
 <script>
 import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/sys/tenant'
 import waves from '@/directive/waves' // Waves directive
-// import { parseTime } from '@/utils'
+import { buildMsg } from '@/utils/tools'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import access from '@/directive/access/index.js'
 import { canAccess } from '@/utils/tools'
@@ -254,8 +269,7 @@ export default {
         this.$message.warning(this.$t('tip.adminTenantCannotBeRemoved') + ':' + adminTenant.userName)
         return
       }
-      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + userNames.join('<br>') + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+      this.$confirm(buildMsg(this, userNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           removeReq({ userNames: userNames }).then(res => {
             this.$message.success(res.data.msg)

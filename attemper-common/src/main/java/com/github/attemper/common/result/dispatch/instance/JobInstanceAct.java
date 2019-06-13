@@ -37,7 +37,7 @@ public class JobInstanceAct {
 
     protected Long duration;
 
-    protected Integer status;
+    protected int status;
 
     protected String logKey;
 

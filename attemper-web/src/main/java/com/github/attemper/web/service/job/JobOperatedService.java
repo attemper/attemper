@@ -14,19 +14,22 @@ import com.github.attemper.core.service.job.TriggerService;
 import com.github.attemper.invoker.service.JobCallingService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
-import com.github.attemper.web.service.CamundaHandler;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.repository.Deployment;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.quartz.Calendar;
 import org.quartz.*;
 import org.quartz.spi.OperableTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,13 +38,10 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * @author ldang
- */
 @Slf4j
 @Service
 @Transactional
-public class JobOfWebService extends BaseServiceAdapter {
+public class JobOperatedService extends BaseServiceAdapter {
 
     @Autowired
     private JobService jobService;
@@ -53,10 +53,7 @@ public class JobOfWebService extends BaseServiceAdapter {
     private TriggerService triggerService;
 
     @Autowired
-    private TriggerOfWebService triggerOfWebService;
-
-    @Autowired
-    private CamundaHandler camundaHandler;
+    private TriggerOperatedService triggerOperatedService;
 
     @Autowired
     private Scheduler scheduler;
@@ -78,7 +75,7 @@ public class JobOfWebService extends BaseServiceAdapter {
         allTriggerDates.addAll(getNextDateList(triggerResult.getCalendarIntervalTriggers()));
         if (allTriggerDates.size() > 0) {
             Collections.sort(allTriggerDates);
-            job.setNextFireTime(allTriggerDates.get(0));
+            job.setNextFireTimes(allTriggerDates);
         }
     }
 
@@ -89,7 +86,9 @@ public class JobOfWebService extends BaseServiceAdapter {
                 for (CommonTriggerResult item : list) {
                     Trigger trigger = scheduler.getTrigger(new TriggerKey(item.getTriggerName(), injectTenantId()));
                     if (trigger != null) {
-                        nextDateList.addAll(TriggerUtils.computeFireTimes((OperableTrigger) trigger, null, 1));// TODO calendar
+                        Calendar calendar = trigger.getCalendarName() != null ?
+                                scheduler.getCalendar(trigger.getCalendarName()) : null;
+                        nextDateList.addAll(TriggerUtils.computeFireTimes((OperableTrigger) trigger, calendar, 10));
                     }
                 }
             } catch (SchedulerException e) {
@@ -165,20 +164,14 @@ public class JobOfWebService extends BaseServiceAdapter {
         return updatedJob;
     }
 
-    /**
-     * 删除
-     *
-     * @param param
-     * @return
-     */
     public Void remove(JobNamesParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         param.getJobNames().forEach(item -> {
             TriggerSaveParam triggerSaveParam = new TriggerSaveParam(item);
-            triggerOfWebService.update(triggerSaveParam);
+            triggerOperatedService.update(triggerSaveParam);
         });
         mapper.delete(paramMap);
-        camundaHandler.removeDefinitionAndDeployment(param.getJobNames(), injectTenantId());
+        removeDefinitionAndDeployment(param.getJobNames(), injectTenantId());
         return null;
     }
 
@@ -196,7 +189,7 @@ public class JobOfWebService extends BaseServiceAdapter {
             if (job.getVersion() != null) {
                 throw new RTException(6054, jobName);
             }
-            Deployment deployment = camundaHandler.createDefault(job);
+            Deployment deployment = createDefault(job);
             int maxVersion = job.getMaxVersion() == null ? 1 : job.getMaxVersion() + 1;
             job.setUpdateTime(deployment.getDeploymentTime());
             job.setDeploymentTime(deployment.getDeploymentTime());
@@ -210,7 +203,7 @@ public class JobOfWebService extends BaseServiceAdapter {
     }
 
     /**
-     * 判断是否需要更新模型版本
+     * if the job meta setting was changed, just save
      *
      * @param job
      * @param updatedJob
@@ -218,7 +211,8 @@ public class JobOfWebService extends BaseServiceAdapter {
      */
     private boolean checkNeedSave(Job job, Job updatedJob) {
         return job.getStatus() != updatedJob.getStatus()
-                || !job.getTimeout().equals(updatedJob.getTimeout())
+                || job.getTimeout() != updatedJob.getTimeout()
+                || job.isConcurrent() != updatedJob.isConcurrent()
                 || !StringUtils.equals(job.getRemark(), updatedJob.getRemark());
     }
 
@@ -229,6 +223,7 @@ public class JobOfWebService extends BaseServiceAdapter {
                 .jobContent(saveParam.getJobContent())
                 .status(saveParam.getStatus())
                 .timeout(saveParam.getTimeout())
+                .concurrent(saveParam.getConcurrent())
                 .remark(saveParam.getRemark())
                 .tenantId(injectTenantId())
                 .build();
@@ -260,6 +255,7 @@ public class JobOfWebService extends BaseServiceAdapter {
             JobSaveParam saveParam = JobSaveParam.builder()
                     .jobName(targetJob.getJobName()).displayName(targetJob.getDisplayName())
                     .status(targetJob.getStatus()).timeout(targetJob.getTimeout())
+                    .concurrent(targetJob.isConcurrent())
                     .remark(targetJob.getRemark()).jobContent(sourceJob.getJobContent())
                     .build();
             return update(saveParam);
@@ -280,6 +276,7 @@ public class JobOfWebService extends BaseServiceAdapter {
         JobSaveParam saveParam = JobSaveParam.builder()
                 .jobName(oldReversionJob.getJobName()).displayName(oldReversionJob.getDisplayName())
                 .status(oldReversionJob.getStatus()).timeout(oldReversionJob.getTimeout())
+                .concurrent(oldReversionJob.isConcurrent())
                 .remark(oldReversionJob.getRemark()).jobContent(oldReversionJob.getJobContent()).build();
         update(saveParam);
         return jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
@@ -298,7 +295,7 @@ public class JobOfWebService extends BaseServiceAdapter {
         for (String jobName : jobNames) {
             executorService.submit(() -> {
                 try {
-                    SpringContextAware.getBean(JobCallingService.class).invoke(jobName, tenantId);
+                    SpringContextAware.getBean(JobCallingService.class).manual(jobName, tenantId);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
@@ -318,5 +315,31 @@ public class JobOfWebService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.deleteArg(paramMap);
         return null;
+    }
+
+    @Autowired
+    private RepositoryService repositoryService;
+
+    private Deployment createDefault(Job job) {
+        return repositoryService.createDeployment()
+                .addModelInstance(job.getJobName() + ".bpmn20.xml",
+                        Bpmn.readModelFromStream(new ByteArrayInputStream(job.getJobContent().getBytes())))
+                .name(job.getDisplayName())
+                .tenantId(job.getTenantId())
+                .deploy();
+    }
+
+    @Async
+    public void removeDefinitionAndDeployment(List<String> jobNames, String tenantId) {
+        jobNames.forEach(jobName -> {
+            List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
+                    .processDefinitionKey(jobName)
+                    .tenantIdIn(tenantId)
+                    .list();
+            for (ProcessDefinition processDefinition : processDefinitions) {
+                repositoryService.deleteProcessDefinition(processDefinition.getId());
+                repositoryService.deleteDeployment(processDefinition.getDeploymentId());
+            }
+        });
     }
 }

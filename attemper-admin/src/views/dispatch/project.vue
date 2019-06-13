@@ -224,8 +224,7 @@ export default {
     save() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          const msg = '<p>' + this.$t('tip.saveConfirm') + '?</p>'
-          this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
+          this.$confirm(this.$t('tip.saveConfirm'), this.$t('tip.confirm'), { type: 'info' })
             .then(() => {
               saveReq(this.project).then(res => {
                 saveExecutorReq(
@@ -265,8 +264,7 @@ export default {
         if (data.children && data.children.length > 0) {
           this.$message.warning(this.$t('dispatch.project.tip.projectRemoveWarning'))
         } else {
-          const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + data.displayName + '</span></p>'
-          this.$confirm(msg, this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
+          this.$confirm(data.displayName, this.$t('tip.confirmMsg'), { type: 'info' })
             .then(() => {
               removeReq({ projectNames: [data.projectName] }).then(res => {
                 this.$message.success(res.data.msg)
@@ -315,13 +313,15 @@ export default {
     },
     ping() {
       pingReq(this.projectInfo).then(res => {
-        this.$message.success(res.data.msg)
-        return true
+        if (res.data.result) {
+          this.$message.success(res.data.msg)
+        } else {
+          this.$message.error(this.$t('tip.pingError'))
+        }
       })
     },
     removeInfo(row) {
-      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + row.uri + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+      this.$confirm(row.uri, this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           removeInfoReq(this.projectInfo).then(res => {
             this.$message.success(res.data.msg)
@@ -337,13 +337,15 @@ export default {
         })
       }
       pingReq(this.projectInfo).then(res => {
-        saveInfo()
-      }).catch(err => {
-        this.$confirm(err.toString() + '<br><p>' + this.$t('tip.saveConfirm') + '?</p>',
-          this.$t('tip.confirm'), { type: 'info', dangerouslyUseHTMLString: true })
-          .then(() => {
-            saveInfo()
-          })
+        if (res.data.result) {
+          saveInfo()
+        } else {
+          this.$confirm(this.$t('tip.pingError') + ',' + this.$t('tip.saveConfirm') + '?',
+            this.$t('tip.confirm'), { type: 'error' })
+            .then(() => {
+              saveInfo()
+            })
+        }
       })
     },
     initInfos(row) {

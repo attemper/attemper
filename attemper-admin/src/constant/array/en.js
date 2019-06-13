@@ -157,7 +157,7 @@ export const pausedJobInstanceStatus = [
   }
 ]
 
-export const todoJobInstanceStatuses = [
+export const doingJobInstanceStatuses = [
   ...runningJobInstanceStatus,
   ...pausedJobInstanceStatus
 ]

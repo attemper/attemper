@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DailyIntervalTriggerResult extends CommonTriggerResult {
+public class DailyTimeIntervalTriggerResult extends CommonTriggerResult {
 
     protected String startTimeOfDay;
 

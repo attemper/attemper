@@ -103,6 +103,7 @@ import { listReq, getReq, removeReq, addReq, updateReq, testConnectionReq } from
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import { load } from '@/constant'
+import { buildMsg } from '@/utils/tools'
 const DEF_OBJ = {
   dbName: null,
   driverClassName: null,
@@ -198,8 +199,7 @@ export default {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + dbNames.join('<br>') + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+      this.$confirm(buildMsg(this, dbNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           testConnectionReq({ dbNames: dbNames }).then(res => {
             const errorDbs = []
@@ -280,8 +280,7 @@ export default {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + dbNames.join('<br>') + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+      this.$confirm(buildMsg(this, dbNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           removeReq({ dbNames: dbNames }).then(res => {
             this.$message.success(res.data.msg)

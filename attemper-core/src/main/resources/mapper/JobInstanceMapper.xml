@@ -9,6 +9,32 @@
         SELECT * FROM ${tablePrefix}job_instance j WHERE ID = #{1}
     </select>
 
+    <select id="count" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM ${tablePrefix}job_instance j
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+            <if test="status != null &amp;&amp;status.size() &gt; 0">
+                <choose>
+                    <when test="status.size() == 1">
+                        AND STATUS = #{status, jdbcType=INTEGER}
+                    </when>
+                    <otherwise>
+                        AND STATUS in
+                        <foreach item="item" collection="status" open="(" separator="," close=")">
+                            #{item, jdbcType=INTEGER}
+                        </foreach>
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+    <select id="listChildren" parameterType="string"
+            resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren">
+        SELECT * FROM ${tablePrefix}job_instance j WHERE PARENT_ID = #{1} ORDER BY START_TIME DESC
+    </select>
+
     <select id="getAct" parameterType="string"
             resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
         SELECT * FROM ${tablePrefix}job_instance_act j WHERE ACT_INST_ID = #{1}
@@ -34,6 +60,8 @@
             STATUS,
             CODE,
             MSG,
+            PARENT_ID,
+            RETRIED,
             SCHEDULER_URI,
             EXECUTOR_URI,
             TENANT_ID
@@ -53,6 +81,8 @@
             #{status, jdbcType=INTEGER},
             #{code, jdbcType=INTEGER},
             #{msg, jdbcType=VARCHAR},
+            #{parentId, jdbcType=VARCHAR},
+            #{retried, jdbcType=INTEGER},
             #{schedulerUri, jdbcType=VARCHAR},
             #{executorUri, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
@@ -88,7 +118,13 @@
                 CODE = #{code, jdbcType=INTEGER},
             </if>
             <if test="msg != null">
-                MSG = #{msg, jdbcType=VARCHAR}
+                MSG = #{msg, jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                PARENT_ID = #{parentId, jdbcType=VARCHAR},
+            </if>
+            <if test="retried != null">
+                RETRIED = #{retried, jdbcType=INTEGER},
             </if>
         </set>
         <where>
@@ -172,25 +208,9 @@
         </where>
     </sql>
 
-    <select id="list" parameterType="map" resultType="com.github.attemper.common.result.dispatch.instance.JobInstance">
-        SELECT * FROM (
-        SELECT t.ID,
-        t.PROC_INST_ID,
-        t.ROOT_PROC_INST_ID,
-        t.JOB_NAME,
-        t.DISPLAY_NAME,
-        t.TRIGGER_NAME,
-        t.PROC_DEF_ID,
-        t.START_TIME,
-        t.END_TIME,
-        t.DURATION,
-        t.CODE,
-        t.MSG,
-        t.STATUS,
-        t.TENANT_ID
-        FROM ${tablePrefix}job_instance t
-        LEFT JOIN ${tablePrefix}job job USING (JOB_NAME, TENANT_ID)
-        ) j
+    <select id="listInstance" parameterType="map"
+            resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren">
+        SELECT * FROM ${tablePrefix}job_instance j
         <where>
             <if test="jobName != null">
                 and lower(JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
@@ -221,7 +241,7 @@
         </where>
         <choose>
             <when test="sort == null">
-                order by START_TIME
+                order by START_TIME DESC
             </when>
             <otherwise>
                 order by ${sort}
@@ -264,6 +284,12 @@
     <sql id="condActInstId">
         <if test="actInstId != null">
             and j.ACT_INST_ID = #{actInstId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condJobName">
+        <if test="jobName != null">
+            AND JOB_NAME = #{jobName, jdbcType=VARCHAR}
         </if>
     </sql>
 

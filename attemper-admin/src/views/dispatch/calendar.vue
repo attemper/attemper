@@ -90,8 +90,7 @@ export default {
     },
     saveDate() {
       const operatedDay = this.formatDay(this.dayObj)
-      const msg = '<p>' + this.$t('tip.confirmMsg') + ':<br><span style="color: red">' + operatedDay + '</span></p>'
-      this.$confirm(msg, this.$t('tip.confirm'), { type: 'warning', dangerouslyUseHTMLString: true })
+      this.$confirm(operatedDay, this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           const data = {
             calendarName: this.currentCalendar.calendarName,
@@ -116,7 +115,6 @@ export default {
           this.calendarConfigs.forEach(day => {
             const dayNumStr = String(day.dayNum)
             const attr = {
-              day: day.dayNum,
               remark: day.remark,
               dates: new Date(parseInt(dayNumStr.substring(0, 4)), parseInt(dayNumStr.substring(4, 6)) - 1, parseInt(dayNumStr.substring(6, 8)))
             }
@@ -142,9 +140,15 @@ export default {
     click(day) {
       this.dayObj = day
       const dayStr = this.formatDay(day)
-      const target = this.attrs.find(attr => { return attr.day === dayStr })
+      const target = this.attrs.find(attr => { return this.formatDate(attr.dates) === dayStr })
       this.excluded = target !== undefined && target !== null
       this.remark = target ? target.remark : null
+    },
+    formatDate(date) {
+      if (date instanceof Array) {
+        return null
+      }
+      return date.getFullYear() + this.addZero(date.getMonth() + 1) + this.addZero(date.getDate())
     },
     formatDay(day) {
       return day.year + this.addZero(day.month) + this.addZero(day.day)

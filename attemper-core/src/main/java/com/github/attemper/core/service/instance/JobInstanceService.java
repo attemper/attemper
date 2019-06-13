@@ -4,6 +4,7 @@ import com.github.attemper.common.param.dispatch.instance.JobInstanceActParam;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceListParam;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
+import com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.core.dao.mapper.instance.JobInstanceMapper;
 import com.github.attemper.core.service.job.JobService;
@@ -11,6 +12,7 @@ import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class JobInstanceService extends BaseServiceAdapter {
@@ -33,6 +36,10 @@ public class JobInstanceService extends BaseServiceAdapter {
         return mapper.get(id);
     }
 
+    public int count(JobInstanceListParam param, String tenantId) {
+        return mapper.count(injectTenantIdToMap(param, tenantId));
+    }
+
     public JobInstanceAct getAct(String actInstId) {
         return mapper.getAct(actInstId);
     }
@@ -40,7 +47,22 @@ public class JobInstanceService extends BaseServiceAdapter {
     public Map<String, Object> list(JobInstanceListParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
-        Page<JobInstance> list = (Page<JobInstance>) mapper.list(paramMap);
+        Page<JobInstanceWithChildren> list = (Page<JobInstanceWithChildren>) mapper.listInstance(paramMap);
+        if (param.isListChildren()) {
+            list.forEach(item -> {
+                item.setRowKey(item.getId());
+                if (item.isRetried()) {
+                    List<JobInstanceWithChildren> children = mapper.listChildren(item.getId());
+                    if (children.isEmpty()) {
+                        log.error("children empty:{}", item.getId());
+                        item.setRetried(false);
+                    } else {
+                        children.forEach(child -> child.setRowKey(child.getParentId() + ":" + child.getId()));
+                        item.setChildren(children);
+                    }
+                }
+            });
+        }
         return PageUtil.toResultMap(list);
     }
 

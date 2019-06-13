@@ -21,6 +21,9 @@
     <el-form-item :label="$t('dispatch.job.columns.timeout')">
       <el-input-number v-model="job.timeout" :precision="0" :min="60" :step="60" controls-position="right" style="width: 100%;" />
     </el-form-item>
+    <el-form-item :label="$t('dispatch.job.columns.concurrent')">
+      <el-switch v-model="job.concurrent" />
+    </el-form-item>
     <el-form-item :label="$t('columns.remark')">
       <el-input
         v-model="job.remark"

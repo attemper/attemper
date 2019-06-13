@@ -16,7 +16,7 @@ public class TriggerSaveParam implements CommonParam {
 
     protected List<CalendarOffsetTriggerParam> calendarOffsetTriggers;
 
-    protected List<DailyIntervalTriggerParam> dailyIntervalTriggers;
+    protected List<DailyTimeIntervalTriggerParam> dailyIntervalTriggers;
 
     protected List<CalendarIntervalTriggerParam> calendarIntervalTriggers;
 

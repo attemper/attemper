@@ -11,7 +11,7 @@ public class ExecutableJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobCallingService jobCallingService = SpringContextAware.getBean(JobCallingService.class);
-        jobCallingService.invoke(
+        jobCallingService.execute(
                 context.getJobDetail().getKey().getName(),
                 context.getTrigger().getKey().getName(),
                 context.getJobDetail().getKey().getGroup());

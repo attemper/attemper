@@ -87,6 +87,16 @@
                 </el-option-group>
               </el-select>
             </el-form-item>
+            <el-form-item :label="$t('dispatch.trigger.title.misfireInstruction')">
+              <el-select v-model="item.misfireInstruction" style="width: 100%;">
+                <el-option
+                  v-for="ele in (milliSecondTimeUnits.find(cell => { return cell.value === item.timeUnit }) ? simpleTriggerMisfireInstructions : misfireInstructions)"
+                  :key="ele.value"
+                  :label="ele.label"
+                  :value="ele.value"
+                />
+              </el-select>
+            </el-form-item>
           </el-form>
         </el-col>
       </el-row>
