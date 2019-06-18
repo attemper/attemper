@@ -36,6 +36,8 @@ public class APIPath {
     public static final class LoginPath {
 
         public static final String INFO = API_PATH + SYS + SdkAPIPath.LoginPath.SUB_PATH + "/info";
+
+        public static final String LOGIN_BY_USERNAME_PWD = API_PATH + SYS + SdkAPIPath.LoginPath.SUB_PATH;
     }
 
     public static final class TenantPath {

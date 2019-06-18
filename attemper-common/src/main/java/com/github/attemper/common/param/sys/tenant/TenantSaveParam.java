@@ -32,6 +32,9 @@ public class TenantSaveParam implements CommonParam {
         if (StringUtils.isBlank(userName)) {
             return "5100";
         }
+        if (StringUtils.isBlank(password)) {
+            return "5101";
+        }
         if (StringUtils.isBlank(displayName)) {
             return "5103";
         }

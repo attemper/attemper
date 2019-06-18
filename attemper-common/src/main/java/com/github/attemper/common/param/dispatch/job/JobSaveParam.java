@@ -1,5 +1,6 @@
 package com.github.attemper.common.param.dispatch.job;
 
+import com.github.attemper.common.enums.JobStatus;
 import com.github.attemper.common.param.CommonParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +37,9 @@ public class JobSaveParam implements CommonParam {
         }
         if (StringUtils.isBlank(displayName)){
             return "6003";
+        }
+        if (JobStatus.get(status) == null) {
+            return "6004";
         }
         return null;
     }

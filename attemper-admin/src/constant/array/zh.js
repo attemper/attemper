@@ -17,10 +17,6 @@ export const jobStatuses = [
   {
     label: '禁用',
     value: 1
-  },
-  {
-    label: '删除',
-    value: 2
   }
 ]
 

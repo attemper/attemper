@@ -23,23 +23,6 @@ export const getProcessId = (bpmnModeler) => {
   return id
 }
 
-export const getTimeStr = () => {
-  const now = new Date()
-  const month = now.getMonth() + 1
-  const date = now.getDate()
-  const hour = now.getHours()
-  const min = now.getMinutes()
-  const sec = now.getSeconds()
-  return '' +
-    now.getFullYear() +
-    (month < 10 ? '0' + month : month) +
-    (date < 10 ? '0' + date : date) +
-    ' ' +
-    (hour < 10 ? '0' + hour : hour) +
-    (min < 10 ? '0' + min : min) +
-    (sec < 10 ? '0' + sec : sec)
-}
-
 export const startAfterEndTime = (startTimeStr, endTimeStr) => {
   return startTimeStr != null && endTimeStr != null && startTimeStr > endTimeStr
 }

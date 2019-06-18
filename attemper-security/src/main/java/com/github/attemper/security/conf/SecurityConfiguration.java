@@ -1,11 +1,10 @@
 package com.github.attemper.security.conf;
 
+import com.github.attemper.core.conf.CoreConfiguration;
 import com.github.attemper.security.controller.LoginController;
-import com.github.attemper.sys.ext.service.JWTService;
 import com.github.attemper.security.service.LoginService;
 import com.github.attemper.security.xss.XssFilter;
-import com.github.attemper.sys.ext.service.SecretService;
-import com.github.attemper.core.conf.CoreConfiguration;
+import com.github.attemper.sys.ext.service.JWTService;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -28,7 +27,6 @@ import org.springframework.web.filter.DelegatingFilterProxy;
         XssFilter.class,
 
         //service
-        SecretService.class,
         LoginService.class,
 
         //controller

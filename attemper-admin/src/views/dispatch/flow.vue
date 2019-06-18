@@ -70,9 +70,7 @@ import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda'
 import miniMapModule from 'diagram-js-minimap'
 import customTranslate from '@/utils/customTranslate'
 import JobInfoForm from './components/job/jobInfoForm'
-import {
-  getTimeStr
-} from './scripts/support'
+import { getTimeStr } from '@/utils/tools'
 import customElementTemplate from './components/job/element-templates/custom'
 
 export default {

@@ -6,7 +6,6 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-button v-access="'tenant-add'" class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
       <el-button v-access="'tenant-remove'" :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
-      <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>-->
     </div>
 
     <el-table
@@ -92,7 +91,7 @@
           <el-form-item :label="$t('columns.displayName')" prop="displayName">
             <el-input v-model="tenant.displayName" :placeholder="$t('placeholders.displayName')" />
           </el-form-item>
-          <el-form-item :label="$t('sys.tenant.columns.password')">
+          <el-form-item :label="$t('sys.tenant.columns.password')" prop="password">
             <el-input v-model="tenant.password" :placeholder="$t('sys.tenant.placeholder.password')" type="password" />
           </el-form-item>
           <el-form-item :label="$t('columns.status')">
@@ -118,9 +117,9 @@
 
 <script>
 import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/sys/tenant'
-import waves from '@/directive/waves' // Waves directive
+import waves from '@/directive/waves'
 import { buildMsg } from '@/utils/tools'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
 import access from '@/directive/access/index.js'
 import { canAccess } from '@/utils/tools'
 import { load } from '@/constant'
@@ -175,6 +174,9 @@ export default {
         ],
         displayName: [
           { required: true, trigger: 'blur' }
+        ],
+        password: [
+          { required: true, trigger: 'blur' }
         ]
       },
       tenant: DEF_OBJ,
@@ -193,6 +195,7 @@ export default {
     setFormRules() {
       this.formRules.userName[0].message = this.$t('sys.tenant.rules.userName')
       this.formRules.displayName[0].message = this.$t('rules.displayName')
+      this.formRules.password[0].message = this.$t('sys.tenant.rules.password')
     },
     search() {
       this.listLoading = true

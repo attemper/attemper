@@ -7,7 +7,6 @@ import com.github.attemper.sys.controller.TenantController;
 import com.github.attemper.sys.dao.mapper.TagMapper;
 import com.github.attemper.sys.dao.mapper.TenantMapper;
 import com.github.attemper.sys.exception.SysExceptionAdvisor;
-import com.github.attemper.sys.ext.service.SecretService;
 import com.github.attemper.sys.service.TagService;
 import com.github.attemper.sys.service.TenantService;
 import com.github.attemper.sys.store.Store;
@@ -34,7 +33,6 @@ import javax.annotation.PostConstruct;
         //service
         TenantService.class,
         TagService.class,
-        SecretService.class,
 
         //controller
         TenantController.class,

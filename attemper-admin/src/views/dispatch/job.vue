@@ -15,11 +15,20 @@
       <el-button v-waves :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="publish">
         <svg-icon icon-class="publish" /> {{ $t('table.publish') }}
       </el-button>
-      <el-button style="float: right" :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manual">
-        <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
-      </el-button>
-      <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>
-      <el-checkbox v-model="showCreateTime" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">{{ $t('dispatch.job.columns.createTime') }}</el-checkbox>-->
+      <div style="float: right">
+        <el-popover
+          placement="bottom"
+          trigger="hover"
+        >
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-download" @click="exportMeta">{{ $t('actions.exportJob') }}</el-button><br><br>
+          <el-button v-waves class="filter-item" type="success" icon="el-icon-upload2" @click="importMeta">{{ $t('actions.importJob') }}</el-button><br><br>
+          <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button>
+          <el-button slot="reference" class="filter-item table-external-button" type="warning">{{ $t('actions.highOperation') }}</el-button>
+        </el-popover>
+        <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manual">
+          <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
+        </el-button>
+      </div>
     </div>
 
     <el-table
@@ -32,7 +41,7 @@
       highlight-current-row
       style="width: 100%;"
       @selection-change="handleSelectionChange"
-      @cell-click="cellClick"
+      @cell-click="clickCell"
       @sort-change="sortChange"
     >
       <el-table-column type="expand">
@@ -255,9 +264,9 @@ import { listReq, /* getReq,*/ removeReq, addReq, updateReq, publishReq, manualR
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/dispatch/tool'
-import waves from '@/directive/waves' // Waves directive
-import { buildMsg } from '@/utils/tools'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import waves from '@/directive/waves'
+import { buildMsg, getTimeStr } from '@/utils/tools'
+import Pagination from '@/components/Pagination'
 import { load } from '@/constant'
 import JobInfoForm from './components/job/jobInfoForm'
 import CronTrigger from './components/job/cronTrigger'
@@ -583,6 +592,40 @@ export default {
     },
     clickCell(row, column, cell, event) {
       this.selectRow(row)
+    },
+    importMeta() {
+      console.log('TODO')
+    },
+    exportMeta() {
+      console.log('TODO')
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const translatedHeader = [
+          this.$t('dispatch.job.columns.jobName'),
+          this.$t('columns.displayName'),
+          this.$t('columns.status'),
+          this.$t('dispatch.job.columns.version')
+        ]
+        const columnNames = ['jobName', 'displayName', 'status', 'maxReversion']
+        const data = this.formatJson(columnNames, this.list)
+        excel.export_json_to_excel({
+          header: translatedHeader,
+          data,
+          filename: 'job_' + getTimeStr()
+        })
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'status') {
+          return this.formatStatus(v[j])
+        } else {
+          return v[j]
+        }
+      }))
     },
     loadConst() {
       load(`./array/${localStorage.getItem('language')}.js`).then((array) => {

@@ -6,9 +6,6 @@
       <el-select v-model="page.status" :placeholder="$t('columns.status')" multiple clearable collapse-tags class="filter-item search-select">
         <el-option v-for="item in currentJobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
-      </el-select>-->
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <span v-if="selections.length === 1">
         <el-button v-if="retryVisible" v-waves class="filter-item" type="warning" icon="el-icon-s-operation" @click="retry">{{ $t('actions.retry') }}</el-button>
@@ -17,30 +14,39 @@
           {{ canPause ? $t('actions.pause') : $t('actions.activate') }}
         </el-button>
       </span>
-      <el-popover
-        placement="bottom"
-        trigger="click"
-      >
-        <el-form
-          label-position="left"
-          label-width="100px"
-          style="height: 100%"
+      <div style="float: right">
+        <el-popover
+          placement="bottom"
+          trigger="hover"
         >
-          <el-form-item :label="$t('monitor.columns.startTime')" style="margin-bottom: 5px;">
-            <date-time-generator @update="page.lowerStartTime = $event" @change="search" />
-          </el-form-item>
-          <el-form-item>
-            <date-time-generator @update="page.upperStartTime = $event" @change="search" />
-          </el-form-item>
-          <el-form-item :label="$t('monitor.columns.endTime')" style="margin-bottom: 5px;">
-            <date-time-generator @update="page.lowerEndTime = $event" @change="search" />
-          </el-form-item>
-          <el-form-item>
-            <date-time-generator @update="page.upperEndTime = $event" @change="search" />
-          </el-form-item>
-        </el-form>
-        <el-button slot="reference" class="filter-item" style="float: right;" type="primary">{{ $t('actions.highSearch') }}</el-button>
-      </el-popover>
+          <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button>
+          <el-button slot="reference" class="filter-item table-external-button" type="warning">{{ $t('actions.highOperation') }}</el-button>
+        </el-popover>
+        <el-popover
+          placement="bottom"
+          trigger="hover"
+        >
+          <el-form
+            label-position="left"
+            label-width="100px"
+            style="height: 100%"
+          >
+            <el-form-item :label="$t('monitor.columns.startTime')" style="margin-bottom: 5px;">
+              <date-time-generator @update="page.lowerStartTime = $event" @change="search" />
+            </el-form-item>
+            <el-form-item>
+              <date-time-generator @update="page.upperStartTime = $event" @change="search" />
+            </el-form-item>
+            <el-form-item :label="$t('monitor.columns.endTime')" style="margin-bottom: 5px;">
+              <date-time-generator @update="page.lowerEndTime = $event" @change="search" />
+            </el-form-item>
+            <el-form-item>
+              <date-time-generator @update="page.upperEndTime = $event" @change="search" />
+            </el-form-item>
+          </el-form>
+          <el-button slot="reference" class="filter-item table-external-button" type="primary">{{ $t('actions.highSearch') }}</el-button>
+        </el-popover>
+      </div>
     </div>
 
     <el-table
@@ -124,6 +130,7 @@
 <script>
 import { listReq, retryReq, terminateReq, pauseReq, activateReq } from '@/api/dispatch/instance'
 import { load } from '@/constant'
+import { getTimeStr } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
 import waves from '@/directive/waves'
 import DateTimeGenerator from '@/components/DateTimeGenerator'
@@ -283,6 +290,38 @@ export default {
     },
     clickCell(row, column, cell, event) {
       this.selectRow(row)
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const translatedHeader = [
+          this.$t('dispatch.job.columns.jobName'),
+          this.$t('columns.displayName'),
+          this.$t('columns.status'),
+          this.$t('monitor.columns.startTime'),
+          this.$t('monitor.columns.endTime'),
+          this.$t('monitor.columns.duration'),
+          'code',
+          'msg'
+        ]
+        const columnNames = ['jobName', 'displayName', 'status', 'startTime', 'endTime', 'duration', 'code', 'msg']
+        const data = this.formatJson(columnNames, this.list)
+        excel.export_json_to_excel({
+          header: translatedHeader,
+          data,
+          filename: 'instance_' + getTimeStr()
+        })
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'status') {
+          return this.formatStatus(v[j])
+        } else {
+          return v[j]
+        }
+      }))
     },
     loadConst() {
       load(`./array/${localStorage.getItem('language')}.js`).then((array) => {

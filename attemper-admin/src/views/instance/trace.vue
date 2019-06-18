@@ -64,7 +64,7 @@
             highlight-current-row
             style="width: 100%;"
             :row-class-name="renderRecordStyle"
-            @cell-click="cellClick"
+            @cell-click="clickCell"
           >
             <el-table-column
               type="selection"

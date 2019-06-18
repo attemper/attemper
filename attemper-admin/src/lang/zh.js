@@ -7,10 +7,11 @@ export default {
     tag: '角色管理',
     calendar: '日历管理',
     dispatch: '调度管理',
+    job: '任务编排',
+    delay: '延迟任务',
     arg: '参数管理',
     datasource: '数据源管理',
     project: '服务信息',
-    job: '任务编排',
     monitor: '监控管理',
     realTime: '实时监控',
     history: '历史监控',
@@ -92,8 +93,9 @@ export default {
     reset: '重置',
     transferIn: '移入',
     transferOut: '移出',
-    import: '导入',
-    export: '导出',
+    importJob: '导出任务',
+    exportJob: '导入任务',
+    exportList: '导出列表',
     last: '上一个',
     next: '下一个',
     ok: '确定',
@@ -102,6 +104,7 @@ export default {
     manual: '发起',
     showCurrent: '显示当前',
     showAll: '显示全部',
+    highOperation: '高级操作',
     highSearch: '高级查询',
     exclude: '排除',
     connectTest: '连接测试',
@@ -154,7 +157,8 @@ export default {
         mobile: '手机号'
       },
       rules: {
-        userName: '租户编号不能为空'
+        userName: '租户编号不能为空',
+        password: '密码不能为空'
       },
       placeholder: {
         userName: '请输入租户编号',

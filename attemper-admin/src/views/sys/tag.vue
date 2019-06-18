@@ -119,8 +119,8 @@
 import { listReq, getReq, removeReq, addReq, updateReq, getTenantsReq, updateTagTenantReq, getResourcesReq, updateTagResourceReq } from '@/api/sys/tag'
 import { asyncRouterMap } from '@/router'
 import * as tenantApi from '@/api/sys/tenant'
-import waves from '@/directive/waves' // Waves directive
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import waves from '@/directive/waves'
+import Pagination from '@/components/Pagination'
 import { load } from '@/constant'
 import { generateTitleByVm, translateByVm } from '@/utils/i18n'
 import { injectIcon, buildMsg } from '@/utils/tools'

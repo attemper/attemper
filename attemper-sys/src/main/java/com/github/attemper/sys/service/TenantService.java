@@ -8,6 +8,7 @@ import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.sys.dao.mapper.TenantMapper;
 import com.github.attemper.sys.store.Store;
 import com.github.attemper.sys.util.PageUtil;
+import com.github.attemper.sys.util.PasswordUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.StringUtils;
@@ -71,6 +72,7 @@ public class TenantService extends BaseServiceAdapter {
     }
 
     public Tenant save(Tenant tenant) {
+        tenant.setPassword(PasswordUtil.encode(tenant.getPassword(), tenant.getUserName()));
         tenant.setUpdateTime(new Date());
         mapper.save(BeanUtil.bean2Map(tenant));
         return tenant;

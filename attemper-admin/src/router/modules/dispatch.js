@@ -24,6 +24,16 @@ const jobRouter = {
       }
     },
     {
+      path: 'delay',
+      component: () => import('@/views/dispatch/delay'),
+      name: 'delay',
+      meta: {
+        title: 'delay',
+        icon: 'delay',
+        noCache: false
+      }
+    },
+    {
       path: 'arg',
       component: () => import('@/views/dispatch/arg'),
       name: 'arg',

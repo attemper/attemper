@@ -2,7 +2,7 @@
   <div ref="rightPanel" :class="{show:show}" class="rightPanel-container">
     <div class="rightPanel-background" />
     <div class="rightPanel">
-      <div class="handle-button" :style="{'top':buttonTop+'px','background-color':theme}" @click="show=!show">
+      <div class="handle-button" :style="{'bottom':buttonBottom+'px','background-color':theme}" @click="show=!show">
         <i :class="show?'el-icon-close':'el-icon-setting'" />
       </div>
       <div class="rightPanel-items">
@@ -22,8 +22,8 @@ export default {
       default: false,
       type: Boolean
     },
-    buttonTop: {
-      default: 250,
+    buttonBottom: {
+      default: 10,
       type: Number
     }
   },
@@ -125,21 +125,21 @@ export default {
   }
 
   .handle-button {
-    width: 48px;
-    height: 48px;
+    width: 30px;
+    height: 30px;
     position: absolute;
-    left: -48px;
+    left: -30px;
     text-align: center;
-    font-size: 24px;
-    border-radius: 6px 0 0 6px !important;
+    font-size: 18px;
+    border-radius: 15px 15px 15px 15px !important;
     z-index: 0;
     pointer-events: auto;
     cursor: pointer;
     color: #fff;
-    line-height: 48px;
+    line-height: 30px;
     i {
-      font-size: 24px;
-      line-height: 48px;
+      font-size: 18px;
+      line-height: 30px;
     }
   }
 </style>

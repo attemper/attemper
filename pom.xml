@@ -55,7 +55,6 @@
 		<swagger.bootstrap.ui.version>1.7.9</swagger.bootstrap.ui.version>
 		<lombok.version>1.16.18</lombok.version>
 		<!--<jpinyin.version>1.1.8</jpinyin.version>-->
-		<hutool.version>3.3.2</hutool.version>
 		<reflections.version>0.9.10</reflections.version>
 		<junit.version>4.12</junit.version>
 		<groovy.version>2.4.15</groovy.version>
@@ -176,13 +175,7 @@
 				<artifactId>jackson-databind</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-
-			<!-- hutool core -->
-			<dependency>
-				<groupId>com.xiaoleilu</groupId>
-				<artifactId>hutool-crypto</artifactId>
-				<version>${hutool.version}</version>
-			</dependency>
+			
 			<dependency>
 				<groupId>org.reflections</groupId>
 				<artifactId>reflections</artifactId>

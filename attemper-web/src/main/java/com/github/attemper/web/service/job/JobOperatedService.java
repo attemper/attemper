@@ -1,5 +1,6 @@
 package com.github.attemper.web.service.job;
 
+import com.github.attemper.common.enums.JobStatus;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.job.*;
 import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
@@ -104,6 +105,9 @@ public class JobOperatedService extends BaseServiceAdapter {
             throw new DuplicateKeyException(param.getJobName());
         }
         job = toBaseJob(param);
+        if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
+            throw new RTException(6055);
+        }
         Date now = new Date();
         job.setCreateTime(now);
         job.setUpdateTime(now);
@@ -144,6 +148,9 @@ public class JobOperatedService extends BaseServiceAdapter {
         if (checkNeedSave(job, updatedJob)) {  // base info
             updatedJob.setMaxReversion(job.getMaxReversion());
         } else {  //job content
+            if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
+                throw new RTException(6057);
+            }
             if (StringUtils.equals(param.getJobContent(), job.getJobContent())) {
                 throw new RTException(6056);
             }

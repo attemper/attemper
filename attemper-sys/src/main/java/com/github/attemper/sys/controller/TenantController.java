@@ -61,7 +61,9 @@ public class TenantController {
 	@ApiImplicitParam(value = "TenantGetParam", name = "param", dataType = "TenantGetParam", required = true)
 	@GetMapping(APIPath.TenantPath.GET)
 	public CommonResult<Tenant> get(TenantGetParam param) {
-		return CommonResult.putResult(service.get(param));
+		Tenant tenant = service.get(param);
+		tenant.setPassword(null);
+		return CommonResult.putResult(tenant);
     }
 
 	@ApiOperation("Get tag")

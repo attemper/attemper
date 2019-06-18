@@ -17,10 +17,6 @@ export const jobStatuses = [
   {
     label: 'Disable',
     value: 1
-  },
-  {
-    label: 'DELETED',
-    value: 2
   }
 ]
 

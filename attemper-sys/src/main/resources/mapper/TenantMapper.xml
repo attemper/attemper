@@ -18,7 +18,8 @@
     </select>
 
     <select id="list" parameterType="map" resultType="com.github.attemper.common.result.sys.tenant.Tenant">
-        select *
+        select
+        <include refid="columnsWithoutPassword"/>
         from ${tablePrefix}tenant
         <where>
             <if test="userName != null">
@@ -158,6 +159,17 @@
             )
         </foreach>
     </insert>
+
+    <sql id="columnsWithoutPassword">
+        USER_NAME,
+        DISPLAY_NAME,
+        EMAIL,
+        MOBILE,
+        STATUS,
+        ADMIN,
+        CREATE_TIME,
+        UPDATE_TIME
+    </sql>
 
     <sql id="condUserName">
         <if test="userName != null">

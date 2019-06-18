@@ -25,9 +25,16 @@ public class LoginController {
 
     @ApiOperation("Login by userName and password")
     @ApiImplicitParam(value = "LoginParam", name = "param", dataType = "LoginParam", required = true)
-    @PostMapping(SdkAPIPath.LoginPath.LOGIN_BY_USERNAME_PWD)
+    @PostMapping(APIPath.LoginPath.LOGIN_BY_USERNAME_PWD)
     public CommonResult<LoginResult> login(@RequestBody LoginParam param) {
         return CommonResult.putResult(service.login(param));
+    }
+
+    @ApiOperation("Login by userName and encoded password")
+    @ApiImplicitParam(value = "LoginParam", name = "param", dataType = "LoginParam", required = true)
+    @PostMapping(SdkAPIPath.LoginPath.LOGIN_BY_ENCODED_USERNAME_PWD)
+    public CommonResult<LoginResult> loginByEncoded(@RequestBody LoginParam param) {
+        return CommonResult.putResult(service.loginByEncoded(param));
     }
 
     /**

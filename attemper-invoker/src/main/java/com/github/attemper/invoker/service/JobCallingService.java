@@ -3,6 +3,7 @@ package com.github.attemper.invoker.service;
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.JobInstanceStatus;
+import com.github.attemper.common.enums.JobStatus;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceListParam;
@@ -80,7 +81,14 @@ public class JobCallingService {
                 .triggerName(triggerName)
                 .tenantId(tenantId)
                 .build();
-        if (!validateStatus(jobName, tenantId)) {
+        Job job = jobService.get(jobName, tenantId);
+        if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
+            JobInstance jobInstance = buildInstance(param, null, parentId, JobInstanceStatus.TERMINATED);
+            int code = 3010;
+            jobInstance.setCode(code);
+            jobInstance.setMsg(StatusProperty.getValue(code));
+            return;
+        } else if (!validateConcurrent(job)) {
             JobInstance jobInstance = buildInstance(param, null, parentId, JobInstanceStatus.TERMINATED);
             int code = 3008;
             jobInstance.setCode(code);
@@ -97,13 +105,12 @@ public class JobCallingService {
         }
     }
 
-    private boolean validateStatus(String jobName, String tenantId) {
-        Job job = jobService.get(jobName, tenantId);
+    private boolean validateConcurrent(Job job) {
         if (job.isConcurrent()) {
             return true;
         }
         List<Integer> statuses = Arrays.asList(JobInstanceStatus.RUNNING.getStatus(), JobInstanceStatus.PAUSED.getStatus());
-        int count = jobInstanceService.count(JobInstanceListParam.builder().jobName(jobName).status(statuses).build(), tenantId);
+        int count = jobInstanceService.count(JobInstanceListParam.builder().jobName(job.getJobName()).status(statuses).build(), job.getTenantId());
         if (count <= 0) {
             return true;
         }
