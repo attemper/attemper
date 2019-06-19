@@ -269,4 +269,59 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	<description>Multi-tenancy,elastic,asynchronous-distributed scheduling application</description>
+	<url>https://github.com/attemper/attemper</url>
+	<organization>
+		<name>Shanghai Stock Exchange</name>
+		<url>http://www.sse.com.cn</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:git:git@github.com:attemper/attemper.git</connection>
+		<developerConnection>scm:git:git@github.com:attemper/attemper.git</developerConnection>
+		<tag/>
+		<url>https://github.com/attemper/attemper</url>
+	</scm>
+	<issueManagement>
+		<system>Issue</system>
+		<url>https://github.com/attemper/attemper/issues</url>
+	</issueManagement>
+	<developers>
+		<developer>
+			<id>ldang64</id>
+			<name>Dang Ling</name>
+			<email>ldang@sse.com.cn</email>
+			<organization>Shanghai Stock Exchange</organization>
+			<organizationUrl>http://www.sse.com.cn</organizationUrl>
+			<roles>
+				<role>Primary Developer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 </project>
