@@ -182,8 +182,11 @@ export default {
   'Connector': '连接器',
   // 提示
   'Must provide a value': '不能为空',
-  'This maps to the process definition key.': '映射为流程定义的主键'
+  'This maps to the process definition key.': '映射为流程定义的主键',
   /* 'Element must have an unique id.': '元素必须有唯一主键',
   'Specify more than one group as a comma separated list.': '指定多个组时以,隔开',
   'Specify more than one user as a comma separated list.': '指定多个用户时以,隔开'*/
+  'Sub URL': '自定义子路径',
+  'Bean Name': 'Bean名称',
+  'Method Name': '方法名称'
 }

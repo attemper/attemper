@@ -20,6 +20,7 @@ import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
+import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.model.bpmn.Bpmn;
@@ -58,6 +59,9 @@ public class JobOperatedService extends BaseServiceAdapter {
 
     @Autowired
     private Scheduler scheduler;
+
+    @Autowired
+    private IdGenerator idGenerator;
 
     public Map<String, Object> list(JobListParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
@@ -298,11 +302,12 @@ public class JobOperatedService extends BaseServiceAdapter {
     public Void manual(JobNamesParam param) {
         List<String> jobNames = param.getJobNames();
         ExecutorService executorService = Executors.newFixedThreadPool(jobNames.size());
+        String id = idGenerator.getNextId();
         String tenantId = injectTenantId();
         for (String jobName : jobNames) {
             executorService.submit(() -> {
                 try {
-                    SpringContextAware.getBean(JobCallingService.class).manual(jobName, tenantId);
+                    SpringContextAware.getBean(JobCallingService.class).manual(id, jobName, tenantId);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }

@@ -9,6 +9,7 @@ import com.github.attemper.invoker.service.JobCallingService;
 import com.github.attemper.web.service.ExecutorHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,9 @@ public class JobInstanceOperatedService {
 
     @Autowired
     private ExecutorHandler executorHandler;
+
+    @Autowired
+    private IdGenerator idGenerator;
 
     public Void retry(JobInstanceIdParam param) {
         JobInstance jobInstance = getJobInstance(param);
@@ -49,7 +53,7 @@ public class JobInstanceOperatedService {
                 jobInstanceService.update(jobInstance);
             }
         }
-        jobCallingService.retry(jobInstance.getJobName(), jobInstance.getTenantId(), parentId);
+        jobCallingService.retry(idGenerator.getNextId(), jobInstance.getJobName(), jobInstance.getTenantId(), parentId);
         return null;
     }
 

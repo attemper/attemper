@@ -27,7 +27,6 @@ import com.github.attemper.security.service.LoginService;
 import com.github.attemper.sys.service.TenantService;
 import com.github.attemper.sys.store.Store;
 import lombok.extern.slf4j.Slf4j;
-import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -45,9 +44,6 @@ import java.util.*;
 public class JobCallingService {
 
     @Autowired
-    private IdGenerator idGenerator;
-
-    @Autowired
     private WebClient webClient;
 
     @Autowired
@@ -62,21 +58,21 @@ public class JobCallingService {
     @Autowired
     private JobInstanceService jobInstanceService;
 
-    public void manual(String jobName, String tenantId) {
-        this.invoke(jobName, null, tenantId, null);
+    public void execute(String id, String jobName, String triggerName, String tenantId) {
+        this.invoke(id, jobName, triggerName, tenantId, null);
     }
 
-    public void execute(String jobName, String triggerName, String tenantId) {
-        this.invoke(jobName, triggerName, tenantId, null);
+    public void manual(String id, String jobName, String tenantId) {
+        this.invoke(id, jobName, null, tenantId, null);
     }
 
-    public void retry(String jobName, String tenantId, String parentId) {
-        this.invoke(jobName, null, tenantId, parentId);
+    public void retry(String id, String jobName, String tenantId, String parentId) {
+        this.invoke(id, jobName, null, tenantId, parentId);
     }
 
-    public void invoke(String jobName, String triggerName, String tenantId, String parentId) {
+    public void invoke(String id, String jobName, String triggerName, String tenantId, String parentId) {
         JobInvokingParam param = JobInvokingParam.builder()
-                .id(idGenerator.getNextId())
+                .id(id)
                 .jobName(jobName)
                 .triggerName(triggerName)
                 .tenantId(tenantId)
