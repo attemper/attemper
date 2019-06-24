@@ -69,7 +69,6 @@
 		<lombok.maven.plugin.version>1.16.18.0</lombok.maven.plugin.version>
 		<!-- docker -->
 		<dockerfile.maven.plugin.version>1.4.10</dockerfile.maven.plugin.version>
-		<docker.image.prefix>${project.artifactId}</docker.image.prefix>
 	</properties>
 
 	<dependencyManagement>
