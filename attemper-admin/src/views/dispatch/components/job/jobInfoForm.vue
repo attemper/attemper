@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import { load } from '@/constant'
 
 export default {
   name: 'JobInfoForm',
@@ -80,7 +79,7 @@ export default {
       })
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.jobStatuses = array.jobStatuses
       })
     }

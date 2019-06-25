@@ -30,7 +30,6 @@
 
 <script>
 import { listReq, saveDayReq, removeDayReq, listDayReq } from '@/api/dispatch/calendar'
-import { load } from '@/constant'
 import access from '@/directive/access/index.js'
 
 export default {
@@ -157,7 +156,7 @@ export default {
       return (key < 10 ? '0' : '') + key
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.calendarTypes = array.calendarTypes
       })
     }

@@ -1,5 +1,4 @@
 import { next } from '../../../scripts/support'
-import { load } from '@/constant'
 export default {
   props: {
     calendarGroups: {
@@ -34,7 +33,7 @@ export default {
       this.triggerArray.splice(index, 1)
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.misfireInstructions = array.misfireInstructions
         this.simpleTriggerMisfireInstructions = array.simpleTriggerMisfireInstructions
       })

@@ -121,7 +121,6 @@ import { asyncRouterMap } from '@/router'
 import * as tenantApi from '@/api/sys/tenant'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
-import { load } from '@/constant'
 import { generateTitleByVm, translateByVm } from '@/utils/i18n'
 import { injectIcon, buildMsg } from '@/utils/tools'
 const DEF_OBJ = {
@@ -415,7 +414,7 @@ export default {
       )
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.transferTitles = array.transferTitles
         this.allocateTitles = array.allocateTitles
       })

@@ -102,7 +102,6 @@
 import { listReq, getReq, removeReq, addReq, updateReq, testConnectionReq } from '@/api/dispatch/datasource'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
-import { load } from '@/constant'
 import { buildMsg } from '@/utils/tools'
 const DEF_OBJ = {
   dbName: null,
@@ -311,7 +310,7 @@ export default {
       return item
     },
     loadConst() {
-      load(`./common.js`).then((array) => {
+      import(`@/constant/common.js`).then((array) => {
         this.databases = array.databases
       })
     }

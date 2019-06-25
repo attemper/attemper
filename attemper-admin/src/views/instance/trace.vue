@@ -110,7 +110,6 @@ import customTranslate from '@/utils/customTranslate'
 import customElementTemplate from '../dispatch/components/job/element-templates/custom'
 import Pagination from '@/components/Pagination'
 import { getVersionByDefinition } from './scripts/support'
-import { load } from '@/constant'
 import DateTimeGenerator from '@/components/DateTimeGenerator'
 
 export default {
@@ -348,7 +347,7 @@ export default {
       }
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.jobInstanceStatuses = array.jobInstanceStatuses
       })
     }

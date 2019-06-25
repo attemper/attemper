@@ -69,7 +69,6 @@
 <script>
 import CountTo from 'vue-count-to'
 import { jobInstanceCountReq, jobCountReq, tenantCountReq } from '../../../api/statistics/count'
-import { load } from '@/constant'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -137,7 +136,7 @@ export default {
       })
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.jobStatuses = array.jobStatuses
         this.jobInstanceStatuses = array.jobInstanceStatuses
       })

@@ -131,7 +131,6 @@
 <script>
 import { treeListReq, saveReq, removeReq, saveInfoReq, listInfoReq, removeInfoReq, saveExecutorReq, listExecutorReq } from '@/api/dispatch/project'
 import { listExecutorServiceReq, pingReq } from '@/api/dispatch/tool'
-import { load } from '@/constant'
 
 const DEF_OBJ = {
   projectName: null,
@@ -357,7 +356,7 @@ export default {
       this.projectInfo = Object.assign({}, val) || Object.assign({ projectName: this.project.projectName }, DEF_INSTANCE)
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.uriTypes = array.uriTypes
       })
     }

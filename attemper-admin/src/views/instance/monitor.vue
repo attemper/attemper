@@ -129,7 +129,6 @@
 
 <script>
 import { listReq, retryReq, terminateReq, pauseReq, activateReq } from '@/api/dispatch/instance'
-import { load } from '@/constant'
 import { getTimeStr } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
 import waves from '@/directive/waves'
@@ -324,7 +323,7 @@ export default {
       }))
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.runningJobInstanceStatus = array.runningJobInstanceStatus
         this.pausedJobInstanceStatus = array.pausedJobInstanceStatus
         this.doingJobInstanceStatuses = array.doingJobInstanceStatuses

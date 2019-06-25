@@ -148,7 +148,6 @@ import * as dataSourceApi from '@/api/dispatch/datasource'
 import * as calendarApi from '@/api/dispatch/calendar'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
-import { load } from '@/constant'
 import StringInput from './components/arg/StringInput'
 import NumberInput from './components/arg/NumberInput'
 import BooleanInput from './components/arg/BooleanInput'
@@ -429,10 +428,10 @@ export default {
       this.arg.argValue = val
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.calendarTypes = array.dateCalendarTypes
       })
-      load(`./common.js`).then((array) => {
+      import(`@/constant/common.js`).then((array) => {
         this.genericTypes = array.genericTypes
         this.rawTypes = array.rawTypes
         this.sqlTypes = array.sqlTypes

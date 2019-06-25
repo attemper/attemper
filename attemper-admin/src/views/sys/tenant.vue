@@ -122,7 +122,7 @@ import { buildMsg } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
 import access from '@/directive/access/index.js'
 import { canAccess } from '@/utils/tools'
-import { load } from '@/constant'
+
 const DEF_OBJ = {
   userName: null,
   displayName: null,
@@ -304,7 +304,7 @@ export default {
         this.editDialog.tag.visible = false
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.statuses = array.statuses
         this.transferTitles = array.transferTitles
         this.allocateTitles = array.allocateTitles

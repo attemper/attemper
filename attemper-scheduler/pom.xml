@@ -89,6 +89,7 @@
                     <buildArgs>
                         <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
                     </buildArgs>
+                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
                 </configuration>
                 <dependencies>
                     <dependency>

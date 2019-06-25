@@ -267,7 +267,6 @@ import * as toolApi from '@/api/dispatch/tool'
 import waves from '@/directive/waves'
 import { buildMsg, getTimeStr } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
-import { load } from '@/constant'
 import JobInfoForm from './components/job/jobInfoForm'
 import CronTrigger from './components/job/cronTrigger'
 import CalendarOffsetTrigger from './components/job/calendarOffsetTrigger'
@@ -628,7 +627,7 @@ export default {
       }))
     },
     loadConst() {
-      load(`./array/${localStorage.getItem('language')}.js`).then((array) => {
+      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.jobStatuses = array.jobStatuses
         this.milliSecondTimeUnits = array.milliSecondTimeUnits
         this.inDayTimeUnits = array.inDayTimeUnits
@@ -637,7 +636,7 @@ export default {
         this.daysOfWeek = array.daysOfWeek
         this.calendarTypes = array.calendarTypes
       })
-      load(`./common.js`).then((array) => {
+      import(`@/constant/common.js`).then((array) => {
         this.argTypes = array.argTypes
       })
     },
