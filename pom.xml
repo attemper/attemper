@@ -51,8 +51,7 @@
 		<shiro.version>1.4.0</shiro.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<!--<kaptcha.version>0.0.9</kaptcha.version>-->
-		<swagger2.version>2.9.2</swagger2.version>
-		<swagger.bootstrap.ui.version>1.7.9</swagger.bootstrap.ui.version>
+		<swagger.version>2.9.2</swagger.version>
 		<lombok.version>1.16.18</lombok.version>
 		<!--<jpinyin.version>1.1.8</jpinyin.version>-->
 		<reflections.version>0.9.10</reflections.version>
@@ -160,12 +159,12 @@
 			<dependency>
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-swagger2</artifactId>
-				<version>${swagger2.version}</version>
+				<version>${swagger.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.github.xiaoymin</groupId>
-				<artifactId>swagger-bootstrap-ui</artifactId>
-				<version>${swagger.bootstrap.ui.version}</version>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${swagger.version}</version>
 			</dependency>
 			<!-- swagger end -->
 

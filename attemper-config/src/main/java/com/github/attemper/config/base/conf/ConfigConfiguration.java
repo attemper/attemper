@@ -20,32 +20,22 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Properties;
 
-/**
- * @author ldang
- */
 @EnableConfigurationProperties(
         AppProperties.class
 )
 @Configuration
 @ComponentScan(basePackageClasses = {
-        //多数据源切面
         MultiDataSourceAspect.class,
-        //数据源属性
         DataSourceProperties.class,
-        //多数据配置
         DataSourceConfig.class,
 
-        //全局异常处理
         GlobalExceptionAdvisor.class,
 
-        //swagger2配置
         Swagger2Config.class,
         LocalServerConfig.class,
 
-        //bean factory bean
         SpringContextAware.class,
 
-        //log
         ApiLogService.class,
         ApiLogMapper.class
 })

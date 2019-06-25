@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * swagger2 配置
+ * swagger2
  * @author ldang
  */
 @Configuration
@@ -41,15 +41,15 @@ public class Swagger2Config {
     public Docket apiV1() {
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .contact(new Contact(contactName, contactUrl, contactEmail))
-                .title("REST接口文档")
-                .description("基于swagger2的REST API")
+                .title("REST Doc")
+                .description("Based on swagger2")
                 .version("v1")
                 .build();
         Parameter tokenParameter = new ParameterBuilder()
                 .parameterType(CommonConstants.header)
                 .name(CommonConstants.token)
                 .modelRef(new ModelRef("String"))
-                .description("基于JWT(json web token)实现的访问令牌")
+                .description("Based on JWT(json web token)")
                 .build();
         List<Parameter> parameterList = new ArrayList<>();
         parameterList.add(tokenParameter);

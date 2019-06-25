@@ -55,10 +55,10 @@ public class ShiroConfig {
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put(APIPath.LoginPath.LOGIN_BY_USERNAME_PWD, "anon");  //web login
         filterMap.put(SdkAPIPath.LoginPath.LOGIN_BY_ENCODED_USERNAME_PWD, "anon");  //sdk login
-        filterMap.put("/doc.html", "anon");  //swagger2-bootstrap-ui主页
-        filterMap.put("/webjars/**", "anon");  //swagger2-bootstrap-ui资源
-        filterMap.put("/swagger-resources", "anon");  //swagger2元信息
-        filterMap.put("/v2/api-docs", "anon");  //swagger2拿应用接口的请求
+        filterMap.put("/swagger-ui.html", "anon");  //swagger-ui
+        filterMap.put("/webjars/**", "anon");
+        filterMap.put("/swagger-resources/**", "anon");
+        filterMap.put("/v2/api-docs", "anon");  //swagger2 api
         filterMap.put("/kaptcha", "anon");
         filterMap.put("/**", jwtFilter);
         bean.setFilterChainDefinitionMap(filterMap);

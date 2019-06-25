@@ -1,7 +1,9 @@
 package com.github.attemper.config.base.id;
 
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 
+@Slf4j
 public class SnowFlakeIdGenerator implements IdGenerator {
 
     private final static long START_TIMESTAMP = 946656000000L;  //2000-01-01 00:00:00
@@ -38,7 +40,7 @@ public class SnowFlakeIdGenerator implements IdGenerator {
     public synchronized String getNextId() {
         long currTimeStamp = now();
         if (currTimeStamp < lastTimeStamp) {
-            throw new RuntimeException("Clock moved backwards.  Refusing to generate id");
+            log.warn("Clock moved backwards.{}<{}", currTimeStamp, lastTimeStamp);
         }
 
         if (currTimeStamp == lastTimeStamp) {
