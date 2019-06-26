@@ -5,16 +5,6 @@
         <div class="card-panel-icon-wrapper icon-money">
           <svg-icon icon-class="monitor" class-name="card-panel-icon" />
         </div>
-        <div class="card-panel-instance-description">
-          <div v-for="item in jobInstanceCount" :key="item.label" style="margin-bottom: 5px;">
-            <span class="card-panel-text">
-              {{ item.label }}
-            </span>
-            <el-tag :type="item.status | renderJobInstanceStatus">
-              <count-to :start-val="0" :end-val="item.value" :duration="3000" class="card-panel-num" />
-            </el-tag>
-          </div>
-        </div>
         <div class="card-panel-description">
           <div>
             <span class="card-panel-text">
@@ -30,16 +20,6 @@
         <div class="card-panel-icon-wrapper icon-message">
           <svg-icon icon-class="job" class-name="card-panel-icon" />
         </div>
-        <div class="card-panel-job-description">
-          <div v-for="item in jobCount" :key="item.label" style="margin-bottom: 5px;">
-            <span class="card-panel-text">
-              {{ item.label }}
-            </span>
-            <el-tag :type="item.status | renderJobStatus">
-              <count-to :start-val="0" :end-val="item.value" :duration="3000" class="card-panel-num" />
-            </el-tag>
-          </div>
-        </div>
         <div class="card-panel-description">
           <div>
             <span class="card-panel-text">
@@ -50,7 +30,7 @@
         </div>
       </div>
     </el-col>
-    <el-col v-if="admin" :xs="12" :sm="12" :lg="4" class="card-panel-col">
+    <el-col v-if="admin" :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="tenant" class-name="card-panel-icon" />

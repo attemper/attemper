@@ -678,19 +678,19 @@ export default {
           }
           jobNames.push(sel.jobName)
         })
+        this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
+          .then(() => {
+            manualReq({ jobNames: jobNames }).then(res => {
+              this.$message.success(res.data.msg)
+              setTimeout(() => {
+                this.$router.push({ name: 'total', replace: true })
+              }, 600)
+            })
+          })
       } else {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
-        .then(() => {
-          manualReq({ jobNames: jobNames }).then(res => {
-            this.$message.success(res.data.msg)
-            setTimeout(() => {
-              this.$router.push({ name: 'total', replace: true })
-            }, 600)
-          })
-        })
     },
     initCalendarGroups() {
       this.calendarGroups = []
