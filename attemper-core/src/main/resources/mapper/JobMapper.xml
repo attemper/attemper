@@ -22,7 +22,7 @@
             #{displayName, jdbcType=VARCHAR},
             #{status, jdbcType=INTEGER},
             #{timeout, jdbcType=INTEGER},
-            #{concurrent, jdbcType=INTEGER}
+            #{concurrent, jdbcType=INTEGER},
             #{maxReversion, jdbcType=INTEGER},
             #{createTime, jdbcType=TIMESTAMP},
             #{remark, jdbcType=VARCHAR},
