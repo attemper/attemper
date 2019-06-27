@@ -441,7 +441,7 @@ export default {
       background: #fff;
       display: inline-block;
       vertical-align: middle;
-      width: 360px;
+      width: 200px;
       height: 500px;
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
