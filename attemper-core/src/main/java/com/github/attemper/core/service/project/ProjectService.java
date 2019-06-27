@@ -115,7 +115,7 @@ public class ProjectService extends BaseServiceAdapter {
                 .parentProjectName(param.getParentProjectName())
                 .displayName(param.getDisplayName())
                 .contextPath(param.getContextPath())
-                .bindExecutor(param.getBindExecutor())
+                .bindExecutor(param.isBindExecutor())
                 .position(param.getPosition())
                 .build();
     }

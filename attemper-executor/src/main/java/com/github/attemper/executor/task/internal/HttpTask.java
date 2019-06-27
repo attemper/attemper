@@ -56,7 +56,7 @@ public abstract class HttpTask implements JavaDelegate {
         JobService jobService = SpringContextAware.getBean(JobService.class);
         Job job = jobService.get(jobName, execution.getTenantId());
         resolveExtensionElement(execution);
-        String url = resolveUrl(jobName, execution) + (subUrl == null ? injectRouterPath() : subUrl);
+        String url = resolveUrl(jobName, execution);
         executeIntern(execution, job, url);
     }
 
@@ -155,7 +155,7 @@ public abstract class HttpTask implements JavaDelegate {
             throw new RTException(code);
         }
         int randomIndex = (int) (Math.random() * urls.size());
-        return urls.toArray()[randomIndex] + optimizeContextPath(project.getContextPath());
+        return optimizePath(String.valueOf(urls.toArray()[randomIndex]), project.getContextPath());
     }
 
     /**
@@ -169,12 +169,14 @@ public abstract class HttpTask implements JavaDelegate {
         }
     }
 
-    private String optimizeContextPath(String contextPath) {
-        if (StringUtils.isBlank(contextPath)) {
-            return "/";
+    private String optimizePath(String rootUrl, String contextPath) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(rootUrl.endsWith("/") ? rootUrl.substring(0, rootUrl.length() - 1) : rootUrl);
+        if (StringUtils.isNotBlank(contextPath)) {
+            sb.append(contextPath.startsWith("/") ? contextPath : "/" + contextPath);
         }
-        contextPath = contextPath.trim();
-        return contextPath.startsWith("/") ? contextPath : "/" + contextPath;
+        sb.append(subUrl == null ? injectRouterPath() : subUrl);
+        return sb.toString();
     }
 
     private void resolveExtensionElement(DelegateExecution execution) {

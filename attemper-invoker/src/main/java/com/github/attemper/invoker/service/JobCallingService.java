@@ -78,18 +78,20 @@ public class JobCallingService {
                 .tenantId(tenantId)
                 .build();
         Job job = jobService.get(jobName, tenantId);
+        int code = -1;
         if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
-            JobInstance jobInstance = buildInstance(param, null, parentId, JobInstanceStatus.TERMINATED);
-            int code = 3010;
-            jobInstance.setCode(code);
-            jobInstance.setMsg(StatusProperty.getValue(code));
-            return;
+            code = 3010;
         } else if (!validateConcurrent(job)) {
+            code = 3008;
+        }
+        if (code != -1) {
             JobInstance jobInstance = buildInstance(param, null, parentId, JobInstanceStatus.TERMINATED);
-            int code = 3008;
+            jobInstance.setEndTime(jobInstance.getStartTime());
+            jobInstance.setDuration(0L);
             jobInstance.setCode(code);
             jobInstance.setMsg(StatusProperty.getValue(code));
-            return;
+            saveInstance(jobInstance);
+            throw new RTException(code);
         }
         String baseUrl = computeUrl(param, parentId);
         String token = Store.getTenantTokenMap().get(tenantId);
@@ -182,7 +184,7 @@ public class JobCallingService {
 
     private synchronized String getToken(String tenantId) {
         Tenant tenant = tenantService.get(TenantGetParam.builder().userName(tenantId).build());
-        LoginResult loginResult = loginService.login(new LoginParam().setUserName(tenantId).setPassword(tenant.getPassword()));
+        LoginResult loginResult = loginService.loginByEncoded(new LoginParam().setUserName(tenantId).setPassword(tenant.getPassword()));
         String token = loginResult.getToken();
         Store.getTenantTokenMap().put(tenantId, token);
         return token;
