@@ -62,7 +62,7 @@ public class JobInstanceOperatedService {
         if (!isDoing(jobInstance.getStatus())) {
             throw new RTException(6202, String.valueOf(jobInstance.getStatus()));
         }
-        executorHandler.terminate(jobInstance.getExecutorUri(), param);
+        executorHandler.terminate(jobInstance.getExecutorUri(), jobInstance);
         updateJobInstanceStatus(jobInstance, JobInstanceStatus.TERMINATED.getStatus());
         return null;
     }
@@ -72,7 +72,7 @@ public class JobInstanceOperatedService {
         if (jobInstance.getStatus() != JobInstanceStatus.RUNNING.getStatus()) {
             throw new RTException(6202, String.valueOf(jobInstance.getStatus()));
         }
-        executorHandler.pause(jobInstance.getExecutorUri(), param);
+        executorHandler.pause(jobInstance.getExecutorUri(), jobInstance);
         updateJobInstanceStatus(jobInstance, JobInstanceStatus.PAUSED.getStatus());
         return null;
     }
@@ -82,7 +82,7 @@ public class JobInstanceOperatedService {
         if (jobInstance.getStatus() != JobInstanceStatus.PAUSED.getStatus()) {
             throw new RTException(6202, String.valueOf(jobInstance.getStatus()));
         }
-        executorHandler.activate(jobInstance.getExecutorUri(), param);
+        executorHandler.activate(jobInstance.getExecutorUri(), jobInstance);
         updateJobInstanceStatus(jobInstance, JobInstanceStatus.RUNNING.getStatus());
         return null;
     }

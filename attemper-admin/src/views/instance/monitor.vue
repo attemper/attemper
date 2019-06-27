@@ -270,6 +270,9 @@ export default {
     },
     handleSelectionChange(val) {
       this.selections = val
+      if (this.selections.length === 1) {
+        this.reset()
+      }
     },
     initPageStatus() {
       if (this.page.status || this.page.status.length === 0) {

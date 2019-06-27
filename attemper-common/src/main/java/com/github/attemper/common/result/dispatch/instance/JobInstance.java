@@ -35,7 +35,7 @@ public class JobInstance {
 
     protected int status;
 
-    protected int code;
+    protected Integer code;
 
     protected String msg;
 
