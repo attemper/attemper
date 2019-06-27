@@ -8,7 +8,6 @@ const state = {
   userName: '',
   displayName: '',
   admin: null,
-  avatar: '',
   roles: [],
   resourceNames: []
 }
@@ -27,9 +26,6 @@ const mutations = {
   },
   SET_RESOURCE_NAMES: (state, resourceNames) => {
     state.resourceNames = resourceNames
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles

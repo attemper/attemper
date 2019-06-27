@@ -60,8 +60,8 @@ export default {
           },
           // Override for large screens
           lg: {
-            columns: 4,
-            rows: 3,
+            columns: 3,
+            rows: 4,
             isExpanded: true
           }
         }

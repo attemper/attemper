@@ -5,12 +5,12 @@
     </div>
 
     <div class="user-profile">
-      <div class="box-center">
+      <!--<div class="box-center">
         <pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">
           <div>Hello</div>
           {{ user.role }}
         </pan-thumb>
-      </div>
+      </div>-->
       <div class="box-center">
         <div class="user-name text-center">{{ user.name }}</div>
         <div class="user-role text-center text-muted">{{ user.role | uppercaseFirst }}</div>
@@ -53,18 +53,17 @@
 </template>
 
 <script>
-import PanThumb from '@/components/PanThumb'
+// import PanThumb from '@/components/PanThumb'
 
 export default {
-  components: { PanThumb },
+  // components: { PanThumb },
   props: {
     user: {
       type: Object,
       default: () => {
         return {
-          name: '',
+          userName: '',
           email: '',
-          avatar: '',
           roles: ''
         }
       }
