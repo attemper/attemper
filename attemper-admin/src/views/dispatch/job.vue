@@ -671,13 +671,14 @@ export default {
     manual() {
       const jobNames = []
       if (this.selections.length) {
-        this.selections.forEach((sel) => {
+        for (let i = 0; i < this.selections.length; i++) {
+          const sel = this.selections[i]
           if (!sel.maxVersion) {
             this.$message.warning(this.$t('tip.manualWithNoVersion') + ':' + sel.jobName)
             return
           }
           jobNames.push(sel.jobName)
-        })
+        }
         this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
           .then(() => {
             manualReq({ jobNames: jobNames }).then(res => {
