@@ -39,7 +39,7 @@
     </el-table-column>
     <el-table-column :label="$t('monitor.columns.duration')" width="100px" align="center">
       <template slot-scope="scope">
-        <span>{{ scope.row.duration === 0 ? 0 : (scope.row.duration | parseDuration) }}</span>
+        <span>{{ scope.row.duration | parseDuration }}</span>
       </template>
     </el-table-column>
   </el-table>
