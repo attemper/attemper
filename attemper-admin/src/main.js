@@ -6,6 +6,12 @@ import './styles/element-variables.scss'
 import 'vue-cron-generator/src/styles/global.less'
 import VCalendar from 'v-calendar'
 import '@/styles/index.scss' // global css
+// https://github.com/apache/incubator-echarts/blob/master/index.js
+import ECharts from 'vue-echarts/components/ECharts.vue'
+import 'echarts/lib/chart/pie'
+import 'echarts/lib/component/title'
+import 'echarts/lib/component/tooltip'
+
 import App from './App'
 import store from './store'
 import router from './router'
@@ -31,6 +37,7 @@ Vue.use(Element, {
 })
 
 Vue.use(VCalendar)
+Vue.component('v-chart', ECharts)
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {

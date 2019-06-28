@@ -131,5 +131,9 @@ module.exports = {
           config.optimization.runtimeChunk('single')
         }
       )
-  }
+  },
+  transpileDependencies: [
+    'vue-echarts',
+    'resize-detector'
+  ]
 }
