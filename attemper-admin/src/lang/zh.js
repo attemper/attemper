@@ -374,6 +374,9 @@ export default {
     job: '任务',
     tenant: '租户'
   },
+  chart: {
+    instance: '执行实例数分布饼图'
+  },
   navbar: {
     logOut: '退出登录',
     profile: '简介',
