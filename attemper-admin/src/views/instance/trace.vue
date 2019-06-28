@@ -39,13 +39,13 @@
                     <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
                   </el-select>
                 </el-form-item>
-                <el-form-item :label="$t('monitor.columns.startTime')" style="margin-bottom: 5px;">
+                <el-form-item :label="$t('columns.startTime')" style="margin-bottom: 5px;">
                   <date-time-generator @update="page.lowerStartTime = $event" @change="search" />
                 </el-form-item>
                 <el-form-item>
                   <date-time-generator @update="page.upperStartTime = $event" @change="search" />
                 </el-form-item>
-                <el-form-item :label="$t('monitor.columns.endTime')" style="margin-bottom: 5px;">
+                <el-form-item :label="$t('columns.endTime')" style="margin-bottom: 5px;">
                   <date-time-generator @update="page.lowerEndTime = $event" @change="search" />
                 </el-form-item>
                 <el-form-item>
@@ -70,12 +70,12 @@
               type="selection"
               width="35"
             />
-            <el-table-column :label="$t('monitor.columns.startTime')" min-width="100px" align="center">
+            <el-table-column :label="$t('columns.startTime')" min-width="100px" align="center">
               <template slot-scope="scope">
                 <div>{{ scope.row.startTime }}</div>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('monitor.columns.endTime')" min-width="100px" align="center">
+            <el-table-column :label="$t('columns.endTime')" min-width="100px" align="center">
               <template slot-scope="scope">
                 <span>{{ scope.row.endTime }}</span>
               </template>

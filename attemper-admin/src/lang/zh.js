@@ -39,10 +39,6 @@ export default {
     dragDialog: '拖拽 Dialog',
     dragSelect: '拖拽 Select',
     dragKanban: '可拖拽看板',
-    charts: '图表',
-    keyboardChart: '键盘图表',
-    lineChart: '折线图',
-    mixChart: '混合图表',
     example: '综合实例',
     nested: '路由嵌套',
     menu1: '菜单1',
@@ -139,7 +135,10 @@ export default {
   columns: {
     displayName: '中文名',
     status: '状态',
-    remark: '备注'
+    remark: '备注',
+    startTime: '开始时间',
+    endTime: '结束时间',
+    interval: '周期'
   },
   rules: {
     displayName: '中文名不能为空'
@@ -261,7 +260,6 @@ export default {
         timeRange: '起止时间',
         timeRangeOfDay: '当日起止时刻',
         calendar: '日历',
-        interval: '周期',
         startTimeOfDay: '当日开始时刻',
         repeatCount: '重复次数',
         daysOfWeek: '星期',
@@ -274,9 +272,6 @@ export default {
         triggerName: '触发器名称',
         calendar: '日历',
         timeUnit: '时间单位',
-        startTime: '开始时间',
-        endTime: '结束时间',
-        interval: '周期',
         startTimeOfDay: '当日开始时刻',
         endTimeOfDay: '当日结束时刻',
         repeatCount: '重复次数',
@@ -286,6 +281,12 @@ export default {
       },
       tip: {
         jobNotPublished: '任务未被发布，无法使用触发器'
+      }
+    },
+    delay: {
+      columns: {
+        id: '编号',
+        requestTime: '申请时间'
       }
     },
     arg: {
@@ -359,8 +360,6 @@ export default {
   },
   monitor: {
     columns: {
-      startTime: '开始时间',
-      endTime: '结束时间',
       duration: '执行时长',
       msg: '错误信息'
     },

@@ -20,7 +20,7 @@
               <el-col :span="11">
                 <el-date-picker
                   v-model="item.startTime"
-                  :placeholder="$t('dispatch.trigger.placeholder.startTime')"
+                  :placeholder="$t('columns.startTime')"
                   type="datetime"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   style="width: 100%;"
@@ -29,7 +29,7 @@
               <el-col :span="11" :offset="2">
                 <el-date-picker
                   v-model="item.endTime"
-                  :placeholder="$t('dispatch.trigger.placeholder.endTime')"
+                  :placeholder="$t('columns.endTime')"
                   type="datetime"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   style="width: 100%;"

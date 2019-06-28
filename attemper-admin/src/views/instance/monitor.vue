@@ -31,13 +31,13 @@
             label-width="100px"
             style="height: 100%"
           >
-            <el-form-item :label="$t('monitor.columns.startTime')" style="margin-bottom: 5px;">
+            <el-form-item :label="$t('columns.startTime')" style="margin-bottom: 5px;">
               <date-time-generator @update="page.lowerStartTime = $event" @change="search" />
             </el-form-item>
             <el-form-item>
               <date-time-generator @update="page.upperStartTime = $event" @change="search" />
             </el-form-item>
-            <el-form-item :label="$t('monitor.columns.endTime')" style="margin-bottom: 5px;">
+            <el-form-item :label="$t('columns.endTime')" style="margin-bottom: 5px;">
               <date-time-generator @update="page.lowerEndTime = $event" @change="search" />
             </el-form-item>
             <el-form-item>
@@ -72,7 +72,7 @@
           <el-link type="primary" @click="openTrace(scope.row)">{{ scope.row.jobName }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('columns.displayName')" width="120px">
+      <el-table-column :label="$t('columns.displayName')" min-width="120px">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>{{ scope.row.displayName || scope.row.jobName }}</p>
@@ -88,12 +88,12 @@
           <el-tag :type="scope.row.status | renderJobInstanceStatus">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('monitor.columns.startTime')" width="160px" align="center">
+      <el-table-column :label="$t('columns.startTime')" width="160px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.startTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('monitor.columns.endTime')" width="160px" align="center">
+      <el-table-column :label="$t('columns.endTime')" width="160px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.endTime }}</span>
         </template>
@@ -300,8 +300,8 @@ export default {
           this.$t('dispatch.job.columns.jobName'),
           this.$t('columns.displayName'),
           this.$t('columns.status'),
-          this.$t('monitor.columns.startTime'),
-          this.$t('monitor.columns.endTime'),
+          this.$t('columns.startTime'),
+          this.$t('columns.endTime'),
           this.$t('monitor.columns.duration'),
           'code',
           'msg'

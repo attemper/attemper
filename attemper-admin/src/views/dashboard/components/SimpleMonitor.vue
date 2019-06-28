@@ -27,12 +27,12 @@
         <el-tag :type="scope.row.status | renderJobInstanceStatus">{{ formatStatus(scope.row.status) }}</el-tag>
       </template>
     </el-table-column>
-    <el-table-column :label="$t('monitor.columns.startTime')" width="160px" align="center">
+    <el-table-column :label="$t('columns.startTime')" width="160px" align="center">
       <template slot-scope="scope">
         <span>{{ scope.row.startTime }}</span>
       </template>
     </el-table-column>
-    <el-table-column :label="$t('monitor.columns.endTime')" width="160px" align="center">
+    <el-table-column :label="$t('columns.endTime')" width="160px" align="center">
       <template slot-scope="scope">
         <span>{{ scope.row.endTime }}</span>
       </template>

@@ -20,7 +20,7 @@
               <el-col :span="11">
                 <el-date-picker
                   v-model="item.startTime"
-                  :placeholder="$t('dispatch.trigger.placeholder.startTime')"
+                  :placeholder="$t('columns.startTime')"
                   type="datetime"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   style="width: 100%;"
@@ -29,15 +29,15 @@
               <el-col :span="11" :offset="2">
                 <el-date-picker
                   v-model="item.endTime"
-                  :placeholder="$t('dispatch.trigger.placeholder.endTime')"
+                  :placeholder="$t('columns.endTime')"
                   type="datetime"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   style="width: 100%;"
                 />
               </el-col>
             </el-form-item>
-            <el-form-item :label="$t('dispatch.trigger.title.interval')">
-              <el-input-number v-model="item.interval" :placeholder="$t('dispatch.trigger.placeholder.interval')" :precision="0" :min="1" :step="1" controls-position="right" style="width: 100%;" />
+            <el-form-item :label="$t('columns.interval')">
+              <el-input-number v-model="item.interval" :placeholder="$t('columns.interval')" :precision="0" :min="1" :step="1" controls-position="right" style="width: 100%;" />
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.timeUnit')">
               <el-select v-model="item.timeUnit" :placeholder="$t('dispatch.trigger.placeholder.timeUnit')" style="width: 100%;">
