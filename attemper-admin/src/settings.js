@@ -46,6 +46,7 @@ module.exports = {
     RESOURCE: '/resource',
     JOB: '/job',
     TRIGGER: '/trigger',
+    DELAY: '/delay',
     ARG: '/arg',
     DATASOURCE: '/datasource',
     CALENDAR: '/calendar',

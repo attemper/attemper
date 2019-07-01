@@ -6,7 +6,7 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.core.service.job.JobService;
-import com.github.attemper.web.service.job.JobOperatedService;
+import com.github.attemper.web.service.JobOperatedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author ldang
- */
 @Api("Job")
 @RestController
 public class JobController {
@@ -28,6 +25,34 @@ public class JobController {
 
 	@Autowired
 	private JobOperatedService jobOperatedService;
+
+	@ApiOperation("List jobs")
+	@ApiImplicitParam(value = "JobListParam", name = "param", dataType = "JobListParam", required = true)
+	@GetMapping(APIPath.JobPath.$)
+	public CommonResult<Map<String, Object>> list(JobListParam param) {
+		return CommonResult.putResult(jobOperatedService.list(param));
+	}
+
+	@ApiOperation("Add job")
+	@ApiImplicitParam(value = "JobSaveParam", name = "param", dataType = "JobSaveParam", required = true)
+	@PostMapping(APIPath.JobPath.$)
+	public CommonResult<Job> add(@RequestBody JobSaveParam param) {
+		return CommonResult.putResult(jobOperatedService.add(param));
+	}
+
+	@ApiOperation("Update job")
+	@ApiImplicitParam(value = "JobSaveParam", name = "param", dataType = "JobSaveParam", required = true)
+	@PutMapping(APIPath.JobPath.$)
+	public CommonResult<Job> update(@RequestBody JobSaveParam param) {
+		return CommonResult.putResult(jobOperatedService.update(param));
+	}
+
+	@ApiOperation("Remove jobs")
+	@ApiImplicitParam(value = "JobNamesParam", name = "param", dataType = "JobNamesParam", required = true)
+	@DeleteMapping(APIPath.JobPath.$)
+	public CommonResult<Void> remove(@RequestBody JobNamesParam param) {
+		return CommonResult.putResult(jobOperatedService.remove(param));
+	}
 
 	@ApiOperation("Get job")
 	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
@@ -45,7 +70,7 @@ public class JobController {
 
 	@ApiOperation("List args of job")
 	@ApiImplicitParam(value = "JobArgListParam", name = "param", dataType = "JobArgListParam", required = true)
-	@GetMapping(APIPath.JobPath.LIST_ARG)
+	@GetMapping(APIPath.JobPath.ARG)
 	public CommonResult<Map<String, Object>> listArg(JobArgListParam param) {
 		return CommonResult.putResult(jobService.listArg(param));
 	}
@@ -62,34 +87,6 @@ public class JobController {
 	@PutMapping(APIPath.JobPath.SAVE_PROJECT)
 	public CommonResult<Void> saveProject(@RequestBody JobProjectSaveParam param) {
 		return CommonResult.putResult(jobService.saveProject(param));
-	}
-
-	@ApiOperation("List jobs")
-	@ApiImplicitParam(value = "JobListParam", name = "param", dataType = "JobListParam", required = true)
-	@GetMapping(APIPath.JobPath.LIST)
-	public CommonResult<Map<String, Object>> list(JobListParam param) {
-		return CommonResult.putResult(jobOperatedService.list(param));
-	}
-
-	@ApiOperation("Add job")
-	@ApiImplicitParam(value = "JobSaveParam", name = "param", dataType = "JobSaveParam", required = true)
-	@PostMapping(APIPath.JobPath.ADD)
-	public CommonResult<Job> add(@RequestBody JobSaveParam param) {
-		return CommonResult.putResult(jobOperatedService.add(param));
-	}
-
-	@ApiOperation("Update job")
-	@ApiImplicitParam(value = "JobSaveParam", name = "param", dataType = "JobSaveParam", required = true)
-	@PutMapping(APIPath.JobPath.UPDATE)
-	public CommonResult<Job> update(@RequestBody JobSaveParam param) {
-		return CommonResult.putResult(jobOperatedService.update(param));
-	}
-
-	@ApiOperation("Remove jobs")
-	@ApiImplicitParam(value = "JobNamesParam", name = "param", dataType = "JobNamesParam", required = true)
-	@DeleteMapping(APIPath.JobPath.REMOVE)
-	public CommonResult<Void> remove(@RequestBody JobNamesParam param) {
-		return CommonResult.putResult(jobOperatedService.remove(param));
 	}
 
 	@ApiOperation("Publish job to quartz and camunda")
@@ -122,14 +119,14 @@ public class JobController {
 
 	@ApiOperation("Add arg")
 	@ApiImplicitParam(value = "JobArgAllocatedParam", name = "param", dataType = "JobArgAllocatedParam", required = true)
-	@PostMapping(APIPath.JobPath.ADD_ARG)
+	@PostMapping(APIPath.JobPath.ARG)
 	public CommonResult<Void> addArg(@RequestBody JobArgAllocatedParam param) {
 		return CommonResult.putResult(jobOperatedService.addArg(param));
 	}
 
 	@ApiOperation("Remove arg")
 	@ApiImplicitParam(value = "JobArgAllocatedParam", name = "param", dataType = "JobArgAllocatedParam", required = true)
-	@DeleteMapping(APIPath.JobPath.REMOVE_ARG)
+	@DeleteMapping(APIPath.JobPath.ARG)
 	public CommonResult<Void> removeArg(@RequestBody JobArgAllocatedParam param) {
 		return CommonResult.putResult(jobOperatedService.removeArg(param));
 	}

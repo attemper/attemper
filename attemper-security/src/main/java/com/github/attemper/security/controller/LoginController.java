@@ -25,7 +25,7 @@ public class LoginController {
 
     @ApiOperation("Login by userName and password")
     @ApiImplicitParam(value = "LoginParam", name = "param", dataType = "LoginParam", required = true)
-    @PostMapping(APIPath.LoginPath.LOGIN_BY_USERNAME_PWD)
+    @PostMapping(SdkAPIPath.LoginPath.$)
     public CommonResult<LoginResult> login(@RequestBody LoginParam param) {
         return CommonResult.putResult(service.login(param));
     }

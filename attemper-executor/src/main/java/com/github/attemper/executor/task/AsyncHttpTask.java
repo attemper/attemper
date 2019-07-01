@@ -54,7 +54,7 @@ public class AsyncHttpTask extends HttpTask {
 
     @Override
     protected String injectRouterPath() {
-        return ExecutorAPIPath.ROUTER_PATH_ASYNC;
+        return ExecutorAPIPath.RouterPath.ASYNC;
     }
 
 }

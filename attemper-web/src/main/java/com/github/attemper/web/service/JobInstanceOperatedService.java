@@ -1,4 +1,4 @@
-package com.github.attemper.web.service.job;
+package com.github.attemper.web.service;
 
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.exception.RTException;
@@ -6,7 +6,7 @@ import com.github.attemper.common.param.dispatch.instance.JobInstanceIdParam;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.core.service.instance.JobInstanceService;
 import com.github.attemper.invoker.service.JobCallingService;
-import com.github.attemper.web.service.ExecutorHandler;
+import com.github.attemper.web.ext.app.ExecutorHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;

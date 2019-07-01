@@ -28,14 +28,14 @@ public class ArgController {
 
     @ApiOperation("Add arg")
     @ApiImplicitParam(value = "ArgSaveParam", name = "param", dataType = "ArgSaveParam", required = true)
-    @PostMapping(value = APIPath.ArgPath.ADD)
+    @PostMapping(value = APIPath.ArgPath.$)
     public CommonResult<Arg> add(@RequestBody ArgSaveParam param) {
         return CommonResult.putResult(service.add(param));
     }
 
     @ApiOperation("Update arg")
     @ApiImplicitParam(value = "ArgSaveParam", name = "param", dataType = "ArgSaveParam", required = true)
-    @PutMapping(value = APIPath.ArgPath.UPDATE)
+    @PutMapping(value = APIPath.ArgPath.$)
     public CommonResult<Arg> update(@RequestBody ArgSaveParam param) {
         return CommonResult.putResult(service.update(param));
     }
@@ -49,14 +49,14 @@ public class ArgController {
 
     @ApiOperation("List args")
     @ApiImplicitParam(value = "ArgListParam", name = "param", dataType = "ArgListParam", required = true)
-    @GetMapping(APIPath.ArgPath.LIST)
+    @GetMapping(APIPath.ArgPath.$)
     public CommonResult<Map<String, Object>> list(ArgListParam param) {
         return CommonResult.putResult(service.list(param));
     }
 
     @ApiOperation("Remove args")
     @ApiImplicitParam(value = "ArgRemoveParam", name = "param", dataType = "ArgRemoveParam", required = true)
-    @DeleteMapping(value = APIPath.ArgPath.REMOVE)
+    @DeleteMapping(value = APIPath.ArgPath.$)
     public CommonResult<Void> remove(@RequestBody ArgRemoveParam param) {
         return CommonResult.putResult(service.remove(param));
     }

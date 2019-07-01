@@ -25,6 +25,6 @@ public class SyncHttpTask extends HttpTask {
 
     @Override
     protected String injectRouterPath() {
-        return ExecutorAPIPath.ROUTER_PATH_SYNC;
+        return ExecutorAPIPath.RouterPath.SYNC;
     }
 }

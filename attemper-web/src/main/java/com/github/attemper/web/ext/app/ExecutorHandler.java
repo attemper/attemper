@@ -1,4 +1,4 @@
-package com.github.attemper.web.service;
+package com.github.attemper.web.ext.app;
 
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.constant.CommonConstants;

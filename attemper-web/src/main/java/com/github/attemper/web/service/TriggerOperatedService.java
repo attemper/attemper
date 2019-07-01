@@ -1,4 +1,4 @@
-package com.github.attemper.web.service.job;
+package com.github.attemper.web.service;
 
 import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
 import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
@@ -8,8 +8,8 @@ import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResul
 import com.github.attemper.core.dao.mapper.job.TriggerMapper;
 import com.github.attemper.core.service.job.TriggerService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
+import com.github.attemper.web.ext.app.SchedulerHandler;
 import com.github.attemper.web.ext.trigger.*;
-import com.github.attemper.web.service.SchedulerHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

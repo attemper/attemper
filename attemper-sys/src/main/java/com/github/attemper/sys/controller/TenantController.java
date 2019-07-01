@@ -29,7 +29,7 @@ public class TenantController {
     @RequiresPermissions("tenant-add")
     @ApiOperation("Add tenant")
     @ApiImplicitParam(value = "TenantSaveParam", name = "param", dataType = "TenantSaveParam", required = true)
-    @PostMapping(APIPath.TenantPath.ADD)
+	@PostMapping(APIPath.TenantPath.$)
     public CommonResult<Tenant> add(@RequestBody TenantSaveParam param) {
         return CommonResult.putResult(service.add(param));
     }
@@ -37,14 +37,14 @@ public class TenantController {
     @RequiresPermissions("tenant-update")
     @ApiOperation("Update tenant")
     @ApiImplicitParam(value = "TenantSaveParam", name = "param", dataType = "TenantSaveParam", required = true)
-    @PutMapping(APIPath.TenantPath.UPDATE)
+	@PutMapping(APIPath.TenantPath.$)
     public CommonResult<Tenant> update(@RequestBody TenantSaveParam param) {
         return CommonResult.putResult(service.update(param));
     }
 
 	@ApiOperation("List tenants")
 	@ApiImplicitParam(value = "TenantListParam", name = "param", dataType = "TenantListParam", required = true)
-	@GetMapping(APIPath.TenantPath.LIST)
+	@GetMapping(APIPath.TenantPath.$)
 	public CommonResult<Map<String, Object>> list(TenantListParam param) {
 		return CommonResult.putResult(service.list(param));
 	}
@@ -52,7 +52,7 @@ public class TenantController {
     @RequiresPermissions("tenant-remove")
     @ApiOperation("Remove tenants")
     @ApiImplicitParam(value = "TenantRemoveParam", name = "param", dataType = "TenantRemoveParam", required = true)
-    @DeleteMapping(APIPath.TenantPath.REMOVE)
+	@DeleteMapping(APIPath.TenantPath.$)
     public CommonResult<Void> remove(@RequestBody TenantRemoveParam param) {
         return CommonResult.putResult(service.remove(param));
     }
@@ -68,14 +68,14 @@ public class TenantController {
 
 	@ApiOperation("Get tag")
 	@ApiImplicitParam(value = "UserGetParam", name = "param", dataType = "UserGetParam", required = true)
-	@GetMapping(APIPath.TenantPath.LIST_TAG)
+	@GetMapping(APIPath.TenantPath.TAG)
 	public CommonResult<List<Tag>> getTags(TenantGetParam getParam) {
 		return CommonResult.putResult(service.getTags(getParam));
 	}
 
 	@ApiOperation("Update tag")
 	@ApiImplicitParam(value = "TenantTagSaveParam", name = "param", dataType = "TenantTagSaveParam", required = true)
-	@PutMapping(APIPath.TenantPath.SAVE_TAGS)
+	@PutMapping(APIPath.TenantPath.TAG)
 	public CommonResult saveTags(@RequestBody TenantTagSaveParam param) {
 		service.saveTags(param);
 		return CommonResult.ok();

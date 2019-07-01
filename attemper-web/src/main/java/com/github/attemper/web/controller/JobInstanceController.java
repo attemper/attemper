@@ -7,7 +7,7 @@ import com.github.attemper.common.param.dispatch.instance.JobInstanceListParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
 import com.github.attemper.core.service.instance.JobInstanceService;
-import com.github.attemper.web.service.job.JobInstanceOperatedService;
+import com.github.attemper.web.service.JobInstanceOperatedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +32,7 @@ public class JobInstanceController {
 
     @ApiOperation("List job instances")
     @ApiImplicitParam(value = "JobInstanceListParam", name = "param", dataType = "JobInstanceListParam", required = true)
-    @GetMapping(APIPath.InstancePath.LIST)
+    @GetMapping(APIPath.InstancePath.$)
     public CommonResult<Map<String, Object>> list(JobInstanceListParam param) {
         return CommonResult.putResult(jobInstanceService.list(param));
     }

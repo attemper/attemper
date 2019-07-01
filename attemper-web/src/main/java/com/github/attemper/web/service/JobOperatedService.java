@@ -1,4 +1,4 @@
-package com.github.attemper.web.service.job;
+package com.github.attemper.web.service;
 
 import com.github.attemper.common.enums.JobStatus;
 import com.github.attemper.common.exception.RTException;

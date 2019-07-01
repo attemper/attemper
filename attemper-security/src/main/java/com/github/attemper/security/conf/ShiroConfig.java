@@ -1,6 +1,5 @@
 package com.github.attemper.security.conf;
 
-import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.java.sdk.common.constant.SdkAPIPath;
 import com.github.attemper.security.shiro.CustomRealm;
 import com.github.attemper.security.shiro.JWTFilter;
@@ -53,7 +52,7 @@ public class ShiroConfig {
         bean.setFilters(filters);
 
         Map<String, String> filterMap = new LinkedHashMap<>();
-        filterMap.put(APIPath.LoginPath.LOGIN_BY_USERNAME_PWD, "anon");  //web login
+        filterMap.put(SdkAPIPath.LoginPath.$, "anon");  //web login
         filterMap.put(SdkAPIPath.LoginPath.LOGIN_BY_ENCODED_USERNAME_PWD, "anon");  //sdk login
         filterMap.put("/swagger-ui.html", "anon");  //swagger-ui
         filterMap.put("/webjars/**", "anon");

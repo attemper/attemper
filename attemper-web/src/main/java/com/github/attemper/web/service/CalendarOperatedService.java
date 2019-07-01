@@ -1,4 +1,4 @@
-package com.github.attemper.web.service.job;
+package com.github.attemper.web.service;
 
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
@@ -8,7 +8,7 @@ import com.github.attemper.common.param.dispatch.calendar.DayCalendarSaveParam;
 import com.github.attemper.common.util.DateTimeUtil;
 import com.github.attemper.core.dao.mapper.calendar.CalendarMapper;
 import com.github.attemper.sys.service.BaseServiceAdapter;
-import com.github.attemper.web.service.SchedulerHandler;
+import com.github.attemper.web.ext.app.SchedulerHandler;
 import org.quartz.Calendar;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;

@@ -27,14 +27,14 @@ public class DataSourceController {
 
     @ApiOperation("Add dataSource")
     @ApiImplicitParam(value = "DataSourceSaveParam", name = "param", dataType = "DataSourceSaveParam", required = true)
-    @PostMapping(value = APIPath.DataSourcePath.ADD)
+    @PostMapping(value = APIPath.DataSourcePath.$)
     public CommonResult<DataSourceInfo> add(@RequestBody DataSourceSaveParam param) {
         return CommonResult.putResult(service.add(param));
     }
 
     @ApiOperation("Update dataSource")
     @ApiImplicitParam(value = "DataSourceSaveParam", name = "param", dataType = "DataSourceSaveParam", required = true)
-    @PutMapping(value = APIPath.DataSourcePath.UPDATE)
+    @PutMapping(value = APIPath.DataSourcePath.$)
     public CommonResult<DataSourceInfo> update(@RequestBody DataSourceSaveParam param) {
         return CommonResult.putResult(service.update(param));
     }
@@ -48,14 +48,14 @@ public class DataSourceController {
 
     @ApiOperation("List dataSources")
     @ApiImplicitParam(value = "DataSourceListParam", name = "param", dataType = "DataSourceListParam", required = true)
-    @GetMapping(APIPath.DataSourcePath.LIST)
+    @GetMapping(APIPath.DataSourcePath.$)
     public CommonResult<Map<String, Object>> list(DataSourceListParam param) {
         return CommonResult.putResult(service.list(param));
     }
 
     @ApiOperation("Remove dataSources")
     @ApiImplicitParam(value = "DataSourceNamesParam", name = "param", dataType = "DataSourceNamesParam", required = true)
-    @DeleteMapping(value = APIPath.DataSourcePath.REMOVE)
+    @DeleteMapping(value = APIPath.DataSourcePath.$)
     public CommonResult<Void> remove(@RequestBody DataSourceNamesParam param) {
         return CommonResult.putResult(service.remove(param));
     }

@@ -8,7 +8,7 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.calendar.CalendarInfo;
 import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
 import com.github.attemper.core.service.job.TriggerService;
-import com.github.attemper.web.service.job.TriggerOperatedService;
+import com.github.attemper.web.service.TriggerOperatedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/** 
- * @author ldang
- */
 @Api("Trigger")
 @RestController
 public class TriggerController {
