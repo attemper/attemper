@@ -270,7 +270,7 @@ import Pagination from '@/components/Pagination'
 import JobInfoForm from './components/job/jobInfoForm'
 import CronTrigger from './components/job/cronTrigger'
 import CalendarOffsetTrigger from './components/job/calendarOffsetTrigger'
-import DailyIntervalTrigger from './components/job/dailyIntervalTrigger'
+import DailyIntervalTrigger from './components/job/dailyTimeIntervalTrigger'
 import CalendarIntervalTrigger from './components/job/calendarIntervalTrigger'
 import ProjectTree from './components/job/projectTree'
 const DEF_OBJ = {

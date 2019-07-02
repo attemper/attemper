@@ -43,7 +43,7 @@
         type="selection"
         width="40"
       />
-      <el-table-column :label="$t('dispatch.delay.columns.id')" width="100px">
+      <el-table-column :label="$t('dispatch.delay.columns.id')" min-width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
@@ -77,7 +77,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('actions.handle')" align="center" width="100" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <div style="padding-top: 6px;">
             <el-button
@@ -141,7 +141,7 @@ import * as toolApi from '@/api/dispatch/tool'
 import waves from '@/directive/waves'
 import { buildMsg } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
-import DailyIntervalTrigger from './components/job/dailyIntervalTrigger'
+import DailyIntervalTrigger from './components/job/dailyTimeIntervalTrigger'
 export default {
   name: 'delay',
   components: {
@@ -227,11 +227,11 @@ export default {
       this.selectRow(row)
       this.editDialog.trigger.visible = true
       this.initCalendarGroups()
-      triggerApi.getReq({ jobName: this.deplay.jobName }).then(res => {
+      triggerApi.getReq({ jobName: this.deplay.id }).then(res => {
         const result = res.data.result
         if (result.dailyIntervalTriggers && result.dailyIntervalTriggers.length > 0) {
           result.dailyIntervalTriggers.forEach(item => {
-            item.daysOfWeekArr = item.daysOfWeek.split(',')
+            item.daysOfWeekArr = item.daysOfWeek && item.daysOfWeek.length ? item.daysOfWeek.split(',') : []
           })
           this.$refs.dailyIntervalTrigger.triggerArray = result.dailyIntervalTriggers
           this.triggerTab.timeTrigger.activeTabName = '2'
