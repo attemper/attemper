@@ -8,6 +8,7 @@ import com.github.attemper.core.controller.tool.ToolController;
 import com.github.attemper.core.dao.mapper.arg.ArgMapper;
 import com.github.attemper.core.dao.mapper.calendar.CalendarMapper;
 import com.github.attemper.core.dao.mapper.datasource.DataSourceMapper;
+import com.github.attemper.core.dao.mapper.delay.DelayJobMapper;
 import com.github.attemper.core.dao.mapper.instance.JobInstanceMapper;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.core.dao.mapper.job.TriggerMapper;
@@ -48,6 +49,7 @@ import javax.validation.ValidatorFactory;
         JobInstanceMapper.class,
         CalendarMapper.class,
         CountMapper.class,
+        DelayJobMapper.class,
 
         //service
         JobService.class,

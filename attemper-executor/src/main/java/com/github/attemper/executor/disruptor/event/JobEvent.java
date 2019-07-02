@@ -1,13 +1,13 @@
-package com.github.attemper.executor.disruptor.container;
+package com.github.attemper.executor.disruptor.event;
 
 import com.github.attemper.common.param.executor.JobInvokingParam;
 
-public class RequestContainer {
+public class JobEvent {
 
     private JobInvokingParam param;
 
 
-    public RequestContainer() {
+    public JobEvent() {
     }
 
     public JobInvokingParam getParam() {

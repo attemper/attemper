@@ -53,7 +53,7 @@ public class JobInstanceOperatedService {
                 jobInstanceService.update(jobInstance);
             }
         }
-        jobCallingService.retry(idGenerator.getNextId(), jobInstance.getJobName(), jobInstance.getTenantId(), parentId);
+        jobCallingService.retry(idGenerator.getNextId(), jobInstance.getJobName(), jobInstance.getTenantId(), parentId, null);
         return null;
     }
 

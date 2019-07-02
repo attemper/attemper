@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { /* listReq, getReq,*/ removeReq, manualReq } from '@/api/dispatch/job'
+import { listReq, /* getReq,*/ removeReq, manualReq } from '@/api/dispatch/delay'
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/dispatch/tool'
@@ -196,7 +196,6 @@ export default {
   },
   methods: {
     search() {
-      /*
       this.listLoading = true
       listReq(this.page).then(response => {
         this.list = response.data.result.list
@@ -204,7 +203,7 @@ export default {
         setTimeout(() => {
           this.listLoading = false
         }, 200)
-      })*/
+      })
     },
     reset() {
       this.deplay = Object.assign({}, this.selections[0])

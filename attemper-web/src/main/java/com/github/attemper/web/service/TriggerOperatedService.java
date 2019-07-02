@@ -55,7 +55,7 @@ public class TriggerOperatedService extends BaseServiceAdapter {
         for (int i = 0; i < triggerHandlers.length; i++) {
             TriggerWithQuartzHandler triggerHandler = triggerHandlers[i];
             triggerHandler.deleteAndUnschedule(paramMap);
-            triggerHandler.saveAndSchedule(param.getJobName(), paramsOfTriggerMap.get(i));
+            triggerHandler.saveAndSchedule(param.getJobName(), param.getJobDataMap(), paramsOfTriggerMap.get(i));
             List<? extends CommonTriggerParam> list = paramsOfTriggerMap.get(i);
             if (list != null) {
                 for (CommonTriggerParam item : list) {

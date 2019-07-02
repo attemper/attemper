@@ -43,12 +43,12 @@ public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extend
 
     Set<Trigger> buildTriggers(String tenantId, List<K> paramOfTriggers);
 
-    default void schedule(String jobName, String tenantId, List paramOfTriggers) {
+    default void schedule(String jobName, String tenantId, Map<String, Object> jobDataMap, List paramOfTriggers) {
         if (paramOfTriggers == null || paramOfTriggers.isEmpty()) {
             return;
         }
         Set<Trigger> quartzTriggers = buildTriggers(tenantId, paramOfTriggers);
-        JobDetail jobDetail = QuartzUtil.newJobDetail(jobName, tenantId);
+        JobDetail jobDetail = QuartzUtil.newJobDetail(jobName, tenantId, jobDataMap);
         try {
             SpringContextAware.getBean(Scheduler.class).scheduleJob(jobDetail, quartzTriggers, true);
         } catch (SchedulerException e) {
@@ -56,11 +56,11 @@ public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extend
         }
     }
 
-    default void saveAndSchedule(String jobName, List<K> paramOfTriggers) {
+    default void saveAndSchedule(String jobName, Map<String, Object> jobDataMap, List<K> paramOfTriggers) {
         if (paramOfTriggers == null || paramOfTriggers.isEmpty()) {
             return;
         }
         saveTriggers(jobName, paramOfTriggers);
-        schedule(jobName, TenantHolder.get().getUserName(), paramOfTriggers);
+        schedule(jobName, TenantHolder.get().getUserName(), jobDataMap, paramOfTriggers);
     }
 }

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -19,6 +21,8 @@ public class JobInvokingParam implements CommonParam {
     protected String triggerName;
 
     protected String tenantId;
+
+    protected Map<String, Object> dataMap;
 
     @Override
     public String validate() {

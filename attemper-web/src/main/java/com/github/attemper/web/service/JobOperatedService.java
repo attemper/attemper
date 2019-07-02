@@ -7,7 +7,6 @@ import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
 import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
-import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.core.service.job.JobService;
@@ -15,6 +14,7 @@ import com.github.attemper.core.service.job.TriggerService;
 import com.github.attemper.invoker.service.JobCallingService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
+import com.github.attemper.web.util.SupportUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +26,6 @@ import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.quartz.Calendar;
-import org.quartz.*;
-import org.quartz.spi.OperableTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.scheduling.annotation.Async;
@@ -58,9 +55,6 @@ public class JobOperatedService extends BaseServiceAdapter {
     private TriggerOperatedService triggerOperatedService;
 
     @Autowired
-    private Scheduler scheduler;
-
-    @Autowired
     private IdGenerator idGenerator;
 
     public Map<String, Object> list(JobListParam param) {
@@ -74,33 +68,14 @@ public class JobOperatedService extends BaseServiceAdapter {
     private void setNextFireTime(Job job) {
         List<Date> allTriggerDates = new ArrayList<>();
         TriggerResult triggerResult = triggerService.get(new TriggerGetParam(job.getJobName()));
-        allTriggerDates.addAll(getNextDateList(triggerResult.getCronTriggers()));
-        allTriggerDates.addAll(getNextDateList(triggerResult.getCalendarOffsetTriggers()));
-        allTriggerDates.addAll(getNextDateList(triggerResult.getDailyIntervalTriggers()));
-        allTriggerDates.addAll(getNextDateList(triggerResult.getCalendarIntervalTriggers()));
+        allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getCronTriggers(), injectTenantId()));
+        allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getCalendarOffsetTriggers(), injectTenantId()));
+        allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getDailyIntervalTriggers(), injectTenantId()));
+        allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getCalendarIntervalTriggers(), injectTenantId()));
         if (allTriggerDates.size() > 0) {
             Collections.sort(allTriggerDates);
             job.setNextFireTimes(allTriggerDates);
         }
-    }
-
-    private List<Date> getNextDateList(List<? extends CommonTriggerResult> list) {
-        List<Date> nextDateList = new ArrayList<>();
-        if (list != null) {
-            try {
-                for (CommonTriggerResult item : list) {
-                    Trigger trigger = scheduler.getTrigger(new TriggerKey(item.getTriggerName(), injectTenantId()));
-                    if (trigger != null) {
-                        Calendar calendar = trigger.getCalendarName() != null ?
-                                scheduler.getCalendar(trigger.getCalendarName()) : null;
-                        nextDateList.addAll(TriggerUtils.computeFireTimes((OperableTrigger) trigger, calendar, 10));
-                    }
-                }
-            } catch (SchedulerException e) {
-                throw new RTException(6150, e);
-            }
-        }
-        return nextDateList;
     }
 
     public Job add(JobSaveParam param) {
@@ -108,7 +83,7 @@ public class JobOperatedService extends BaseServiceAdapter {
         if (job != null) {
             throw new DuplicateKeyException(param.getJobName());
         }
-        job = toBaseJob(param);
+        job = toJob(param);
         if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
             throw new RTException(6055);
         }
@@ -146,7 +121,7 @@ public class JobOperatedService extends BaseServiceAdapter {
         if (!StringUtils.equals(param.getDisplayName(), job.getDisplayName())) {
             throw new RTException(6080);
         }
-        Job updatedJob = toBaseJob(param);
+        Job updatedJob = toJob(param);
         updatedJob.setCreateTime(job.getCreateTime());
         updatedJob.setMaxVersion(job.getMaxVersion());
         if (checkNeedSave(job, updatedJob)) {  // base info
@@ -185,7 +160,6 @@ public class JobOperatedService extends BaseServiceAdapter {
         removeDefinitionAndDeployment(param.getJobNames(), injectTenantId());
         return null;
     }
-
 
     /**
      * publish a job to camunda engine
@@ -227,7 +201,7 @@ public class JobOperatedService extends BaseServiceAdapter {
                 || !StringUtils.equals(job.getRemark(), updatedJob.getRemark());
     }
 
-    private Job toBaseJob(JobSaveParam saveParam) {
+    private Job toJob(JobSaveParam saveParam) {
         return Job.builder()
                 .jobName(saveParam.getJobName())
                 .displayName(saveParam.getDisplayName())
@@ -307,7 +281,7 @@ public class JobOperatedService extends BaseServiceAdapter {
         for (String jobName : jobNames) {
             executorService.submit(() -> {
                 try {
-                    SpringContextAware.getBean(JobCallingService.class).manual(id, jobName, tenantId);
+                    SpringContextAware.getBean(JobCallingService.class).manual(id, jobName, tenantId, null);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }

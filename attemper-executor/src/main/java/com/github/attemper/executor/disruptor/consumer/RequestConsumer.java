@@ -7,7 +7,7 @@ import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.core.service.instance.JobInstanceService;
-import com.github.attemper.executor.disruptor.container.RequestContainer;
+import com.github.attemper.executor.disruptor.event.JobEvent;
 import com.lmax.disruptor.WorkHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -22,18 +22,19 @@ import java.util.List;
  * consumer of request
  */
 @Slf4j
-public class RequestConsumer implements WorkHandler<RequestContainer> {
+public class RequestConsumer implements WorkHandler<JobEvent> {
 
     @Override
-    public void onEvent(RequestContainer container) throws Exception {
+    public void onEvent(JobEvent event) throws Exception {
         RepositoryService repositoryService = SpringContextAware.getBean(RepositoryService.class);
         RuntimeService runtimeService = SpringContextAware.getBean(RuntimeService.class);
-        JobInvokingParam param = container.getParam();
+        JobInvokingParam param = event.getParam();
         try {
             List<ProcessDefinition> processDefinitions = repositoryService
                     .createProcessDefinitionQuery()
                     .processDefinitionKey(param.getJobName())
                     .tenantIdIn(param.getTenantId())
+                    .latestVersion()
                     .list();
             if (processDefinitions.size() == 1) {
                 ProcessDefinition processDefinition = processDefinitions.get(0);

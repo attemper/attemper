@@ -1,9 +1,11 @@
 package com.github.attemper.executor.task.internal;
 
+import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.property.StatusProperty;
+import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
@@ -211,6 +213,23 @@ public abstract class HttpTask implements JavaDelegate {
         jobInstanceAct.setLogText(logText);
         jobInstanceAct.setStatus(jobInstanceStatus.getStatus());
         jobInstanceService.updateAct(jobInstanceAct);
+
+        if (jobInstanceStatus != null && JobInstanceStatus.FAILURE.getStatus() == jobInstanceStatus.getStatus()) {
+            JobInstance jobInstance = jobInstanceService.get(execution.getBusinessKey());
+            jobInstance.setEndTime(now);
+            jobInstance.setDuration(now.getTime() - jobInstance.getStartTime().getTime());
+            jobInstance.setStatus(JobInstanceStatus.FAILURE.getStatus());
+            int code;
+            try {
+                code = Integer.parseInt(logKey);
+                jobInstance.setMsg(logText);
+            } catch (Exception e) {
+                code = CommonConstants.INTERNAL_SERVER_ERROR;
+                jobInstance.setMsg(logText + "\n" + e.getMessage());
+            }
+            jobInstance.setCode(code);
+            jobInstanceService.update(jobInstance);
+        }
     }
 
     protected abstract void executeIntern(DelegateExecution execution, Job job, String url);

@@ -28,8 +28,12 @@ import java.util.*;
 @Slf4j
 public class QuartzUtil {
 
-    public static JobDetail newJobDetail(String jobName, String tenantId) {
-        return JobBuilder.newJob(ExecutableJob.class).withIdentity(jobName, tenantId).build();
+    public static JobDetail newJobDetail(String jobName, String tenantId, Map<String, Object> jobDataMap) {
+        JobBuilder jobBuilder = JobBuilder.newJob(ExecutableJob.class).withIdentity(jobName, tenantId);
+        if (jobDataMap != null) {
+            jobBuilder.setJobData(new JobDataMap(jobDataMap));
+        }
+        return jobBuilder.build();
     }
 
     public static <K extends CommonTriggerParam> TriggerBuilder buildTrigger(String tenantId, K item) {

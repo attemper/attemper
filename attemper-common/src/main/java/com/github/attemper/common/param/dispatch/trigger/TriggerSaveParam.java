@@ -6,11 +6,14 @@ import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class TriggerSaveParam implements CommonParam {
 
     protected String jobName;
+
+    protected Map<String, Object> jobDataMap;
 
     protected List<CronTriggerParam> cronTriggers;
 

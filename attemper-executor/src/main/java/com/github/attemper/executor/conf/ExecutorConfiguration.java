@@ -1,8 +1,8 @@
 package com.github.attemper.executor.conf;
 
 import com.github.attemper.executor.disruptor.consumer.RequestConsumer;
-import com.github.attemper.executor.disruptor.container.RequestContainer;
-import com.github.attemper.executor.disruptor.exception.RequestContainerExceptionHandler;
+import com.github.attemper.executor.disruptor.event.JobEvent;
+import com.github.attemper.executor.disruptor.exception.JobEventExceptionHandler;
 import com.github.attemper.executor.disruptor.producer.RequestProducer;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
@@ -24,25 +24,25 @@ public class ExecutorConfiguration {
     @Bean
     public RequestProducer producer() {
         // Construct the Disruptor
-        Disruptor<RequestContainer> disruptor = new Disruptor<>(RequestContainer::new, bufferSize, DaemonThreadFactory.INSTANCE);
+        Disruptor<JobEvent> disruptor = new Disruptor<>(JobEvent::new, bufferSize, DaemonThreadFactory.INSTANCE);
         //create consumers by length of consumerNum
         RequestConsumer[] consumers = new RequestConsumer[consumerNum];
         for (int i = 0; i < consumerNum; i++) {
             consumers[i] = new RequestConsumer();
         }
         // Connect the handler
-        disruptor.handleEventsWithWorkerPool(consumers).then((EventHandler<RequestContainer>) (requestContainer, l, b) -> {
+        disruptor.handleEventsWithWorkerPool(consumers).then((EventHandler<JobEvent>) (jobEvent, l, b) -> {
             // Failing to call clear here will result in the
             // object associated with the event to live until
             // it is overwritten once the ring buffer has wrapped
             // around to the beginning.
-            requestContainer.clear();
+            jobEvent.clear();
         });
-        disruptor.setDefaultExceptionHandler(new RequestContainerExceptionHandler());
+        disruptor.setDefaultExceptionHandler(new JobEventExceptionHandler());
         // Start the Disruptor, starts all threads running
         disruptor.start();
         // Get the ring buffer from the Disruptor to be used for publishing.
-        RingBuffer<RequestContainer> ringBuffer = disruptor.getRingBuffer();
+        RingBuffer<JobEvent> ringBuffer = disruptor.getRingBuffer();
         return new RequestProducer(ringBuffer);
     }
 }

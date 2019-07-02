@@ -27,6 +27,6 @@ logging:
 
 dispatch:
   user-name: interior
-  password: 1
+  password: LR6sWNFAPIfZgYIUX+u9fY4qsNlQR0H4QqPEuyLRBm8=
   executor:
     service-name: attemper-executor

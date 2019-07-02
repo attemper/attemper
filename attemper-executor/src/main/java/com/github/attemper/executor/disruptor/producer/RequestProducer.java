@@ -1,7 +1,7 @@
 package com.github.attemper.executor.disruptor.producer;
 
 import com.github.attemper.common.param.executor.JobInvokingParam;
-import com.github.attemper.executor.disruptor.container.RequestContainer;
+import com.github.attemper.executor.disruptor.event.JobEvent;
 import com.lmax.disruptor.EventTranslatorOneArg;
 import com.lmax.disruptor.RingBuffer;
 
@@ -10,13 +10,13 @@ import com.lmax.disruptor.RingBuffer;
  */
 public class RequestProducer {
 
-    private RingBuffer<RequestContainer> ringBuffer;
+    private RingBuffer<JobEvent> ringBuffer;
 
-    public RequestProducer(RingBuffer<RequestContainer> ringBuffer) {
+    public RequestProducer(RingBuffer<JobEvent> ringBuffer) {
         this.ringBuffer = ringBuffer;
     }
 
-    private static final EventTranslatorOneArg<RequestContainer, JobInvokingParam> TRANSLATOR =
+    private static final EventTranslatorOneArg<JobEvent, JobInvokingParam> TRANSLATOR =
             (event, sequence, param) -> {
                 event.setParam(param);
             };

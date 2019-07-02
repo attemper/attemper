@@ -58,28 +58,31 @@ public class JobCallingService {
     @Autowired
     private JobInstanceService jobInstanceService;
 
-    public void execute(String id, String jobName, String triggerName, String tenantId) {
-        this.invoke(id, jobName, triggerName, tenantId, null);
+    public void execute(String id, String jobName, String triggerName, String tenantId, Map<String, Object> dataMap) {
+        this.invoke(id, jobName, triggerName, tenantId, null, dataMap);
     }
 
-    public void manual(String id, String jobName, String tenantId) {
-        this.invoke(id, jobName, null, tenantId, null);
+    public void manual(String id, String jobName, String tenantId, Map<String, Object> dataMap) {
+        this.invoke(id, jobName, null, tenantId, null, dataMap);
     }
 
-    public void retry(String id, String jobName, String tenantId, String parentId) {
-        this.invoke(id, jobName, null, tenantId, parentId);
+    public void retry(String id, String jobName, String tenantId, String parentId, Map<String, Object> dataMap) {
+        this.invoke(id, jobName, null, tenantId, parentId, dataMap);
     }
 
-    public void invoke(String id, String jobName, String triggerName, String tenantId, String parentId) {
+    public void invoke(String id, String jobName, String triggerName, String tenantId, String parentId, Map<String, Object> dataMap) {
         JobInvokingParam param = JobInvokingParam.builder()
                 .id(id)
                 .jobName(jobName)
                 .triggerName(triggerName)
                 .tenantId(tenantId)
+                .dataMap(dataMap)
                 .build();
         Job job = jobService.get(jobName, tenantId);
         int code = -1;
-        if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
+        if (job == null) {
+            code = 6050;
+        } else if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
             code = 3010;
         } else if (!validateConcurrent(job)) {
             code = 3008;

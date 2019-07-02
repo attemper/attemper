@@ -1,7 +1,7 @@
 package com.github.attemper.common.constant;
 
 /**
- * 常用字符串/整型/长整型等默认数据类型的常量
+ * constants of string/integer...
  */
 public interface CommonConstants {
 
@@ -21,11 +21,11 @@ public interface CommonConstants {
 
     String token = "token";
 
-    String duration = "duration";
-
     String result = "result";
 
     String jobName = "jobName";
+
+    String delayId = "delayId";
 
     String projectName = "projectName";
 
