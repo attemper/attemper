@@ -87,10 +87,9 @@ public abstract class DateAdapter implements DateHandler {
             return new ArrayList<>(0);
         }
         CalendarService calendarService = SpringContextAware.getBean(CalendarService.class);
-        DayCalendarListParam dayCalendarListParam = DayCalendarListParam.builder()
-                .lowerDayNum(getDate(lowerCal.getTime()))
-                .upperDayNum(getDate(upperCal.getTime()))
-                .build();
+        DayCalendarListParam dayCalendarListParam = new DayCalendarListParam()
+                .setLowerDayNum(getDate(lowerCal.getTime()))
+                .setUpperDayNum(getDate(upperCal.getTime()));
         dayCalendarListParam.setCalendarName(calendarName);
         List<DayCalendarConfig> dayCalendarConfigs = calendarService.listDay(dayCalendarListParam);
         return dayCalendarConfigs.stream().map(DayCalendarConfig::getDayNum).collect(Collectors.toList());

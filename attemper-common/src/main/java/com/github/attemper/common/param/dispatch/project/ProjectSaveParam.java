@@ -1,16 +1,8 @@
 package com.github.attemper.common.param.dispatch.project;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProjectSaveParam implements CommonParam {
 
     protected String projectName;
@@ -37,4 +29,57 @@ public class ProjectSaveParam implements CommonParam {
         return null;
     }
 
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public ProjectSaveParam setProjectName(String projectName) {
+        this.projectName = projectName;
+        return this;
+    }
+
+    public String getParentProjectName() {
+        return parentProjectName;
+    }
+
+    public ProjectSaveParam setParentProjectName(String parentProjectName) {
+        this.parentProjectName = parentProjectName;
+        return this;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public ProjectSaveParam setDisplayName(String displayName) {
+        this.displayName = displayName;
+        return this;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public ProjectSaveParam setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+        return this;
+    }
+
+    public boolean isBindExecutor() {
+        return bindExecutor;
+    }
+
+    public ProjectSaveParam setBindExecutor(boolean bindExecutor) {
+        this.bindExecutor = bindExecutor;
+        return this;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public ProjectSaveParam setPosition(Integer position) {
+        this.position = position;
+        return this;
+    }
 }

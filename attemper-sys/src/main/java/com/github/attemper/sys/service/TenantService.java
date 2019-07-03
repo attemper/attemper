@@ -52,7 +52,7 @@ public class TenantService extends BaseServiceAdapter {
     }
 
     public Tenant add(TenantSaveParam param) {
-        Tenant tenant = get(new TenantGetParam(param.getUserName()));
+        Tenant tenant = get(new TenantGetParam().setUserName(param.getUserName()));
         if(tenant != null){
             throw new DuplicateKeyException(param.getUserName());
         }
@@ -62,7 +62,7 @@ public class TenantService extends BaseServiceAdapter {
     }
 
     public Tenant update(TenantSaveParam param) {
-        Tenant tenant = get(new TenantGetParam(param.getUserName()));
+        Tenant tenant = get(new TenantGetParam().setUserName(param.getUserName()));
         if(tenant == null){
             throw new RTException(5150);
         }

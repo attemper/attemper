@@ -1,9 +1,11 @@
 package com.github.attemper.common.param.dispatch.datasource;
 
 import com.github.attemper.common.param.PageSortParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class DataSourceListParam extends PageSortParam {
 
     protected String dbName;

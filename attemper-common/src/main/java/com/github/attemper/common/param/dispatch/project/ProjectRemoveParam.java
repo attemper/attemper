@@ -1,15 +1,14 @@
 package com.github.attemper.common.param.dispatch.project;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
-/**
- * @author ldang
- */
-@Data
+@Getter
+@Setter
 public class ProjectRemoveParam implements CommonParam {
 
     protected List<String> projectNames;

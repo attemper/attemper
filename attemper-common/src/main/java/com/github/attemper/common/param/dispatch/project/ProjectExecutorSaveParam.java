@@ -1,18 +1,14 @@
 package com.github.attemper.common.param.dispatch.project;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class ProjectExecutorSaveParam implements CommonParam {
 
     protected String projectName;

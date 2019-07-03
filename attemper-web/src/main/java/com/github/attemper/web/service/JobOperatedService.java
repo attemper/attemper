@@ -67,7 +67,7 @@ public class JobOperatedService extends BaseServiceAdapter {
 
     private void setNextFireTime(Job job) {
         List<Date> allTriggerDates = new ArrayList<>();
-        TriggerResult triggerResult = triggerService.get(new TriggerGetParam(job.getJobName()));
+        TriggerResult triggerResult = triggerService.get(new TriggerGetParam().setJobName(job.getJobName()));
         allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getCronTriggers(), injectTenantId()));
         allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getCalendarOffsetTriggers(), injectTenantId()));
         allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getDailyIntervalTriggers(), injectTenantId()));
@@ -79,7 +79,7 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     public Job add(JobSaveParam param) {
-        Job job = jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
+        Job job = jobService.get(new JobGetParam().setJobName(param.getJobName()));
         if (job != null) {
             throw new DuplicateKeyException(param.getJobName());
         }
@@ -114,7 +114,7 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     public Job update(JobSaveParam param) {
-        Job job = jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
+        Job job = jobService.get(new JobGetParam().setJobName(param.getJobName()));
         if (job == null) {
             return add(param); // Equivalent to copy then add
         }
@@ -215,7 +215,7 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     private Job validateAndGet(String jobName) {
-        JobGetParam jobGetParam = JobGetParam.builder().jobName(jobName).build();
+        JobGetParam jobGetParam = new JobGetParam().setJobName(jobName);
         Job job = jobService.get(jobGetParam);
         if (job == null) {
             throw new RTException(6050, jobName);
@@ -234,15 +234,14 @@ public class JobOperatedService extends BaseServiceAdapter {
      */
     public Job copy(JobCopyParam param) {
         JobSaveParam targetJobParam = param.getTargetJobParam();
-        Job sourceJob = jobService.get(JobGetParam.builder().jobName(param.getJobName()).reversion(param.getReversion()).build());
-        Job targetJob = jobService.get(JobGetParam.builder().jobName(targetJobParam.getJobName()).build());
+        Job sourceJob = jobService.get(new JobGetParam().setJobName(param.getJobName()).setReversion(param.getReversion()));
+        Job targetJob = jobService.get(new JobGetParam().setJobName(targetJobParam.getJobName()));
         if (targetJob != null) { // add its reversion with new model
-            JobSaveParam saveParam = JobSaveParam.builder()
-                    .jobName(targetJob.getJobName()).displayName(targetJob.getDisplayName())
-                    .status(targetJob.getStatus()).timeout(targetJob.getTimeout())
-                    .concurrent(targetJob.isConcurrent())
-                    .remark(targetJob.getRemark()).jobContent(sourceJob.getJobContent())
-                    .build();
+            JobSaveParam saveParam = new JobSaveParam()
+                    .setJobName(targetJob.getJobName()).setDisplayName(targetJob.getDisplayName())
+                    .setStatus(targetJob.getStatus()).setTimeout(targetJob.getTimeout())
+                    .setConcurrent(targetJob.isConcurrent())
+                    .setRemark(targetJob.getRemark()).setJobContent(sourceJob.getJobContent());
             return update(saveParam);
         }
         //add new model with reversion of 1
@@ -258,13 +257,13 @@ public class JobOperatedService extends BaseServiceAdapter {
      */
     public Job exchange(JobGetParam param) {
         Job oldReversionJob = jobService.get(param);
-        JobSaveParam saveParam = JobSaveParam.builder()
-                .jobName(oldReversionJob.getJobName()).displayName(oldReversionJob.getDisplayName())
-                .status(oldReversionJob.getStatus()).timeout(oldReversionJob.getTimeout())
-                .concurrent(oldReversionJob.isConcurrent())
-                .remark(oldReversionJob.getRemark()).jobContent(oldReversionJob.getJobContent()).build();
+        JobSaveParam saveParam = new JobSaveParam()
+                .setJobName(oldReversionJob.getJobName()).setDisplayName(oldReversionJob.getDisplayName())
+                .setStatus(oldReversionJob.getStatus()).setTimeout(oldReversionJob.getTimeout())
+                .setConcurrent(oldReversionJob.isConcurrent())
+                .setRemark(oldReversionJob.getRemark()).setJobContent(oldReversionJob.getJobContent());
         update(saveParam);
-        return jobService.get(JobGetParam.builder().jobName(param.getJobName()).build());
+        return jobService.get(new JobGetParam().setJobName(param.getJobName()));
     }
 
     /**

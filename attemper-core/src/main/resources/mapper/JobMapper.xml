@@ -205,6 +205,20 @@
         </where>
     </select>
 
+    <select id="getAllArg" parameterType="map"
+            resultType="com.github.attemper.common.result.dispatch.arg.Arg">
+        SELECT
+        a.*
+        FROM
+        ${tablePrefix}arg a
+        JOIN ${tablePrefix}job_arg ja USING (ARG_NAME, TENANT_ID)
+        JOIN ${tablePrefix}job j USING (JOB_NAME, TENANT_ID)
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
     <insert id="addArg" parameterType="map">
       INSERT INTO ${tablePrefix}job_arg (
           JOB_NAME,

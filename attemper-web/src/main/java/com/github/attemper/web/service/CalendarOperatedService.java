@@ -63,7 +63,7 @@ public class CalendarOperatedService extends BaseServiceAdapter {
                 holidayCalendar.addExcludedDate(date);
             }
             scheduler.addCalendar(calendarName, holidayCalendar, true, true);
-            schedulerHandler.saveCalendar(new CalendarGetParam(calendarName));
+            schedulerHandler.saveCalendar(new CalendarGetParam().setCalendarName(calendarName));
         } catch (SchedulerException e) {
             throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
         }

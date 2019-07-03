@@ -39,7 +39,7 @@ public class LoginService extends BaseServiceAdapter {
     }
 
     private LoginResult loginByCondition(LoginParam param, boolean pwdEncoded) {
-        Tenant tenant = tenantService.get(new TenantGetParam(param.getUserName()));
+        Tenant tenant = tenantService.get(new TenantGetParam().setUserName(param.getUserName()));
         if (tenant == null) {
             throw new RTException(1300, param.getUserName());
         } else if ((pwdEncoded && !StringUtils.equals(tenant.getPassword(), param.getPassword()))
@@ -55,7 +55,7 @@ public class LoginService extends BaseServiceAdapter {
     }
 
     public LoginInfo getInfo() {
-        TenantGetParam getParam = new TenantGetParam(injectTenantId());
+        TenantGetParam getParam = new TenantGetParam().setUserName(injectTenantId());
         Tenant tenant = tenantService.get(getParam);
         List<Tag> tags = tenantService.getTags(getParam);
         List<String> resources = tenantService.getResources(getParam);

@@ -1,19 +1,8 @@
 package com.github.attemper.common.param.dispatch.job;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-/**
- * @author ldang
- */
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class JobGetParam implements CommonParam {
 
     protected String jobName;
@@ -27,4 +16,21 @@ public class JobGetParam implements CommonParam {
         return null;
     }
 
+    public String getJobName() {
+        return jobName;
+    }
+
+    public JobGetParam setJobName(String jobName) {
+        this.jobName = jobName;
+        return this;
+    }
+
+    public Integer getReversion() {
+        return reversion;
+    }
+
+    public JobGetParam setReversion(Integer reversion) {
+        this.reversion = reversion;
+        return this;
+    }
 }

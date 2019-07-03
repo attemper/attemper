@@ -96,11 +96,10 @@ public class ProjectService extends BaseServiceAdapter {
 	    List<Project> projects =
                 sourceList.stream().filter(project -> project.getParentProjectName() == null).collect(Collectors.toList());
         if (projects.size() == 0) {
-            ProjectSaveParam root = ProjectSaveParam.builder()
-                    .projectName("root")
-                    .displayName(TenantHolder.get().getDisplayName())
-                    .position(1)
-                    .build();
+            ProjectSaveParam root = new ProjectSaveParam()
+                    .setProjectName("root")
+                    .setDisplayName(TenantHolder.get().getDisplayName())
+                    .setPosition(1);
             Project project = save(root);
             projects.add(project);
         } else if (projects.size() > 1) {
@@ -139,7 +138,7 @@ public class ProjectService extends BaseServiceAdapter {
     }
 
     public List<ProjectInfo> listInfo(String projectName, String tenantId) {
-        Map<String, Object> paramMap = injectTenantIdToMap(new ProjectGetParam(projectName), tenantId);
+        Map<String, Object> paramMap = injectTenantIdToMap(new ProjectGetParam().setProjectName(projectName), tenantId);
         return listInfo(paramMap);
     }
 
@@ -153,7 +152,7 @@ public class ProjectService extends BaseServiceAdapter {
     }
 
     public List<String> listExecutor(String projectName, String tenantId) {
-        Map<String, Object> paramMap = injectTenantIdToMap(new ProjectGetParam(projectName), tenantId);
+        Map<String, Object> paramMap = injectTenantIdToMap(new ProjectGetParam().setProjectName(projectName), tenantId);
         ;
         return mapper.listExecutor(paramMap);
     }

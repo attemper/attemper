@@ -1,16 +1,8 @@
 package com.github.attemper.common.param.dispatch.calendar;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class CalendarGetParam implements CommonParam {
 
     protected String calendarName;
@@ -21,5 +13,14 @@ public class CalendarGetParam implements CommonParam {
             return "6700";
         }
         return null;
+    }
+
+    public String getCalendarName() {
+        return calendarName;
+    }
+
+    public CalendarGetParam setCalendarName(String calendarName) {
+        this.calendarName = calendarName;
+        return this;
     }
 }

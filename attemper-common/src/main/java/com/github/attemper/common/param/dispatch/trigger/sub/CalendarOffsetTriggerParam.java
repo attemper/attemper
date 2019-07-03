@@ -1,9 +1,11 @@
 package com.github.attemper.common.param.dispatch.trigger.sub;
 
 import com.github.attemper.java.sdk.common.util.StringUtils;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CalendarOffsetTriggerParam extends CommonTriggerParam{
 
     protected String startTimeOfDay;

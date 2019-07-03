@@ -165,14 +165,13 @@ public class QuartzUtil {
             BaseCalendar baseCalendar = (BaseCalendar) scheduler.getCalendar(calendarName);
             if (baseCalendar == null) {
                 CalendarService calendarService = SpringContextAware.getBean(CalendarService.class);
-                CalendarInfo calendarInfo = calendarService.get(new CalendarGetParam(calendarName));
+                CalendarInfo calendarInfo = calendarService.get(new CalendarGetParam().setCalendarName(calendarName));
                 if (calendarInfo == null) {
                     throw new RTException(3006, calendarName);
                 }
                 if (CalendarType.Day.getType() == calendarInfo.getType()) {
                     DayCalendarListParam listParam = new DayCalendarListParam();
-                    listParam.setCalendarName(calendarName);
-                    listParam.setPageSize(100000);
+                    listParam.setCalendarName(calendarName).setPageSize(100000);
                     List<DayCalendarConfig> dayCalendarConfigs = calendarService.listDay(listParam);
                     HolidayCalendar holidayCalendar = new HolidayCalendar();
                     dayCalendarConfigs.forEach(item -> {

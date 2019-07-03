@@ -43,7 +43,7 @@ public class CustomRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
         String token = (String) auth.getCredentials();
         Tenant tenant = SpringContextAware.getBean(JWTService.class).parseToken(token);
-        Tenant dbTenant = SpringContextAware.getBean(TenantService.class).get(new TenantGetParam(tenant.getUserName()));
+        Tenant dbTenant = SpringContextAware.getBean(TenantService.class).get(new TenantGetParam().setUserName(tenant.getUserName()));
         if (dbTenant == null) {
             throw new RTException(1303);
         }
@@ -61,7 +61,7 @@ public class CustomRealm extends AuthorizingRealm {
         Tenant tenant = (Tenant) principals.getPrimaryPrincipal();
         Set<String> resourcePermissions = new HashSet<>();
         TenantService tenantService = SpringContextAware.getBean(TenantService.class);
-        List<String> resources = tenantService.getResources(new TenantGetParam(tenant.getUserName()));
+        List<String> resources = tenantService.getResources(new TenantGetParam().setUserName(tenant.getUserName()));
         resources.forEach(resource -> resourcePermissions.add(resource));
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.setStringPermissions(resourcePermissions);

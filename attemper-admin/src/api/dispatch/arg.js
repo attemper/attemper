@@ -41,17 +41,17 @@ export const getReq = (params) => {
   })
 }
 
-export const testSqlReq = (params) => {
+export const getSqlResultReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.ARG + '/testSql',
+    url: APIPath.DISPATCH + APIPath.ARG + '/sql',
     method: 'get',
     params: params
   })
 }
 
-export const testTradeDateReq = (params) => {
+export const getTradeDateReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.ARG + '/testTradeDate',
+    url: APIPath.DISPATCH + APIPath.ARG + '/trade_date',
     method: 'get',
     params: params
   })

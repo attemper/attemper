@@ -5,8 +5,8 @@ import com.github.attemper.common.param.dispatch.arg.ArgGetParam;
 import com.github.attemper.common.param.dispatch.arg.ArgListParam;
 import com.github.attemper.common.param.dispatch.arg.ArgRemoveParam;
 import com.github.attemper.common.param.dispatch.arg.ArgSaveParam;
-import com.github.attemper.common.param.dispatch.arg.ext.SqlTestParam;
-import com.github.attemper.common.param.dispatch.arg.ext.TradeDateTestParam;
+import com.github.attemper.common.param.dispatch.arg.ext.SqlArgParam;
+import com.github.attemper.common.param.dispatch.arg.ext.TradeDateArgParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.arg.Arg;
 import com.github.attemper.core.service.arg.ArgService;
@@ -61,18 +61,18 @@ public class ArgController {
         return CommonResult.putResult(service.remove(param));
     }
 
-    @ApiOperation("Test sql")
-    @ApiImplicitParam(value = "SqlTestParam", name = "param", dataType = "SqlTestParam", required = true)
-    @GetMapping(value = APIPath.ArgPath.TEST_SQL)
-    public CommonResult<List<Map<String, Object>>> testSql(SqlTestParam param) {
-        return CommonResult.putResult(service.testSql(param));
+    @ApiOperation("Get sql result")
+    @ApiImplicitParam(value = "SqlArgParam", name = "param", dataType = "SqlArgParam", required = true)
+    @GetMapping(value = APIPath.ArgPath.GET_SQL_RESULT)
+    public CommonResult<List<Map<String, Object>>> getSqlResult(SqlArgParam param) {
+        return CommonResult.putResult(service.getSqlResult(param));
     }
 
-    @ApiOperation("Test trade date")
-    @ApiImplicitParam(value = "TradeDateTestParam", name = "param", dataType = "TradeDateTestParam", required = true)
-    @GetMapping(value = APIPath.ArgPath.TEST_TRADE_DATE)
-    public CommonResult<Integer> testTradeDate(TradeDateTestParam param) {
-        return CommonResult.putResult(service.testTradeDate(param));
+    @ApiOperation("Get trade date")
+    @ApiImplicitParam(value = "TradeDateArgParam", name = "param", dataType = "TradeDateArgParam", required = true)
+    @GetMapping(value = APIPath.ArgPath.GET_TRADE_DATE)
+    public CommonResult<Integer> getTradeDate(TradeDateArgParam param) {
+        return CommonResult.putResult(service.getTradeDate(param));
     }
 
 }

@@ -1,16 +1,8 @@
 package com.github.attemper.common.param.dispatch.datasource;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class DataSourceGetParam implements CommonParam {
 
     protected String dbName;
@@ -22,4 +14,12 @@ public class DataSourceGetParam implements CommonParam {
         return null;
     }
 
+    public String getDbName() {
+        return dbName;
+    }
+
+    public DataSourceGetParam setDbName(String dbName) {
+        this.dbName = dbName;
+        return this;
+    }
 }

@@ -62,7 +62,7 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
 
     private void setNextFireTime(DelayJob delayJob) {
         List<Date> allTriggerDates = new ArrayList<>();
-        TriggerResult triggerResult = triggerService.get(new TriggerGetParam(delayJob.getId()));
+        TriggerResult triggerResult = triggerService.get(new TriggerGetParam().setJobName(delayJob.getId()));
         allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getDailyIntervalTriggers(), injectTenantId()));
         if (allTriggerDates.size() > 0) {
             Collections.sort(allTriggerDates);
@@ -107,7 +107,7 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
     }
 
     private void validateJob(String jobName) {
-        Job job = jobService.get(JobGetParam.builder().jobName(jobName).build());
+        Job job = jobService.get(new JobGetParam().setJobName(jobName));
         if (job == null) {
             throw new RTException(6050, jobName);
         }

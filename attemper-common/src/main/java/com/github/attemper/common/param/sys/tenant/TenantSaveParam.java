@@ -3,15 +3,14 @@ package com.github.attemper.common.param.sys.tenant;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.TenantStatus;
 import com.github.attemper.common.param.CommonParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.regex.Pattern;
 
-/**
- * @author ldang
- */
-@Data
+@Getter
+@Setter
 public class TenantSaveParam implements CommonParam {
 
     private static Pattern emailPattern;

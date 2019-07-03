@@ -1,13 +1,15 @@
 package com.github.attemper.common.param;
 
 import com.github.attemper.common.constant.CommonConstants;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * page sort param
  * @author ldang
  */
-@Data
+@Getter
+@Setter
 public class PageSortParam implements CommonParam {
 
     /**

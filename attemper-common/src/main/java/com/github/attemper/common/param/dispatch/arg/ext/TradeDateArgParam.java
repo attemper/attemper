@@ -2,13 +2,11 @@ package com.github.attemper.common.param.dispatch.arg.ext;
 
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.param.CommonParam;
-import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.regex.Pattern;
 
-@Data
-public class TradeDateTestParam implements CommonParam {
+public class TradeDateArgParam implements CommonParam {
 
     private static Pattern tradeDatePattern;
 
@@ -29,5 +27,23 @@ public class TradeDateTestParam implements CommonParam {
             return "7040";
         }
         return null;
+    }
+
+    public String getCalendarName() {
+        return calendarName;
+    }
+
+    public TradeDateArgParam setCalendarName(String calendarName) {
+        this.calendarName = calendarName;
+        return this;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public TradeDateArgParam setExpression(String expression) {
+        this.expression = expression;
+        return this;
     }
 }

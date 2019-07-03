@@ -53,7 +53,7 @@ public class ExecutorHandler extends CrossSystemHandler {
                 .uri(fullPath)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(CommonConstants.token, ServletUtil.getHeader(CommonConstants.token))
-                .syncBody(JobInstanceIdParam.builder().id(jobInstance.getId()))
+                .syncBody(new JobInstanceIdParam().setId(jobInstance.getId()))
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, resp -> Mono.error(new RTException(resp.rawStatusCode(), resp.statusCode().getReasonPhrase())))
                 .bodyToMono(CommonResult.class)

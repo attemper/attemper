@@ -1,10 +1,12 @@
 package com.github.attemper.common.param.dispatch.job;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
-@Data
+@Getter
+@Setter
 public class JobCopyParam implements CommonParam {
 
     protected String jobName;

@@ -37,7 +37,7 @@ public class DataSourceService extends BaseServiceAdapter {
     }
 
     public DataSourceInfo add(DataSourceSaveParam param) {
-        DataSourceInfo arg = get(DataSourceGetParam.builder().dbName(param.getDbName()).build());
+        DataSourceInfo arg = get(new DataSourceGetParam().setDbName(param.getDbName()));
         if (arg != null) {
             throw new DuplicateKeyException(param.getDbName());
         }
@@ -47,7 +47,7 @@ public class DataSourceService extends BaseServiceAdapter {
     }
 
     public DataSourceInfo update(DataSourceSaveParam param) {
-        DataSourceInfo oldDataSourceInfo = get(DataSourceGetParam.builder().dbName(param.getDbName()).build());
+        DataSourceInfo oldDataSourceInfo = get(new DataSourceGetParam().setDbName(param.getDbName()));
         if (oldDataSourceInfo == null) {
             return add(param);
         }

@@ -1,8 +1,10 @@
 package com.github.attemper.common.param.dispatch.calendar;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class TimeCalendarSaveParam extends CalendarConfigSaveParam {
 
     protected String startTime;

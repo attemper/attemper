@@ -1,15 +1,7 @@
 package com.github.attemper.common.param.dispatch.calendar;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class DayCalendarListParam extends CalendarListParam {
 
     protected Integer lowerDayNum;
@@ -22,5 +14,23 @@ public class DayCalendarListParam extends CalendarListParam {
             return "6700";
         }
         return super.validate();
+    }
+
+    public Integer getLowerDayNum() {
+        return lowerDayNum;
+    }
+
+    public DayCalendarListParam setLowerDayNum(Integer lowerDayNum) {
+        this.lowerDayNum = lowerDayNum;
+        return this;
+    }
+
+    public Integer getUpperDayNum() {
+        return upperDayNum;
+    }
+
+    public DayCalendarListParam setUpperDayNum(Integer upperDayNum) {
+        this.upperDayNum = upperDayNum;
+        return this;
     }
 }

@@ -42,7 +42,7 @@ public class TagService extends BaseServiceAdapter {
     }
 
 	public Tag add(TagSaveParam param) {
-		Tag user = get(new TagGetParam(param.getTagName()));
+		Tag user = get(new TagGetParam().setTagName(param.getTagName()));
 		if(user != null){
 			throw new DuplicateKeyException(user.getTagName());
 		}
@@ -55,7 +55,7 @@ public class TagService extends BaseServiceAdapter {
 	}
 
 	public Tag update(TagSaveParam param) {
-		Tag tag = get(new TagGetParam(param.getTagName()));
+		Tag tag = get(new TagGetParam().setTagName(param.getTagName()));
 		if(tag == null){
 			throw new RTException(5350);
 		}

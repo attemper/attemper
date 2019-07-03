@@ -2,19 +2,8 @@ package com.github.attemper.common.param.dispatch.job;
 
 import com.github.attemper.common.enums.JobStatus;
 import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-/**
- * @author ldang
- */
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class JobSaveParam implements CommonParam {
 
     protected String jobName;
@@ -49,5 +38,68 @@ public class JobSaveParam implements CommonParam {
         if (concurrent == null) {
             concurrent = false;
         }
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public JobSaveParam setJobName(String jobName) {
+        this.jobName = jobName;
+        return this;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public JobSaveParam setDisplayName(String displayName) {
+        this.displayName = displayName;
+        return this;
+    }
+
+    public String getJobContent() {
+        return jobContent;
+    }
+
+    public JobSaveParam setJobContent(String jobContent) {
+        this.jobContent = jobContent;
+        return this;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public JobSaveParam setStatus(Integer status) {
+        this.status = status;
+        return this;
+    }
+
+    public Integer getTimeout() {
+        return timeout;
+    }
+
+    public JobSaveParam setTimeout(Integer timeout) {
+        this.timeout = timeout;
+        return this;
+    }
+
+    public Boolean getConcurrent() {
+        return concurrent;
+    }
+
+    public JobSaveParam setConcurrent(Boolean concurrent) {
+        this.concurrent = concurrent;
+        return this;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public JobSaveParam setRemark(String remark) {
+        this.remark = remark;
+        return this;
     }
 }

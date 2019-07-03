@@ -1,16 +1,8 @@
 package com.github.attemper.common.param.dispatch.project;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProjectGetParam implements CommonParam {
 
     protected String projectName;
@@ -21,5 +13,14 @@ public class ProjectGetParam implements CommonParam {
             return "6600";
         }
         return null;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public ProjectGetParam setProjectName(String projectName) {
+        this.projectName = projectName;
+        return this;
     }
 }

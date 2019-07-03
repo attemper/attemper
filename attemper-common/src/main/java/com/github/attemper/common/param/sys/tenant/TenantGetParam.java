@@ -1,19 +1,8 @@
 package com.github.attemper.common.param.sys.tenant;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-/**
- * @author ldang
- */
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class TenantGetParam implements CommonParam {
 
     protected String userName;
@@ -25,4 +14,12 @@ public class TenantGetParam implements CommonParam {
         return null;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public TenantGetParam setUserName(String userName) {
+        this.userName = userName;
+        return this;
+    }
 }

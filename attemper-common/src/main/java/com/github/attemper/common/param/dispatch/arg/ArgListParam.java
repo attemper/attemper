@@ -1,9 +1,11 @@
 package com.github.attemper.common.param.dispatch.arg;
 
 import com.github.attemper.common.param.PageSortParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class ArgListParam extends PageSortParam {
 
     protected String argName;

@@ -3,10 +3,12 @@ package com.github.attemper.common.param.dispatch.calendar;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.param.CommonParam;
 import com.github.attemper.common.util.DateTimeUtil;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
-@Data
+@Getter
+@Setter
 public class DayCalendarRemoveParam implements CommonParam {
 
     protected String calendarName;

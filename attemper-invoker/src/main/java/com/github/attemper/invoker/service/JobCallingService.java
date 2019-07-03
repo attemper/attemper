@@ -71,13 +71,12 @@ public class JobCallingService {
     }
 
     public void invoke(String id, String jobName, String triggerName, String tenantId, String parentId, Map<String, Object> dataMap) {
-        JobInvokingParam param = JobInvokingParam.builder()
-                .id(id)
-                .jobName(jobName)
-                .triggerName(triggerName)
-                .tenantId(tenantId)
-                .dataMap(dataMap)
-                .build();
+        JobInvokingParam param = new JobInvokingParam()
+                .setId(id)
+                .setJobName(jobName)
+                .setTriggerName(triggerName)
+                .setTenantId(tenantId)
+                .setDataMap(dataMap);
         Job job = jobService.get(jobName, tenantId);
         int code = -1;
         if (job == null) {
@@ -111,7 +110,9 @@ public class JobCallingService {
             return true;
         }
         List<Integer> statuses = Arrays.asList(JobInstanceStatus.RUNNING.getStatus(), JobInstanceStatus.PAUSED.getStatus());
-        int count = jobInstanceService.count(JobInstanceListParam.builder().jobName(job.getJobName()).status(statuses).build(), job.getTenantId());
+        int count = jobInstanceService.count(new JobInstanceListParam()
+                .setJobName(job.getJobName())
+                .setStatus(statuses), job.getTenantId());
         if (count <= 0) {
             return true;
         }
@@ -186,7 +187,7 @@ public class JobCallingService {
     private TenantService tenantService;
 
     private synchronized String getToken(String tenantId) {
-        Tenant tenant = tenantService.get(TenantGetParam.builder().userName(tenantId).build());
+        Tenant tenant = tenantService.get(new TenantGetParam().setUserName(tenantId));
         LoginResult loginResult = loginService.loginByEncoded(new LoginParam().setUserName(tenantId).setPassword(tenant.getPassword()));
         String token = loginResult.getToken();
         Store.getTenantTokenMap().put(tenantId, token);

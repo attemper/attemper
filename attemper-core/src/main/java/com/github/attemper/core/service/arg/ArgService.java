@@ -6,8 +6,8 @@ import com.github.attemper.common.param.dispatch.arg.ArgGetParam;
 import com.github.attemper.common.param.dispatch.arg.ArgListParam;
 import com.github.attemper.common.param.dispatch.arg.ArgRemoveParam;
 import com.github.attemper.common.param.dispatch.arg.ArgSaveParam;
-import com.github.attemper.common.param.dispatch.arg.ext.SqlTestParam;
-import com.github.attemper.common.param.dispatch.arg.ext.TradeDateTestParam;
+import com.github.attemper.common.param.dispatch.arg.ext.SqlArgParam;
+import com.github.attemper.common.param.dispatch.arg.ext.TradeDateArgParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceGetParam;
 import com.github.attemper.common.result.dispatch.arg.Arg;
 import com.github.attemper.common.result.dispatch.datasource.DataSourceInfo;
@@ -55,7 +55,7 @@ public class ArgService extends BaseServiceAdapter {
     }
 
     public Arg add(ArgSaveParam param) {
-        Arg arg = get(ArgGetParam.builder().argName(param.getArgName()).build());
+        Arg arg = get(new ArgGetParam().setArgName(param.getArgName()));
         if (arg != null) {
             throw new DuplicateKeyException(param.getArgName());
         }
@@ -65,7 +65,7 @@ public class ArgService extends BaseServiceAdapter {
     }
 
     public Arg update(ArgSaveParam param) {
-        Arg oldArg = get(ArgGetParam.builder().argName(param.getArgName()).build());
+        Arg oldArg = get(new ArgGetParam().setArgName(param.getArgName()));
         if (oldArg == null) {
             return add(param);
         }
@@ -102,11 +102,11 @@ public class ArgService extends BaseServiceAdapter {
     @Autowired
     private DynamicDataSource dynamicDataSource;
 
-    public List<Map<String, Object>> testSql(SqlTestParam param) {
+    public List<Map<String, Object>> getSqlResult(SqlArgParam param) {
         DataSource targetDataSource;
         boolean externalDB = StringUtils.isNotBlank(param.getDbName());
         if (externalDB) {
-            DataSourceInfo dsInfo = dataSourceService.get(new DataSourceGetParam(param.getDbName()));
+            DataSourceInfo dsInfo = dataSourceService.get(new DataSourceGetParam().setDbName(param.getDbName()));
             try {
                 targetDataSource = toolService.getDataSource(dsInfo.getDriverClassName(), dsInfo.getJdbcUrl(), dsInfo.getUserName(), dsInfo.getPassword());
             } catch (Exception e) {
@@ -127,7 +127,7 @@ public class ArgService extends BaseServiceAdapter {
         }
     }
 
-    public Integer testTradeDate(TradeDateTestParam param) {
+    public Integer getTradeDate(TradeDateArgParam param) {
         String expression = param.getExpression().trim();
         DateHandler dateHandler = DateCalculatorFactory.getDateHandler(expression.substring(0, 1));
         dateHandler.setCalendarName(param.getCalendarName());

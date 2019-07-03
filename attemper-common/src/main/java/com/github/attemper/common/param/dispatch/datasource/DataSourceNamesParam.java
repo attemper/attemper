@@ -1,11 +1,13 @@
 package com.github.attemper.common.param.dispatch.datasource;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class DataSourceNamesParam implements CommonParam {
 
     protected List<String> dbNames;

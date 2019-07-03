@@ -1,12 +1,14 @@
 package com.github.attemper.common.param.scheduler;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class TriggerChangedParam implements CommonParam {
 
     protected String jobName;

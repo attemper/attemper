@@ -92,9 +92,9 @@ public class APIPath {
 
         public static final String GET = $ + _GET;
 
-        public static final String TEST_SQL = $ + "/testSql";
+        public static final String GET_SQL_RESULT = $ + "/sql";
 
-        public static final String TEST_TRADE_DATE = $ + "/testTradeDate";
+        public static final String GET_TRADE_DATE = $ + "/trade_date";
     }
 
     public static final class DataSourcePath {

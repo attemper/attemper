@@ -1,9 +1,11 @@
 package com.github.attemper.common.param.sys.tag;
 
 import com.github.attemper.common.param.PageSortParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class TagListParam extends PageSortParam {
 
     protected String tagName;

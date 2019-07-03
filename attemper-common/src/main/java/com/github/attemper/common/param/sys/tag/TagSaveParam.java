@@ -1,13 +1,12 @@
 package com.github.attemper.common.param.sys.tag;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
-/**
- * @author ldang
- */
-@Data
+@Getter
+@Setter
 public class TagSaveParam implements CommonParam {
 
     protected String tagName;

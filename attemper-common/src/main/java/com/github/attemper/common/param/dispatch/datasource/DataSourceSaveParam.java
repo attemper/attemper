@@ -1,16 +1,12 @@
 package com.github.attemper.common.param.dispatch.datasource;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class DataSourceSaveParam implements CommonParam {
 
     protected String dbName;

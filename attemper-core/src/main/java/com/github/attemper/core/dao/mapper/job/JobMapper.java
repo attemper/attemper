@@ -1,6 +1,7 @@
 package com.github.attemper.core.dao.mapper.job;
 
 import com.github.attemper.common.base.BaseMapper;
+import com.github.attemper.common.result.dispatch.arg.Arg;
 import com.github.attemper.common.result.dispatch.job.ArgAllocatedResult;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
@@ -28,6 +29,8 @@ public interface JobMapper extends BaseMapper<Job> {
     void saveProject(Map<String, Object> paramMap);
 
     List<ArgAllocatedResult> listArg(Map<String, Object> paramMap);
+
+    List<Arg> getAllArg(Map<String, Object> paramMap);
 
     void addArg(Map<String, Object> paramMap);
 

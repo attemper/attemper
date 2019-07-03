@@ -1,14 +1,13 @@
 package com.github.attemper.common.param.dispatch.job;
 
 import com.github.attemper.common.param.PageSortParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-/**
- * @author ldang
- */
-@Data
+@Getter
+@Setter
 public class JobListParam extends PageSortParam {
 
     protected String jobName;

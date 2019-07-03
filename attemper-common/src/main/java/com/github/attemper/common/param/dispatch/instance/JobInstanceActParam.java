@@ -1,12 +1,11 @@
 package com.github.attemper.common.param.dispatch.instance;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * @author ldang
- */
-@Data
+@Getter
+@Setter
 public class JobInstanceActParam implements CommonParam {
 
     protected String rootProcInstId;

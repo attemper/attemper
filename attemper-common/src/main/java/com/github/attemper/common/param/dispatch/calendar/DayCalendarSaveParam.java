@@ -2,9 +2,11 @@ package com.github.attemper.common.param.dispatch.calendar;
 
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.util.DateTimeUtil;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class DayCalendarSaveParam extends CalendarConfigSaveParam {
 
     protected Integer dayNum;

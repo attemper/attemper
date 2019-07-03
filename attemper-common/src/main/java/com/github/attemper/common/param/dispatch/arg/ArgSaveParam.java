@@ -2,10 +2,12 @@ package com.github.attemper.common.param.dispatch.arg;
 
 import com.github.attemper.common.enums.ArgType;
 import com.github.attemper.common.param.CommonParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
-@Data
+@Getter
+@Setter
 public class ArgSaveParam implements CommonParam {
 
     protected String argName;

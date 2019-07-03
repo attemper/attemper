@@ -1,19 +1,8 @@
 package com.github.attemper.common.param.sys.tag;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-/**
- * @author ldang
- */
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class TagGetParam implements CommonParam {
 
     protected String tagName;
@@ -25,4 +14,12 @@ public class TagGetParam implements CommonParam {
         return null;
     }
 
+    public String getTagName() {
+        return tagName;
+    }
+
+    public TagGetParam setTagName(String tagName) {
+        this.tagName = tagName;
+        return this;
+    }
 }

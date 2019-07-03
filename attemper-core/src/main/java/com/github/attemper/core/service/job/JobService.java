@@ -3,6 +3,7 @@ package com.github.attemper.core.service.job;
 import com.github.attemper.common.param.dispatch.job.JobArgListParam;
 import com.github.attemper.common.param.dispatch.job.JobGetParam;
 import com.github.attemper.common.param.dispatch.job.JobProjectSaveParam;
+import com.github.attemper.common.result.dispatch.arg.Arg;
 import com.github.attemper.common.result.dispatch.job.ArgAllocatedResult;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
@@ -68,7 +69,11 @@ public class JobService extends BaseServiceAdapter {
     }
 
     public Job get(String jobName, String tenantId) {
-        return mapper.get(injectTenantIdToMap(JobGetParam.builder().jobName(jobName).build(), tenantId));
+        return mapper.get(injectTenantIdToMap(new JobGetParam().setJobName(jobName), tenantId));
+    }
+
+    public List<Arg> getAllArg(String jobName, String tenantId) {
+        return mapper.getAllArg(injectTenantIdToMap(new JobGetParam().setJobName(jobName), tenantId));
     }
 
     /**
@@ -79,6 +84,6 @@ public class JobService extends BaseServiceAdapter {
      * @return
      */
     public Project getProject(String jobName, String tenantId) {
-        return mapper.getProject(injectTenantIdToMap(JobGetParam.builder().jobName(jobName).build(), tenantId));
+        return mapper.getProject(injectTenantIdToMap(new JobGetParam().setJobName(jobName), tenantId));
     }
 }

@@ -1,17 +1,8 @@
 package com.github.attemper.common.param.dispatch.arg;
 
 import com.github.attemper.common.param.CommonParam;
-import com.github.attemper.common.param.CommonParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ArgGetParam implements CommonParam {
 
     protected String argName;
@@ -23,4 +14,12 @@ public class ArgGetParam implements CommonParam {
         return null;
     }
 
+    public String getArgName() {
+        return argName;
+    }
+
+    public ArgGetParam setArgName(String argName) {
+        this.argName = argName;
+        return this;
+    }
 }

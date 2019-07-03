@@ -143,7 +143,7 @@
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq, testSqlReq, testTradeDateReq } from '@/api/dispatch/arg'
+import { listReq, getReq, removeReq, addReq, updateReq, getSqlResultReq, getTradeDateReq } from '@/api/dispatch/arg'
 import * as dataSourceApi from '@/api/dispatch/datasource'
 import * as calendarApi from '@/api/dispatch/calendar'
 import waves from '@/directive/waves'
@@ -315,7 +315,7 @@ export default {
     },
     testSql() {
       this.sqlResult.columns = this.sqlResult.list = []
-      testSqlReq({ dbName: this.dbName, sql: this.arg.argValue, pageSize: 1000 }).then(res => {
+      getSqlResultReq({ dbName: this.dbName, sql: this.arg.argValue, pageSize: 1000 }).then(res => {
         if (res.data.result && res.data.result.length > 0) {
           this.showSqlResult = true
           for (const field in res.data.result[0]) {
@@ -334,7 +334,7 @@ export default {
       }
       setTimeout(() => {
         if (this.isTradeDate) {
-          testTradeDateReq({ calendarName: this.calendarName, expression: this.arg.argValue }).then(res => {
+          getTradeDateReq({ calendarName: this.calendarName, expression: this.arg.argValue }).then(res => {
             this.preview = {
               type: 'success',
               result: String(res.data.result)
