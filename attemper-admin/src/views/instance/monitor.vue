@@ -275,7 +275,7 @@ export default {
       }
     },
     initPageStatus() {
-      if (this.page.status || this.page.status.length === 0) {
+      if (!this.page.status || this.page.status.length === 0) {
         this.page.status = this.currentJobInstanceStatuses.map(item => item.value)
       }
     },
