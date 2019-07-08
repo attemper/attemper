@@ -68,7 +68,8 @@
                 STATUS,
                 ADMIN,
                 CREATE_TIME,
-                UPDATE_TIME
+                UPDATE_TIME,
+                SEND_CONFIG
                 )
                 VALUES
                 (
@@ -80,22 +81,25 @@
                 #{status, jdbcType=INTEGER},
                 #{admin, jdbcType=VARCHAR},
                 #{createTime, jdbcType=TIMESTAMP},
-                #{updateTime, jdbcType=TIMESTAMP}
+                #{updateTime, jdbcType=TIMESTAMP},
+                #{sendConfig, jdbcType=VARCHAR}
                 )
             </when>
             <otherwise>
                 UPDATE
                 ${tablePrefix}tenant
-                SET
-                DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
-                <if test="password != null">
-                    PASSWORD = #{password, jdbcType=VARCHAR},
-                </if>
-                EMAIL = #{email, jdbcType=VARCHAR},
-                MOBILE = #{mobile, jdbcType=VARCHAR},
-                STATUS = #{status, jdbcType=INTEGER},
-                ADMIN = #{admin, jdbcType=VARCHAR},
-                UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP}
+                <set>
+                    DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
+                    <if test="password != null">
+                        PASSWORD = #{password, jdbcType=VARCHAR},
+                    </if>
+                    EMAIL = #{email, jdbcType=VARCHAR},
+                    MOBILE = #{mobile, jdbcType=VARCHAR},
+                    STATUS = #{status, jdbcType=INTEGER},
+                    ADMIN = #{admin, jdbcType=VARCHAR},
+                    UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+                    SEND_CONFIG = #{sendConfig, jdbcType=VARCHAR},
+                </set>
                 WHERE USER_NAME = #{userName, jdbcType=VARCHAR}
             </otherwise>
         </choose>
@@ -168,7 +172,8 @@
         STATUS,
         ADMIN,
         CREATE_TIME,
-        UPDATE_TIME
+        UPDATE_TIME,
+        SEND_CONFIG
     </sql>
 
     <sql id="condUserName">

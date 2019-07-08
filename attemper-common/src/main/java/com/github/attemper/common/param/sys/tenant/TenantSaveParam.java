@@ -5,12 +5,14 @@ import com.github.attemper.common.enums.TenantStatus;
 import com.github.attemper.common.param.CommonParam;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.regex.Pattern;
 
 @Getter
 @Setter
+@ToString
 public class TenantSaveParam implements CommonParam {
 
     private static Pattern emailPattern;
@@ -26,6 +28,8 @@ public class TenantSaveParam implements CommonParam {
     protected String mobile;
 
     protected Integer status;
+
+    protected String sendConfig;
 
     public String validate() {
         if (StringUtils.isBlank(userName)) {

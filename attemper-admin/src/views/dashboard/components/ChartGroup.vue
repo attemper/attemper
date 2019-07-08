@@ -66,18 +66,20 @@ export default {
           this.visible = false
           return
         }
-        this.$refs['jobInstanceChart'].initOption({
-          chartName: this.$t('chart.instance'),
-          legendData: this.jobInstance.statuses.map(item => item.label),
-          seriesData: jobInstanceCount,
-          colorList: [
-            '#409EFF',
-            '#67C23A',
-            '#F56C6C',
-            '#E6A23C',
-            '#909399'
-          ]
-        })
+        if (this.$refs['jobInstanceChart']) {
+          this.$refs['jobInstanceChart'].initOption({
+            chartName: this.$t('chart.instance'),
+            legendData: this.jobInstance.statuses.map(item => item.label),
+            seriesData: jobInstanceCount,
+            colorList: [
+              '#409EFF',
+              '#67C23A',
+              '#F56C6C',
+              '#E6A23C',
+              '#909399'
+            ]
+          })
+        }
       })
     },
     initJob() {
@@ -90,15 +92,17 @@ export default {
             value: item.count
           })
         })
-        this.$refs['jobChart'].initOption({
-          chartName: this.$t('chart.job'),
-          legendData: this.job.statuses.map(item => item.label),
-          seriesData: jobCount,
-          colorList: [
-            '#67C23A',
-            '#E6A23C'
-          ]
-        })
+        if (this.$refs['jobChart']) {
+          this.$refs['jobChart'].initOption({
+            chartName: this.$t('chart.job'),
+            legendData: this.job.statuses.map(item => item.label),
+            seriesData: jobCount,
+            colorList: [
+              '#67C23A',
+              '#E6A23C'
+            ]
+          })
+        }
       })
     },
     loadConst() {

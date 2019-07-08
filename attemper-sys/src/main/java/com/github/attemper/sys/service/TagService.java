@@ -101,10 +101,9 @@ public class TagService extends BaseServiceAdapter {
 	}
 
 	private Tag toTag(TagSaveParam param) {
-		return Tag.builder()
-				.tagName(param.getTagName())
-				.displayName(param.getDisplayName())
-				.remark(param.getRemark())
-				.build();
+		return new Tag()
+				.setTagName(param.getTagName())
+				.setDisplayName(param.getDisplayName())
+				.setRemark(param.getRemark());
 	}
 }

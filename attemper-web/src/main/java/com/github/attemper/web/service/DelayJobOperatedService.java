@@ -97,13 +97,12 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
     }
 
     private DelayJob toDelayJob(DelayJobExtSaveParam param) {
-        return DelayJob.builder()
-                .id(param.getId())
-                .jobName(param.getJobName())
-                .requestTime(new Date())
-                .status(DelayJobStatus.VALID.getStatus())
-                .tenantId(injectTenantId())
-                .build();
+        return new DelayJob()
+                .setId(param.getId())
+                .setJobName(param.getJobName())
+                .setRequestTime(new Date())
+                .setStatus(DelayJobStatus.VALID.getStatus())
+                .setTenantId(injectTenantId());
     }
 
     private void validateJob(String jobName) {

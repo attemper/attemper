@@ -7,14 +7,10 @@ import com.github.attemper.common.result.PageResult;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 分页相关工具类
- * @author ldang
- */
 public class PageUtil {
 
     /**
-     * 将page对象转为map
+     * page to map
      * @param page
      * @return
      */
@@ -26,11 +22,14 @@ public class PageUtil {
     }
 
     /**
-     * PageHelper的Page对象转PageResult
+     * PageHelper.Page to PageResult
      * @param page
      * @return
      */
     private static PageResult toPageResult(Page<?> page){
-        return new PageResult(page.getPageNum(), page.getPageSize(), page.getTotal());
+        return new PageResult()
+                .setCurrentPage(page.getPageNum())
+                .setPageSize(page.getPageSize())
+                .setTotal(page.getTotal());
     }
 }

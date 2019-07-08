@@ -153,7 +153,8 @@ export default {
         userName: '编号',
         password: '密码',
         email: '邮箱',
-        mobile: '手机号'
+        mobile: '手机号',
+        sendConfig: '告警开关'
       },
       rules: {
         userName: '租户编号不能为空',

@@ -14,6 +14,8 @@ import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.core.dao.mapper.job.TriggerMapper;
 import com.github.attemper.core.dao.mapper.project.ProjectMapper;
 import com.github.attemper.core.dao.mapper.statistics.CountMapper;
+import com.github.attemper.core.ext.notice.NoticeService;
+import com.github.attemper.core.ext.notice.channel.mail.EmailSender;
 import com.github.attemper.core.service.arg.ArgService;
 import com.github.attemper.core.service.calendar.CalendarService;
 import com.github.attemper.core.service.datasource.DataSourceService;
@@ -25,6 +27,7 @@ import com.github.attemper.core.service.statistics.CountService;
 import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.sys.conf.SysConfiguration;
 import org.hibernate.validator.HibernateValidator;
+import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +39,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 @Import({
+        MailSenderAutoConfiguration.class,
         SysConfiguration.class
 })
 @Configuration
@@ -61,6 +65,9 @@ import javax.validation.ValidatorFactory;
         JobInstanceService.class,
         CalendarService.class,
         CountService.class,
+
+        EmailSender.class,
+        NoticeService.class,
 
         //controller
         ArgController.class,

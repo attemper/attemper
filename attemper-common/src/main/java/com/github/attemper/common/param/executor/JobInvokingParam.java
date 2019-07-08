@@ -1,9 +1,11 @@
 package com.github.attemper.common.param.executor;
 
 import com.github.attemper.common.param.CommonParam;
+import lombok.ToString;
 
 import java.util.Map;
 
+@ToString
 public class JobInvokingParam implements CommonParam {
 
     protected String id;

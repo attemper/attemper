@@ -1,23 +1,34 @@
 package com.github.attemper.core.service.instance;
 
+import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceActParam;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceListParam;
+import com.github.attemper.common.param.sys.tenant.TenantGetParam;
+import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
 import com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren;
 import com.github.attemper.common.result.dispatch.job.Job;
+import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.core.dao.mapper.instance.JobInstanceMapper;
+import com.github.attemper.core.ext.notice.MessageBean;
+import com.github.attemper.core.ext.notice.NoticeService;
+import com.github.attemper.core.ext.notice.channel.Sender;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
+import com.github.attemper.sys.service.TenantService;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +42,12 @@ public class JobInstanceService extends BaseServiceAdapter {
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private NoticeService noticeService;
+
+    @Autowired
+    private TenantService tenantService;
 
     public JobInstance get(String id) {
         return mapper.get(id);
@@ -79,10 +96,12 @@ public class JobInstanceService extends BaseServiceAdapter {
             }
         }
         mapper.add(jobInstance);
+        noticeWithInstance(jobInstance);
     }
 
     public void update(JobInstance jobInstance) {
         mapper.update(jobInstance);
+        noticeWithInstance(jobInstance);
     }
 
     public void addAct(JobInstanceAct jobInstanceAct) {
@@ -91,5 +110,31 @@ public class JobInstanceService extends BaseServiceAdapter {
 
     public void updateAct(JobInstanceAct jobInstanceAct) {
         mapper.updateAct(jobInstanceAct);
+    }
+
+    @Async
+    public void noticeWithInstance(JobInstance jobInstance) {
+        if (JobInstanceStatus.FAILURE.getStatus() == jobInstance.getStatus()) {
+            try {
+                Tenant tenant = tenantService.get(new TenantGetParam().setUserName(jobInstance.getTenantId()));
+                MessageBean messageBean = new MessageBean()
+                        .setTo(tenant.getEmail())
+                        .setSubject(MessageFormat.format(StatusProperty.getValue(900), jobInstance.getJobName(), jobInstance.getDisplayName()))
+                        .setContent(jobInstance.getMsg());
+                String sendConfig = tenant.getSendConfig();
+                if (StringUtils.isNotBlank(sendConfig)) {
+                    for (int i = 0; i < sendConfig.length(); i++) {
+                        if (sendConfig.charAt(i) != '0') {
+                            Sender sender = noticeService.getSenderMap().get(i);
+                            if (sender != null) {
+                                sender.send(messageBean);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
     }
 }

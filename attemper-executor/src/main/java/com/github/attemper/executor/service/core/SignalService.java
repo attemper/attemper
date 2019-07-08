@@ -35,12 +35,11 @@ public class SignalService {
     }
 
     protected void saveInstanceAct(String actInstId, String logKey, String logText, JobInstanceStatus jobInstanceStatus) {
-        JobInstanceAct jobInstanceAct = JobInstanceAct.builder()
-                .actInstId(actInstId)
-                .logKey(logKey)
-                .logText(logText)
-                .status(jobInstanceStatus.getStatus())
-                .build();
+        JobInstanceAct jobInstanceAct = new JobInstanceAct()
+                .setActInstId(actInstId)
+                .setLogKey(logKey)
+                .setLogText(logText)
+                .setStatus(jobInstanceStatus.getStatus());
         service.updateAct(jobInstanceAct);
     }
 }

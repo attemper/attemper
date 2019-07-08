@@ -4,17 +4,11 @@ import com.github.attemper.common.result.dispatch.trigger.sub.CalendarIntervalTr
 import com.github.attemper.common.result.dispatch.trigger.sub.CalendarOffsetTriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.CronTriggerResult;
 import com.github.attemper.common.result.dispatch.trigger.sub.DailyTimeIntervalTriggerResult;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class TriggerResult {
 
     protected List<CronTriggerResult> cronTriggers;
@@ -25,4 +19,39 @@ public class TriggerResult {
 
     protected List<CalendarIntervalTriggerResult> calendarIntervalTriggers;
 
+    public List<CronTriggerResult> getCronTriggers() {
+        return cronTriggers;
+    }
+
+    public TriggerResult setCronTriggers(List<CronTriggerResult> cronTriggers) {
+        this.cronTriggers = cronTriggers;
+        return this;
+    }
+
+    public List<CalendarOffsetTriggerResult> getCalendarOffsetTriggers() {
+        return calendarOffsetTriggers;
+    }
+
+    public TriggerResult setCalendarOffsetTriggers(List<CalendarOffsetTriggerResult> calendarOffsetTriggers) {
+        this.calendarOffsetTriggers = calendarOffsetTriggers;
+        return this;
+    }
+
+    public List<DailyTimeIntervalTriggerResult> getDailyIntervalTriggers() {
+        return dailyIntervalTriggers;
+    }
+
+    public TriggerResult setDailyIntervalTriggers(List<DailyTimeIntervalTriggerResult> dailyIntervalTriggers) {
+        this.dailyIntervalTriggers = dailyIntervalTriggers;
+        return this;
+    }
+
+    public List<CalendarIntervalTriggerResult> getCalendarIntervalTriggers() {
+        return calendarIntervalTriggers;
+    }
+
+    public TriggerResult setCalendarIntervalTriggers(List<CalendarIntervalTriggerResult> calendarIntervalTriggers) {
+        this.calendarIntervalTriggers = calendarIntervalTriggers;
+        return this;
+    }
 }

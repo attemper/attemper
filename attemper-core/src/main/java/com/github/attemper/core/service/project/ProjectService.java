@@ -109,14 +109,13 @@ public class ProjectService extends BaseServiceAdapter {
     }
 
     private Project toProject(ProjectSaveParam param) {
-        return Project.builder()
-                .projectName(param.getProjectName())
-                .parentProjectName(param.getParentProjectName())
-                .displayName(param.getDisplayName())
-                .contextPath(param.getContextPath())
-                .bindExecutor(param.isBindExecutor())
-                .position(param.getPosition())
-                .build();
+        return new Project()
+                .setProjectName(param.getProjectName())
+                .setParentProjectName(param.getParentProjectName())
+                .setDisplayName(param.getDisplayName())
+                .setContextPath(param.getContextPath())
+                .setBindExecutor(param.isBindExecutor())
+                .setPosition(param.getPosition());
     }
 
 

@@ -3,6 +3,7 @@ package com.github.attemper.common.param;
 import com.github.attemper.common.constant.CommonConstants;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * page sort param
@@ -10,6 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class PageSortParam implements CommonParam {
 
     /**

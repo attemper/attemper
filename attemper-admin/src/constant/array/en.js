@@ -211,3 +211,7 @@ export const calendarTypes = [
     value: 1
   }
 ]
+
+export const sendConfigs = [
+  'Email'
+]

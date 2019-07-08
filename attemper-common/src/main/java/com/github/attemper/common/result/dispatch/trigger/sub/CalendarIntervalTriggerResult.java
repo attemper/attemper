@@ -1,8 +1,12 @@
 package com.github.attemper.common.result.dispatch.trigger.sub;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class CalendarIntervalTriggerResult extends CommonTriggerResult {
 
     protected int interval = 1;

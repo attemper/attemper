@@ -1,10 +1,12 @@
 package com.github.attemper.common.param.dispatch.instance;
 
 import com.github.attemper.common.param.PageSortParam;
+import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
+@ToString
 public class JobInstanceListParam extends PageSortParam {
 
     protected String rootProcInstId;

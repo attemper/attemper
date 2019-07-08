@@ -4,9 +4,11 @@ import com.github.attemper.common.param.CommonParam;
 import com.github.attemper.java.sdk.common.util.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class TriggerNameParam implements CommonParam {
 
     protected String triggerName;

@@ -202,16 +202,15 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     private Job toJob(JobSaveParam saveParam) {
-        return Job.builder()
-                .jobName(saveParam.getJobName())
-                .displayName(saveParam.getDisplayName())
-                .jobContent(saveParam.getJobContent())
-                .status(saveParam.getStatus())
-                .timeout(saveParam.getTimeout())
-                .concurrent(saveParam.getConcurrent())
-                .remark(saveParam.getRemark())
-                .tenantId(injectTenantId())
-                .build();
+        return new Job()
+                .setJobName(saveParam.getJobName())
+                .setDisplayName(saveParam.getDisplayName())
+                .setJobContent(saveParam.getJobContent())
+                .setStatus(saveParam.getStatus())
+                .setTimeout(saveParam.getTimeout())
+                .setConcurrent(saveParam.getConcurrent())
+                .setRemark(saveParam.getRemark())
+                .setTenantId(injectTenantId());
     }
 
     private Job validateAndGet(String jobName) {

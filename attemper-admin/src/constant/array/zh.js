@@ -263,3 +263,6 @@ export const simpleTriggerMisfireInstructions = [
   }
 ]
 
+export const sendConfigs = [
+  '邮件'
+]

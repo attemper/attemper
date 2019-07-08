@@ -60,11 +60,10 @@ public class LoginService extends BaseServiceAdapter {
         List<Tag> tags = tenantService.getTags(getParam);
         List<String> resources = tenantService.getResources(getParam);
         tenant.setPassword(null); // remove password because of security
-        return LoginInfo.builder()
-                .tenant(tenant)
-                .resources(resources)
-                .tags(tags)
-                .build();
+        return new LoginInfo()
+                .setTenant(tenant)
+                .setResources(resources)
+                .setTags(tags);
     }
 
     private boolean validatePassword(String dbPassword, String plainPassword, String userName) {

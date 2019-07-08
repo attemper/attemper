@@ -3,9 +3,11 @@ package com.github.attemper.common.param.dispatch.trigger.sub;
 import com.github.attemper.java.sdk.common.util.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class CronTriggerParam extends CommonTriggerParam{
 
     protected String expression;

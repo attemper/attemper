@@ -46,12 +46,11 @@ public class TriggerService extends BaseServiceAdapter {
         List<CalendarOffsetTriggerResult> calendarOffsetTriggers = triggerHandlers[1].getTriggers(paramMap);
         List<DailyTimeIntervalTriggerResult> dailyTimeIntervalTriggers = triggerHandlers[2].getTriggers(paramMap);
         List<CalendarIntervalTriggerResult> calendarIntervalTriggers = triggerHandlers[3].getTriggers(paramMap);
-        return TriggerResult.builder()
-                .cronTriggers(cronTriggers)
-                .calendarOffsetTriggers(calendarOffsetTriggers)
-                .dailyIntervalTriggers(dailyTimeIntervalTriggers)
-                .calendarIntervalTriggers(calendarIntervalTriggers)
-                .build();
+        return new TriggerResult()
+                .setCronTriggers(cronTriggers)
+                .setCalendarOffsetTriggers(calendarOffsetTriggers)
+                .setDailyIntervalTriggers(dailyTimeIntervalTriggers)
+                .setCalendarIntervalTriggers(calendarIntervalTriggers);
     }
 
     public List<CalendarInfo> getCalendars(TriggerNameParam param) {

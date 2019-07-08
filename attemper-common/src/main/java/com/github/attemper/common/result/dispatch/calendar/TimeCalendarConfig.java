@@ -1,14 +1,10 @@
 package com.github.attemper.common.result.dispatch.calendar;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class TimeCalendarConfig {
 
     protected String calendarName;

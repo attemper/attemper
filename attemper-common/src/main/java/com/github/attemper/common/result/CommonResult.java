@@ -5,20 +5,13 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.java.sdk.common.result.BaseResult;
 
-import java.io.Serializable;
-
-/**
- * 返回数据封装类
- * @auth ldang
- */
-public class CommonResult<T> extends BaseResult<T> implements Serializable {
+public class CommonResult<T> extends BaseResult<T> {
 	
 	public CommonResult() {
 		super();
 	}
 
     /**
-     * 使用code和msg构造Res，此方法私有，通过定义ResStatus来处理
      * @param code
      * @param msg
      * @return
@@ -49,7 +42,6 @@ public class CommonResult<T> extends BaseResult<T> implements Serializable {
     }
 
     /**
-     * 将额外信息附加在msg中
      * @param code
      * @param extraMsg
      * @return
@@ -62,7 +54,7 @@ public class CommonResult<T> extends BaseResult<T> implements Serializable {
     }
 
     /**
-     * 最简单的调用成功Res
+     * 200
      * @return
      */
 	public static CommonResult ok() {
@@ -70,7 +62,7 @@ public class CommonResult<T> extends BaseResult<T> implements Serializable {
 	}
 
     /**
-     * 替换"调用成功"
+     * replace default ok msg
      * @param msg
      * @return
      */
@@ -79,7 +71,6 @@ public class CommonResult<T> extends BaseResult<T> implements Serializable {
 	}
 
     /**
-     * 调用成功且附带返回数据
      * @param t
      * @param <T>
      * @return

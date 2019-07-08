@@ -36,17 +36,16 @@ public class HistoricActivityInstanceEventing extends EventingAdapter<HistoricAc
     }
 
     private JobInstanceAct toJobInstanceAct(HistoricActivityInstanceEventEntity historyEvent) {
-        return JobInstanceAct.builder()
-                .id(historyEvent.getId().substring(historyEvent.getActivityId().length() + 1))
-                .actInstId(historyEvent.getActivityInstanceId())
-                .parentActInstId(historyEvent.getParentActivityInstanceId())
-                .executionId(historyEvent.getExecutionId())
-                .procInstId(historyEvent.getProcessInstanceId())
-                .rootProcInstId(historyEvent.getRootProcessInstanceId())
-                .actId(historyEvent.getActivityId())
-                .actName(historyEvent.getActivityName())
-                .actType(historyEvent.getActivityType())
-                .build();
+        return new JobInstanceAct()
+                .setId(historyEvent.getId().substring(historyEvent.getActivityId().length() + 1))
+                .setActInstId(historyEvent.getActivityInstanceId())
+                .setParentActInstId(historyEvent.getParentActivityInstanceId())
+                .setExecutionId(historyEvent.getExecutionId())
+                .setProcInstId(historyEvent.getProcessInstanceId())
+                .setRootProcInstId(historyEvent.getRootProcessInstanceId())
+                .setActId(historyEvent.getActivityId())
+                .setActName(historyEvent.getActivityName())
+                .setActType(historyEvent.getActivityType());
     }
 
 }

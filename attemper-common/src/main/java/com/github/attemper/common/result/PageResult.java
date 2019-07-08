@@ -1,37 +1,49 @@
 package com.github.attemper.common.result;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.io.Serializable;
-
-/**
- * @author ldang
- */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class PageResult implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@ToString
+public class PageResult {
 
     /**
-     * 页号
+     * current page,starts with 1
      */
     protected int currentPage;
 
     /**
-     * 每页条数
+     * size of page
      */
     protected int pageSize;
 
     /**
-     * 总条数
-     * @return
+     * total count
      */
     protected long total;
 
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public PageResult setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+        return this;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public PageResult setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+        return this;
+    }
+
+    public long getTotal() {
+        return total;
+    }
+
+    public PageResult setTotal(long total) {
+        this.total = total;
+        return this;
+    }
 }

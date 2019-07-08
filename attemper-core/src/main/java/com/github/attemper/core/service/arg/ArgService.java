@@ -88,15 +88,14 @@ public class ArgService extends BaseServiceAdapter {
     }
 
     private Arg toArg(ArgSaveParam param) {
-        return Arg.builder()
-                .argName(param.getArgName())
-                .argType(param.getArgType())
-                .argValue(param.getArgValue())
-                .genericType(param.getGenericType())
-                .attribute(param.getAttribute())
-                .remark(param.getRemark())
-                .tenantId(injectTenantId())
-                .build();
+        return new Arg()
+                .setArgName(param.getArgName())
+                .setArgType(param.getArgType())
+                .setArgValue(param.getArgValue())
+                .setGenericType(param.getGenericType())
+                .setAttribute(param.getAttribute())
+                .setRemark(param.getRemark())
+                .setTenantId(injectTenantId());
     }
 
     @Autowired

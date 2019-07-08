@@ -4,6 +4,7 @@ import com.github.attemper.common.param.CommonParam;
 import com.github.attemper.common.param.dispatch.trigger.sub.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 @Getter
 @Setter
+@ToString
 public class TriggerSaveParam implements CommonParam {
 
     protected String jobName;

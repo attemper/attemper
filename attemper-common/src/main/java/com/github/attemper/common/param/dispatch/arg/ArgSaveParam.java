@@ -4,10 +4,12 @@ import com.github.attemper.common.enums.ArgType;
 import com.github.attemper.common.param.CommonParam;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
 @Getter
 @Setter
+@ToString
 public class ArgSaveParam implements CommonParam {
 
     protected String argName;

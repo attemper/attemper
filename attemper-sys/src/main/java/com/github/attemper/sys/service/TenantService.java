@@ -106,14 +106,14 @@ public class TenantService extends BaseServiceAdapter {
     }
 
     private Tenant toTenant(TenantSaveParam param) {
-        return Tenant.builder()
-                .userName(param.getUserName())
-                .displayName(param.getDisplayName())
-                .password(param.getPassword())
-                .email(param.getEmail())
-                .mobile(param.getMobile())
-                .status(param.getStatus())
-                .build();
+        return new Tenant()
+                .setUserName(param.getUserName())
+                .setDisplayName(param.getDisplayName())
+                .setPassword(param.getPassword())
+                .setEmail(param.getEmail())
+                .setMobile(param.getMobile())
+                .setStatus(param.getStatus())
+                .setSendConfig(param.getSendConfig());
     }
 
 }

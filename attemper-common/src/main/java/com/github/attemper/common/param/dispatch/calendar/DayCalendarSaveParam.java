@@ -4,9 +4,11 @@ import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.util.DateTimeUtil;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class DayCalendarSaveParam extends CalendarConfigSaveParam {
 
     protected Integer dayNum;

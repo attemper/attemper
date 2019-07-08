@@ -2,8 +2,10 @@ package com.github.attemper.common.param.dispatch.job;
 
 import com.github.attemper.common.enums.JobStatus;
 import com.github.attemper.common.param.CommonParam;
+import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
+@ToString
 public class JobSaveParam implements CommonParam {
 
     protected String jobName;

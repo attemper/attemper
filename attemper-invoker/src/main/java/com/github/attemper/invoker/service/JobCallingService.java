@@ -198,17 +198,16 @@ public class JobCallingService {
     private LocalServerConfig localServerConfig;
 
     private JobInstance buildInstance(JobInvokingParam param, String executorUri, String parentId, JobInstanceStatus jobInstanceStatus) {
-        return JobInstance.builder()
-                .id(param.getId())
-                .jobName(param.getJobName())
-                .triggerName(param.getTriggerName())
-                .startTime(new Date())
-                .status(jobInstanceStatus.getStatus())
-                .schedulerUri(localServerConfig.getRequestPath())
-                .executorUri(executorUri)
-                .parentId(parentId)
-                .tenantId(param.getTenantId())
-                .build();
+        return new JobInstance()
+                .setId(param.getId())
+                .setJobName(param.getJobName())
+                .setTriggerName(param.getTriggerName())
+                .setStartTime(new Date())
+                .setStatus(jobInstanceStatus.getStatus())
+                .setSchedulerUri(localServerConfig.getRequestPath())
+                .setExecutorUri(executorUri)
+                .setParentId(parentId)
+                .setTenantId(param.getTenantId());
     }
 
     private void saveInstance(JobInstance jobInstance) {

@@ -1,21 +1,10 @@
 package com.github.attemper.common.result.sys.tag;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
-/**
- * 标签<br>
- * 平铺维度：角色、用户组、岗位等
- * @author ldang
- */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class Tag{
 
 	protected String tagName;
@@ -30,4 +19,57 @@ public class Tag{
 
 	protected String remark;
 
+	public String getTagName() {
+		return tagName;
+	}
+
+	public Tag setTagName(String tagName) {
+		this.tagName = tagName;
+		return this;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public Tag setDisplayName(String displayName) {
+		this.displayName = displayName;
+		return this;
+	}
+
+	public Integer getTagType() {
+		return tagType;
+	}
+
+	public Tag setTagType(Integer tagType) {
+		this.tagType = tagType;
+		return this;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public Tag setCreateTime(Date createTime) {
+		this.createTime = createTime;
+		return this;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public Tag setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+		return this;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public Tag setRemark(String remark) {
+		this.remark = remark;
+		return this;
+	}
 }

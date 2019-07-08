@@ -1,5 +1,8 @@
 package com.github.attemper.common.param.dispatch.delay;
 
+import lombok.ToString;
+
+@ToString
 public class DelayJobIdParam {
 
     protected String id;

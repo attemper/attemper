@@ -75,21 +75,20 @@ public class DataSourceService extends BaseServiceAdapter {
         List<ConnectionTestResult> resultList = new ArrayList<>();
         for (DataSourceInfo item : dataSources) {
             String errorMsg = toolService.testConnection(item.getDriverClassName(), item.getJdbcUrl(), item.getUserName(), item.getPassword());
-            resultList.add(ConnectionTestResult.builder().dbName(item.getDbName()).errorMsg(errorMsg).build());
+            resultList.add(new ConnectionTestResult().setDbName(item.getDbName()).setErrorMsg(errorMsg));
         }
         return resultList;
     }
 
     private DataSourceInfo toDataSource(DataSourceSaveParam param) {
-        return DataSourceInfo.builder()
-                .dbName(param.getDbName())
-                .driverClassName(param.getDriverClassName())
-                .jdbcUrl(param.getJdbcUrl())
-                .userName(param.getUserName())
-                .password(param.getPassword())
-                .remark(param.getRemark())
-                .tenantId(injectTenantId())
-                .build();
+        return new DataSourceInfo()
+                .setDbName(param.getDbName())
+                .setDriverClassName(param.getDriverClassName())
+                .setJdbcUrl(param.getJdbcUrl())
+                .setUserName(param.getUserName())
+                .setPassword(param.getPassword())
+                .setRemark(param.getRemark())
+                .setTenantId(injectTenantId());
     }
 
 }

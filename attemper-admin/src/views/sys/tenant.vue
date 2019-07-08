@@ -105,6 +105,11 @@
           <el-form-item :label="$t('sys.tenant.columns.mobile')" prop="mobile">
             <el-input v-model="tenant.mobile" :placeholder="$t('sys.tenant.placeholder.mobile')" />
           </el-form-item>
+          <el-form-item :label="$t('sys.tenant.columns.sendConfig')">
+            <el-checkbox-group v-model="configs">
+              <el-checkbox-button v-for="item in sendConfigs" :key="item" :label="item">{{ item }}</el-checkbox-button>
+            </el-checkbox-group>
+          </el-form-item>
           <el-form-item>
             <el-button type="info" @click="editDialog.base.visible = false">{{ $t('actions.cancel') }}</el-button>
             <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
@@ -129,7 +134,8 @@ const DEF_OBJ = {
   password: null,
   email: null,
   mobile: null,
-  status: 0
+  status: 0,
+  sendConfig: '0'
 }
 export default {
   name: 'tenant',
@@ -181,8 +187,10 @@ export default {
       },
       tenant: DEF_OBJ,
       statuses: [],
+      sendConfigs: [],
       downloadLoading: false,
       selections: [],
+      configs: [],
       canUpdate: canAccess('tenant-update')
     }
   },
@@ -202,7 +210,6 @@ export default {
       listReq(this.page).then(response => {
         this.list = response.data.result.list
         Object.assign(this.page, response.data.result.page)
-        // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
         }, 200)
@@ -228,6 +235,14 @@ export default {
       } else {
         getReq({ userName: this.selections[0].userName }).then(res => {
           this.tenant = res.data.result
+          this.configs = []
+          if (this.tenant.sendConfig) {
+            for (let i = 0; i < this.sendConfigs.length; i++) {
+              if (this.tenant.sendConfig.length > i && this.tenant.sendConfig[i] !== '0') {
+                this.configs.push(this.sendConfigs[i])
+              }
+            }
+          }
         })
       }
     },
@@ -248,6 +263,14 @@ export default {
     save() {
       this.$refs.form.validate((valid) => {
         if (valid) {
+          this.tenant.sendConfig = ''
+          for (let i = 0; i < this.sendConfigs.length; i++) {
+            if (this.configs.find(item => { return item === this.sendConfigs[i] })) {
+              this.tenant.sendConfig += '1'
+            } else {
+              this.tenant.sendConfig += '0'
+            }
+          }
           const request = (this.editDialog.oper === 'add' ? addReq(this.tenant) : updateReq(this.tenant))
           request.then(res => {
             this.$message.success(res.data.msg)
@@ -306,8 +329,7 @@ export default {
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.statuses = array.statuses
-        this.transferTitles = array.transferTitles
-        this.allocateTitles = array.allocateTitles
+        this.sendConfigs = array.sendConfigs
       })
     }
   }

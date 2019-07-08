@@ -15,11 +15,10 @@ public class LogService {
     private JobInstanceService service;
 
     public Void appendLog(LogParam logParam) {
-        JobInstanceAct jobInstanceAct = JobInstanceAct.builder()
-                .actInstId(logParam.getBaseExecutionParam().getActInstId())
-                .logKey(logParam.getLogResult().getLogKey())
-                .logText(logParam.getLogResult().getLogText())
-                .build();
+        JobInstanceAct jobInstanceAct = new JobInstanceAct()
+                .setActInstId(logParam.getBaseExecutionParam().getActInstId())
+                .setLogKey(logParam.getLogResult().getLogKey())
+                .setLogText(logParam.getLogResult().getLogText());
         service.updateAct(jobInstanceAct);
         return null;
     }

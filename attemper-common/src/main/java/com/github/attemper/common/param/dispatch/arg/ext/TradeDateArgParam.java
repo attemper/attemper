@@ -2,10 +2,12 @@ package com.github.attemper.common.param.dispatch.arg.ext;
 
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.param.CommonParam;
+import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.regex.Pattern;
 
+@ToString
 public class TradeDateArgParam implements CommonParam {
 
     private static Pattern tradeDatePattern;

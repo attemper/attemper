@@ -3,9 +3,11 @@ package com.github.attemper.common.param.dispatch.calendar;
 import com.github.attemper.common.param.CommonParam;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class CalendarConfigSaveParam implements CommonParam {
 
     protected String calendarName;

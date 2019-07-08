@@ -1,8 +1,10 @@
 package com.github.attemper.common.param.dispatch.calendar;
 
 import com.github.attemper.common.param.CommonParam;
+import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
+@ToString
 public class CalendarGetParam implements CommonParam {
 
     protected String calendarName;

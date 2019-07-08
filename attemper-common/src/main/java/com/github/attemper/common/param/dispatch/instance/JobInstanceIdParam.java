@@ -1,8 +1,10 @@
 package com.github.attemper.common.param.dispatch.instance;
 
 import com.github.attemper.common.param.CommonParam;
+import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
+@ToString
 public class JobInstanceIdParam implements CommonParam {
 
     protected String id;

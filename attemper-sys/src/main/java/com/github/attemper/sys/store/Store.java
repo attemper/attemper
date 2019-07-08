@@ -15,10 +15,6 @@ public class Store {
         return tenantTokenMap;
     }
 
-    public static void setTenantTokenMap(Map<String, String> tenantTokenMap) {
-        Store.tenantTokenMap = tenantTokenMap;
-    }
-
     public static Tenant getAdminTenant() {
         return adminTenant;
     }
