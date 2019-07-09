@@ -42,7 +42,9 @@ public class AsyncHttpTask extends HttpTask {
                 JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
                 JobInstanceAct jobInstanceAct = jobInstanceService.getAct(execution.getActivityInstanceId());
                 if (jobInstanceAct.getStatus() == JobInstanceStatus.FAILURE.getStatus()) {
-                    throw new RTException(3054);
+                    int code = 3054;
+                    saveInstance(execution, String.valueOf(code), StatusProperty.getValue(code), JobInstanceStatus.FAILURE);
+                    throw new RTException(code);
                 }
             } catch (InterruptedException e) {
                 int code = 3053;

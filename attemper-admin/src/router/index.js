@@ -122,7 +122,7 @@ export const constantRouterMap = [
         path: 'index',
         component: () => import('@/views/profile/index'),
         name: 'profile',
-        meta: { title: 'Profile', icon: 'user', noCache: true }
+        meta: { title: 'profile', icon: 'user', noCache: true }
       }
     ]
   }

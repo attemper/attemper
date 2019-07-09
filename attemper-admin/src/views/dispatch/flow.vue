@@ -11,7 +11,7 @@
         <a ref="exportSvg" :title="$t('dispatch.flow.title.svg')" href="javascript:">{{ $t('dispatch.flow.btn.svg') }}</a>
       </li>
     </ul>
-    <div class="custom-bottom">
+    <div class="custom-area">
       <el-select
         v-model="currentReversion"
         :placeholder="$t('dispatch.job.columns.reversion') + '-' + $t('dispatch.job.columns.version')"

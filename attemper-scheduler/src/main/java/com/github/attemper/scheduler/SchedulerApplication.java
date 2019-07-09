@@ -16,16 +16,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAsync
 @EnableDiscoveryClient
 @EnableTransactionManagement
-//@EnableJpaRepositories(GlobalConstants.jpaRepositoryLocation)   //jpa dao
-//@EntityScan(GlobalConstants.jpaEntityLocation)   //jpa entity
-@MapperScan(GlobalConstants.mybatisPlusMapperLocation)   //mybatis dao
+@MapperScan(GlobalConstants.mybatisPlusMapperLocation)
 @SpringBootApplication
 public class SchedulerApplication {
 
-    /**
-     * spring boot app start entrance
-     * @param args
-     */
     public static void main(String[] args) {
         SpringApplication.run(SchedulerApplication.class, args);
     }

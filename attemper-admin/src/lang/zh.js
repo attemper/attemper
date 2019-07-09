@@ -2,6 +2,7 @@ export default {
   title: '调度中心',
   route: {
     dashboard: '首页',
+    profile: '简介',
     sys: '系统管理',
     tenant: '租户管理',
     tag: '角色管理',
@@ -380,9 +381,6 @@ export default {
   },
   navbar: {
     logOut: '退出登录',
-    profile: '简介',
-    dashboard: '首页',
-    github: '项目地址',
     docs: '文档',
     theme: '换肤',
     size: '布局大小'

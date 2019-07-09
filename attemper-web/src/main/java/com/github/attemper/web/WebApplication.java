@@ -12,26 +12,17 @@ import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-/**
- * @author ldang
- */
 @Import({
 		InvokerConfiguration.class
 })
 @EnableAsync
 @EnableDiscoveryClient
 @EnableTransactionManagement
-//@EnableJpaRepositories(GlobalConstants.jpaRepositoryLocation)   //jpa dao
-//@EntityScan(GlobalConstants.jpaEntityLocation)   //jpa entity
-@MapperScan(GlobalConstants.mybatisPlusMapperLocation)   //mybatis dao
+@MapperScan(GlobalConstants.mybatisPlusMapperLocation)
 @SpringBootApplication
 @EnableProcessApplication(GlobalConstants.defaultContextPath)
 public class WebApplication {
 
-	/**
-	 * spring boot app start entrance
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		SpringApplication.run(WebApplication.class, args);
 	}

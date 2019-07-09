@@ -7,23 +7,19 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Import({
         SecurityConfiguration.class
 })
+@EnableAsync
 @EnableDiscoveryClient
 @EnableTransactionManagement
-//@EnableJpaRepositories(GlobalConstants.jpaRepositoryLocation)   //jpa dao
-//@EntityScan(GlobalConstants.jpaEntityLocation)   //jpa entity
-@MapperScan(GlobalConstants.mybatisPlusMapperLocation)   //mybatis dao
+@MapperScan(GlobalConstants.mybatisPlusMapperLocation)
 @SpringBootApplication
 public class ExecutorApplication {
 
-    /**
-     * spring boot app start entrance
-     * @param args
-     */
     public static void main(String[] args) {
         SpringApplication.run(ExecutorApplication.class, args);
     }

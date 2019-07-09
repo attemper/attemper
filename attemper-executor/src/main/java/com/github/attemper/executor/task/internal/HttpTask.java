@@ -211,10 +211,18 @@ public abstract class HttpTask implements JavaDelegate {
         jobInstanceAct.setDuration(now.getTime() - jobInstanceAct.getStartTime().getTime());
         jobInstanceAct.setLogKey(logKey);
         jobInstanceAct.setLogText(logText);
-        jobInstanceAct.setStatus(jobInstanceStatus.getStatus());
+        if (jobInstanceStatus != null) {
+            jobInstanceAct.setStatus(jobInstanceStatus.getStatus());
+        }
         jobInstanceService.updateAct(jobInstanceAct);
 
+        saveInstance(execution, logKey, logText, jobInstanceStatus);
+    }
+
+    protected void saveInstance(DelegateExecution execution, String logKey, String logText, JobInstanceStatus jobInstanceStatus) {
         if (jobInstanceStatus != null && JobInstanceStatus.FAILURE.getStatus() == jobInstanceStatus.getStatus()) {
+            Date now = new Date();
+            JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
             JobInstance jobInstance = jobInstanceService.get(execution.getBusinessKey());
             jobInstance.setEndTime(now);
             jobInstance.setDuration(now.getTime() - jobInstance.getStartTime().getTime());
