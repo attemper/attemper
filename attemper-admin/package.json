@@ -47,8 +47,8 @@
   },
   "dependencies": {
     "axios": "0.18.0",
-    "bpmn-js": "3.4.1",
-    "bpmn-js-properties-panel": "0.30.0",
+    "bpmn-js": "4.0.1",
+    "bpmn-js-properties-panel": "0.31.0",
     "camunda-bpmn-moddle": "3.2.0",
     "clipboard": "2.0.4",
     "codemirror": "5.45.0",
