@@ -18,6 +18,7 @@ public class SyncHttpTask extends HttpTask {
         if (taskResult != null) {
             saveInstanceAct(execution, url, taskResult.getLogKey(), taskResult.getLogText(),
                     taskResult.getSuccess() ? JobInstanceStatus.SUCCESS : JobInstanceStatus.FAILURE);
+            saveVariables(execution, taskResult);
         } else {
             saveInstanceAct(execution, url, null, null, JobInstanceStatus.SUCCESS);
         }

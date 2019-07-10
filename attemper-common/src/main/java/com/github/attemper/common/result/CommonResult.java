@@ -87,7 +87,7 @@ public class CommonResult<T> extends BaseResult<T> {
      * @return
      */
 	public static CommonResult error(String msg){
-        return CommonResult.putAdd(CommonConstants.INTERNAL_SERVER_ERROR, msg);
+		return CommonResult.putAdd(500, msg);
     }
 
     /**

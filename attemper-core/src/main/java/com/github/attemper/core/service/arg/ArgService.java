@@ -1,6 +1,5 @@
 package com.github.attemper.core.service.arg;
 
-import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.arg.ArgGetParam;
 import com.github.attemper.common.param.dispatch.arg.ArgListParam;
@@ -25,6 +24,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,7 +142,7 @@ public class ArgService extends BaseServiceAdapter {
                     dateHandler.setDayOrder((Integer) scriptEngine.eval(arr[1].trim()));
                 }
             } catch (ScriptException e) {
-                throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
+                throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
             }
         }
         return dateHandler.calculateTradeDate();

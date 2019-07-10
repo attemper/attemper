@@ -1,6 +1,5 @@
 package com.github.attemper.executor.task.internal;
 
-import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
@@ -23,6 +22,7 @@ import com.github.attemper.java.sdk.common.executor.param.execution.TaskParam;
 import com.github.attemper.java.sdk.common.executor.param.router.BeanParam;
 import com.github.attemper.java.sdk.common.executor.param.router.RouterParam;
 import com.github.attemper.java.sdk.common.result.execution.LogResult;
+import com.github.attemper.java.sdk.common.result.execution.TaskResult;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -84,12 +84,12 @@ public abstract class HttpTask implements JavaDelegate {
         MetaParam executionParam = new MetaParam();
         executionParam
                 .setParentActInstId(execution.getParentActivityInstanceId())
-                .setExecutionId(execution.getId())
                 .setProcInstId(execution.getProcessInstanceId())
                 .setActId(execution.getCurrentActivityId())
                 .setActName(execution.getCurrentActivityName())
                 .setRequestPath(SpringContextAware.getBean(LocalServerConfig.class).getRequestPath())
-                .setActInstId(execution.getActivityInstanceId());
+                .setActInstId(execution.getActivityInstanceId())
+                .setExecutionId(execution.getId());
         if (subUrl == null) { // router
             RouterParam routerParam = new RouterParam();
             routerParam.setBizParamMap(execution.getVariables());
@@ -232,11 +232,20 @@ public abstract class HttpTask implements JavaDelegate {
                 code = Integer.parseInt(logKey);
                 jobInstance.setMsg(logText);
             } catch (Exception e) {
-                code = CommonConstants.INTERNAL_SERVER_ERROR;
+                code = HttpStatus.INTERNAL_SERVER_ERROR.value();
                 jobInstance.setMsg(logText + "\n" + e.getMessage());
             }
             jobInstance.setCode(code);
             jobInstanceService.update(jobInstance);
+        }
+    }
+
+    protected void saveVariables(DelegateExecution execution, TaskResult taskResult) {
+        if (taskResult.getParamMap() != null) {
+            execution.setVariables(taskResult.getParamMap());
+        }
+        if (taskResult.getDataMap() != null) {
+            execution.setVariablesLocal(taskResult.getDataMap());
         }
     }
 

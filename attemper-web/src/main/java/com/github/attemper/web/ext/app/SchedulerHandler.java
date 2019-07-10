@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -79,7 +80,7 @@ public class SchedulerHandler extends CrossSystemHandler {
             if (e.getMessage() != null && e.getMessage().contains("Connection refused")) {
                 throw new RTException(3001, e.getMessage());
             }
-            throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, e);
+            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
         }
     }
 

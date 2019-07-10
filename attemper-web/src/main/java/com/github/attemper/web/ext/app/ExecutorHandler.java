@@ -61,7 +61,7 @@ public class ExecutorHandler extends CrossSystemHandler {
                     if (err.getMessage() != null && err.getMessage().contains("Connection refused")) {
                         throw new RTException(3009, err.getMessage());
                     }
-                    throw new RTException(CommonConstants.INTERNAL_SERVER_ERROR, err);
+                    throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), err);
                 })
                 .block();
         preHandleResult(result);

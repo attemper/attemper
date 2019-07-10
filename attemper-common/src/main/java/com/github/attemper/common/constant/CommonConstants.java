@@ -7,8 +7,6 @@ public interface CommonConstants {
 
     int OK = 200;
 
-    int INTERNAL_SERVER_ERROR = 500;
-
     String page = "page";
 
     String list = "list";

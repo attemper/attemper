@@ -10,14 +10,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Import({
 		InvokerConfiguration.class
 })
 @EnableAsync
 @EnableDiscoveryClient
-@EnableTransactionManagement
 @MapperScan(GlobalConstants.mybatisPlusMapperLocation)
 @SpringBootApplication
 @EnableProcessApplication(GlobalConstants.defaultContextPath)

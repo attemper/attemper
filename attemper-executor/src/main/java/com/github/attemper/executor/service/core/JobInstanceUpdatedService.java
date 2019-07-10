@@ -1,7 +1,7 @@
 package com.github.attemper.executor.service.core;
 
-import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceIdParam;
+import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.core.service.instance.JobInstanceService;
 import org.apache.commons.lang.StringUtils;
@@ -23,7 +23,13 @@ public class JobInstanceUpdatedService {
     public Void terminate(JobInstanceIdParam param) {
         JobInstance jobInstance = getJobInstance(param);
         if (validateState(jobInstance)) {
-            runtimeService.deleteProcessInstance(jobInstance.getRootProcInstId(), String.valueOf(JobInstanceStatus.TERMINATED.getStatus()));
+            runtimeService.deleteProcessInstanceIfExists(
+                    jobInstance.getRootProcInstId(),
+                    StatusProperty.getValue(901),
+                    true,
+                    true,
+                    false,
+                    false);
         }
         return null;
     }
