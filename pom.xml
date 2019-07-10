@@ -16,7 +16,6 @@
 		<module>${project.artifactId}-scheduler</module>
 		<module>${project.artifactId}-executor</module>
 		<module>${project.artifactId}-eureka-server</module>
-		<module>${project.artifactId}-interior</module>
 	</modules>
 	<packaging>pom</packaging>
 
