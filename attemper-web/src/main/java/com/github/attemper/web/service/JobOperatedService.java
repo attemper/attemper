@@ -22,13 +22,11 @@ import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.camunda.bpm.engine.repository.Deployment;
-import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -157,7 +155,6 @@ public class JobOperatedService extends BaseServiceAdapter {
             triggerOperatedService.update(triggerSaveParam);
         });
         mapper.delete(paramMap);
-        removeDefinitionAndDeployment(param.getJobNames(), injectTenantId());
         return null;
     }
 
@@ -311,19 +308,5 @@ public class JobOperatedService extends BaseServiceAdapter {
                 .name(job.getDisplayName())
                 .tenantId(job.getTenantId())
                 .deploy();
-    }
-
-    @Async
-    public void removeDefinitionAndDeployment(List<String> jobNames, String tenantId) {
-        jobNames.forEach(jobName -> {
-            List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
-                    .processDefinitionKey(jobName)
-                    .tenantIdIn(tenantId)
-                    .list();
-            for (ProcessDefinition processDefinition : processDefinitions) {
-                repositoryService.deleteProcessDefinition(processDefinition.getId());
-                repositoryService.deleteDeployment(processDefinition.getDeploymentId());
-            }
-        });
     }
 }
