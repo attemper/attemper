@@ -79,6 +79,7 @@ import customTranslate from '@/utils/customTranslate'
 import JobInfoForm from './components/job/jobInfoForm'
 import { getTimeStr } from '@/utils/tools'
 import customElementTemplate from './components/job/element-templates/custom'
+import customControlsModule from './components/job/custom'
 
 export default {
   name: 'flow',
@@ -117,7 +118,8 @@ export default {
           propertiesProviderModule,
           propertiesPanelModule,
           miniMapModule,
-          customTranslateModule
+          customTranslateModule,
+          customControlsModule
         ],
         elementTemplates: customElementTemplate,
         moddleExtensions: {

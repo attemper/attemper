@@ -99,6 +99,9 @@ export default {
   'Expanded Pool': '展开池',
   'Create Gateway': '新增网关',
   'Append Gateway': '追加网关',
+  'Append ServiceTask': '追加服务任务',
+  'Append ScriptTask': '追加脚本任务',
+  'Append ParallelGateway': '追加并行网关',
   // Errors
   'no parent for {element} in {parent}': '在 {element} 中没有父元素 {parent}',
   'no shape type specified': '未指定形状类型',
