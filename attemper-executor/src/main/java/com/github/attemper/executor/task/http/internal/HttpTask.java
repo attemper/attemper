@@ -1,20 +1,18 @@
-package com.github.attemper.executor.task.internal;
+package com.github.attemper.executor.task.http.internal;
 
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.property.StatusProperty;
-import com.github.attemper.common.result.dispatch.instance.JobInstance;
-import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.common.result.dispatch.project.ProjectInfo;
 import com.github.attemper.config.base.conf.LocalServerConfig;
-import com.github.attemper.core.service.instance.JobInstanceService;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.core.service.project.ProjectService;
 import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.executor.constant.PropertyConstants;
+import com.github.attemper.executor.task.ParentTask;
 import com.github.attemper.executor.util.CamundaUtil;
 import com.github.attemper.java.sdk.common.executor.param.execution.MetaParam;
 import com.github.attemper.java.sdk.common.executor.param.execution.TaskParam;
@@ -23,7 +21,6 @@ import com.github.attemper.java.sdk.common.executor.param.router.RouterParam;
 import com.github.attemper.java.sdk.common.result.execution.LogResult;
 import com.github.attemper.java.sdk.common.result.execution.TaskResult;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -43,8 +40,7 @@ import reactor.netty.http.client.HttpClient;
 
 import java.util.*;
 
-@Slf4j
-public abstract class HttpTask implements JavaDelegate {
+public abstract class HttpTask extends ParentTask implements JavaDelegate {
 
     protected String subUrl;
 
@@ -211,45 +207,6 @@ public abstract class HttpTask implements JavaDelegate {
                 });
             }
         });
-    }
-
-    @Autowired
-    protected JobInstanceService jobInstanceService;
-
-    protected void saveInstanceAct(DelegateExecution execution, String url, String logKey, String logText, JobInstanceStatus jobInstanceStatus) {
-        JobInstanceAct jobInstanceAct = jobInstanceService.getAct(execution.getActivityInstanceId());
-        Date now = new Date();
-        jobInstanceAct.setBizUri(url);
-        jobInstanceAct.setEndTime(now);
-        jobInstanceAct.setDuration(now.getTime() - jobInstanceAct.getStartTime().getTime());
-        jobInstanceAct.setLogKey(logKey);
-        jobInstanceAct.setLogText(logText);
-        if (jobInstanceStatus != null) {
-            jobInstanceAct.setStatus(jobInstanceStatus.getStatus());
-        }
-        jobInstanceService.updateAct(jobInstanceAct);
-
-        saveInstance(execution, logKey, logText, jobInstanceStatus);
-    }
-
-    protected void saveInstance(DelegateExecution execution, String logKey, String logText, JobInstanceStatus jobInstanceStatus) {
-        if (jobInstanceStatus != null && JobInstanceStatus.FAILURE.getStatus() == jobInstanceStatus.getStatus()) {
-            Date now = new Date();
-            JobInstance jobInstance = jobInstanceService.get(execution.getBusinessKey());
-            jobInstance.setEndTime(now);
-            jobInstance.setDuration(now.getTime() - jobInstance.getStartTime().getTime());
-            jobInstance.setStatus(JobInstanceStatus.FAILURE.getStatus());
-            int code;
-            try {
-                code = Integer.parseInt(logKey);
-                jobInstance.setMsg(logText);
-            } catch (Exception e) {
-                code = HttpStatus.INTERNAL_SERVER_ERROR.value();
-                jobInstance.setMsg(logText + "\n" + e.getMessage());
-            }
-            jobInstance.setCode(code);
-            jobInstanceService.update(jobInstance);
-        }
     }
 
     protected void saveVariables(DelegateExecution execution, TaskResult taskResult) {

@@ -1,8 +1,8 @@
-package com.github.attemper.executor.task;
+package com.github.attemper.executor.task.http;
 
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.result.dispatch.job.Job;
-import com.github.attemper.executor.task.internal.HttpTask;
+import com.github.attemper.executor.task.http.internal.HttpTask;
 import com.github.attemper.java.sdk.common.executor.constant.ExecutorAPIPath;
 import com.github.attemper.java.sdk.common.result.execution.TaskResult;
 import org.camunda.bpm.engine.delegate.DelegateExecution;

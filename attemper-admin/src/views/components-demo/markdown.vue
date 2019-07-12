@@ -72,8 +72,7 @@ export default {
       html: '',
       languageTypeList: {
         'en': 'en_US',
-        'zh': 'zh_CN',
-        'es': 'es_ES'
+        'zh': 'zh_CN'
       }
     }
   },

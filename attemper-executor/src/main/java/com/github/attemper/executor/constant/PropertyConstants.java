@@ -5,11 +5,21 @@ package com.github.attemper.executor.constant;
  */
 public interface PropertyConstants {
 
-    String requestMethod = "requestMethod";
-
     String subUrl = "subUrl";
 
     String beanName = "beanName";
 
     String methodName = "methodName";
+
+    String customMail = "custom_mail_";
+
+    String from = customMail + "from";
+
+    String to = customMail + "to";
+
+    String subject = customMail + "subject";
+
+    String content = customMail + "content";
+
+
 }

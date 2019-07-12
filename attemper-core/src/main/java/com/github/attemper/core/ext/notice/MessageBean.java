@@ -2,13 +2,13 @@ package com.github.attemper.core.ext.notice;
 
 public class MessageBean {
 
-    private String from;
+    protected String from;
 
-    private String to;
+    protected String to;
 
-    private String subject;
+    protected String subject;
 
-    private String content;
+    protected String content;
 
     public String getFrom() {
         return from;

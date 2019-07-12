@@ -13,9 +13,6 @@
           <el-radio label="en" border>
             English
           </el-radio>
-          <el-radio label="es" border>
-            Español
-          </el-radio>
         </el-radio-group>
         <el-tag style="margin-top:15px;display:block;" type="info">
           {{ $t('i18nView.note') }}
@@ -123,7 +120,6 @@ export default {
     if (!this.$i18n.getLocaleMessage('en')[viewName]) {
       this.$i18n.mergeLocaleMessage('en', local.en)
       this.$i18n.mergeLocaleMessage('zh', local.zh)
-      this.$i18n.mergeLocaleMessage('es', local.es)
     }
     this.setOptions() // set default select options
   },

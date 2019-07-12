@@ -189,5 +189,9 @@ export default {
   'Executor Component': '执行器组件',
   'Sub URL': '自定义子路径',
   'Bean Name': 'Bean名称',
-  'Method Name': '方法名称'
+  'Method Name': '方法名称',
+  'From': '发送者',
+  'To': '接收人',
+  'Subject': '主题',
+  'Content': '内容'
 }

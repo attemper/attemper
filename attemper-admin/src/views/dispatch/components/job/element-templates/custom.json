@@ -3,12 +3,12 @@
     "name": "Sync Http Task",
     "id": "SyncHttpTask",
     "appliesTo": [
-      "bpmn:Task"
+      "bpmn:ServiceTask"
     ],
     "properties": [
       {
         "label": "Executor Component",
-        "type": "Text",
+        "type": "String",
         "editable": true,
         "value": "${syncHttpTask}",
         "binding": {
@@ -71,19 +71,20 @@
       "implementation": false,
       "asyncBefore": false,
       "asyncAfter": false,
-      "exclusive": false
+      "exclusive": false,
+      "documentation": false
     }
   },
   {
     "name": "Async Http Task",
     "id": "AsyncHttpTask",
     "appliesTo": [
-      "bpmn:Task"
+      "bpmn:ServiceTask"
     ],
     "properties": [
       {
         "label": "Executor Component",
-        "type": "Text",
+        "type": "String",
         "editable": true,
         "value": "${asyncHttpTask}",
         "binding": {
@@ -146,32 +147,33 @@
       "implementation": false,
       "asyncBefore": false,
       "asyncAfter": false,
-      "exclusive": false
+      "exclusive": false,
+      "documentation": false
     }
   },
   {
-    "name": "Mail Task",
-    "id": "com.camunda.example.MailTask",
+    "name": "Custom Mail Task",
+    "id": "CustomMailTask",
     "appliesTo": [
       "bpmn:ServiceTask"
     ],
     "properties": [
       {
-        "label": "Implementation Type",
+        "label": "Executor Component",
         "type": "String",
-        "value": "com.mycompany.MailTaskImpl",
-        "editable": false,
+        "value": "${customMailTask}",
+        "editable": true,
         "binding": {
           "type": "property",
-          "name": "camunda:class"
+          "name": "camunda:delegateExpression"
         }
       },
       {
-        "label": "Sender",
+        "label": "From",
         "type": "String",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "sender"
+          "name": "custom_mail_from"
         },
         "constraints": {
           "notEmpty": true,
@@ -182,24 +184,35 @@
         }
       },
       {
-        "label": "Receivers",
+        "label": "To",
         "type": "String",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "receivers"
+          "name": "custom_mail_to"
         },
         "constraints": {
           "notEmpty": true
         }
       },
       {
-        "label": "Template",
+        "label": "Subject",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "custom_mail_subject"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Content",
         "description": "By the way, you can use <a href=\"https://freemarker.apache.org/\">freemarker templates</a> here",
-        "value": "Hello ${firstName}!",
+        "value": "Hello ${userName}!",
         "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "messageBody",
+          "name": "custom_mail_content",
           "scriptFormat": "freemarker"
         },
         "constraints": {
@@ -207,308 +220,32 @@
         }
       },
       {
-        "label": "Result Status",
-        "description": "The process variable to which to assign the send result to",
-        "type": "String",
-        "value": "mailSendResult",
-        "binding": {
-          "type": "camunda:outputParameter",
-          "source": "${ resultStatus }"
-        }
-      },
-      {
-        "label": "Send Async?",
+        "label": "Asynchronous Before",
         "type": "Boolean",
         "value": true,
         "binding": {
           "type": "property",
           "name": "camunda:asyncBefore"
         }
-      }
-    ]
-  },
-  {
-    "name": "ConnectorGetTask",
-    "id": "my.connector.http.get.Task",
-    "appliesTo": [
-      "bpmn:Task"
-    ],
-    "properties": [],
-    "scopes": {
-      "camunda:Connector": {
-        "properties": [
-          {
-            "label": "ConnectorId",
-            "type": "String",
-            "value": "My Connector HTTP - GET",
-            "binding": {
-              "type": "property",
-              "name": "connectorId"
-            }
-          },
-          {
-            "label": "Method",
-            "type": "String",
-            "value": "GET",
-            "binding": {
-              "type": "camunda:inputParameter",
-              "name": "method"
-            }
-          },
-          {
-            "label": "URL",
-            "type": "String",
-            "value": "https://bpmn.io",
-            "binding": {
-              "type": "camunda:inputParameter",
-              "name": "url"
-            }
-          },
-          {
-            "label": "Response",
-            "type": "String",
-            "value": "wsResponse",
-            "binding": {
-              "type": "camunda:outputParameter",
-              "source": "${S(response)}",
-              "scriptFormat": "freemarker"
-            }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "name": "WS Caller Task",
-    "id": "com.camunda.example.WsCaller",
-    "appliesTo": [
-      "bpmn:ServiceTask"
-    ],
-    "properties": [
-      {
-        "label": "Web Service URL",
-        "description": "Specify the url of the web service to talk to.",
-        "type": "String",
-        "binding": {
-          "type": "camunda:property",
-          "name": "webServiceUrl"
-        },
-        "constraints": {
-          "notEmpty": true,
-          "pattern": {
-            "value": "^https://.*",
-            "message": "Must be https URL."
-          }
-        }
       },
       {
-        "type": "Hidden",
-        "value": "com.camunda.example.WsCaller",
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
         "binding": {
           "type": "property",
-          "name": "camunda:class"
-        }
-      }
-    ]
-  },
-  {
-    "name": "Check Invoice Task",
-    "id": "com.camunda.example.CheckInvoiceTask",
-    "appliesTo": [
-      "bpmn:UserTask"
-    ],
-    "properties": [
-      {
-        "label": "Candidate Users",
-        "description": "Users able to carry out this task",
-        "type": "String",
-        "value": "Walt, Jeff, Lisa",
-        "binding": {
-          "type": "property",
-          "name": "camunda:candidateUsers"
-        },
-        "constraints": {
-          "notEmpty": true,
-          "pattern": {
-            "value": "\\s*(\\w+,\\s?)*\\w+\\s*",
-            "message": "Use comma separated list of user names"
-          }
-        }
-      },
-      {
-        "label": "Candidate Groups",
-        "description": "Groups able to carry out this task",
-        "type": "String",
-        "value": "Backoffice",
-        "binding": {
-          "type": "property",
-          "name": "camunda:candidateGroups"
-        },
-        "constraints": {
-          "notEmpty": true,
-          "pattern": {
-            "value": "\\s*(\\w+,\\s?)*\\w+\\s*",
-            "message": "Use comma separated list of group names"
-          }
-        }
-      },
-      {
-        "label": "Task Priority",
-        "type": "Dropdown",
-        "value": "50",
-        "choices": [
-          { "name": "low", "value": "20" },
-          { "name": "medium", "value": "50" },
-          { "name": "height", "value": "100" }
-        ],
-        "binding": {
-          "type": "property",
-          "name": "camunda:priority"
+          "name": "camunda:asyncAfter"
         }
       }
     ],
     "entriesVisible": {
       "_all": true,
-      "candidateUsers": false,
-      "candidateGroups": false
+      "delegate": false,
+      "implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false,
+      "documentation": false
     }
-  },
-  {
-    "name": "Caller",
-    "id": "com.camunda.example.Caller",
-    "appliesTo": [
-      "bpmn:CallActivity"
-    ],
-    "properties": [
-      {
-        "label": "Called Process",
-        "type": "String",
-        "editable": false,
-        "value": "calledProcess",
-        "binding": {
-          "type": "property",
-          "name": "calledElement"
-        }
-      },
-      {
-        "label": "Input source variable",
-        "type": "String",
-        "value": "var_local",
-        "binding": {
-          "type": "camunda:in",
-          "target": "var_called_source"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Output target (source variable)",
-        "type": "String",
-        "value": "var_called",
-        "binding": {
-          "type": "camunda:out",
-          "source": "var_local_source"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Input sourceExpression",
-        "type": "String",
-        "value": "${expr_local}",
-        "binding": {
-          "type": "camunda:in",
-          "target": "var_called_expr",
-          "expression": true
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Output target (sourceExpression)",
-        "type": "String",
-        "value": "var_local_expr",
-        "binding": {
-          "type": "camunda:out",
-          "sourceExpression": "${expr_called}"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Input all",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:in",
-          "variables": "all"
-        }
-      },
-      {
-        "label": "Output all",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:out",
-          "variables": "all"
-        }
-      },
-      {
-        "label": "Input all local",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:in",
-          "variables": "local"
-        }
-      },
-      {
-        "label": "Output all local",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:out",
-          "variables": "local"
-        }
-      },
-      {
-        "label": "Input business key",
-        "description": "Provide the expression retrieving the business key.",
-        "type": "String",
-        "value": "${execution.processBusinessKey}",
-        "binding": {
-          "type": "camunda:in:businessKey"
-        }
-      }
-    ]
-  },
-  {
-    "name": "Field Injections",
-    "id": "com.camunda.example.FieldInjections",
-    "appliesTo": [
-      "bpmn:ServiceTask"
-    ],
-    "properties": [
-      {
-        "label": "Field Injection String",
-        "type": "String",
-        "value": "My Field Injection Value",
-        "binding": {
-          "type": "camunda:field",
-          "name": "fieldInjectionString",
-          "expression": false
-        }
-      },
-      {
-        "label": "Field Injection Expression",
-        "type": "String",
-        "value": "${fieldInjectionExpression}",
-        "binding": {
-          "type": "camunda:field",
-          "name": "fieldInjectionExpression",
-          "expression": true
-        }
-      }
-    ]
   }
 ]
