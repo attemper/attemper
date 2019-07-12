@@ -110,7 +110,8 @@ export default {
     retry: '重试',
     terminate: '终止',
     pause: '暂停',
-    activate: '激活'
+    activate: '激活',
+    saveOrPublish: '保存或发布'
   },
   tip: {
     usernameError: '请输入正确的用户名',
@@ -120,6 +121,7 @@ export default {
     confirmMsg: '确定操作',
     selectData: '请选中要操作的数据',
     saveConfirm: '确定保存',
+    saveOrPublishConfirm: '确定保存或发布',
     manualWithNoVersion: '流程未被发布，不能手动发起',
     adminTenantCannotBeRemoved: '超管租户不能删除',
     preview: '预览',

@@ -6,10 +6,12 @@ import com.github.attemper.executor.task.internal.HttpTask;
 import com.github.attemper.java.sdk.common.executor.constant.ExecutorAPIPath;
 import com.github.attemper.java.sdk.common.result.execution.TaskResult;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.springframework.stereotype.Component;
 
 /**
  * Long Connection(Keep-Alive)
  */
+@Component
 public class SyncHttpTask extends HttpTask {
 
     @Override

@@ -9,7 +9,6 @@ import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.common.result.dispatch.project.ProjectInfo;
-import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.conf.LocalServerConfig;
 import com.github.attemper.core.service.instance.JobInstanceService;
 import com.github.attemper.core.service.job.JobService;
@@ -30,6 +29,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.model.bpmn.impl.instance.camunda.CamundaPropertiesImpl;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
@@ -52,10 +52,24 @@ public abstract class HttpTask implements JavaDelegate {
 
     protected String methodName;
 
+    @Autowired
+    protected JobService jobService;
+
+    @Autowired
+    protected ProjectService projectService;
+
+    @Autowired
+    protected DiscoveryClient discoveryClient;
+
+    @Autowired
+    protected LocalServerConfig localServerConfig;
+
+    @Autowired
+    protected ToolService toolService;
+
     @Override
     public void execute(DelegateExecution execution) {
         String jobName = CamundaUtil.extractKeyFromProcessDefinitionId(execution.getProcessDefinitionId());
-        JobService jobService = SpringContextAware.getBean(JobService.class);
         Job job = jobService.get(jobName, execution.getTenantId());
         resolveExtensionElement(execution);
         String url = resolveUrl(jobName, execution);
@@ -87,7 +101,7 @@ public abstract class HttpTask implements JavaDelegate {
                 .setProcInstId(execution.getProcessInstanceId())
                 .setActId(execution.getCurrentActivityId())
                 .setActName(execution.getCurrentActivityName())
-                .setRequestPath(SpringContextAware.getBean(LocalServerConfig.class).getRequestPath())
+                .setRequestPath(localServerConfig.getRequestPath())
                 .setActInstId(execution.getActivityInstanceId())
                 .setExecutionId(execution.getId());
         if (subUrl == null) { // router
@@ -120,8 +134,6 @@ public abstract class HttpTask implements JavaDelegate {
      * @return
      */
     private String resolveUrl(String jobName, DelegateExecution execution) {
-        JobService jobService = SpringContextAware.getBean(JobService.class);
-        ProjectService projectService = SpringContextAware.getBean(ProjectService.class);
         Project project = jobService.getProject(jobName, execution.getTenantId());
         if (project == null) {
             project = projectService.getRoot(execution.getTenantId());
@@ -137,7 +149,6 @@ public abstract class HttpTask implements JavaDelegate {
         Set<String> urls = new HashSet<>(4);  //may be one service has <=4 endpoint
         for (ProjectInfo item : allProjectInfo) {
             if (item.getType() == UriType.DiscoveryClient.getType()) {
-                DiscoveryClient discoveryClient = SpringContextAware.getBean(DiscoveryClient.class);
                 List<ServiceInstance> instances = discoveryClient.getInstances(item.getUri());
                 instances.forEach(instance -> {
                     pingThenAdd(urls, instance.getUri().toString());
@@ -166,7 +177,7 @@ public abstract class HttpTask implements JavaDelegate {
      * @param uri
      */
     private void pingThenAdd(Set<String> urls, String uri) {
-        if (SpringContextAware.getBean(ToolService.class).ping(uri, UriType.IpWithPort.getType())) {
+        if (toolService.ping(uri, UriType.IpWithPort.getType())) {
             urls.add(uri);
         }
     }
@@ -202,8 +213,10 @@ public abstract class HttpTask implements JavaDelegate {
         });
     }
 
+    @Autowired
+    protected JobInstanceService jobInstanceService;
+
     protected void saveInstanceAct(DelegateExecution execution, String url, String logKey, String logText, JobInstanceStatus jobInstanceStatus) {
-        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
         JobInstanceAct jobInstanceAct = jobInstanceService.getAct(execution.getActivityInstanceId());
         Date now = new Date();
         jobInstanceAct.setBizUri(url);
@@ -222,7 +235,6 @@ public abstract class HttpTask implements JavaDelegate {
     protected void saveInstance(DelegateExecution execution, String logKey, String logText, JobInstanceStatus jobInstanceStatus) {
         if (jobInstanceStatus != null && JobInstanceStatus.FAILURE.getStatus() == jobInstanceStatus.getStatus()) {
             Date now = new Date();
-            JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
             JobInstance jobInstance = jobInstanceService.get(execution.getBusinessKey());
             jobInstance.setEndTime(now);
             jobInstance.setDuration(now.getTime() - jobInstance.getStartTime().getTime());

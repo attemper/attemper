@@ -25,7 +25,7 @@
         </el-option>
       </el-select>
       <span style="margin-left: 40px;">
-        <el-tooltip :content="$t('actions.save')" effect="dark" placement="top-start">
+        <el-tooltip :content="$t('actions.saveOrPublish')" effect="dark" placement="top-start">
           <span>
             <el-button :disabled="job.maxReversion !== currentReversion" icon="el-icon-check" type="success" @click="save" />
           </span>
@@ -41,6 +41,13 @@
           <span style="margin-left: 10px;">
             <el-button type="primary" @click="openCopyDialog">
               <svg-icon icon-class="copy" />
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip :content="$t('actions.manual')" effect="dark" placement="top-start">
+          <span style="margin-left: 10px;">
+            <el-button type="danger" @click="manual">
+              <svg-icon icon-class="hand" />
             </el-button>
           </span>
         </el-tooltip>
@@ -62,7 +69,7 @@
 </template>
 
 <script>
-import { getReq, updateReq, versionsReq, copyReq, exchangeReq } from '@/api/dispatch/job'
+import { getReq, updateReq, versionsReq, copyReq, exchangeReq, publishReq, manualReq } from '@/api/dispatch/job'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import propertiesPanelModule from 'bpmn-js-properties-panel'
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
@@ -153,12 +160,29 @@ export default {
       })
     },
     save() {
-      this.$confirm(this.$t('tip.saveConfirm'), this.$t('tip.confirm'), { type: 'info' })
-        .then(() => {
+      this.$confirm(
+        this.$t('tip.saveOrPublishConfirm'),
+        this.$t('tip.confirm'),
+        {
+          type: 'info',
+          distinguishCancelAndClose: true,
+          confirmButtonText: this.$t('table.publish'),
+          cancelButtonText: this.$t('actions.save') })
+        .then((action) => {
           updateReq(this.job).then(res => {
-            this.$message.success(res.data.msg)
-            this.openNewJobPage(this.job.jobName)
+            publishReq({ jobNames: [this.job.jobName] }).then(res => {
+              this.$message.success(res.data.msg)
+              this.openNewJobPage(this.job.jobName)
+            })
           })
+        })
+        .catch((action) => {
+          if (action === 'cancel') {
+            updateReq(this.job).then(res => {
+              this.$message.success(res.data.msg)
+              this.openNewJobPage(this.job.jobName)
+            })
+          }
         })
     },
     changeJob() {
@@ -216,6 +240,17 @@ export default {
             this.$message.success(res.data.msg)
             this.openNewJobPage(this.job.jobName)
             this.currentReversion = res.data.result.maxReversion
+          })
+        })
+    },
+    manual() {
+      this.$confirm(this.$t('tip.confirm'), this.$t('tip.confirmMsg'), { type: 'warning' })
+        .then(() => {
+          manualReq({ jobNames: [this.job.jobName] }).then(res => {
+            this.$message.success(res.data.msg)
+            setTimeout(() => {
+              this.$router.push({ name: 'total', replace: true })
+            }, 600)
           })
         })
     },

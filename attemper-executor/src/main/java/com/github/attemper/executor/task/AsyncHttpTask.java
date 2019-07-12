@@ -13,10 +13,12 @@ import com.github.attemper.java.sdk.common.result.execution.TaskResult;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 /**
  * Short Connection with Async-Callback
  */
+@Component
 public class AsyncHttpTask extends HttpTask {
 
     @Override

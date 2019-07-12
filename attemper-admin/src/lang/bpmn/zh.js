@@ -174,9 +174,9 @@ export default {
   'Topic': '主题',
   'Connector Id': '连接器编号',
   'Case Ref': 'CMMN主键',
-  'Asynchronous Continuations': '异步执行延续性',
-  'Asynchronous Before': '异步执行之前',
-  'Asynchronous After': '异步执行之后',
+  'Asynchronous Continuations': '异步执行',
+  'Asynchronous Before': '执行前异步',
+  'Asynchronous After': '执行后异步',
   'Field Injections': '属性注入',
   'Field': '属性',
   'Connector': '连接器',
@@ -186,6 +186,7 @@ export default {
   /* 'Element must have an unique id.': '元素必须有唯一主键',
   'Specify more than one group as a comma separated list.': '指定多个组时以,隔开',
   'Specify more than one user as a comma separated list.': '指定多个用户时以,隔开'*/
+  'Executor Component': '执行器组件',
   'Sub URL': '自定义子路径',
   'Bean Name': 'Bean名称',
   'Method Name': '方法名称'

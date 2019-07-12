@@ -7,13 +7,13 @@
     ],
     "properties": [
       {
-        "label": "Implementation Type",
+        "label": "Executor Component",
         "type": "Text",
-        "editable": false,
-        "value": "com.github.attemper.executor.task.SyncHttpTask",
+        "editable": true,
+        "value": "${syncHttpTask}",
         "binding": {
           "type": "property",
-          "name": "camunda:class"
+          "name": "camunda:delegateExpression"
         },
         "constraints": {
           "notEmpty": true
@@ -45,12 +45,33 @@
           "type": "camunda:property",
           "name": "methodName"
         }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
       }
     ],
     "entriesVisible": {
       "_all": true,
       "delegate": false,
-      "implementation": false
+      "implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
     }
   },
   {
@@ -61,13 +82,13 @@
     ],
     "properties": [
       {
-        "label": "Implementation Type",
+        "label": "Executor Component",
         "type": "Text",
-        "editable": false,
-        "value": "com.github.attemper.executor.task.AsyncHttpTask",
+        "editable": true,
+        "value": "${asyncHttpTask}",
         "binding": {
           "type": "property",
-          "name": "camunda:class"
+          "name": "camunda:delegateExpression"
         },
         "constraints": {
           "notEmpty": true
@@ -99,12 +120,33 @@
           "type": "camunda:property",
           "name": "methodName"
         }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
       }
     ],
     "entriesVisible": {
       "_all": true,
       "delegate": false,
-      "implementation": false
+      "implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
     }
   },
   {
@@ -234,28 +276,6 @@
           }
         ]
       }
-    }
-  },
-  {
-    "name": "AsyncAwesomeTask",
-    "id": "com.camunda.example.AwesomeTask",
-    "appliesTo": [
-      "bpmn:Task"
-    ],
-    "properties": [
-      {
-        "label": "Are you awesome?",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "asyncBefore": false
     }
   },
   {
