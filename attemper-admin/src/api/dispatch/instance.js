@@ -3,7 +3,7 @@ import { APIPath } from '@/settings'
 
 export const listReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.INSTANCE + APIPath.LIST,
+    url: APIPath.DISPATCH + APIPath.INSTANCE,
     method: 'get',
     params: params
   })
@@ -11,7 +11,7 @@ export const listReq = (params) => {
 
 export const listActReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.INSTANCE + APIPath.LIST + '/act',
+    url: APIPath.DISPATCH + APIPath.INSTANCE + '/act',
     method: 'get',
     params: params
   })

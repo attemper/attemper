@@ -112,8 +112,15 @@ public class JobController {
 
 	@ApiOperation("Manual start jobs")
 	@ApiImplicitParam(value = "JobNamesParam", name = "param", dataType = "JobNamesParam", required = true)
+	@PostMapping(APIPath.JobPath.MANUAL_BATCH)
+	public CommonResult<Void> manualBatch(@RequestBody JobNamesParam param) {
+		return CommonResult.putResult(jobOperatedService.manualBatch(param));
+	}
+
+	@ApiOperation("Manual start job with param")
+	@ApiImplicitParam(value = "JobNameWithJsonArgParam", name = "param", dataType = "JobNameWithJsonArgParam", required = true)
 	@PostMapping(APIPath.JobPath.MANUAL)
-	public CommonResult<Void> manual(@RequestBody JobNamesParam param) {
+	public CommonResult<Void> manual(@RequestBody JobNameWithJsonArgParam param) {
 		return CommonResult.putResult(jobOperatedService.manual(param));
 	}
 
@@ -129,5 +136,12 @@ public class JobController {
 	@DeleteMapping(APIPath.JobPath.ARG)
 	public CommonResult<Void> removeArg(@RequestBody JobArgAllocatedParam param) {
 		return CommonResult.putResult(jobOperatedService.removeArg(param));
+	}
+
+	@ApiOperation("Get json arg")
+	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
+	@GetMapping(APIPath.JobPath.JSON_ARG)
+	public CommonResult<String> getJsonArg(JobGetParam param) {
+		return CommonResult.putResult(jobService.getJsonArg(param));
 	}
 }

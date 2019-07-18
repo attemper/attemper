@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,9 +18,9 @@ public class BeanUtil {
             return new HashMap<>();
         }
         try {
-            return injectObjectMapper().readValue(bean2JsonStr(obj), Map.class);
+            return injectObjectMapper().readValue(obj instanceof String ? (String) obj : bean2JsonStr(obj), Map.class);
         } catch (IOException e) {
-            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), String.valueOf(obj));
+            throw new RTException(1400, String.valueOf(obj));
         }
     }
 
@@ -29,7 +28,7 @@ public class BeanUtil {
         try {
             return injectObjectMapper().readValue(bean2JsonStr(map), t);
         } catch (IOException e) {
-            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), String.valueOf(map));
+            throw new RTException(1400, String.valueOf(map));
         }
     }
 
@@ -37,7 +36,7 @@ public class BeanUtil {
         try {
             return injectObjectMapper().writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), String.valueOf(obj));
+            throw new RTException(1400, String.valueOf(obj));
         }
     }
 

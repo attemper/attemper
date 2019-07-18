@@ -3,7 +3,7 @@ import { APIPath } from '@/settings'
 
 export const addReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.ARG + APIPath.ADD,
+    url: APIPath.DISPATCH + APIPath.ARG,
     method: 'post',
     data: data
   })
@@ -11,7 +11,7 @@ export const addReq = (data) => {
 
 export const updateReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.ARG + APIPath.UPDATE,
+    url: APIPath.DISPATCH + APIPath.ARG,
     method: 'put',
     data: data
   })
@@ -19,7 +19,7 @@ export const updateReq = (data) => {
 
 export const listReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.ARG + APIPath.LIST,
+    url: APIPath.DISPATCH + APIPath.ARG,
     method: 'get',
     params: params
   })
@@ -27,7 +27,7 @@ export const listReq = (params) => {
 
 export const removeReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.ARG + APIPath.REMOVE,
+    url: APIPath.DISPATCH + APIPath.ARG,
     method: 'delete',
     data: data
   })

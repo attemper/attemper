@@ -3,7 +3,7 @@ import { APIPath } from '@/settings'
 
 export const addReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.JOB + APIPath.ADD,
+    url: APIPath.DISPATCH + APIPath.JOB,
     method: 'post',
     data: data
   })
@@ -11,7 +11,7 @@ export const addReq = (data) => {
 
 export const updateReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.JOB + APIPath.UPDATE,
+    url: APIPath.DISPATCH + APIPath.JOB,
     method: 'put',
     data: data
   })
@@ -19,7 +19,7 @@ export const updateReq = (data) => {
 
 export const listReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.JOB + APIPath.LIST,
+    url: APIPath.DISPATCH + APIPath.JOB,
     method: 'get',
     params: params
   })
@@ -35,7 +35,7 @@ export const versionsReq = (params) => {
 
 export const removeReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.JOB + APIPath.REMOVE,
+    url: APIPath.DISPATCH + APIPath.JOB,
     method: 'delete',
     data: data
   })
@@ -72,9 +72,10 @@ export const exchangeReq = (data) => {
     data: data
   })
 }
+
 export const listArgReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.JOB + APIPath.ARG + APIPath.LIST,
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.ARG,
     method: 'get',
     params: params
   })
@@ -82,7 +83,7 @@ export const listArgReq = (params) => {
 
 export const addArgReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.JOB + APIPath.ARG + APIPath.ADD,
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.ARG,
     method: 'post',
     data: data
   })
@@ -90,7 +91,7 @@ export const addArgReq = (data) => {
 
 export const removeArgReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.JOB + APIPath.ARG + APIPath.REMOVE,
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.ARG,
     method: 'delete',
     data: data
   })
@@ -112,10 +113,26 @@ export const saveProjectReq = (data) => {
   })
 }
 
+export const manualBatchReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + '/manual/batch',
+    method: 'post',
+    data: data
+  })
+}
+
 export const manualReq = (data) => {
   return request({
     url: APIPath.DISPATCH + APIPath.JOB + '/manual',
     method: 'post',
     data: data
+  })
+}
+
+export const getJsonArgReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.ARG + '/json',
+    method: 'get',
+    params: params
   })
 }

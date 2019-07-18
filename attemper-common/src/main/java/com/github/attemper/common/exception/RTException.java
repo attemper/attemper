@@ -24,6 +24,7 @@ public class RTException extends RuntimeException {
 		super(StatusProperty.getValue(code));
 		this.code = code;
 		this.msg = StatusProperty.getValue(code);
+		log.error("{} \n {}", this.code, this.msg);
 	}
 
 	public RTException(String message) {
@@ -34,12 +35,14 @@ public class RTException extends RuntimeException {
         super(StatusProperty.getValue(code) + ":" + e.getMessage(), e);
         this.code = code;
         this.msg = StatusProperty.getValue(code) + ":" + e.getMessage();
+		log.error("{} \n {}", this.code, this.msg, e);
     }
 
     public RTException(int code, String msg) {
         super(StatusProperty.getValue(code) + ":" + msg);
         this.code = code;
         this.msg = StatusProperty.getValue(code) + ":" + msg;
+		log.error("{} \n {}", this.code, this.msg);
     }
 
 	public int getCode() {

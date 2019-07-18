@@ -16,7 +16,7 @@ public class JobInvokingParam implements CommonParam {
 
     protected String tenantId;
 
-    protected Map<String, Object> dataMap;
+    protected Map<String, Object> variableMap;
 
     @Override
     public String validate() {
@@ -59,12 +59,12 @@ public class JobInvokingParam implements CommonParam {
         return this;
     }
 
-    public Map<String, Object> getDataMap() {
-        return dataMap;
+    public Map<String, Object> getVariableMap() {
+        return variableMap;
     }
 
-    public JobInvokingParam setDataMap(Map<String, Object> dataMap) {
-        this.dataMap = dataMap;
+    public JobInvokingParam setVariableMap(Map<String, Object> variableMap) {
+        this.variableMap = variableMap;
         return this;
     }
 }

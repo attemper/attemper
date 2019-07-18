@@ -16,16 +16,13 @@
         <svg-icon icon-class="publish" /> {{ $t('table.publish') }}
       </el-button>
       <div style="float: right">
-        <el-popover
-          placement="bottom"
-          trigger="hover"
-        >
+        <el-popover placement="bottom" trigger="hover">
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-download" @click="exportMeta">{{ $t('actions.exportJob') }}</el-button><br><br>
           <el-button v-waves class="filter-item" type="success" icon="el-icon-upload2" @click="importMeta">{{ $t('actions.importJob') }}</el-button><br><br>
           <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button>
           <el-button slot="reference" class="filter-item table-external-button" type="warning">{{ $t('actions.highOperation') }}</el-button>
         </el-popover>
-        <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manual">
+        <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manualBatch">
           <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
         </el-button>
       </div>
@@ -251,7 +248,7 @@
 </template>
 
 <script>
-import { listReq, /* getReq,*/ removeReq, addReq, updateReq, publishReq, manualReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
+import { listReq, /* getReq,*/ removeReq, addReq, updateReq, publishReq, manualBatchReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/dispatch/tool'
@@ -660,7 +657,7 @@ export default {
         this.timeZones = res.data.result
       })
     },
-    manual() {
+    manualBatch() {
       const jobNames = []
       if (this.selections.length) {
         for (let i = 0; i < this.selections.length; i++) {
@@ -668,8 +665,7 @@ export default {
           if (!sel.maxVersion) {
             this.$message.warning(this.$t('tip.manualWithNoVersion') + ':' + sel.jobName)
             return
-          }
-          if (sel.status !== 0) {
+          } else if (sel.status === 1) {
             this.$message.warning(this.$t('tip.disabledJobError') + ':' + sel.jobName)
             return
           }
@@ -677,7 +673,7 @@ export default {
         }
         this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
           .then(() => {
-            manualReq({ jobNames: jobNames }).then(res => {
+            manualBatchReq({ jobNames: jobNames }).then(res => {
               this.$message.success(res.data.msg)
               setTimeout(() => {
                 this.$router.push({ name: 'total', replace: true })

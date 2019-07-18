@@ -76,7 +76,7 @@ public class JobCallingService {
                 .setJobName(jobName)
                 .setTriggerName(triggerName)
                 .setTenantId(tenantId)
-                .setDataMap(dataMap);
+                .setVariableMap(dataMap);
         Job job = jobService.get(jobName, tenantId);
         int code = -1;
         if (job == null) {

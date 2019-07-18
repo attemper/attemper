@@ -7,7 +7,7 @@ import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
 import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
-import com.github.attemper.config.base.bean.SpringContextAware;
+import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.core.service.job.TriggerService;
@@ -54,6 +54,9 @@ public class JobOperatedService extends BaseServiceAdapter {
 
     @Autowired
     private IdGenerator idGenerator;
+
+    @Autowired
+    private JobCallingService jobCallingService;
 
     public Map<String, Object> list(JobListParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
@@ -268,7 +271,7 @@ public class JobOperatedService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public Void manual(JobNamesParam param) {
+    public Void manualBatch(JobNamesParam param) {
         List<String> jobNames = param.getJobNames();
         ExecutorService executorService = Executors.newFixedThreadPool(jobNames.size());
         String tenantId = injectTenantId();
@@ -276,13 +279,26 @@ public class JobOperatedService extends BaseServiceAdapter {
             executorService.submit(() -> {
                 String id = idGenerator.getNextId();
                 try {
-                    SpringContextAware.getBean(JobCallingService.class).manual(id, jobName, tenantId, null);
+                    jobCallingService.manual(id, jobName, tenantId, null);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
             });
         }
         executorService.shutdown();
+        return null;
+    }
+
+    /**
+     * manual run job with param
+     *
+     * @param param
+     * @return
+     */
+    public Void manual(JobNameWithJsonArgParam param) {
+        String id = idGenerator.getNextId();
+        String tenantId = injectTenantId();
+        jobCallingService.manual(id, param.getJobName(), tenantId, BeanUtil.bean2Map(param.getJsonData()));
         return null;
     }
 

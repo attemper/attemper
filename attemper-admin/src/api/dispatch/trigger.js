@@ -3,7 +3,7 @@ import { APIPath } from '@/settings'
 
 export const updateReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.TRIGGER + APIPath.UPDATE,
+    url: APIPath.DISPATCH + APIPath.TRIGGER,
     method: 'put',
     data: data
   })

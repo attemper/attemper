@@ -54,11 +54,6 @@ module.exports = {
     INSTANCE: '/instance',
     COUNT: '/count',
     TOOL: '/tool',
-    LIST: '',
-    SAVE: '',
-    ADD: '',
-    UPDATE: '',
-    REMOVE: '',
     GET: '/get'
   },
   /**

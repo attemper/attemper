@@ -66,6 +66,8 @@ public class APIPath {
 
         public static final String EXCHANGE = $ + "/exchange";
 
+        public static final String MANUAL_BATCH = $ + "/manual/batch";
+
         public static final String MANUAL = $ + "/manual";
 
         public static final String GET_PROJECT = $ + "/project";
@@ -73,6 +75,8 @@ public class APIPath {
         public static final String SAVE_PROJECT = $ + "/project";
 
         public static final String ARG = $ + ArgPath.SUB_PATH;
+
+        public static final String JSON_ARG = $ + ArgPath.SUB_PATH + "/json";
     }
 
     public static final class TriggerPath {

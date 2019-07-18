@@ -46,7 +46,7 @@
         </el-tooltip>
         <el-tooltip :content="$t('actions.manual')" effect="dark" placement="top-start">
           <span style="margin-left: 10px;">
-            <el-button type="danger" @click="manual">
+            <el-button type="danger" @click="openParam">
               <svg-icon icon-class="hand" />
             </el-button>
           </span>
@@ -57,19 +57,30 @@
     <!-- dialog -->
     <el-dialog
       :title="editDialog.title"
-      :visible.sync="editDialog.visible"
+      :visible.sync="editDialog.copy.visible || editDialog.param.visible "
       :center="true"
       :modal="true"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      :before-close="close"
     >
-      <job-info-form :job="targetJobParam" @save="copy" @cancel="editDialog.visible = false" />
+      <div v-show="editDialog.copy.visible">
+        <job-info-form :job="targetJobParam" @save="copy" @cancel="editDialog.copy.visible = false" />
+      </div>
+      <div v-show="editDialog.param.visible">
+        <json-editor ref="jsonEditor" v-model="jsonData" />
+        <div style="text-align: center; margin-top: 10px">
+          <el-button type="danger" @click="manual">
+            <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
+          </el-button>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getReq, updateReq, versionsReq, copyReq, exchangeReq, publishReq, manualReq } from '@/api/dispatch/job'
+import { getReq, updateReq, versionsReq, copyReq, exchangeReq, publishReq, manualReq, getJsonArgReq } from '@/api/dispatch/job'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import propertiesPanelModule from 'bpmn-js-properties-panel'
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
@@ -80,21 +91,29 @@ import JobInfoForm from './components/job/jobInfoForm'
 import { getTimeStr } from '@/utils/tools'
 import customElementTemplate from './components/job/element-templates/custom'
 import customControlsModule from './components/job/custom'
+import JsonEditor from '@/components/JsonEditor'
 
 export default {
   name: 'flow',
   components: {
-    JobInfoForm
+    JobInfoForm,
+    JsonEditor
   },
   data() {
     return {
       job: {},
+      jsonData: null,
       currentReversion: 1,
       bpmnModeler: null,
       jobWithVersions: [],
       editDialog: {
         title: undefined,
-        visible: false
+        copy: {
+          visible: false
+        },
+        param: {
+          visible: false
+        }
       },
       targetJobParam: {}
     }
@@ -211,7 +230,7 @@ export default {
     },
     openCopyDialog() {
       this.editDialog.title = this.$t('dispatch.flow.tip.copy')
-      this.editDialog.visible = true
+      this.editDialog.copy.visible = true
       this.targetJobParam = Object.assign({}, this.job)
     },
     // copy job with current reversion to another job(if the target was existent, will add its reversion)
@@ -229,7 +248,7 @@ export default {
           }
           copyReq(data).then(res => {
             this.$message.success(res.data.msg)
-            this.editDialog.visible = false
+            this.editDialog.copy.visible = false
             this.openNewJobPage(this.targetJobParam.jobName)
           })
         })
@@ -245,10 +264,33 @@ export default {
           })
         })
     },
+    openParam() {
+      if (!this.job.maxVersion) {
+        this.$message.warning(this.$t('tip.manualWithNoVersion'))
+        return
+      } else if (this.job.status === 1) {
+        this.$message.warning(this.$t('tip.disabledJobError'))
+        return
+      }
+      this.jsonData = null
+      getJsonArgReq({ jobName: this.job.jobName }).then(res => {
+        if (!res.data.result) {
+          this.manual()
+        } else {
+          this.editDialog.title = this.$t('dispatch.job.actions.param')
+          this.editDialog.param.visible = true
+          this.jsonData = JSON.parse(res.data.result)
+        }
+      })
+    },
     manual() {
       this.$confirm(this.$t('tip.confirm'), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
-          manualReq({ jobNames: [this.job.jobName] }).then(res => {
+          manualReq({
+            jobName: this.job.jobName,
+            jsonData: (!this.jsonData ? null : (typeof this.jsonData === 'string' ? JSON.parse(this.jsonData) : this.jsonData))
+          }).then(res => {
+            this.editDialog.param.visible = false
             this.$message.success(res.data.msg)
             setTimeout(() => {
               this.$router.push({ name: 'total', replace: true })
@@ -347,6 +389,10 @@ export default {
       setTimeout(() => {
         loading.close()
       }, 200)
+    },
+    close() {
+      this.editDialog.copy.visible =
+        this.editDialog.param.visible = false
     }
   }
 }

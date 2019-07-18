@@ -11,7 +11,7 @@ export const treeListReq = (params) => {
 
 export const saveReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.PROJECT + APIPath.SAVE,
+    url: APIPath.DISPATCH + APIPath.PROJECT,
     method: 'post',
     data: data
   })
@@ -19,7 +19,7 @@ export const saveReq = (data) => {
 
 export const removeReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.PROJECT + APIPath.REMOVE,
+    url: APIPath.DISPATCH + APIPath.PROJECT,
     method: 'delete',
     data: data
   })
@@ -29,7 +29,7 @@ const INFO = '/info'
 
 export const listInfoReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.PROJECT + INFO + APIPath.LIST,
+    url: APIPath.DISPATCH + APIPath.PROJECT + INFO,
     method: 'get',
     params: params
   })
@@ -37,7 +37,7 @@ export const listInfoReq = (params) => {
 
 export const saveInfoReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.PROJECT + INFO + APIPath.SAVE,
+    url: APIPath.DISPATCH + APIPath.PROJECT + INFO,
     method: 'post',
     data: data
   })
@@ -45,7 +45,7 @@ export const saveInfoReq = (data) => {
 
 export const removeInfoReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.PROJECT + INFO + APIPath.REMOVE,
+    url: APIPath.DISPATCH + APIPath.PROJECT + INFO,
     method: 'delete',
     data: data
   })
@@ -55,7 +55,7 @@ const EXECUTOR = '/executor'
 
 export const listExecutorReq = (params) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.PROJECT + EXECUTOR + APIPath.LIST,
+    url: APIPath.DISPATCH + APIPath.PROJECT + EXECUTOR,
     method: 'get',
     params: params
   })
@@ -63,7 +63,7 @@ export const listExecutorReq = (params) => {
 
 export const saveExecutorReq = (data) => {
   return request({
-    url: APIPath.DISPATCH + APIPath.PROJECT + EXECUTOR + APIPath.SAVE,
+    url: APIPath.DISPATCH + APIPath.PROJECT + EXECUTOR,
     method: 'post',
     data: data
   })
