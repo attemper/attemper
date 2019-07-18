@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-
 @Slf4j
 @Service
 @Transactional
@@ -66,9 +64,6 @@ public class JobInstanceOperatedService {
             throw new RTException(6202, String.valueOf(jobInstance.getStatus()));
         }
         executorHandler.terminate(jobInstance.getExecutorUri(), jobInstance);
-        Date now = new Date();
-        jobInstance.setEndTime(now);
-        jobInstance.setDuration(now.getTime() - jobInstance.getStartTime().getTime());
         int code = 901;
         jobInstance.setCode(code);
         jobInstance.setMsg(StatusProperty.getValue(code));

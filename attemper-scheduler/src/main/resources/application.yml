@@ -1,11 +1,5 @@
-# Tomcat
 server:
-    tomcat:
-        uri-encoding: UTF-8
-        max-threads: 1000
-        min-spare-threads: 30
     port: 5211
-    connection-timeout: 5s
 
 spring:
     application: 

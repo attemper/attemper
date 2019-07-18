@@ -1,9 +1,7 @@
 package com.github.attemper.executor.task.http.internal;
 
-import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.common.result.dispatch.project.ProjectInfo;
@@ -73,6 +71,7 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
     }
 
     protected <V extends LogResult> V invoke(DelegateExecution execution, Job job, String url, Class<V> v) {
+        saveUrl(execution, url);
         WebClient webClient = buildWebClient(job);
         return webClient
                 .method(HttpMethod.POST)
@@ -84,7 +83,7 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
                 .bodyToMono(v)
                 .doOnError(WebClientResponseException.class, err -> {
                     int code = 3051;
-                    saveInstanceAct(execution, url, String.valueOf(code), StatusProperty.getValue(code) + ":" + err.getStatusCode().getReasonPhrase(), JobInstanceStatus.FAILURE);
+                    saveLogKey(execution, String.valueOf(code));
                     throw new RTException(code, err);
                 })
                 .block();
@@ -138,7 +137,7 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
         List<ProjectInfo> allProjectInfo = projectService.listInfo(projectName, execution.getTenantId());
         if (allProjectInfo.isEmpty()) {
             int code = 6550;
-            saveInstanceAct(execution, null, String.valueOf(code), StatusProperty.getValue(code), JobInstanceStatus.FAILURE);
+            saveLogKey(execution, String.valueOf(code));
             throw new RTException(code);
         }
 
@@ -160,7 +159,7 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
         }
         if (urls.isEmpty()) {
             int code = 3050;
-            saveInstanceAct(execution, null, String.valueOf(code), StatusProperty.getValue(code), JobInstanceStatus.FAILURE);
+            saveLogKey(execution, String.valueOf(code));
             throw new RTException(code);
         }
         int randomIndex = (int) (Math.random() * urls.size());

@@ -16,22 +16,22 @@ public class HistoricActivityInstanceEventing extends EventingAdapter<HistoricAc
 
     @Override
     public void start() {
+        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
         JobInstanceAct jobInstanceAct = toJobInstanceAct(historyEvent);
         jobInstanceAct.setStatus(JobInstanceStatus.RUNNING.getStatus());
         jobInstanceAct.setStartTime(historyEvent.getStartTime());
-        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
         jobInstanceService.addAct(jobInstanceAct);
     }
 
     @Override
     public void end() {
-        JobInstanceAct jobInstanceAct = toJobInstanceAct(historyEvent);
+        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
+        JobInstanceAct jobInstanceAct = new JobInstanceAct().setActInstId(historyEvent.getActivityInstanceId());
         jobInstanceAct.setStatus(JobInstanceStatus.SUCCESS.getStatus());
         jobInstanceAct.setEndTime(historyEvent.getEndTime());
         if (historyEvent.getEndTime() != null && historyEvent.getStartTime() != null) {
             jobInstanceAct.setDuration(historyEvent.getEndTime().getTime() - historyEvent.getStartTime().getTime());
         }
-        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
         jobInstanceService.updateAct(jobInstanceAct);
     }
 

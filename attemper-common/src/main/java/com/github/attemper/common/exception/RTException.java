@@ -24,21 +24,22 @@ public class RTException extends RuntimeException {
 		super(StatusProperty.getValue(code));
 		this.code = code;
 		this.msg = StatusProperty.getValue(code);
-		log.error(String.valueOf(code), this.msg);
+	}
+
+	public RTException(String message) {
+		super(message);
 	}
 
     public RTException(int code, Throwable e) {
         super(StatusProperty.getValue(code) + ":" + e.getMessage(), e);
         this.code = code;
         this.msg = StatusProperty.getValue(code) + ":" + e.getMessage();
-		log.error(String.valueOf(code), e);
     }
 
     public RTException(int code, String msg) {
         super(StatusProperty.getValue(code) + ":" + msg);
         this.code = code;
         this.msg = StatusProperty.getValue(code) + ":" + msg;
-		log.error(String.valueOf(code), this.msg);
     }
 
 	public int getCode() {

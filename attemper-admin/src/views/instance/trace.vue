@@ -8,13 +8,15 @@
             <el-timeline-item
               v-for="item in actNodes"
               :key="item.id"
-              :timestamp="item.actName + '——' + item.startTime + '  -  ' + (item.endTime || '...')"
+              :timestamp="(item.actName || item.actId)"
               :type="item.status | renderJobInstanceStatus"
               placement="top"
             >
               <el-card>
-                <p v-if="item.code && item.code.length > 0">item.code</p>
-                <p>{{ item.logText }}</p>
+                <h4>{{ item.startTime + '  -  ' + (item.endTime || '...') }}</h4>
+                <h5 v-show="item.duration && item.duration > 0">{{ item.duration | parseDuration }}</h5>
+                <p v-show="item.logKey && item.logKey.length > 0">{{ item.logKey }}</p>
+                <p v-show="item.logText && item.logText.length>0">{{ item.logText }}</p>
               </el-card>
             </el-timeline-item>
           </el-timeline>
@@ -340,7 +342,7 @@ export default {
       this.actNodes = []
       if (allActNodes) {
         allActNodes.forEach(item => {
-          if (!item.actType.endsWith('Event')) {
+          if (!item.actType.endsWith('Event') && !item.actType.endsWith('Gateway')) {
             this.actNodes.push(item)
           }
         })

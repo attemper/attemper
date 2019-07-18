@@ -1,6 +1,6 @@
 package com.github.attemper.common.result.dispatch.instance;
 
-import lombok.*;
+import lombok.ToString;
 
 import java.util.Date;
 

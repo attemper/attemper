@@ -43,7 +43,6 @@ public class RequestConsumer implements WorkHandler<JobEvent> {
                     .list();
             if (processDefinitions.size() == 1) {
                 ProcessDefinition processDefinition = processDefinitions.get(0);
-
                 runtimeService.startProcessInstanceById(processDefinition.getId(), param.getId(), buildVariableMap(param));
             } else if (processDefinitions.isEmpty()) {
                 log.error("process not exists:{}|{}|{}", param.getId(), param.getJobName(), param.getTenantId());

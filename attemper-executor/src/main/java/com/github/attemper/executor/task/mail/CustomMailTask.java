@@ -1,6 +1,6 @@
 package com.github.attemper.executor.task.mail;
 
-import com.github.attemper.common.enums.JobInstanceStatus;
+import com.github.attemper.common.exception.RTException;
 import com.github.attemper.core.ext.notice.MessageBean;
 import com.github.attemper.core.ext.notice.channel.mail.EmailSender;
 import com.github.attemper.executor.constant.PropertyConstants;
@@ -11,7 +11,6 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.model.bpmn.impl.instance.camunda.CamundaPropertiesImpl;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -29,7 +28,7 @@ public class CustomMailTask extends ParentTask implements JavaDelegate {
             emailSender.send(messageBean);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            super.saveInstanceAct(execution, null, Integer.toString(HttpStatus.INTERNAL_SERVER_ERROR.value()), e.getMessage(), JobInstanceStatus.FAILURE);
+            throw new RTException(e.getMessage());
         }
     }
 

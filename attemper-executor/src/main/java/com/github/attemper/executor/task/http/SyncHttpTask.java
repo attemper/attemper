@@ -1,6 +1,6 @@
 package com.github.attemper.executor.task.http;
 
-import com.github.attemper.common.enums.JobInstanceStatus;
+import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.executor.task.http.internal.HttpTask;
 import com.github.attemper.java.sdk.common.executor.constant.ExecutorAPIPath;
@@ -17,12 +17,10 @@ public class SyncHttpTask extends HttpTask {
     @Override
     protected void executeIntern(DelegateExecution execution, Job job, String url) {
         TaskResult taskResult = super.invoke(execution, job, url, TaskResult.class);
-        if (taskResult != null) {
-            saveInstanceAct(execution, url, taskResult.getLogKey(), taskResult.getLogText(),
-                    taskResult.getSuccess() ? JobInstanceStatus.SUCCESS : JobInstanceStatus.FAILURE);
+        if (taskResult != null && !taskResult.getSuccess()) {
+            saveLogKey(execution, taskResult.getLogKey());
             saveVariables(execution, taskResult);
-        } else {
-            saveInstanceAct(execution, url, null, null, JobInstanceStatus.SUCCESS);
+            throw new RTException(taskResult.getLogText());
         }
     }
 

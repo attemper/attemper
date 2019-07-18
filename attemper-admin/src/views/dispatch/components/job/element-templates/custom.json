@@ -1,6 +1,6 @@
 [
   {
-    "name": "Sync Http Task",
+    "name": "Http(Sync)",
     "id": "SyncHttpTask",
     "appliesTo": [
       "bpmn:ServiceTask"
@@ -71,12 +71,11 @@
       "implementation": false,
       "asyncBefore": false,
       "asyncAfter": false,
-      "exclusive": false,
-      "documentation": false
+      "exclusive": false
     }
   },
   {
-    "name": "Async Http Task",
+    "name": "Http(Async)",
     "id": "AsyncHttpTask",
     "appliesTo": [
       "bpmn:ServiceTask"
@@ -147,12 +146,11 @@
       "implementation": false,
       "asyncBefore": false,
       "asyncAfter": false,
-      "exclusive": false,
-      "documentation": false
+      "exclusive": false
     }
   },
   {
-    "name": "Custom Mail Task",
+    "name": "Custom Mail",
     "id": "CustomMailTask",
     "appliesTo": [
       "bpmn:ServiceTask"
@@ -244,8 +242,798 @@
       "implementation": false,
       "asyncBefore": false,
       "asyncAfter": false,
-      "exclusive": false,
-      "documentation": false
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Python(Text)",
+    "id": "Python Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "python",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Python(File Path)",
+    "id": "Python File Path Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "python",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "File Path",
+        "type": "String",
+        "binding": {
+          "type": "property",
+          "name": "camunda:resource"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Perl(Text)",
+    "id": "Perl Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "perl",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Perl(File Path)",
+    "id": "Perl File Path Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "perl",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "File Path",
+        "type": "String",
+        "binding": {
+          "type": "property",
+          "name": "camunda:resource"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Ruby(Text)",
+    "id": "Ruby Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "ruby",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Ruby(File Path)",
+    "id": "Ruby File Path Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "ruby",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "File Path",
+        "type": "String",
+        "binding": {
+          "type": "property",
+          "name": "camunda:resource"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Groovy(Text)",
+    "id": "Groovy Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "groovy",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Groovy(File Path)",
+    "id": "Groovy File Path Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "groovy",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "File Path",
+        "type": "String",
+        "binding": {
+          "type": "property",
+          "name": "camunda:resource"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Shell(Text)",
+    "id": "Shell Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "shell",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Shell(File Path)",
+    "id": "Shell File Path Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "shell",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "File Path",
+        "type": "String",
+        "binding": {
+          "type": "property",
+          "name": "camunda:resource"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Java Script(Text)",
+    "id": "Java Script Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "js",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Java Script(File Path)",
+    "id": "Java Script File Path Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "js",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "File Path",
+        "type": "String",
+        "binding": {
+          "type": "property",
+          "name": "camunda:resource"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "PHP(Text)",
+    "id": "PHP Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "php",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "PHP(File Path)",
+    "id": "PHP File Path Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "php",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "File Path",
+        "type": "String",
+        "binding": {
+          "type": "property",
+          "name": "camunda:resource"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
     }
   }
 ]

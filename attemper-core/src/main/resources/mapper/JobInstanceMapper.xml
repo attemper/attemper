@@ -152,8 +152,7 @@
             END_TIME,
             DURATION,
             STATUS,
-            LOG_KEY,
-            LOG_TEXT
+            LOG_KEY
         )
         VALUES
         (
@@ -170,8 +169,7 @@
             #{endTime, jdbcType=TIMESTAMP},
             #{duration, jdbcType=INTEGER},
             #{status, jdbcType=INTEGER},
-            #{logKey, jdbcType=VARCHAR},
-            #{logText, jdbcType=VARCHAR}
+            #{logKey, jdbcType=VARCHAR}
         )
     </sql>
 
@@ -205,12 +203,20 @@
         </set>
         <where>
             <include refid="condActInstId"/>
+            <include refid="condExecutionId"/>
         </where>
     </sql>
 
     <select id="listInstance" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren">
-        SELECT * FROM ${tablePrefix}job_instance j
+        SELECT * FROM (
+        SELECT ji.ID, ji.PROC_INST_ID, ji.ROOT_PROC_INST_ID, ji.JOB_NAME, ji.DISPLAY_NAME, ji.TRIGGER_NAME,
+        ji.PROC_DEF_ID, ji.STATUS, ji.CODE, ji.MSG, ji.PARENT_ID, ji.RETRIED, ji.SCHEDULER_URI, ji.EXECUTOR_URI,
+        ji.TENANT_ID, IFNULL(hp.START_TIME_, ji.START_TIME) as START_TIME,
+        IFNULL(hp.END_TIME_, ji.END_TIME) as END_TIME,
+        IFNULL(hp.DURATION_, ji.DURATION) as DURATION
+        FROM ${tablePrefix}job_instance ji
+        LEFT JOIN act_hi_procinst hp on ji.ROOT_PROC_INST_ID = hp.ROOT_PROC_INST_ID_) j
         <where>
             <if test="jobName != null">
                 and lower(JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
@@ -251,14 +257,20 @@
 
     <select id="listAct" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
-        SELECT act.*
-        FROM ${tablePrefix}job_instance_act act
-        JOIN ${tablePrefix}job_instance j
-        ON act.ROOT_PROC_INST_ID = j.ROOT_PROC_INST_ID
+        SELECT j.* FROM (
+        SELECT jia.ID, jia.ACT_INST_ID, jia.PARENT_ACT_INST_ID_, jia.EXECUTION_ID, jia.PROC_INST_ID,
+        jia.ROOT_PROC_INST_ID, jia.ACT_ID, jia.ACT_NAME, jia.ACT_TYPE, jia.STATUS, jia.LOG_KEY, jia.BIZ_URI,
+        IFNULL(ha.START_TIME_, ji.START_TIME) as START_TIME, IFNULL(ha.END_TIME_, ji.END_TIME) as END_TIME,
+        IFNULL(ha.DURATION_, ji.DURATION) as DURATION, ri.INCIDENT_MSG_ AS LOG_TEXT
+        FROM ${tablePrefix}job_instance_act jia
+        JOIN ${tablePrefix}job_instance ji
+        USING (ROOT_PROC_INST_ID)
+        LEFT JOIN act_ru_incident ri ON jia.EXECUTION_ID = ri.EXECUTION_ID_
+        LEFT JOIN act_hi_actinst ha ON jia.EXECUTION_ID = ha.EXECUTION_ID_ AND jia.ACT_ID = ha.ACT_ID_) j
         <where>
             <include refid="condRootProcInstId"/>
             <if test="actId != null">
-                and act.ACT_ID = #{actId, jdbcType=VARCHAR}
+                and j.ACT_ID = #{actId, jdbcType=VARCHAR}
             </if>
         </where>
     </select>
@@ -284,6 +296,12 @@
     <sql id="condActInstId">
         <if test="actInstId != null">
             and j.ACT_INST_ID = #{actInstId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condExecutionId">
+        <if test="executionId != null">
+            and j.EXECUTION_ID = #{executionId, jdbcType=VARCHAR}
         </if>
     </sql>
 

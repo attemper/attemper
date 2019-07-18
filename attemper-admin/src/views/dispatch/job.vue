@@ -47,6 +47,9 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
+            <el-form-item :label="$t('columns.status')">
+              <el-tag :type="props.row.status | renderJobStatus">{{ formatStatus(props.row.status) }}</el-tag>
+            </el-form-item>
             <el-form-item :label="$t('dispatch.job.columns.concurrent')">
               <el-tag :type="props.row.concurrent ? 'success' : 'info'">{{ props.row.concurrent ? $t('tip.yes') : $t('tip.no') }}</el-tag>
             </el-form-item>
@@ -69,30 +72,19 @@
         type="selection"
         width="40"
       />
-      <el-table-column :label="$t('dispatch.job.columns.version')" align="center" width="80px">
-        <template slot-scope="scope">
-          <el-button :type="scope.row.maxVersion ? 'success' : 'info'" @click="openDesignDialog(scope.row)">{{ scope.row.maxVersion || '-' }}</el-button>
-        </template>
-      </el-table-column>
       <el-table-column
         :label="$t('dispatch.job.columns.jobName')"
         prop="jobName"
         sortable="custom"
-        align="center"
         min-width="100px"
       >
         <template slot-scope="scope">
-          <el-link type="primary" @click="update(scope.row)">{{ scope.row.jobName || '-' }}</el-link>
+          <el-link :type="scope.row.status | renderJobStatus" @click="openDesignDialog(scope.row)">{{ scope.row.jobName || '---' }}</el-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
         <template slot-scope="scope">
-          <span>{{ scope.row.displayName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('columns.status')" align="center" class-name="status-col" width="100">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | renderJobStatus">{{ formatStatus(scope.row.status) }}</el-tag>
+          <el-link icon="el-icon-edit" @click="update(scope.row)">{{ scope.row.displayName || '---' }}</el-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.job.columns.nextFireTime')" width="160px">
@@ -305,7 +297,7 @@ export default {
         total: 0,
         jobName: undefined,
         displayName: undefined,
-        status: [0],
+        status: [],
         sort: 'JOB_NAME'
       },
       argList: null,
@@ -367,12 +359,12 @@ export default {
   },
   created() {
     this.loadConst()
-    this.search()
     this.initTimeZones()
   },
   methods: {
     search() {
       this.listLoading = true
+      this.initPageStatus()
       listReq(this.page).then(response => {
         this.list = response.data.result.list
         Object.assign(this.page, response.data.result.page)
@@ -635,6 +627,7 @@ export default {
         this.overDayTimeUnits = array.overDayTimeUnits
         this.daysOfWeek = array.daysOfWeek
         this.calendarTypes = array.calendarTypes
+        this.search()
       })
       import(`@/constant/common.js`).then((array) => {
         this.argTypes = array.argTypes
@@ -704,6 +697,11 @@ export default {
           })
         })
       })
+    },
+    initPageStatus() {
+      if (this.page.status.length === 0) {
+        this.page.status = this.jobStatuses.map(item => item.value)
+      }
     }
   }
 }

@@ -63,3 +63,27 @@
   bottom: 30px;
   right: 400px;
 }
+
+div[data-entry="versionTag"] {
+  display: none;
+}
+
+div[data-entry="process-is-executable"] {
+  display: none;
+}
+
+div[data-group="candidateStarterConfiguration"] {
+  display: none;
+}
+
+div[data-group="tasklist"] {
+  display: none;
+}
+
+div[data-group="documentation"] {
+  display: none;
+}
+
+a[href="http://bpmn.io"] {
+  display: none;
+}
