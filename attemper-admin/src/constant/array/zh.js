@@ -146,16 +146,8 @@ export const terminatedJobInstanceStatus = [
   }
 ]
 
-export const pausedJobInstanceStatus = [
-  {
-    label: '暂停',
-    value: 4
-  }
-]
-
 export const doingJobInstanceStatuses = [
-  ...runningJobInstanceStatus,
-  ...pausedJobInstanceStatus
+  ...runningJobInstanceStatus
 ]
 
 export const doneJobInstanceStatuses = [
@@ -168,8 +160,7 @@ export const jobInstanceStatuses = [
   ...runningJobInstanceStatus,
   ...successJobInstanceStatus,
   ...failureJobInstanceStatus,
-  ...terminatedJobInstanceStatus,
-  ...pausedJobInstanceStatus
+  ...terminatedJobInstanceStatus
 ]
 
 export const requestMethods = [

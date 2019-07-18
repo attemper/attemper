@@ -10,9 +10,6 @@
       <span v-if="selections.length === 1">
         <el-button v-if="retryVisible" v-waves class="filter-item" type="warning" icon="el-icon-s-operation" @click="retry">{{ $t('actions.retry') }}</el-button>
         <el-button v-if="terminateVisible" v-waves class="filter-item" type="danger" icon="el-icon-stopwatch" @click="terminate">{{ $t('actions.terminate') }}</el-button>
-        <el-button v-if="pauseOrActivateVisible" v-waves :icon="canPause ? 'el-icon-video-pause' : 'el-icon-video-play'" class="filter-item" type="primary" @click="pauseOrActivate">
-          {{ canPause ? $t('actions.pause') : $t('actions.activate') }}
-        </el-button>
       </span>
       <div style="float: right">
         <el-popover
@@ -128,7 +125,7 @@
 </template>
 
 <script>
-import { listReq, retryReq, terminateReq, pauseReq, activateReq } from '@/api/dispatch/instance'
+import { listReq, retryReq, terminateReq } from '@/api/dispatch/instance'
 import { getTimeStr } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
 import waves from '@/directive/waves'
@@ -163,7 +160,6 @@ export default {
       },
       currentJobInstanceStatuses: [],
       runningJobInstanceStatus: [],
-      pausedJobInstanceStatus: [],
       doingJobInstanceStatuses: [],
       doneJobInstanceStatuses: [],
       jobInstanceStatuses: [],
@@ -185,13 +181,6 @@ export default {
     },
     terminateVisible() {
       return this.doingJobInstanceStatuses.find(item => { return item.value === this.selections[0].status }) !== undefined
-    },
-    pauseOrActivateVisible() {
-      return this.runningJobInstanceStatus.find(item => { return item.value === this.selections[0].status }) !== undefined ||
-        this.pausedJobInstanceStatus.find(item => { return item.value === this.selections[0].status }) !== undefined
-    },
-    canPause() {
-      return this.runningJobInstanceStatus.find(item => { return item.value === this.selections[0].status }) !== undefined
     }
   },
   created() {
@@ -203,13 +192,6 @@ export default {
     },
     terminate() {
       this.handleRequest(terminateReq)
-    },
-    pauseOrActivate() {
-      if (this.canPause) {
-        this.handleRequest(pauseReq)
-      } else {
-        this.handleRequest(activateReq)
-      }
     },
     handleRequest(request) {
       this.$confirm(this.$t('tip.confirmMsg'), this.$t('tip.confirm'), { type: 'info' })
@@ -328,7 +310,6 @@ export default {
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.runningJobInstanceStatus = array.runningJobInstanceStatus
-        this.pausedJobInstanceStatus = array.pausedJobInstanceStatus
         this.doingJobInstanceStatuses = array.doingJobInstanceStatuses
         this.doneJobInstanceStatuses = array.doneJobInstanceStatuses
         this.jobInstanceStatuses = array.jobInstanceStatuses

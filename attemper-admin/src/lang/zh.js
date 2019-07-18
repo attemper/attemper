@@ -109,8 +109,6 @@ export default {
     testSql: '测试sql',
     retry: '重试',
     terminate: '终止',
-    pause: '暂停',
-    activate: '激活',
     saveOrPublish: '保存或发布'
   },
   tip: {
@@ -123,6 +121,7 @@ export default {
     saveConfirm: '确定保存',
     saveOrPublishConfirm: '确定保存或发布',
     manualWithNoVersion: '流程未被发布，不能手动发起',
+    disabledJobError: '禁用的任务不可被发起',
     adminTenantCannotBeRemoved: '超管租户不能删除',
     preview: '预览',
     notSelectSql: '必须是查询语句(以select开头)',

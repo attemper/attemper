@@ -33,18 +33,3 @@ export const terminateReq = (data) => {
   })
 }
 
-export const pauseReq = (data) => {
-  return request({
-    url: APIPath.DISPATCH + APIPath.INSTANCE + '/pause',
-    method: 'post',
-    data: data
-  })
-}
-
-export const activateReq = (data) => {
-  return request({
-    url: APIPath.DISPATCH + APIPath.INSTANCE + '/activate',
-    method: 'post',
-    data: data
-  })
-}

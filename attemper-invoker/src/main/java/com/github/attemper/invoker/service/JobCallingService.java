@@ -87,7 +87,7 @@ public class JobCallingService {
             code = 3008;
         }
         if (code != -1) {
-            JobInstance jobInstance = buildInstance(param, null, parentId, JobInstanceStatus.TERMINATED);
+            JobInstance jobInstance = buildInstance(param, null, parentId, JobInstanceStatus.FAILURE);
             jobInstance.setEndTime(jobInstance.getStartTime());
             jobInstance.setDuration(0L);
             jobInstance.setCode(code);
@@ -109,10 +109,9 @@ public class JobCallingService {
         if (job.isConcurrent()) {
             return true;
         }
-        List<Integer> statuses = Arrays.asList(JobInstanceStatus.RUNNING.getStatus(), JobInstanceStatus.PAUSED.getStatus());
         int count = jobInstanceService.count(new JobInstanceListParam()
                 .setJobName(job.getJobName())
-                .setStatus(statuses), job.getTenantId());
+                .setStatus(Arrays.asList(JobInstanceStatus.RUNNING.getStatus())), job.getTenantId());
         if (count <= 0) {
             return true;
         }

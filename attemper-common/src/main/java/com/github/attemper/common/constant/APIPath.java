@@ -141,10 +141,6 @@ public class APIPath {
 
         public static final String TERMINATE = $ + "/terminate";
 
-        public static final String PAUSE = $ + "/pause";
-
-        public static final String ACTIVATE = $ + "/activate";
-
         public static final String LIST_ACT = $ + "/act";
     }
 
@@ -180,9 +176,5 @@ public class APIPath {
         public static final String JOB_INVOKING = API_PATH + EXECUTOR + "/invoke";
 
         public static final String TERMINATE = API_PATH + EXECUTOR + "/terminate";
-
-        public static final String PAUSE = API_PATH + EXECUTOR + "/pause";
-
-        public static final String ACTIVATE = API_PATH + EXECUTOR + "/activate";
     }
 }

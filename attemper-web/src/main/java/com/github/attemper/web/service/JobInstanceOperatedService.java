@@ -71,34 +71,13 @@ public class JobInstanceOperatedService {
         return null;
     }
 
-    public Void pause(JobInstanceIdParam param) {
-        JobInstance jobInstance = getJobInstance(param);
-        if (jobInstance.getStatus() != JobInstanceStatus.RUNNING.getStatus()) {
-            throw new RTException(6202, String.valueOf(jobInstance.getStatus()));
-        }
-        executorHandler.pause(jobInstance.getExecutorUri(), jobInstance);
-        updateJobInstanceStatus(jobInstance, JobInstanceStatus.PAUSED.getStatus());
-        return null;
-    }
-
-    public Void activate(JobInstanceIdParam param) {
-        JobInstance jobInstance = getJobInstance(param);
-        if (jobInstance.getStatus() != JobInstanceStatus.PAUSED.getStatus()) {
-            throw new RTException(6202, String.valueOf(jobInstance.getStatus()));
-        }
-        executorHandler.activate(jobInstance.getExecutorUri(), jobInstance);
-        updateJobInstanceStatus(jobInstance, JobInstanceStatus.RUNNING.getStatus());
-        return null;
-    }
-
     private void updateJobInstanceStatus(JobInstance jobInstance, int status) {
         jobInstance.setStatus(status);
         jobInstanceService.update(jobInstance);
     }
 
     private boolean isDoing(int status) {
-        return status == JobInstanceStatus.RUNNING.getStatus() ||
-                status == JobInstanceStatus.PAUSED.getStatus();
+        return status == JobInstanceStatus.RUNNING.getStatus();
     }
 
     private boolean isDone(int status) {

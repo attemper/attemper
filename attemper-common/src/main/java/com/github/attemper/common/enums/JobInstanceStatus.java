@@ -18,11 +18,6 @@ public enum JobInstanceStatus {
      */
     TERMINATED(3),
 
-    /**
-     * paused
-     */
-    PAUSED(4)
-
     ;
 
     private int status;

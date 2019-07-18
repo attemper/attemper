@@ -13,7 +13,7 @@ const monitorRouter = {
     icon: 'monitor'
   },
   children: [
-    {
+    /* {
       path: 'realTime',
       component: () => import('@/views/instance/monitor'),
       name: 'realTime',
@@ -36,7 +36,7 @@ const monitorRouter = {
         title: 'history',
         icon: 'history'
       }
-    },
+    },*/
     {
       path: 'total',
       component: () => import('@/views/instance/monitor'),

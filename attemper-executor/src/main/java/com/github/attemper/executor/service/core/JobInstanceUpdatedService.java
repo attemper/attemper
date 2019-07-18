@@ -34,22 +34,6 @@ public class JobInstanceUpdatedService {
         return null;
     }
 
-    public Void pause(JobInstanceIdParam param) {
-        JobInstance jobInstance = getJobInstance(param);
-        if (validateState(jobInstance)) {
-            runtimeService.suspendProcessInstanceById(jobInstance.getRootProcInstId());
-        }
-        return null;
-    }
-
-    public Void activate(JobInstanceIdParam param) {
-        JobInstance jobInstance = getJobInstance(param);
-        if (validateState(jobInstance)) {
-            runtimeService.activateProcessInstanceById(jobInstance.getRootProcInstId());
-        }
-        return null;
-    }
-
     private boolean validateState(JobInstance jobInstance) {
         return StringUtils.isNotBlank(jobInstance.getRootProcInstId());
     }

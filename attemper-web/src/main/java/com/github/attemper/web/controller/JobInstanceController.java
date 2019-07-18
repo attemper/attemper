@@ -58,17 +58,4 @@ public class JobInstanceController {
         return CommonResult.putResult(jobInstanceOperatedService.terminate(param));
     }
 
-    @ApiOperation("Pause")
-    @ApiImplicitParam(value = "JobInstanceIdParam", name = "param", dataType = "JobInstanceIdParam", required = true)
-    @PostMapping(value = APIPath.InstancePath.PAUSE)
-    public CommonResult<Void> pause(@RequestBody JobInstanceIdParam param) {
-        return CommonResult.putResult(jobInstanceOperatedService.pause(param));
-    }
-
-    @ApiOperation("Activate")
-    @ApiImplicitParam(value = "JobInstanceIdParam", name = "param", dataType = "JobInstanceIdParam", required = true)
-    @PostMapping(value = APIPath.InstancePath.ACTIVATE)
-    public CommonResult<Void> activate(@RequestBody JobInstanceIdParam param) {
-        return CommonResult.putResult(jobInstanceOperatedService.activate(param));
-    }
 }

@@ -65,6 +65,11 @@
             <el-form-item :label="$t('dispatch.job.columns.deploymentTime')">
               <span>{{ props.row.deploymentTime }}</span>
             </el-form-item>
+            <el-form-item>
+              <el-button type="info" @click="openProjectDialog(props.row)">
+                {{ $t('dispatch.job.actions.project') }}
+              </el-button>
+            </el-form-item>
           </el-form>
         </template>
       </el-table-column>
@@ -115,12 +120,6 @@
               @click="openTriggerDialog(scope.row)"
             >
               {{ $t('dispatch.job.actions.trigger') }}
-            </el-button>
-            <el-button
-              type="info"
-              @click="openProjectDialog(scope.row)"
-            >
-              {{ $t('dispatch.job.actions.project') }}
             </el-button>
           </div>
         </template>
@@ -668,6 +667,10 @@ export default {
           const sel = this.selections[i]
           if (!sel.maxVersion) {
             this.$message.warning(this.$t('tip.manualWithNoVersion') + ':' + sel.jobName)
+            return
+          }
+          if (sel.status !== 0) {
+            this.$message.warning(this.$t('tip.disabledJobError') + ':' + sel.jobName)
             return
           }
           jobNames.push(sel.jobName)

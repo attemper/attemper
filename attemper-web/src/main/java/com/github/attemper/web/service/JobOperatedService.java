@@ -271,10 +271,10 @@ public class JobOperatedService extends BaseServiceAdapter {
     public Void manual(JobNamesParam param) {
         List<String> jobNames = param.getJobNames();
         ExecutorService executorService = Executors.newFixedThreadPool(jobNames.size());
-        String id = idGenerator.getNextId();
         String tenantId = injectTenantId();
         for (String jobName : jobNames) {
             executorService.submit(() -> {
+                String id = idGenerator.getNextId();
                 try {
                     SpringContextAware.getBean(JobCallingService.class).manual(id, jobName, tenantId, null);
                 } catch (Exception e) {

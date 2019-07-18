@@ -36,14 +36,6 @@ public class ExecutorHandler extends CrossSystemHandler {
         call(buildFullPath(baseUrl, APIPath.ExecutorPath.TERMINATE), jobInstance);
     }
 
-    public void pause(String baseUrl, JobInstance jobInstance) {
-        call(buildFullPath(baseUrl, APIPath.ExecutorPath.PAUSE), jobInstance);
-    }
-
-    public void activate(String baseUrl, JobInstance jobInstance) {
-        call(buildFullPath(baseUrl, APIPath.ExecutorPath.ACTIVATE), jobInstance);
-    }
-
     private void call(String fullPath, JobInstance jobInstance) {
         if (StringUtils.isBlank(jobInstance.getRootProcInstId()) && StringUtils.isBlank(jobInstance.getProcInstId())) {
             return;

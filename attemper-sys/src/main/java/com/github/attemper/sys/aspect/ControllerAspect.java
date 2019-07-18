@@ -12,6 +12,8 @@ import com.github.attemper.config.base.util.AspectUtil;
 import com.github.attemper.config.base.util.IPUtil;
 import com.github.attemper.config.base.util.ServletUtil;
 import com.github.attemper.config.base.util.StringUtil;
+import com.github.attemper.java.sdk.common.param.BaseParam;
+import com.github.attemper.java.sdk.common.param.sys.login.LoginParam;
 import com.github.attemper.sys.ext.service.JWTService;
 import com.github.attemper.sys.holder.TenantHolder;
 import io.swagger.annotations.Api;
@@ -83,7 +85,7 @@ public class ControllerAspect {
         }finally {
             if (result != null) {
                 Instant end = Instant.now();
-                result.setDuration(String.valueOf(Duration.between(begin, end).toMillis() / 1000.0));// 请求耗时
+                result.setDuration(String.valueOf(Duration.between(begin, end).toMillis() / 1000.0));
             }
             TenantHolder.clear();
             AspectUtil.saveLog(apiLog, result);
@@ -92,35 +94,24 @@ public class ControllerAspect {
 
     private CommonResult checkParam(ProceedingJoinPoint joinPoint, ApiLog apiLog) {
         CommonResult result = null;
-        // 处理日志的分类，方法等
         preHandleLog(joinPoint, apiLog);
-        Tenant tenant = TenantHolder.get();
-        if (tenant == null) {
-            String token = ServletUtil.getHeader(CommonConstants.token);
-            if (StringUtils.isNotBlank(token)) {
-                tenant = jwtService.parseToken(token);
-                TenantHolder.set(tenant);
-            }
-        }
-        if (tenant != null) {
-            apiLog.setTenantId(tenant.getUserName());
-        }
         Object[] args = joinPoint.getArgs();
+        boolean isLogin = false;
         if (args != null) {
             for (Object arg : args) {
                 if (arg != null) {
-                    //1.validator校验
                     Set<ConstraintViolation<Object>> violations = validator.validate(arg);
                     if (!violations.isEmpty()) {
                         ConstraintViolation<Object> violation = violations.iterator().next();
                         String codeStr = violation.getMessage();
                         return CommonResult.put(Integer.valueOf(codeStr));
                     }
-                    if (arg instanceof CommonParam) {
-                        CommonParam commonParam = (CommonParam) arg;
-                        commonParam.preHandle();  //预处理参数
-                        //2.补充校验
-                        String codeStr = commonParam.validate();
+                    if (arg instanceof BaseParam) {
+                        BaseParam baseParam = (BaseParam) arg;
+                        if (arg instanceof CommonParam) {
+                            ((CommonParam) baseParam).preHandle();
+                        }
+                        String codeStr = baseParam.validate();
                         if (codeStr != null) {
                             try {
                                 int code = Integer.parseInt(codeStr);
@@ -129,9 +120,23 @@ public class ControllerAspect {
                                 return CommonResult.error(codeStr);
                             }
                         }
+                        if (!isLogin && arg instanceof LoginParam) {
+                            isLogin = true;
+                        }
                     }
                 }
             }
+        }
+        Tenant tenant = TenantHolder.get();
+        if (tenant == null && !isLogin) {
+            String token = ServletUtil.getHeader(CommonConstants.token);
+            if (StringUtils.isNotBlank(token)) {
+                tenant = jwtService.parseToken(token);
+                TenantHolder.set(tenant);
+            }
+        }
+        if (tenant != null) {
+            apiLog.setTenantId(tenant.getUserName());
         }
         return result;
     }

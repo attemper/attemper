@@ -6,8 +6,11 @@ import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.core.service.instance.JobInstanceService;
+import com.github.attemper.executor.camunda.cmd.UpdateHistoricInstanceCmd;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.history.HistoricProcessInstance;
+import org.camunda.bpm.engine.impl.RuntimeServiceImpl;
 import org.camunda.bpm.engine.impl.incident.DefaultIncidentHandler;
 import org.camunda.bpm.engine.impl.incident.IncidentContext;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
@@ -27,36 +30,48 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
     @Override
     public Incident handleIncident(IncidentContext context, String message) {
         try {
-            RuntimeService runtimeService = SpringContextAware.getBean(RuntimeService.class);
+            RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) SpringContextAware.getBean(RuntimeService.class);
             JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
             List<Execution> executions = runtimeService.createExecutionQuery().executionId(context.getExecutionId()).list();
             for (Execution execution : executions) {
                 ExecutionEntity executionEntity = (ExecutionEntity) execution;
-                String id = executionEntity.getBusinessKey();
-                updateInstance(jobInstanceService, id, 3052, executionEntity.getCurrentActivityId() == null ? executionEntity.getCurrentActivityName() : executionEntity.getCurrentActivityId());
+                updateInstance(runtimeService, jobInstanceService, executionEntity, 3052);
             }
-            updateInstanceAct(jobInstanceService, context.getExecutionId());
+            updateInstanceAct(runtimeService, jobInstanceService, context.getExecutionId());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
         return super.handleIncident(context, message);
     }
 
-    private void updateInstance(JobInstanceService jobInstanceService, String id, int code, String msg) {
-        JobInstance jobInstance = jobInstanceService.get(id);
-        jobInstance
-                .setEndTime(new Date())
-                .setStatus(JobInstanceStatus.FAILURE.getStatus())
-                .setCode(code);
-        if (jobInstance.getMsg() == null) {
-            jobInstance.setMsg(StatusProperty.getValue(code) + ":" + msg);
-        } else {
-            jobInstance.setMsg(jobInstance.getMsg() + "," + msg);
+    private void updateInstance(RuntimeServiceImpl runtimeService, JobInstanceService jobInstanceService, ExecutionEntity execution, int code) {
+        JobInstance jobInstance = jobInstanceService.get(execution.getBusinessKey());
+        Date endTime = new Date();
+        long duration = 0;
+        if (jobInstance != null) {
+            duration = endTime.getTime() - jobInstance.getStartTime().getTime();
+            jobInstance
+                    .setEndTime(endTime)
+                    .setDuration(duration)
+                    .setStatus(JobInstanceStatus.FAILURE.getStatus())
+                    .setCode(code);
+            String message = execution.getCurrentActivityId() == null ?
+                    execution.getCurrentActivityName() : execution.getCurrentActivityId();
+            if (jobInstance.getMsg() == null) {
+                jobInstance.setMsg(StatusProperty.getValue(code) + ":" + message);
+            } else {
+                jobInstance.setMsg(jobInstance.getMsg() + "," + message);
+            }
+            jobInstanceService.update(jobInstance);
         }
-        jobInstanceService.update(jobInstance);
+        runtimeService.getCommandExecutor().execute(new UpdateHistoricInstanceCmd(
+                execution.getProcessInstanceId(),
+                endTime,
+                duration,
+                HistoricProcessInstance.STATE_EXTERNALLY_TERMINATED));
     }
 
-    private void updateInstanceAct(JobInstanceService jobInstanceService, String executionId) {
+    private void updateInstanceAct(RuntimeServiceImpl runtimeService, JobInstanceService jobInstanceService, String executionId) {
         JobInstanceAct jobInstanceAct = new JobInstanceAct()
                 .setExecutionId(executionId)
                 .setEndTime(new Date())
