@@ -16,7 +16,7 @@ export default {
     monitor: '监控管理',
     realTime: '实时监控',
     history: '历史监控',
-    total: '全量监控',
+    total: '实例监控',
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',
@@ -368,7 +368,12 @@ export default {
     },
     label: {
       record: '记录',
-      log: '日志'
+      flow: '任务流',
+      task: '任务'
+    },
+    tip: {
+      retryFlow: '重试整条任务流',
+      retryFromCurrentTask: '从当前节点开始重试'
     }
   },
   statistics: {

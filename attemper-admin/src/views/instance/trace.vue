@@ -3,7 +3,12 @@
     <div ref="canvas" class="canvas" />
     <div class="external">
       <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-        <el-tab-pane :label="$t('monitor.label.log')" name="log">
+        <el-tab-pane :label="$t('monitor.label.flow')" name="flow">
+          <div class="operation-area">
+            <el-tooltip :content="$t('monitor.tip.retryFlow')" effect="dark" placement="top-start">
+              <el-button type="warning" icon="el-icon-s-operation">{{ $t('actions.retry') }}</el-button>
+            </el-tooltip>
+          </div>
           <el-timeline>
             <el-timeline-item
               v-for="item in actNodes"
@@ -98,13 +103,36 @@
             @pagination="search"
           />
         </el-tab-pane>
+        <el-tab-pane :label="$t('monitor.label.task')" name="task">
+          <div class="operation-area">
+            <el-tooltip :content="$t('monitor.tip.retryFromCurrentTask')" effect="dark" placement="top-start">
+              <el-button type="warning" icon="el-icon-s-operation">{{ $t('actions.retry') }}</el-button>
+            </el-tooltip>
+          </div>
+          <el-timeline>
+            <el-timeline-item
+              v-for="item in singleActNodes"
+              :key="item.id"
+              :timestamp="(item.actName || item.actId)"
+              :type="item.status | renderJobInstanceStatus"
+              placement="top"
+            >
+              <el-card>
+                <h4>{{ item.startTime + '  -  ' + (item.endTime || '...') }}</h4>
+                <h5 v-show="item.duration && item.duration > 0">{{ item.duration | parseDuration }}</h5>
+                <p v-show="item.logKey && item.logKey.length > 0">{{ item.logKey }}</p>
+                <p v-show="item.logText && item.logText.length>0">{{ item.logText }}</p>
+              </el-card>
+            </el-timeline-item>
+          </el-timeline>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
 </template>
 
 <script>
-import { listReq, listActReq } from '@/api/dispatch/instance'
+import { listReq, listActReq/* , retryReq, terminateReq */ } from '@/api/dispatch/instance'
 import { getReq } from '@/api/dispatch/job'
 import BpmnViewer from 'bpmn-js'
 import miniMapModule from 'diagram-js-minimap'
@@ -146,8 +174,9 @@ export default {
       jobInstanceStatuses: [],
       showAll: false,
       visible: false,
-      activeName: 'log',
-      actNodes: []
+      activeName: 'flow',
+      actNodes: [],
+      singleActNodes: []
     }
   },
   created() {
@@ -157,6 +186,25 @@ export default {
     this.search()
   },
   methods: {
+    /* retry() {
+      this.handleRequest(retryReq)
+    },
+    terminate() {
+      this.handleRequest(terminateReq)
+    },
+    handleRequest(request) {
+      this.$confirm(this.$t('tip.confirmMsg'), this.$t('tip.confirm'), { type: 'info' })
+        .then(() => {
+          request({ id: this.jobInstance.id })
+            .then(res => {
+              this.$message.success(res.data.msg)
+              this.search()
+            })
+            .catch(() => {
+              this.search()
+            })
+        })
+    },*/
     initData() {
       this.page.rootProcInstId = this.rootProcInstId = this.$route.params.rootProcInstId
       this.page.jobName = this.$route.params.key
@@ -211,8 +259,9 @@ export default {
                 self.nodeOverlay[e.element.id] = undefined
               }
               listActReq({ rootProcInstId: self.rootProcInstId, actId: e.element.id }).then(res => {
-                const nodes = res.data.result
-                if (nodes.length > 0) {
+                self.activeName = 'task'
+                self.singleActNodes = res.data.result
+                /* if (nodes.length > 0) {
                   let htmlText = '<div style="width: 300px;">'
                   nodes.forEach(node => {
                     htmlText += '<h4>' + node.startTime + ' - ' + (node.endTime || '...') + '</h4><br><br>' + (node.logText || '-----------------')
@@ -226,11 +275,13 @@ export default {
                     html: htmlText
                   })
                   self.nodeOverlay[e.element.id] = overlayId
-                }
+                }*/
               })
-            } else if (event === 'element.out' && self.nodeOverlay[e.element.id]) {
-              overlays.remove(self.nodeOverlay[e.element.id])
-              self.nodeOverlay[e.element.id] = undefined
+            } else if (event === 'element.out') {
+              if (self.nodeOverlay[e.element.id]) {
+                overlays.remove(self.nodeOverlay[e.element.id])
+                self.nodeOverlay[e.element.id] = undefined
+              }
             }
           }
         })
@@ -327,13 +378,13 @@ export default {
       return 'row' + row.status
     },
     handleClick(tab, event) {
-      if (tab.name === 'log') {
-        this.renderLog()
+      if (tab.name === 'flow') {
+        this.renderFlow()
       } else if (tab.name === 'record') {
         this.search()
       }
     },
-    renderLog() {
+    renderFlow() {
       listActReq({ rootProcInstId: this.rootProcInstId }).then(res => {
         this.getAct()
       })
