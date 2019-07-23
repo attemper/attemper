@@ -169,7 +169,7 @@ export default {
         lowerEndTime: null,
         upperEndTime: null
       },
-      rootProcInstId: null,
+      procInstId: null,
       nodeOverlay: {},
       jobInstanceStatuses: [],
       showAll: false,
@@ -206,7 +206,7 @@ export default {
         })
     },*/
     initData() {
-      this.page.rootProcInstId = this.rootProcInstId = this.$route.params.rootProcInstId
+      this.page.procInstId = this.procInstId = this.$route.params.procInstId
       this.page.jobName = this.$route.params.key
       this.job = {
         jobName: this.$route.params.key,
@@ -258,7 +258,7 @@ export default {
                 overlays.remove(self.nodeOverlay[e.element.id])
                 self.nodeOverlay[e.element.id] = undefined
               }
-              listActReq({ rootProcInstId: self.rootProcInstId, actId: e.element.id }).then(res => {
+              listActReq({ procInstId: self.procInstId, actId: e.element.id }).then(res => {
                 self.activeName = 'task'
                 self.singleActNodes = res.data.result
                 /* if (nodes.length > 0) {
@@ -310,9 +310,9 @@ export default {
     toggleList() {
       this.showAll = !this.showAll
       if (this.showAll) { // show all
-        this.page.rootProcInstId = undefined
+        this.page.procInstId = undefined
       } else { // show only the current
-        this.page.rootProcInstId = this.rootProcInstId
+        this.page.procInstId = this.procInstId
         this.visible = false
       }
       this.search()
@@ -339,11 +339,11 @@ export default {
         jobName: row.jobName,
         reversion: getVersionByDefinition(row.procDefId)
       }
-      this.rootProcInstId = row.rootProcInstId
+      this.procInstId = row.procInstId
       this.fetchJob()
     },
     getAct() {
-      listActReq({ rootProcInstId: this.rootProcInstId }).then(res => {
+      listActReq({ procInstId: this.procInstId }).then(res => {
         this.setActNodes(res.data.result)
         const nodes = res.data.result
         if (nodes.length > 0) {
@@ -385,7 +385,7 @@ export default {
       }
     },
     renderFlow() {
-      listActReq({ rootProcInstId: this.rootProcInstId }).then(res => {
+      listActReq({ procInstId: this.procInstId }).then(res => {
         this.getAct()
       })
     },

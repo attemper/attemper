@@ -70,6 +70,10 @@ public class APIPath {
 
         public static final String MANUAL = $ + "/manual";
 
+        public static final String EXPORT_MODEL = $ + "/export/model";
+
+        public static final String IMPORT_MODEL = $ + "/import/model";
+
         public static final String GET_PROJECT = $ + "/project";
 
         public static final String SAVE_PROJECT = $ + "/project";

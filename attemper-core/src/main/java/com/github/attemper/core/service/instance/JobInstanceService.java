@@ -2,6 +2,7 @@ package com.github.attemper.core.service.instance;
 
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceActParam;
+import com.github.attemper.common.param.dispatch.instance.JobInstanceGetParam;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceListParam;
 import com.github.attemper.common.param.sys.tenant.TenantGetParam;
 import com.github.attemper.common.property.StatusProperty;
@@ -49,8 +50,8 @@ public class JobInstanceService extends BaseServiceAdapter {
     @Autowired
     private TenantService tenantService;
 
-    public JobInstance get(String id) {
-        return mapper.get(id);
+    public JobInstance get(JobInstanceGetParam param) {
+        return mapper.get(injectTenantIdToMap(param));
     }
 
     public int count(JobInstanceListParam param, String tenantId) {

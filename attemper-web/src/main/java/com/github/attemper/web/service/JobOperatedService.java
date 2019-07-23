@@ -17,23 +17,33 @@ import com.github.attemper.sys.util.PageUtil;
 import com.github.attemper.web.util.SupportUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.net.MediaType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.camunda.bpm.engine.repository.Deployment;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.commons.utils.IoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 @Slf4j
 @Service
@@ -57,6 +67,9 @@ public class JobOperatedService extends BaseServiceAdapter {
 
     @Autowired
     private JobCallingService jobCallingService;
+
+    @Autowired
+    private RepositoryService repositoryService;
 
     public Map<String, Object> list(JobListParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
@@ -167,7 +180,7 @@ public class JobOperatedService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public Void publish(JobPublishParam param) {
+    public Void publish(JobNamesParam param) {
         List<String> jobNames = param.getJobNames();
         jobNames.forEach(jobName -> {
             Job job = validateAndGet(jobName);  //the newest reversion job
@@ -196,7 +209,6 @@ public class JobOperatedService extends BaseServiceAdapter {
      */
     private boolean checkNeedSave(Job job, Job updatedJob) {
         return job.getStatus() != updatedJob.getStatus()
-                || job.getTimeout() != updatedJob.getTimeout()
                 || job.isConcurrent() != updatedJob.isConcurrent()
                 || !StringUtils.equals(job.getRemark(), updatedJob.getRemark());
     }
@@ -207,7 +219,6 @@ public class JobOperatedService extends BaseServiceAdapter {
                 .setDisplayName(saveParam.getDisplayName())
                 .setJobContent(saveParam.getJobContent())
                 .setStatus(saveParam.getStatus())
-                .setTimeout(saveParam.getTimeout())
                 .setConcurrent(saveParam.getConcurrent())
                 .setRemark(saveParam.getRemark())
                 .setTenantId(injectTenantId());
@@ -238,8 +249,7 @@ public class JobOperatedService extends BaseServiceAdapter {
         if (targetJob != null) { // add its reversion with new model
             JobSaveParam saveParam = new JobSaveParam()
                     .setJobName(targetJob.getJobName()).setDisplayName(targetJob.getDisplayName())
-                    .setStatus(targetJob.getStatus()).setTimeout(targetJob.getTimeout())
-                    .setConcurrent(targetJob.isConcurrent())
+                    .setStatus(targetJob.getStatus()).setConcurrent(targetJob.isConcurrent())
                     .setRemark(targetJob.getRemark()).setJobContent(sourceJob.getJobContent());
             return update(saveParam);
         }
@@ -258,8 +268,7 @@ public class JobOperatedService extends BaseServiceAdapter {
         Job oldReversionJob = jobService.get(param);
         JobSaveParam saveParam = new JobSaveParam()
                 .setJobName(oldReversionJob.getJobName()).setDisplayName(oldReversionJob.getDisplayName())
-                .setStatus(oldReversionJob.getStatus()).setTimeout(oldReversionJob.getTimeout())
-                .setConcurrent(oldReversionJob.isConcurrent())
+                .setStatus(oldReversionJob.getStatus()).setConcurrent(oldReversionJob.isConcurrent())
                 .setRemark(oldReversionJob.getRemark()).setJobContent(oldReversionJob.getJobContent());
         update(saveParam);
         return jobService.get(new JobGetParam().setJobName(param.getJobName()));
@@ -302,6 +311,78 @@ public class JobOperatedService extends BaseServiceAdapter {
         return null;
     }
 
+    public void exportModel(HttpServletResponse response, JobNamesParam param) {
+        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKeysIn(param.getJobNames().toArray(new String[]{}))
+                .tenantIdIn(injectTenantId())
+                .latestVersion()
+                .list();
+        response.setHeader("Content-Disposition", "attachment; filename=models.zip");
+        response.setContentType(MediaType.ZIP.toString());
+        try (ServletOutputStream outputStream = response.getOutputStream();
+             ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);) {
+            for (ProcessDefinition definition : processDefinitions) {
+                InputStream resourceAsStream = repositoryService.getResourceAsStream(definition.getDeploymentId(), definition.getResourceName());
+                createZipEntry(zipOutputStream, definition.getResourceName(), resourceAsStream);
+            }
+        } catch (IOException e) {
+            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+        }
+    }
+
+    public Void importModel(MultipartFile file) {
+        try (InputStream is = file.getInputStream();
+             ZipInputStream zis = new ZipInputStream(is);) {
+            Set<String> jobNames = new HashSet<>();
+            while ((zis.getNextEntry()) != null) {
+                BufferedReader bufferedReader = new BufferedReader(
+                        new InputStreamReader(zis));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+                BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(sb.toString().getBytes()));
+                Collection<Process> elements = bpmnModelInstance.getModelElementsByType(Process.class);
+                for (Process process : elements) {
+                    Job job = jobService.get(new JobGetParam().setJobName(process.getId()));
+                    if (job == null) {
+                        add(new JobSaveParam()
+                                .setJobName(process.getId())
+                                .setDisplayName(process.getName())
+                                .setConcurrent(false)
+                                .setJobContent(sb.toString())
+                                .setStatus(JobStatus.ENABLED.getStatus()));
+                    } else {
+                        JobSaveParam saveParam = toParam(job);
+                        saveParam.setJobContent(sb.toString());
+                        update(saveParam);
+                    }
+                    jobNames.add(process.getId());
+                }
+            }
+            publish(new JobNamesParam().setJobNames(new ArrayList<>(jobNames)));
+        } catch (IOException e) {
+            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+        }
+
+        return null;
+    }
+
+    private JobSaveParam toParam(Job job) {
+        return new JobSaveParam()
+                .setJobName(job.getJobName()).setDisplayName(job.getDisplayName())
+                .setStatus(job.getStatus()).setConcurrent(job.isConcurrent())
+                .setRemark(job.getRemark());
+    }
+
+    private void createZipEntry(ZipOutputStream zipOutputStream, String fileName, InputStream is) throws IOException {
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        zipOutputStream.putNextEntry(zipEntry);
+        zipOutputStream.write(IoUtil.inputStreamAsByteArray(is));
+        zipOutputStream.closeEntry();
+    }
+
     public Void addArg(JobArgAllocatedParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.addArg(paramMap);
@@ -314,9 +395,6 @@ public class JobOperatedService extends BaseServiceAdapter {
         return null;
     }
 
-    @Autowired
-    private RepositoryService repositoryService;
-
     private Deployment createDefault(Job job) {
         return repositoryService.createDeployment()
                 .addModelInstance(job.getJobName() + ".bpmn20.xml",
@@ -325,4 +403,5 @@ public class JobOperatedService extends BaseServiceAdapter {
                 .tenantId(job.getTenantId())
                 .deploy();
     }
+
 }

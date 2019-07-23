@@ -2,6 +2,7 @@ package com.github.attemper.web.service;
 
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.common.param.dispatch.instance.JobInstanceGetParam;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceIdParam;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
@@ -40,7 +41,7 @@ public class JobInstanceOperatedService {
         String parentId;
         if (StringUtils.isNotBlank(jobInstance.getParentId())) {
             parentId = jobInstance.getParentId();
-            JobInstance rootRetriedJobInstance = jobInstanceService.get(parentId);
+            JobInstance rootRetriedJobInstance = jobInstanceService.get(new JobInstanceGetParam().setId(parentId));
             if (rootRetriedJobInstance != null && !rootRetriedJobInstance.isRetried()) {
                 rootRetriedJobInstance.setRetried(true);
                 jobInstanceService.update(rootRetriedJobInstance);
@@ -87,7 +88,7 @@ public class JobInstanceOperatedService {
     }
 
     private JobInstance getJobInstance(JobInstanceIdParam param) {
-        JobInstance jobInstance = jobInstanceService.get(param.getId());
+        JobInstance jobInstance = jobInstanceService.get(new JobInstanceGetParam().setId(param.getId()));
         if (jobInstance == null) {
             throw new RTException(6201);
         }

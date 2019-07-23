@@ -1,7 +1,6 @@
 package com.github.attemper.executor.task.http;
 
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.executor.store.ExecutionStore;
 import com.github.attemper.executor.task.http.internal.HttpTask;
 import com.github.attemper.java.sdk.common.executor.constant.ExecutorAPIPath;
@@ -12,6 +11,8 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 /**
  * Short Connection with Async-Callback
  */
@@ -19,11 +20,11 @@ import org.springframework.stereotype.Component;
 public class AsyncHttpTask extends HttpTask {
 
     @Override
-    protected void executeIntern(DelegateExecution execution, Job job, String url) {
-        super.invoke(execution, job, url, LogResult.class);
+    protected void executeIntern(DelegateExecution execution, String url, Map<String, String> fieldMap) {
+        super.invoke(execution, url, fieldMap, LogResult.class);
         synchronized (execution.getActivityInstanceId().intern()) { // lock
             try {
-                execution.getActivityInstanceId().intern().wait(job.getTimeout() * 1000L);
+                execution.getActivityInstanceId().intern().wait(injectTimeout(fieldMap) * 1000L);
                 EndParam endParam = ExecutionStore.getEndMap().get(execution.getId());
                 TaskResult taskResult = endParam.getTaskResult();
                 if (taskResult != null) {

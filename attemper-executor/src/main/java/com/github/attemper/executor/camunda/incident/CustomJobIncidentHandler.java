@@ -1,6 +1,7 @@
 package com.github.attemper.executor.camunda.incident;
 
 import com.github.attemper.common.enums.JobInstanceStatus;
+import com.github.attemper.common.param.dispatch.instance.JobInstanceGetParam;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
@@ -37,7 +38,7 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
                 ExecutionEntity executionEntity = (ExecutionEntity) execution;
                 updateInstance(runtimeService, jobInstanceService, executionEntity, 3052);
             }
-            updateInstanceAct(runtimeService, jobInstanceService, context.getExecutionId());
+            updateInstanceAct(jobInstanceService, context.getExecutionId());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -45,7 +46,7 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
     }
 
     private void updateInstance(RuntimeServiceImpl runtimeService, JobInstanceService jobInstanceService, ExecutionEntity execution, int code) {
-        JobInstance jobInstance = jobInstanceService.get(execution.getBusinessKey());
+        JobInstance jobInstance = jobInstanceService.get(new JobInstanceGetParam().setProcInstId(execution.getProcessInstanceId()));
         Date endTime = new Date();
         long duration = 0;
         if (jobInstance != null) {
@@ -71,7 +72,7 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
                 HistoricProcessInstance.STATE_EXTERNALLY_TERMINATED));
     }
 
-    private void updateInstanceAct(RuntimeServiceImpl runtimeService, JobInstanceService jobInstanceService, String executionId) {
+    private void updateInstanceAct(JobInstanceService jobInstanceService, String executionId) {
         JobInstanceAct jobInstanceAct = new JobInstanceAct()
                 .setExecutionId(executionId)
                 .setEndTime(new Date())

@@ -4,9 +4,13 @@
 
 <mapper namespace="com.github.attemper.core.dao.mapper.instance.JobInstanceMapper">
 
-    <select id="get" parameterType="string"
+    <select id="get" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.instance.JobInstance">
-        SELECT * FROM ${tablePrefix}job_instance j WHERE ID = #{1}
+        SELECT * FROM ${tablePrefix}job_instance j
+        <where>
+            <include refid="condId"/>
+            <include refid="condProcInstId"/>
+        </where>
     </select>
 
     <select id="count" parameterType="map" resultType="int">
@@ -216,7 +220,7 @@
         IFNULL(hp.END_TIME_, ji.END_TIME) as END_TIME,
         IFNULL(hp.DURATION_, ji.DURATION) as DURATION
         FROM ${tablePrefix}job_instance ji
-        LEFT JOIN act_hi_procinst hp on ji.ROOT_PROC_INST_ID = hp.ROOT_PROC_INST_ID_) j
+        LEFT JOIN act_hi_procinst hp on ji.PROC_INST_ID = hp.PROC_INST_ID_) j
         <where>
             <if test="jobName != null">
                 and lower(JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
@@ -242,7 +246,7 @@
             <if test="upperEndTime != null">
                 and END_TIME &lt;= #{upperEndTime, jdbcType=VARCHAR}
             </if>
-            <include refid="condRootProcInstId"/>
+            <include refid="condProcInstId"/>
             <include refid="condTenantId"/>
         </where>
         <choose>
@@ -264,11 +268,11 @@
         IFNULL(ha.DURATION_, ji.DURATION) as DURATION, ri.INCIDENT_MSG_ AS LOG_TEXT
         FROM ${tablePrefix}job_instance_act jia
         JOIN ${tablePrefix}job_instance ji
-        USING (ROOT_PROC_INST_ID)
+        USING (PROC_INST_ID)
         LEFT JOIN act_ru_incident ri ON jia.EXECUTION_ID = ri.EXECUTION_ID_
         LEFT JOIN act_hi_actinst ha ON jia.EXECUTION_ID = ha.EXECUTION_ID_ AND jia.ACT_ID = ha.ACT_ID_) j
         <where>
-            <include refid="condRootProcInstId"/>
+            <include refid="condProcInstId"/>
             <if test="actId != null">
                 and j.ACT_ID = #{actId, jdbcType=VARCHAR}
             </if>
@@ -287,11 +291,13 @@
         </if>
     </sql>
 
+    <!--
     <sql id="condRootProcInstId">
         <if test="rootProcInstId != null">
             and j.ROOT_PROC_INST_ID = #{rootProcInstId, jdbcType=VARCHAR}
         </if>
     </sql>
+    -->
 
     <sql id="condActInstId">
         <if test="actInstId != null">

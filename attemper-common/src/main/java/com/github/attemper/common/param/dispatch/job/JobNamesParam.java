@@ -1,14 +1,10 @@
 package com.github.attemper.common.param.dispatch.job;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
 
-@Getter
-@Setter
 @ToString
 public class JobNamesParam implements CommonParam {
 
@@ -19,5 +15,14 @@ public class JobNamesParam implements CommonParam {
             return "6000";
         }
         return null;
+    }
+
+    public List<String> getJobNames() {
+        return jobNames;
+    }
+
+    public JobNamesParam setJobNames(List<String> jobNames) {
+        this.jobNames = jobNames;
+        return this;
     }
 }

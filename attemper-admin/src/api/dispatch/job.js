@@ -73,6 +73,39 @@ export const exchangeReq = (data) => {
   })
 }
 
+export const manualBatchReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + '/manual/batch',
+    method: 'post',
+    data: data
+  })
+}
+
+export const manualReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + '/manual',
+    method: 'post',
+    data: data
+  })
+}
+
+export const exportModelReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + '/export/model',
+    method: 'get',
+    params: params,
+    responseType: 'blob'
+  })
+}
+
+export const importModelReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + '/import/model',
+    method: 'post',
+    data: data
+  })
+}
+
 export const listArgReq = (params) => {
   return request({
     url: APIPath.DISPATCH + APIPath.JOB + APIPath.ARG,
@@ -113,22 +146,6 @@ export const saveProjectReq = (data) => {
   })
 }
 
-export const manualBatchReq = (data) => {
-  return request({
-    url: APIPath.DISPATCH + APIPath.JOB + '/manual/batch',
-    method: 'post',
-    data: data
-  })
-}
-
-export const manualReq = (data) => {
-  return request({
-    url: APIPath.DISPATCH + APIPath.JOB + '/manual',
-    method: 'post',
-    data: data
-  })
-}
-
 export const getJsonArgReq = (params) => {
   return request({
     url: APIPath.DISPATCH + APIPath.JOB + APIPath.ARG + '/json',
@@ -136,3 +153,4 @@ export const getJsonArgReq = (params) => {
     params: params
   })
 }
+

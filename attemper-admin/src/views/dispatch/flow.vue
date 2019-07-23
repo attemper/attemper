@@ -157,7 +157,7 @@ export default {
         })
 
         self.exportBPMN(function(err, xml) {
-          self.setEncoded(downloadLink, self.getExportFileName() + '.bpmn', err ? null : xml)
+          self.setEncoded(downloadLink, self.getExportFileName() + '.bpmn.xml', err ? null : xml)
         })
 
         self.bindJobContent(function(err, xml) {

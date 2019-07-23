@@ -262,11 +262,15 @@ export default {
       }
     },
     openTrace(row) {
+      if (!row.procInstId) {
+        this.$message.success(this.$t('tip.flowNotStart'))
+        return
+      }
       const route = {
         name: 'trace',
         params: {
           key: row.jobName,
-          rootProcInstId: row.rootProcInstId,
+          procInstId: row.procInstId,
           procDefId: row.procDefId
         }
       }

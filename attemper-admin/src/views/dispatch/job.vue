@@ -17,9 +17,11 @@
       </el-button>
       <div style="float: right">
         <el-popover placement="bottom" trigger="hover">
-          <el-button v-waves class="filter-item" type="primary" icon="el-icon-download" @click="exportMeta">{{ $t('actions.exportJob') }}</el-button><br><br>
-          <el-button v-waves class="filter-item" type="success" icon="el-icon-upload2" @click="importMeta">{{ $t('actions.importJob') }}</el-button><br><br>
-          <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button>
+          <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button><br><br>
+          <el-button v-waves class="filter-item" :disabled="!selections || !selections.length" type="primary" icon="el-icon-download" @click="exportModel">{{ $t('actions.exportModel') }}</el-button><br><br>
+          <el-upload action="" accept="application/zip" :on-change="importModel" :auto-upload="false" :show-file-list="false">
+            <el-button v-waves type="success" icon="el-icon-upload2">{{ $t('actions.importModel') }}</el-button>
+          </el-upload>
           <el-button slot="reference" class="filter-item table-external-button" type="warning">{{ $t('actions.highOperation') }}</el-button>
         </el-popover>
         <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manualBatch">
@@ -49,9 +51,6 @@
             </el-form-item>
             <el-form-item :label="$t('dispatch.job.columns.concurrent')">
               <el-tag :type="props.row.concurrent ? 'success' : 'info'">{{ props.row.concurrent ? $t('tip.yes') : $t('tip.no') }}</el-tag>
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.job.columns.timeout')">
-              <span>{{ props.row.timeout * 1000 | parseDuration }}</span>
             </el-form-item>
             <el-form-item :label="$t('dispatch.job.columns.createTime')">
               <span>{{ props.row.createTime }}</span>
@@ -248,7 +247,7 @@
 </template>
 
 <script>
-import { listReq, /* getReq,*/ removeReq, addReq, updateReq, publishReq, manualBatchReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
+import { listReq, /* getReq,*/ removeReq, addReq, updateReq, publishReq, manualBatchReq, importModelReq, exportModelReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/dispatch/tool'
@@ -265,7 +264,6 @@ const DEF_OBJ = {
   jobName: undefined,
   displayName: '',
   status: 0,
-  timeout: 7200,
   concurrent: false,
   remark: '',
   jobContent: ''
@@ -580,11 +578,49 @@ export default {
     clickCell(row, column, cell, event) {
       this.selectRow(row)
     },
-    importMeta() {
-      console.log('TODO')
+    importModel(file) {
+      console.log('import')
+      this.$confirm(this.$t('tip.confirm') + ' ' + file.name, this.$t('tip.confirmMsg'), { type: 'warning' })
+        .then(() => {
+          const data = new FormData()
+          data.append('file', file.raw)
+          importModelReq(data).then(res => {
+            this.$message.success(res.data.msg)
+            this.search()
+          })
+        })
     },
-    exportMeta() {
-      console.log('TODO')
+    exportModel() {
+      const jobNames = []
+      if (this.selections.length) {
+        for (let i = 0; i < this.selections.length; i++) {
+          const sel = this.selections[i]
+          if (!sel.maxVersion) {
+            this.$message.warning(this.$t('tip.exportWithNoVersion') + ':' + sel.jobName)
+            return
+          }
+          jobNames.push(sel.jobName)
+        }
+        this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
+          .then(() => {
+            exportModelReq({ jobNames: jobNames }).then((res) => {
+              const data = res.data
+              if (!data) {
+                return
+              }
+              const url = window.URL.createObjectURL(new Blob([data]))
+              const link = document.createElement('a')
+              link.style.display = 'none'
+              link.href = url
+              link.setAttribute('download', 'models.zip')
+              document.body.appendChild(link)
+              link.click()
+            })
+          })
+      } else {
+        this.$message.warning(this.$t('tip.selectData'))
+        return
+      }
     },
     handleDownload() {
       this.downloadLoading = true

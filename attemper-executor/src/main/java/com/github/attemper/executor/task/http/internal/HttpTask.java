@@ -2,7 +2,6 @@ package com.github.attemper.executor.task.http.internal;
 
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.common.result.dispatch.project.ProjectInfo;
 import com.github.attemper.config.base.conf.LocalServerConfig;
@@ -18,7 +17,6 @@ import com.github.attemper.java.sdk.common.executor.param.router.BeanParam;
 import com.github.attemper.java.sdk.common.executor.param.router.RouterParam;
 import com.github.attemper.java.sdk.common.result.execution.LogResult;
 import com.github.attemper.java.sdk.common.result.execution.TaskResult;
-import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -30,21 +28,76 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
 import java.util.*;
 
 public abstract class HttpTask extends ParentTask implements JavaDelegate {
 
-    protected String subUrl;
+    @Override
+    public void execute(DelegateExecution execution) {
+        String jobName = CamundaUtil.extractKeyFromProcessDefinitionId(execution.getProcessDefinitionId());
+        Map<String, String> fieldMap = resolveExtensionElement(execution);
+        String url = resolveUrl(execution, fieldMap, jobName);
+        executeIntern(execution, url, fieldMap);
+    }
 
-    protected String beanName;
+    protected <V extends LogResult> V invoke(DelegateExecution execution, String url, Map<String, String> fieldMap, Class<V> v) {
+        saveUrl(execution, url);
+        int code = 3051;
+        try {
+            return WebClient.builder().build()
+                    .method(HttpMethod.POST)
+                    .uri(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .syncBody(buildParamMap(execution, fieldMap))
+                    .retrieve()
+                    .onStatus(HttpStatus::is4xxClientError, resp -> Mono.error(new RTException(resp.rawStatusCode(), resp.statusCode().getReasonPhrase())))
+                    .bodyToMono(v)
+                    .doOnError(WebClientResponseException.class, e -> {
+                        saveLogKey(execution, String.valueOf(code));
+                        throw new RTException(code, e);
+                    })
+                    .block(Duration.ofSeconds(injectTimeout(fieldMap)));
+        } catch (Exception e) {
+            saveLogKey(execution, String.valueOf(code));
+            throw new RTException(code, e);
+        }
+    }
 
-    protected String methodName;
+    @Autowired
+    protected LocalServerConfig localServerConfig;
+
+    private Object buildParamMap(DelegateExecution execution, Map<String, String> fieldMap) {
+        MetaParam executionParam = new MetaParam();
+        executionParam
+                .setParentActInstId(execution.getParentActivityInstanceId())
+                .setProcInstId(execution.getProcessInstanceId())
+                .setActId(execution.getCurrentActivityId())
+                .setActName(execution.getCurrentActivityName())
+                .setRequestPath(localServerConfig.getRequestPath())
+                .setActInstId(execution.getActivityInstanceId())
+                .setExecutionId(execution.getId());
+        if (fieldMap.get(PropertyConstants.subUrl) == null) { // router
+            RouterParam routerParam = new RouterParam();
+            routerParam.setBizParamMap(execution.getVariables());
+            BeanParam beanParam = new BeanParam();
+            beanParam.setBeanName(fieldMap.get(PropertyConstants.beanName) == null ?
+                    CamundaUtil.extractKeyFromProcessDefinitionId(execution.getProcessDefinitionId())
+                    : fieldMap.get(PropertyConstants.beanName));
+            beanParam.setMethodName(fieldMap.get(PropertyConstants.methodName) == null ?
+                    execution.getCurrentActivityId() : fieldMap.get(PropertyConstants.methodName));
+            routerParam.setBeanParam(beanParam);
+            routerParam.setMetaParam(executionParam);
+            return routerParam;
+        } else {
+            TaskParam<Map<String, Object>> taskCommonParam = new TaskParam<>();
+            return taskCommonParam.setMetaParam(executionParam).setBizParam(execution.getVariables());
+        }
+    }
 
     @Autowired
     protected JobService jobService;
@@ -55,80 +108,12 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
     @Autowired
     protected DiscoveryClient discoveryClient;
 
-    @Autowired
-    protected LocalServerConfig localServerConfig;
-
-    @Autowired
-    protected ToolService toolService;
-
-    @Override
-    public void execute(DelegateExecution execution) {
-        String jobName = CamundaUtil.extractKeyFromProcessDefinitionId(execution.getProcessDefinitionId());
-        Job job = jobService.get(jobName, execution.getTenantId());
-        resolveExtensionElement(execution);
-        String url = resolveUrl(jobName, execution);
-        executeIntern(execution, job, url);
-    }
-
-    protected <V extends LogResult> V invoke(DelegateExecution execution, Job job, String url, Class<V> v) {
-        saveUrl(execution, url);
-        WebClient webClient = buildWebClient(job);
-        return webClient
-                .method(HttpMethod.POST)
-                .uri(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .syncBody(buildParamMap(execution))
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, resp -> Mono.error(new RTException(resp.rawStatusCode(), resp.statusCode().getReasonPhrase())))
-                .bodyToMono(v)
-                .doOnError(WebClientResponseException.class, err -> {
-                    int code = 3051;
-                    saveLogKey(execution, String.valueOf(code));
-                    throw new RTException(code, err);
-                })
-                .block();
-    }
-
-    private Object buildParamMap(DelegateExecution execution) {
-        MetaParam executionParam = new MetaParam();
-        executionParam
-                .setParentActInstId(execution.getParentActivityInstanceId())
-                .setProcInstId(execution.getProcessInstanceId())
-                .setActId(execution.getCurrentActivityId())
-                .setActName(execution.getCurrentActivityName())
-                .setRequestPath(localServerConfig.getRequestPath())
-                .setActInstId(execution.getActivityInstanceId())
-                .setExecutionId(execution.getId());
-        if (subUrl == null) { // router
-            RouterParam routerParam = new RouterParam();
-            routerParam.setBizParamMap(execution.getVariables());
-            BeanParam beanParam = new BeanParam();
-            beanParam.setBeanName(beanName == null ?
-                    CamundaUtil.extractKeyFromProcessDefinitionId(execution.getProcessDefinitionId()) : beanName);
-            beanParam.setMethodName(methodName == null ? execution.getCurrentActivityId() : methodName);
-            routerParam.setBeanParam(beanParam);
-            routerParam.setMetaParam(executionParam);
-            return routerParam;
-        } else {
-            TaskParam<Map<String, Object>> taskCommonParam = new TaskParam<>();
-            return taskCommonParam.setMetaParam(executionParam).setBizParam(execution.getVariables());
-        }
-    }
-
-    private WebClient buildWebClient(Job job) {
-        HttpClient httpClient = HttpClient.create()
-                .tcpConfiguration(client ->
-                        client.doOnConnected(conn -> conn
-                                .addHandlerLast(new ReadTimeoutHandler(job.getTimeout()))));
-        return WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient)).build();
-    }
-
     /**
      * random get a accessed url
      * @param jobName
      * @return
      */
-    private String resolveUrl(String jobName, DelegateExecution execution) {
+    private String resolveUrl(DelegateExecution execution, Map<String, String> fieldMap, String jobName) {
         Project project = jobService.getProject(jobName, execution.getTenantId());
         if (project == null) {
             project = projectService.getRoot(execution.getTenantId());
@@ -163,8 +148,11 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
             throw new RTException(code);
         }
         int randomIndex = (int) (Math.random() * urls.size());
-        return optimizePath(String.valueOf(urls.toArray()[randomIndex]), project.getContextPath());
+        return optimizePath(String.valueOf(urls.toArray()[randomIndex]), fieldMap.get(PropertyConstants.subUrl), project.getContextPath());
     }
+
+    @Autowired
+    protected ToolService toolService;
 
     /**
      * only add the uri which is pinged successfully
@@ -177,7 +165,7 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
         }
     }
 
-    private String optimizePath(String rootUrl, String contextPath) {
+    private String optimizePath(String rootUrl, String subUrl, String contextPath) {
         StringBuilder sb = new StringBuilder();
         sb.append(rootUrl.endsWith("/") ? rootUrl.substring(0, rootUrl.length() - 1) : rootUrl);
         if (StringUtils.isNotBlank(contextPath)) {
@@ -187,25 +175,18 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
         return sb.toString();
     }
 
-    private void resolveExtensionElement(DelegateExecution execution) {
+    private Map<String, String> resolveExtensionElement(DelegateExecution execution) {
+        Map<String, String> map = new HashMap<>();
         Collection<ModelElementInstance> elements = execution.getBpmnModelElementInstance().getExtensionElements().getElements();
         elements.forEach(item -> {
             if (item instanceof CamundaPropertiesImpl) {
                 CamundaPropertiesImpl cpi = (CamundaPropertiesImpl) item;
                 cpi.getCamundaProperties().forEach(cell -> {
-                    String camundaValue = cell.getCamundaValue();
-                    if (camundaValue != null) {
-                        if (PropertyConstants.subUrl.equals(cell.getCamundaName())) {
-                            this.subUrl = camundaValue.startsWith("/") ? camundaValue : "/" + camundaValue;
-                        } else if (PropertyConstants.beanName.equals(cell.getCamundaName())) {
-                            this.beanName = camundaValue;
-                        } else if (PropertyConstants.methodName.equals(cell.getCamundaName())) {
-                            this.methodName = camundaValue;
-                        }
-                    }
+                    map.put(cell.getCamundaName(), cell.getCamundaValue());
                 });
             }
         });
+        return map;
     }
 
     protected void saveVariables(DelegateExecution execution, TaskResult taskResult) {
@@ -217,8 +198,18 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
         }
     }
 
-    protected abstract void executeIntern(DelegateExecution execution, Job job, String url);
+    protected abstract void executeIntern(DelegateExecution execution, String url, Map<String, String> fieldMap);
 
     protected abstract String injectRouterPath();
 
+    private static final int defTimeout = 3600;
+
+    protected int injectTimeout(Map<String, String> fieldMap) {
+        String timeoutStr = fieldMap.get(PropertyConstants.timeout);
+        try {
+            return Integer.parseInt(timeoutStr);
+        } catch (NumberFormatException e) {
+            return defTimeout;
+        }
+    }
 }

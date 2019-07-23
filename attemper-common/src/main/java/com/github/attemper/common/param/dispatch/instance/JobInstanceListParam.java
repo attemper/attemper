@@ -9,7 +9,7 @@ import java.util.List;
 @ToString
 public class JobInstanceListParam extends PageSortParam {
 
-    protected String rootProcInstId;
+    protected String procInstId;
 
     protected String jobName;
 
@@ -39,12 +39,12 @@ public class JobInstanceListParam extends PageSortParam {
         upperEndTime = StringUtils.trimToNull(upperEndTime);
     }
 
-    public String getRootProcInstId() {
-        return rootProcInstId;
+    public String getProcInstId() {
+        return procInstId;
     }
 
-    public JobInstanceListParam setRootProcInstId(String rootProcInstId) {
-        this.rootProcInstId = rootProcInstId;
+    public JobInstanceListParam setProcInstId(String procInstId) {
+        this.procInstId = procInstId;
         return this;
     }
 

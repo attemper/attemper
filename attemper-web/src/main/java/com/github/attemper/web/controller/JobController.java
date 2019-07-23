@@ -12,7 +12,9 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -68,31 +70,10 @@ public class JobController {
 		return CommonResult.putResult(jobService.versions(param));
 	}
 
-	@ApiOperation("List args of job")
-	@ApiImplicitParam(value = "JobArgListParam", name = "param", dataType = "JobArgListParam", required = true)
-	@GetMapping(APIPath.JobPath.ARG)
-	public CommonResult<Map<String, Object>> listArg(JobArgListParam param) {
-		return CommonResult.putResult(jobService.listArg(param));
-	}
-
-	@ApiOperation("Get project")
-	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
-	@GetMapping(APIPath.JobPath.GET_PROJECT)
-	public CommonResult<Project> getProject(JobGetParam param) {
-		return CommonResult.putResult(jobService.getProject(param));
-	}
-
-	@ApiOperation("Save project of job")
-	@ApiImplicitParam(value = "JobProjectSaveParam", name = "param", dataType = "JobProjectSaveParam", required = true)
-	@PutMapping(APIPath.JobPath.SAVE_PROJECT)
-	public CommonResult<Void> saveProject(@RequestBody JobProjectSaveParam param) {
-		return CommonResult.putResult(jobService.saveProject(param));
-	}
-
 	@ApiOperation("Publish job to quartz and camunda")
-	@ApiImplicitParam(value = "JobPublishParam", name = "param", dataType = "JobPublishParam", required = true)
+	@ApiImplicitParam(value = "JobNamesParam", name = "param", dataType = "JobNamesParam", required = true)
 	@PutMapping(APIPath.JobPath.PUBLISH)
-	public CommonResult<Void> publish(@RequestBody JobPublishParam param) {
+	public CommonResult<Void> publish(@RequestBody JobNamesParam param) {
 		return CommonResult.putResult(jobOperatedService.publish(param));
 	}
 
@@ -124,6 +105,27 @@ public class JobController {
 		return CommonResult.putResult(jobOperatedService.manual(param));
 	}
 
+	@ApiOperation("Export model")
+	@ApiImplicitParam(value = "JobNamesParam", name = "param", dataType = "JobNamesParam", required = true)
+	@GetMapping(APIPath.JobPath.EXPORT_MODEL)
+	public void exportModel(HttpServletResponse response, JobNamesParam param) {
+		jobOperatedService.exportModel(response, param);
+	}
+
+	@ApiOperation("Import model")
+	@ApiImplicitParam(value = "MultipartFile", name = "file", dataType = "MultipartFile", required = true)
+	@PostMapping(APIPath.JobPath.IMPORT_MODEL)
+	public CommonResult<Void> importModel(MultipartFile file) {
+		return CommonResult.putResult(jobOperatedService.importModel(file));
+	}
+
+	@ApiOperation("List args of job")
+	@ApiImplicitParam(value = "JobArgListParam", name = "param", dataType = "JobArgListParam", required = true)
+	@GetMapping(APIPath.JobPath.ARG)
+	public CommonResult<Map<String, Object>> listArg(JobArgListParam param) {
+		return CommonResult.putResult(jobService.listArg(param));
+	}
+
 	@ApiOperation("Add arg")
 	@ApiImplicitParam(value = "JobArgAllocatedParam", name = "param", dataType = "JobArgAllocatedParam", required = true)
 	@PostMapping(APIPath.JobPath.ARG)
@@ -144,4 +146,19 @@ public class JobController {
 	public CommonResult<String> getJsonArg(JobGetParam param) {
 		return CommonResult.putResult(jobService.getJsonArg(param));
 	}
+
+	@ApiOperation("Get project")
+	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
+	@GetMapping(APIPath.JobPath.GET_PROJECT)
+	public CommonResult<Project> getProject(JobGetParam param) {
+		return CommonResult.putResult(jobService.getProject(param));
+	}
+
+	@ApiOperation("Save project of job")
+	@ApiImplicitParam(value = "JobProjectSaveParam", name = "param", dataType = "JobProjectSaveParam", required = true)
+	@PutMapping(APIPath.JobPath.SAVE_PROJECT)
+	public CommonResult<Void> saveProject(@RequestBody JobProjectSaveParam param) {
+		return CommonResult.putResult(jobService.saveProject(param));
+	}
+
 }

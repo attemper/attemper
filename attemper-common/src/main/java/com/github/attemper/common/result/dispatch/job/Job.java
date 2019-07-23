@@ -1,6 +1,6 @@
 package com.github.attemper.common.result.dispatch.job;
 
-import lombok.*;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -15,8 +15,6 @@ public class Job {
     protected String jobContent;
 
     protected int status;
-
-    protected int timeout;
 
     protected boolean concurrent;
 
@@ -73,15 +71,6 @@ public class Job {
 
     public Job setStatus(int status) {
         this.status = status;
-        return this;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public Job setTimeout(int timeout) {
-        this.timeout = timeout;
         return this;
     }
 

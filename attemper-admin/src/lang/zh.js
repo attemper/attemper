@@ -90,8 +90,8 @@ export default {
     reset: '重置',
     transferIn: '移入',
     transferOut: '移出',
-    importJob: '导出任务',
-    exportJob: '导入任务',
+    importModel: '导入模型',
+    exportModel: '导出模型',
     exportList: '导出列表',
     last: '上一个',
     next: '下一个',
@@ -121,6 +121,7 @@ export default {
     saveConfirm: '确定保存',
     saveOrPublishConfirm: '确定保存或发布',
     manualWithNoVersion: '流程未被发布，不能手动发起',
+    exportWithNoVersion: '流程未被发布，不能导出模型',
     disabledJobError: '禁用的任务不可被发起',
     adminTenantCannotBeRemoved: '超管租户不能删除',
     preview: '预览',
@@ -132,7 +133,8 @@ export default {
     formatError: '格式不正确',
     pingError: '地址ping不通',
     yes: '是',
-    no: '否'
+    no: '否',
+    flowNotStart: '任务流未成功发起，无法查看节点执行详情'
   },
   columns: {
     displayName: '中文名',
@@ -205,7 +207,6 @@ export default {
         version: '发布版本',
         jobName: '任务名称',
         nextFireTime: '下次执行时间',
-        timeout: '超时时间',
         concurrent: '是否支持并行',
         createTime: '创建时间',
         updateTime: '最近修改时间',

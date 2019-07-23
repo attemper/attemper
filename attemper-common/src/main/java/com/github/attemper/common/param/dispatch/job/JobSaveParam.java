@@ -16,8 +16,6 @@ public class JobSaveParam implements CommonParam {
 
     protected Integer status;
 
-    protected Integer timeout;
-
     protected Boolean concurrent;
 
     protected String remark;
@@ -75,15 +73,6 @@ public class JobSaveParam implements CommonParam {
 
     public JobSaveParam setStatus(Integer status) {
         this.status = status;
-        return this;
-    }
-
-    public Integer getTimeout() {
-        return timeout;
-    }
-
-    public JobSaveParam setTimeout(Integer timeout) {
-        this.timeout = timeout;
         return this;
     }
 

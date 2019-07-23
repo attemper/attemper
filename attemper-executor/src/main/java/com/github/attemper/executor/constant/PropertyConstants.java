@@ -11,6 +11,8 @@ public interface PropertyConstants {
 
     String methodName = "methodName";
 
+    String timeout = "timeout";
+
     String customMail = "custom_mail_";
 
     String from = customMail + "from";

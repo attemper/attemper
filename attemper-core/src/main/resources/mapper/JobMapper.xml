@@ -9,7 +9,6 @@
             JOB_NAME,
             DISPLAY_NAME,
             STATUS,
-            TIMEOUT,
             CONCURRENT,
             MAX_REVERSION,
             CREATE_TIME,
@@ -21,7 +20,6 @@
             #{jobName, jdbcType=VARCHAR},
             #{displayName, jdbcType=VARCHAR},
             #{status, jdbcType=INTEGER},
-            #{timeout, jdbcType=INTEGER},
             #{concurrent, jdbcType=INTEGER},
             #{maxReversion, jdbcType=INTEGER},
             #{createTime, jdbcType=TIMESTAMP},
@@ -54,7 +52,6 @@
         UPDATE ${tablePrefix}job j
         SET
         STATUS = #{status, jdbcType=INTEGER},
-        TIMEOUT = #{timeout, jdbcType=INTEGER},
         CONCURRENT = #{concurrent, jdbcType=INTEGER},
         MAX_REVERSION = #{maxReversion, jdbcType=INTEGER},
         MAX_VERSION = #{maxVersion, jdbcType=INTEGER},
@@ -138,7 +135,7 @@
     <select id="versions" parameterType="map" resultType="com.github.attemper.common.result.dispatch.job.Job">
         <!-- tip: do not return job content here because the column may be too big -->
         SELECT
-        ji.JOB_NAME,j.DISPLAY_NAME, j.TIMEOUT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME, ji.TENANT_ID,
+        ji.JOB_NAME,j.DISPLAY_NAME, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME, ji.TENANT_ID,
         j.MAX_REVERSION, j.MAX_VERSION, ji.REVERSION, ji.VERSION, j.STATUS, j.CREATE_TIME, j.REMARK
         FROM
         ${tablePrefix}job j JOIN ${tablePrefix}job_info ji USING (JOB_NAME, TENANT_ID)
@@ -291,7 +288,7 @@
     </sql>
 
     <sql id="jobAndInfoSql">
-        SELECT ji.JOB_NAME, j.DISPLAY_NAME, j.TIMEOUT, j.CONCURRENT, ji.JOB_CONTENT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME,
+        SELECT ji.JOB_NAME, j.DISPLAY_NAME, j.CONCURRENT, ji.JOB_CONTENT, ji.UPDATE_TIME, ji.DEPLOYMENT_TIME,
                 ji.TENANT_ID, j.MAX_REVERSION, ji.REVERSION, j.MAX_VERSION, ji.VERSION, j.STATUS, j.CREATE_TIME,
                 j.REMARK
                 from ${tablePrefix}job j

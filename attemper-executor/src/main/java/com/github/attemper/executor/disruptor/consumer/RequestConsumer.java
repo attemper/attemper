@@ -2,6 +2,7 @@ package com.github.attemper.executor.disruptor.consumer;
 
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.common.param.dispatch.instance.JobInstanceGetParam;
 import com.github.attemper.common.param.executor.JobInvokingParam;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
@@ -76,7 +77,7 @@ public class RequestConsumer implements WorkHandler<JobEvent> {
 
     private void updateInstance(JobInvokingParam param, int code, String msg) {
         JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
-        JobInstance jobInstance = jobInstanceService.get(param.getId());
+        JobInstance jobInstance = jobInstanceService.get(new JobInstanceGetParam().setId(param.getId()));
         Date now = new Date();
         jobInstance.setEndTime(now);
         jobInstance.setDuration(now.getTime() - jobInstance.getStartTime().getTime());

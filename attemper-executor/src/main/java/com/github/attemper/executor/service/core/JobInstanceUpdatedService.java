@@ -1,5 +1,6 @@
 package com.github.attemper.executor.service.core;
 
+import com.github.attemper.common.param.dispatch.instance.JobInstanceGetParam;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceIdParam;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
@@ -24,7 +25,7 @@ public class JobInstanceUpdatedService {
         JobInstance jobInstance = getJobInstance(param);
         if (validateState(jobInstance)) {
             runtimeService.deleteProcessInstanceIfExists(
-                    jobInstance.getRootProcInstId(),
+                    jobInstance.getProcInstId(),
                     StatusProperty.getValue(901),
                     true,
                     true,
@@ -35,10 +36,10 @@ public class JobInstanceUpdatedService {
     }
 
     private boolean validateState(JobInstance jobInstance) {
-        return StringUtils.isNotBlank(jobInstance.getRootProcInstId());
+        return StringUtils.isNotBlank(jobInstance.getProcInstId());
     }
 
     private JobInstance getJobInstance(JobInstanceIdParam param) {
-        return jobInstanceService.get(param.getId());
+        return jobInstanceService.get(new JobInstanceGetParam().setId(param.getId()));
     }
 }
