@@ -82,7 +82,7 @@ public class JobCallingService {
         if (job == null) {
             code = 6050;
         } else if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
-            code = 3010;
+            return;
         } else if (!validateConcurrent(job)) {
             code = 3008;
         }

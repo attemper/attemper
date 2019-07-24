@@ -40,7 +40,7 @@
         </el-tree>
       </el-card>
     </el-col>
-    <el-col v-show="project.projectName" :span="14">
+    <el-col v-show="project && project.projectName" :span="14">
       <el-card>
         <div slot="header">
           <span>{{ $t('dispatch.project.title.rightTop') }}</span>
@@ -95,7 +95,7 @@
                 <span>{{ scope.row.uri }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="type" prop="type" align="center" min-width="100px">
+            <el-table-column label="type" prop="type" align="center" min-width="80px">
               <template slot-scope="scope">
                 <el-tag :type="scope.row.type | typeFilter">{{ formatType(scope.row.type) }}</el-tag>
               </template>
@@ -111,12 +111,12 @@
               <el-col :span="8">
                 <el-input v-model="projectInfo.uri" placeholder="uri" />
               </el-col>
-              <el-col :span="8" :offset="1">
+              <el-col :span="6" :offset="1">
                 <el-select v-model="projectInfo.type" style="width: 100%;">
                   <el-option v-for="item in uriTypes" :key="item.label" :value="item.value" :label="item.label" />
                 </el-select>
               </el-col>
-              <el-col :span="4" :offset="2">
+              <el-col :span="6" :offset="2">
                 <el-button :disabled="!projectInfo.uri" type="success" @click="saveInfo">{{ $t('actions.save') }}</el-button>
                 <el-button :disabled="!projectInfo.uri" type="primary" @click="ping">Ping</el-button>
               </el-col>
@@ -131,15 +131,6 @@
 <script>
 import { treeListReq, saveReq, removeReq, saveInfoReq, listInfoReq, removeInfoReq, saveExecutorReq, listExecutorReq } from '@/api/dispatch/project'
 import { listExecutorServiceReq, pingReq } from '@/api/dispatch/tool'
-
-const DEF_OBJ = {
-  projectName: null,
-  parentProjectName: null,
-  displayName: null,
-  contextPath: null,
-  bindExecutor: false,
-  position: 0
-}
 
 const DEF_INSTANCE = {
   uri: null,
@@ -160,7 +151,7 @@ export default {
   data() {
     return {
       treeData: [],
-      project: DEF_OBJ,
+      project: null,
       visible: false,
       formRules: {
         projectName: [
@@ -242,19 +233,18 @@ export default {
     },
     append(data) {
       const position = Math.floor(Math.random() * 1000)
-      const newChild = Object.assign(
-        {
-          parentProjectName: data.projectName,
-          projectName: data.projectName + '-' + position,
-          displayName: data.projectName + '-' + position,
-          position: position,
-          transition: true
-        }, DEF_OBJ)
+      const newChild = {
+        parentProjectName: data.projectName,
+        projectName: data.projectName + '-' + position,
+        displayName: data.projectName + '-' + position,
+        position: position,
+        bindExecutor: false,
+        transition: true
+      }
       if (!data.children) {
         this.$set(data, 'children', [])
       }
       data.children.push(newChild)
-      this.$refs.tree.setCurrentNode(newChild)
     },
     remove(node, data) {
       if (data.transition) {
@@ -281,7 +271,7 @@ export default {
       this.visible = false
     },
     selectNode(data) {
-      Object.assign(this.project, data)
+      this.project = data
       this.visible = true
       this.projectInfo.projectName = this.project.projectName
       this.initInfos(this.projectInfo)

@@ -6,6 +6,7 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
+        <span class="right-menu-item">{{ now }}</span>
         <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
@@ -64,12 +65,31 @@ export default {
     LangSelect,
     Search
   },
+  data() {
+    return {
+      timer: null,
+      now: null
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'userName',
       'device'
     ])
+  },
+  created() {
+    this.timer = setInterval(() => {
+      const date = new Date()
+      this.now = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' +
+          date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+    }, 1000
+    )
+  },
+  beforeDestroy() {
+    if (this.timer) {
+      clearInterval(this.timer)
+    }
   },
   methods: {
     toggleSideBar() {
