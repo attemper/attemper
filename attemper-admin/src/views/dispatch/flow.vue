@@ -25,14 +25,15 @@
         </el-option>
       </el-select>
       <span style="margin-left: 40px;">
-        <el-tooltip :content="$t('actions.saveOrPublish')" effect="dark" placement="top-start">
-          <span>
-            <el-button :disabled="job.maxReversion !== currentReversion" icon="el-icon-check" type="success" @click="save" />
-          </span>
-        </el-tooltip>
+        <el-popover placement="top" trigger="hover">
+          <el-button type="info" @click="save">{{ $t('actions.save') }}</el-button>
+          <el-button type="primary" @click="publish">{{ $t('actions.publish') }}</el-button>
+          <el-button type="success" @click="saveAndPublish">{{ $t('actions.saveAndPublish') }}</el-button>
+          <el-button slot="reference" icon="el-icon-check" type="success" />
+        </el-popover>
         <el-tooltip :content="$t('dispatch.flow.tip.exchange')" effect="dark" placement="top">
           <span style="margin-left: 10px;">
-            <el-button :disabled="job.maxReversion === currentReversion" type="warning" @click="exchange">
+            <el-button type="warning" @click="exchange">
               <svg-icon icon-class="exchange" />
             </el-button>
           </span>
@@ -46,7 +47,7 @@
         </el-tooltip>
         <el-tooltip :content="$t('actions.manual')" effect="dark" placement="top-start">
           <span style="margin-left: 10px;">
-            <el-button type="danger" @click="openParam">
+            <el-button :disabled="!job.version && job.reversion === 0" type="danger" @click="openParam">
               <svg-icon icon-class="hand" />
             </el-button>
           </span>
@@ -80,7 +81,7 @@
 </template>
 
 <script>
-import { getReq, updateReq, versionsReq, copyReq, exchangeReq, publishReq, manualReq, getJsonArgReq } from '@/api/dispatch/job'
+import { getContentReq, updateContentReq, versionsReq, copyReq, exchangeReq, publishReq, manualReq, getJsonArgReq } from '@/api/dispatch/job'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import propertiesPanelModule from 'bpmn-js-properties-panel'
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
@@ -162,7 +163,7 @@ export default {
 
         self.bindJobContent(function(err, xml) {
           if (!err) {
-            self.job.jobContent = xml
+            self.job.content = xml
           } else {
             console.error(err)
           }
@@ -182,50 +183,59 @@ export default {
     },
     save() {
       this.$confirm(
-        this.$t('tip.saveOrPublishConfirm'),
+        this.$t('tip.saveConfirm'),
         this.$t('tip.confirm'),
-        {
-          type: 'info',
-          distinguishCancelAndClose: true,
-          confirmButtonText: this.$t('table.publish'),
-          cancelButtonText: this.$t('actions.save') })
-        .then((action) => {
-          updateReq(this.job).then(res => {
+        { type: 'info' })
+        .then(() => {
+          updateContentReq(this.job).then(res => {
+            this.$message.success(res.data.msg)
+            this.openNewJobPage(this.job.jobName)
+          })
+        })
+    },
+    publish() {
+      this.$confirm(
+        this.$t('tip.publishConfirm'),
+        this.$t('tip.confirm'),
+        { type: 'info' })
+        .then(() => {
+          publishReq({ jobNames: [this.job.jobName] }).then(res => {
+            this.$message.success(res.data.msg)
+            this.openNewJobPage(this.job.jobName)
+          })
+        })
+    },
+    saveAndPublish() {
+      this.$confirm(
+        this.$t('tip.saveAndPublishConfirm'),
+        this.$t('tip.confirm'),
+        { type: 'info' })
+        .then(() => {
+          updateContentReq(this.job).then(res => {
             publishReq({ jobNames: [this.job.jobName] }).then(res => {
               this.$message.success(res.data.msg)
               this.openNewJobPage(this.job.jobName)
             })
           })
         })
-        .catch((action) => {
-          if (action === 'cancel') {
-            updateReq(this.job).then(res => {
-              this.$message.success(res.data.msg)
-              this.openNewJobPage(this.job.jobName)
-            })
-          }
-        })
     },
     changeJob() {
       const loading = this.getLoading()
-      this.resolveJob({ jobName: this.job.jobName, reversion: this.currentReversion })
+      this.renderContent()
       this.closeLoading(loading)
     },
     initJobWithVersions() {
       versionsReq({ jobName: this.$route.params.key }).then(res => {
-        this.jobWithVersions = res.data.result
-        for (let i = 0; i < this.jobWithVersions.length; i++) {
-          const item = this.jobWithVersions[i]
-          this.currentReversion = item.maxReversion
-          this.resolveJob(item)
-          break
-        }
+        this.jobWithVersions = res.data.result.reverse()
+        this.currentReversion = this.jobWithVersions[0].reversion
+        this.renderContent()
       })
     },
-    resolveJob(item) {
-      getReq({ jobName: item.jobName, reversion: item.reversion }).then(res => {
-        this.job = res.data.result
-        this.openDiagram(this.job.jobContent) // open the job content
+    renderContent() {
+      this.job = Object.assign({}, this.jobWithVersions.find(item => item.reversion === this.currentReversion))
+      getContentReq(this.job).then(res => {
+        this.job.content = res.data.result
+        this.openDiagram(this.job.content) // open the job content
       })
     },
     openCopyDialog() {
@@ -236,14 +246,14 @@ export default {
     // copy job with current reversion to another job(if the target was existent, will add its reversion)
     copy() {
       if (this.job.jobName === this.targetJobParam.jobName) {
-        this.$message.error(this.$t('dispatch.flow.tip.jobNameNotChanged'))
+        this.$message.warning(this.$t('dispatch.flow.tip.jobNameNotChanged'))
         return
       }
       this.$confirm(this.$t('dispatch.flow.tip.copyConfirm'), this.$t('tip.confirm'), { type: 'info' })
         .then(() => {
           const data = {
             jobName: this.job.jobName,
-            reversion: this.currentReversion,
+            version: this.job.version,
             targetJobParam: this.targetJobParam
           }
           copyReq(data).then(res => {
@@ -255,17 +265,20 @@ export default {
     },
     // exchange current reversion to the latest
     exchange() {
+      if (this.currentReversion === this.jobWithVersions[0].reversion) {
+        this.$message.warning(this.$t('dispatch.flow.tip.versionIsLatest'))
+        return
+      }
       this.$confirm(this.$t('dispatch.flow.tip.exchangeConfirm'), this.$t('tip.confirm'), { type: 'info' })
         .then(() => {
           exchangeReq(this.job).then(res => {
             this.$message.success(res.data.msg)
             this.openNewJobPage(this.job.jobName)
-            this.currentReversion = res.data.result.maxReversion
           })
         })
     },
     openParam() {
-      if (!this.job.maxVersion) {
+      if (!this.job.version) {
         this.$message.warning(this.$t('tip.manualWithNoVersion'))
         return
       } else if (this.job.status === 1) {

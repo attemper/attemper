@@ -6,6 +6,7 @@ import com.github.attemper.common.param.dispatch.job.*;
 import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
 import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
 import com.github.attemper.common.result.dispatch.job.Job;
+import com.github.attemper.common.result.dispatch.job.JobWithVersionResult;
 import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
 import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
@@ -93,7 +94,7 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     public Job add(JobSaveParam param) {
-        Job job = jobService.get(new JobGetParam().setJobName(param.getJobName()));
+        Job job = jobService.get(new JobNameParam().setJobName(param.getJobName()));
         if (job != null) {
             throw new DuplicateKeyException(param.getJobName());
         }
@@ -101,34 +102,29 @@ public class JobOperatedService extends BaseServiceAdapter {
         if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
             throw new RTException(6055);
         }
-        Date now = new Date();
-        job.setCreateTime(now);
-        job.setUpdateTime(now);
-        job.setMaxReversion(1);
-        job.setReversion(1);
-        if (StringUtils.isBlank(param.getJobContent())) {
+        job.setUpdateTime(new Date());
+        if (StringUtils.isBlank(param.getContent())) {
             BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(job.getJobName())
                     .name(job.getDisplayName())
                     .startEvent()
-                    .id("StartEvent_1")
+                    .id("start")
                     .done();
-            job.setJobContent(Bpmn.convertToString(modelInstance));
+            job.setContent(Bpmn.convertToString(modelInstance));
         } else {
-            BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(param.getJobContent().getBytes()));
+            BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(param.getContent().getBytes()));
             Collection<Process> modelElements = bpmnModelInstance.getModelElementsByType(Process.class);
             for (Process process : modelElements) {
                 process.builder().id(param.getJobName()).name(param.getDisplayName());
                 break;
             }
-            job.setJobContent(Bpmn.convertToString(bpmnModelInstance));
+            job.setContent(Bpmn.convertToString(bpmnModelInstance));
         }
         mapper.add(job);
-        mapper.addInfo(job);
         return job;
     }
 
     public Job update(JobSaveParam param) {
-        Job job = jobService.get(new JobGetParam().setJobName(param.getJobName()));
+        Job job = jobService.get(new JobNameParam().setJobName(param.getJobName()));
         if (job == null) {
             return add(param); // Equivalent to copy then add
         }
@@ -136,32 +132,60 @@ public class JobOperatedService extends BaseServiceAdapter {
             throw new RTException(6080);
         }
         Job updatedJob = toJob(param);
-        updatedJob.setCreateTime(job.getCreateTime());
-        updatedJob.setMaxVersion(job.getMaxVersion());
-        if (checkNeedSave(job, updatedJob)) {  // base info
-            updatedJob.setMaxReversion(job.getMaxReversion());
-        } else {  //job content
-            if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
-                throw new RTException(6057);
-            }
-            if (StringUtils.equals(param.getJobContent(), job.getJobContent())) {
-                throw new RTException(6056);
-            }
-            updatedJob.setUpdateTime(new Date());
-            updatedJob.setDeploymentTime(null);
-            if (job.getVersion() == null) {
-                updatedJob.setMaxReversion(job.getReversion());
-                updatedJob.setReversion(job.getReversion());
-                mapper.updateInfo(updatedJob);
-            } else {
-                updatedJob.setMaxReversion(job.getReversion() + 1);
-                updatedJob.setReversion(job.getReversion() + 1);
-                updatedJob.setVersion(null);
-                mapper.addInfo(updatedJob);
-            }
+        if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
+            throw new RTException(6057);
         }
+        updatedJob.setUpdateTime(new Date());
         mapper.update(updatedJob);
         return updatedJob;
+    }
+
+    public String getContent(JobNameWithVersionParam param) {
+        if (param.getVersion() == null) {
+            Job job = validateAndGet(param.getJobName());
+            return job.getContent();
+        } else {
+            ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
+                    .processDefinitionKey(param.getJobName())
+                    .tenantIdIn(injectTenantId())
+                    .processDefinitionVersion(param.getVersion())
+                    .singleResult();
+            InputStream is = repositoryService.getResourceAsStream(definition.getDeploymentId(), definition.getResourceName());
+            return IoUtil.inputStreamAsString(is);
+        }
+    }
+
+    public JobWithVersionResult updateContent(JobContentSaveParam param) {
+        Job job = validateAndGet(param.getJobName());
+        JobWithVersionResult result = new JobWithVersionResult()
+                .setJobName(param.getJobName());
+        ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKey(param.getJobName())
+                .tenantIdIn(injectTenantId())
+                .latestVersion()
+                .singleResult();
+        if (StringUtils.isNotBlank(job.getContent())) {
+            if (StringUtils.equals(param.getContent(), job.getContent())) {
+                throw new RTException(6056);
+            }
+        } else {
+            if (definition != null) {
+                InputStream is = repositoryService.getResourceAsStream(definition.getDeploymentId(), definition.getResourceName());
+                String latestContent = IoUtil.inputStreamAsString(is);
+                if (StringUtils.equals(param.getContent(), latestContent)) {
+                    throw new RTException(6056);
+                }
+            }
+        }
+        job.setUpdateTime(new Date());
+        job.setContent(param.getContent());
+        mapper.updateContent(job);
+        if (definition == null) {
+            result.setReversion(0);
+        } else {
+            return result.setReversion(definition.getVersion() + 1);
+        }
+        return result.setUpdateTime(job.getUpdateTime());
     }
 
     public Void remove(JobNamesParam param) {
@@ -183,41 +207,22 @@ public class JobOperatedService extends BaseServiceAdapter {
     public Void publish(JobNamesParam param) {
         List<String> jobNames = param.getJobNames();
         jobNames.forEach(jobName -> {
-            Job job = validateAndGet(jobName);  //the newest reversion job
-            if (job.getVersion() != null) {
-                throw new RTException(6054, jobName);
+            Job job = validateAndGet(jobName);
+            if (StringUtils.isBlank(job.getContent())) {
+                throw new RTException(6053, jobName);
             }
-            Deployment deployment = createDefault(job);
-            int maxVersion = job.getMaxVersion() == null ? 1 : job.getMaxVersion() + 1;
-            job.setUpdateTime(deployment.getDeploymentTime());
-            job.setDeploymentTime(deployment.getDeploymentTime());
-            job.setVersion(maxVersion);
-            job.setMaxReversion(job.getMaxReversion());
-            job.setMaxVersion(maxVersion);
-            mapper.update(job);
-            mapper.updateInfo(job);
+            Deployment deployment = deploy(job);
+            job.setUpdateTime(deployment.getDeploymentTime()).setContent(null);
+            mapper.updateContent(job);
         });
         return null;
-    }
-
-    /**
-     * if the job meta setting was changed, just save
-     *
-     * @param job
-     * @param updatedJob
-     * @return
-     */
-    private boolean checkNeedSave(Job job, Job updatedJob) {
-        return job.getStatus() != updatedJob.getStatus()
-                || job.isConcurrent() != updatedJob.isConcurrent()
-                || !StringUtils.equals(job.getRemark(), updatedJob.getRemark());
     }
 
     private Job toJob(JobSaveParam saveParam) {
         return new Job()
                 .setJobName(saveParam.getJobName())
                 .setDisplayName(saveParam.getDisplayName())
-                .setJobContent(saveParam.getJobContent())
+                .setContent(saveParam.getContent())
                 .setStatus(saveParam.getStatus())
                 .setConcurrent(saveParam.getConcurrent())
                 .setRemark(saveParam.getRemark())
@@ -225,13 +230,10 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     private Job validateAndGet(String jobName) {
-        JobGetParam jobGetParam = new JobGetParam().setJobName(jobName);
-        Job job = jobService.get(jobGetParam);
+        JobNameParam jobNameParam = new JobNameParam().setJobName(jobName);
+        Job job = jobService.get(jobNameParam);
         if (job == null) {
             throw new RTException(6050, jobName);
-        }
-        if (StringUtils.isBlank(job.getJobContent())) {
-            throw new RTException(6053, jobName);
         }
         return job;
     }
@@ -244,17 +246,34 @@ public class JobOperatedService extends BaseServiceAdapter {
      */
     public Job copy(JobCopyParam param) {
         JobSaveParam targetJobParam = param.getTargetJobParam();
-        Job sourceJob = jobService.get(new JobGetParam().setJobName(param.getJobName()).setReversion(param.getReversion()));
-        Job targetJob = jobService.get(new JobGetParam().setJobName(targetJobParam.getJobName()));
-        if (targetJob != null) { // add its reversion with new model
+        Job sourceJob = validateAndGet(param.getJobName());
+        Job targetJob = jobService.get(new JobNameParam().setJobName(targetJobParam.getJobName()));
+        String content;
+        if (param.getVersion() == null) {
+            content = sourceJob.getContent();
+        } else {
+            ProcessDefinition processDefinition = repositoryService
+                    .createProcessDefinitionQuery()
+                    .processDefinitionKey(param.getJobName())
+                    .tenantIdIn(injectTenantId())
+                    .processDefinitionVersion(param.getVersion())
+                    .singleResult();
+            if (processDefinition == null) {
+                throw new RTException(6059, param.getJobName());
+            }
+            InputStream is = repositoryService.getResourceAsStream(
+                    processDefinition.getDeploymentId(), processDefinition.getResourceName());
+            content = IoUtil.inputStreamAsString(is);
+        }
+        if (targetJob != null) {
             JobSaveParam saveParam = new JobSaveParam()
-                    .setJobName(targetJob.getJobName()).setDisplayName(targetJob.getDisplayName())
-                    .setStatus(targetJob.getStatus()).setConcurrent(targetJob.isConcurrent())
-                    .setRemark(targetJob.getRemark()).setJobContent(sourceJob.getJobContent());
+                    .setDisplayName(targetJob.getDisplayName())
+                    .setStatus(targetJob.getStatus())
+                    .setConcurrent(targetJob.isConcurrent()).setRemark(targetJob.getRemark());
+            saveParam.setJobName(targetJob.getJobName()).setContent(content);
             return update(saveParam);
         }
-        //add new model with reversion of 1
-        targetJobParam.setJobContent(sourceJob.getJobContent());
+        targetJobParam.setContent(content);
         return add(targetJobParam);
     }
 
@@ -264,14 +283,47 @@ public class JobOperatedService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public Job exchange(JobGetParam param) {
-        Job oldReversionJob = jobService.get(param);
-        JobSaveParam saveParam = new JobSaveParam()
-                .setJobName(oldReversionJob.getJobName()).setDisplayName(oldReversionJob.getDisplayName())
-                .setStatus(oldReversionJob.getStatus()).setConcurrent(oldReversionJob.isConcurrent())
-                .setRemark(oldReversionJob.getRemark()).setJobContent(oldReversionJob.getJobContent());
-        update(saveParam);
-        return jobService.get(new JobGetParam().setJobName(param.getJobName()));
+    public JobWithVersionResult exchange(JobNameWithVersionParam param) {
+        Job oldReversionJob = validateAndGet(param.getJobName());
+        if (param.getVersion() == null) {
+            return null;
+        }
+        ProcessDefinition processDefinition = repositoryService
+                .createProcessDefinitionQuery()
+                .processDefinitionKey(param.getJobName())
+                .tenantIdIn(injectTenantId())
+                .processDefinitionVersion(param.getVersion())
+                .singleResult();
+        if (processDefinition == null) {
+            throw new RTException(6059, param.getJobName());
+        }
+        InputStream is = repositoryService.getResourceAsStream(
+                processDefinition.getDeploymentId(), processDefinition.getResourceName());
+        JobContentSaveParam saveParam = new JobContentSaveParam()
+                .setJobName(oldReversionJob.getJobName())
+                .setContent(IoUtil.inputStreamAsString(is));
+        return updateContent(saveParam);
+    }
+
+    /**
+     * list all versions by a specified job displayName
+     *
+     * @param param
+     * @return
+     */
+    public List<JobWithVersionResult> versions(JobNameParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        List<JobWithVersionResult> jobWithVersionResults = mapper.versions(paramMap);
+        Job job = validateAndGet(param.getJobName());
+        if (job.getContent() != null) {
+            JobWithVersionResult result = new JobWithVersionResult()
+                    .setJobName(job.getJobName())
+                    .setUpdateTime(job.getUpdateTime())
+                    .setReversion(jobWithVersionResults.isEmpty() ? 0 :
+                            jobWithVersionResults.get(jobWithVersionResults.size() - 1).getReversion() + 1);
+            jobWithVersionResults.add(result);
+        }
+        return jobWithVersionResults;
     }
 
     /**
@@ -345,17 +397,16 @@ public class JobOperatedService extends BaseServiceAdapter {
                 BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(sb.toString().getBytes()));
                 Collection<Process> elements = bpmnModelInstance.getModelElementsByType(Process.class);
                 for (Process process : elements) {
-                    Job job = jobService.get(new JobGetParam().setJobName(process.getId()));
+                    Job job = jobService.get(new JobNameParam().setJobName(process.getId()));
+                    JobSaveParam jobSaveParam = new JobSaveParam()
+                            .setDisplayName(process.getName()).setConcurrent(false)
+                            .setStatus(JobStatus.ENABLED.getStatus());
+                    jobSaveParam.setJobName(process.getId()).setContent(sb.toString());
                     if (job == null) {
-                        add(new JobSaveParam()
-                                .setJobName(process.getId())
-                                .setDisplayName(process.getName())
-                                .setConcurrent(false)
-                                .setJobContent(sb.toString())
-                                .setStatus(JobStatus.ENABLED.getStatus()));
+                        add(jobSaveParam);
                     } else {
                         JobSaveParam saveParam = toParam(job);
-                        saveParam.setJobContent(sb.toString());
+                        saveParam.setContent(sb.toString());
                         update(saveParam);
                     }
                     jobNames.add(process.getId());
@@ -370,10 +421,11 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     private JobSaveParam toParam(Job job) {
-        return new JobSaveParam()
-                .setJobName(job.getJobName()).setDisplayName(job.getDisplayName())
-                .setStatus(job.getStatus()).setConcurrent(job.isConcurrent())
-                .setRemark(job.getRemark());
+        JobSaveParam param = new JobSaveParam()
+                .setDisplayName(job.getDisplayName()).setStatus(job.getStatus())
+                .setConcurrent(job.isConcurrent()).setRemark(job.getRemark());
+        param.setJobName(job.getJobName()).setContent(job.getContent());
+        return param;
     }
 
     private void createZipEntry(ZipOutputStream zipOutputStream, String fileName, InputStream is) throws IOException {
@@ -395,10 +447,10 @@ public class JobOperatedService extends BaseServiceAdapter {
         return null;
     }
 
-    private Deployment createDefault(Job job) {
+    private Deployment deploy(Job job) {
         return repositoryService.createDeployment()
                 .addModelInstance(job.getJobName() + ".bpmn20.xml",
-                        Bpmn.readModelFromStream(new ByteArrayInputStream(job.getJobContent().getBytes())))
+                        Bpmn.readModelFromStream(new ByteArrayInputStream(job.getContent().getBytes())))
                 .name(job.getDisplayName())
                 .tenantId(job.getTenantId())
                 .deploy();

@@ -4,6 +4,7 @@ import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.param.dispatch.job.*;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.job.Job;
+import com.github.attemper.common.result.dispatch.job.JobWithVersionResult;
 import com.github.attemper.common.result.dispatch.project.Project;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.web.service.JobOperatedService;
@@ -49,6 +50,13 @@ public class JobController {
 		return CommonResult.putResult(jobOperatedService.update(param));
 	}
 
+	@ApiOperation("Update job content")
+	@ApiImplicitParam(value = "JobContentSaveParam", name = "param", dataType = "JobContentSaveParam", required = true)
+	@PutMapping(APIPath.JobPath.CONTENT)
+	public CommonResult<JobWithVersionResult> updateContent(@RequestBody JobContentSaveParam param) {
+		return CommonResult.putResult(jobOperatedService.updateContent(param));
+	}
+
 	@ApiOperation("Remove jobs")
 	@ApiImplicitParam(value = "JobNamesParam", name = "param", dataType = "JobNamesParam", required = true)
 	@DeleteMapping(APIPath.JobPath.$)
@@ -57,17 +65,24 @@ public class JobController {
 	}
 
 	@ApiOperation("Get job")
-	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
+	@ApiImplicitParam(value = "JobNameParam", name = "param", dataType = "JobNameParam", required = true)
 	@GetMapping(APIPath.JobPath.GET)
-	public CommonResult<Job> get(JobGetParam param) {
+	public CommonResult<Job> get(JobNameParam param) {
 		return CommonResult.putResult(jobService.get(param));
 	}
 
+	@ApiOperation("Get job content")
+	@ApiImplicitParam(value = "JobNameWithVersionParam", name = "param", dataType = "JobNameWithVersionParam", required = true)
+	@GetMapping(APIPath.JobPath.CONTENT)
+	public CommonResult<String> getContent(JobNameWithVersionParam param) {
+		return CommonResult.putResult(jobOperatedService.getContent(param));
+	}
+
 	@ApiOperation("List jobs by versions")
-	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
+	@ApiImplicitParam(value = "JobNameParam", name = "param", dataType = "JobNameParam", required = true)
 	@GetMapping(APIPath.JobPath.VERSIONS)
-	public CommonResult<List<Job>> listVersions(JobGetParam param) {
-		return CommonResult.putResult(jobService.versions(param));
+	public CommonResult<List<JobWithVersionResult>> listVersions(JobNameParam param) {
+		return CommonResult.putResult(jobOperatedService.versions(param));
 	}
 
 	@ApiOperation("Publish job to quartz and camunda")
@@ -85,9 +100,9 @@ public class JobController {
 	}
 
 	@ApiOperation("Exchange current reversion to the latest reversion")
-	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
+	@ApiImplicitParam(value = "JobNameParam", name = "param", dataType = "JobNameParam", required = true)
 	@PutMapping(APIPath.JobPath.EXCHANGE)
-	public CommonResult<Job> exchange(@RequestBody JobGetParam param) {
+	public CommonResult<JobWithVersionResult> exchange(@RequestBody JobNameWithVersionParam param) {
 		return CommonResult.putResult(jobOperatedService.exchange(param));
 	}
 
@@ -141,16 +156,16 @@ public class JobController {
 	}
 
 	@ApiOperation("Get json arg")
-	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
+	@ApiImplicitParam(value = "JobNameParam", name = "param", dataType = "JobNameParam", required = true)
 	@GetMapping(APIPath.JobPath.JSON_ARG)
-	public CommonResult<String> getJsonArg(JobGetParam param) {
+	public CommonResult<String> getJsonArg(JobNameParam param) {
 		return CommonResult.putResult(jobService.getJsonArg(param));
 	}
 
 	@ApiOperation("Get project")
-	@ApiImplicitParam(value = "JobGetParam", name = "param", dataType = "JobGetParam", required = true)
+	@ApiImplicitParam(value = "JobNameParam", name = "param", dataType = "JobNameParam", required = true)
 	@GetMapping(APIPath.JobPath.GET_PROJECT)
-	public CommonResult<Project> getProject(JobGetParam param) {
+	public CommonResult<Project> getProject(JobNameParam param) {
 		return CommonResult.putResult(jobService.getProject(param));
 	}
 

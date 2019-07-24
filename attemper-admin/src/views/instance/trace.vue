@@ -231,9 +231,9 @@ export default {
       })
       const self = this
       this.bpmnViewer.on('commandStack.changed', function() {
-        self.bindJobContent(function(err, xml) {
+        self.bindContent(function(err, xml) {
           if (!err) {
-            self.job.jobContent = xml
+            self.job.content = xml
           } else {
             console.error(err)
           }
@@ -325,7 +325,7 @@ export default {
           this.bindBpmn()
         }
         setTimeout(() => {
-          this.openDiagram(this.job.jobContent)
+          this.openDiagram(this.job.content)
         }, 50)
         this.getAct()
       })
@@ -369,7 +369,7 @@ export default {
     clickCell(row, column, cell, event) {
       this.selectRow(row)
     },
-    bindJobContent(done) {
+    bindContent(done) {
       this.bpmnViewer.saveXML({ format: true }, function(err, xml) {
         done(err, xml)
       })

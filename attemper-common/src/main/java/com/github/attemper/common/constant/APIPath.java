@@ -60,6 +60,8 @@ public class APIPath {
 
         public static final String PUBLISH = $ + _PUBLISH;
 
+        public static final String CONTENT = $ + "/content";
+
         public static final String VERSIONS = $ + "/versions";
 
         public static final String COPY = $ + "/copy";

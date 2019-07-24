@@ -332,12 +332,7 @@ export default {
       const jobNames = []
       if (this.selections.length) {
         for (let i = 0; i < this.selections.length; i++) {
-          const sel = this.selections[i]
-          if (!sel.maxVersion) {
-            this.$message.warning(this.$t('tip.manualWithNoVersion') + ':' + sel.jobName)
-            return
-          }
-          jobNames.push(sel.jobName)
+          jobNames.push(this.selections[i].jobName)
         }
         this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
           .then(() => {

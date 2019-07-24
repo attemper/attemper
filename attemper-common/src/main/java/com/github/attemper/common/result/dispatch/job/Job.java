@@ -12,25 +12,13 @@ public class Job {
 
     protected String displayName;
 
-    protected String jobContent;
+    protected String content;
 
     protected int status;
 
     protected boolean concurrent;
 
-    protected Integer maxReversion;
-
-    protected Integer maxVersion;
-
-    protected Integer reversion;
-
-    protected Integer version;
-
-    protected Date createTime;
-
     protected Date updateTime;
-
-    protected Date deploymentTime;
 
     protected List<Date> nextFireTimes;
 
@@ -56,12 +44,12 @@ public class Job {
         return this;
     }
 
-    public String getJobContent() {
-        return jobContent;
+    public String getContent() {
+        return content;
     }
 
-    public Job setJobContent(String jobContent) {
-        this.jobContent = jobContent;
+    public Job setContent(String content) {
+        this.content = content;
         return this;
     }
 
@@ -83,66 +71,12 @@ public class Job {
         return this;
     }
 
-    public Integer getMaxReversion() {
-        return maxReversion;
-    }
-
-    public Job setMaxReversion(Integer maxReversion) {
-        this.maxReversion = maxReversion;
-        return this;
-    }
-
-    public Integer getMaxVersion() {
-        return maxVersion;
-    }
-
-    public Job setMaxVersion(Integer maxVersion) {
-        this.maxVersion = maxVersion;
-        return this;
-    }
-
-    public Integer getReversion() {
-        return reversion;
-    }
-
-    public Job setReversion(Integer reversion) {
-        this.reversion = reversion;
-        return this;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public Job setVersion(Integer version) {
-        this.version = version;
-        return this;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public Job setCreateTime(Date createTime) {
-        this.createTime = createTime;
-        return this;
-    }
-
     public Date getUpdateTime() {
         return updateTime;
     }
 
     public Job setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-        return this;
-    }
-
-    public Date getDeploymentTime() {
-        return deploymentTime;
-    }
-
-    public Job setDeploymentTime(Date deploymentTime) {
-        this.deploymentTime = deploymentTime;
         return this;
     }
 

@@ -46,20 +46,11 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
-            <el-form-item :label="$t('columns.status')">
-              <el-tag :type="props.row.status | renderJobStatus">{{ formatStatus(props.row.status) }}</el-tag>
-            </el-form-item>
             <el-form-item :label="$t('dispatch.job.columns.concurrent')">
               <el-tag :type="props.row.concurrent ? 'success' : 'info'">{{ props.row.concurrent ? $t('tip.yes') : $t('tip.no') }}</el-tag>
             </el-form-item>
-            <el-form-item :label="$t('dispatch.job.columns.createTime')">
-              <span>{{ props.row.createTime }}</span>
-            </el-form-item>
             <el-form-item :label="$t('dispatch.job.columns.updateTime')">
               <span>{{ props.row.updateTime }}</span>
-            </el-form-item>
-            <el-form-item :label="$t('dispatch.job.columns.deploymentTime')">
-              <span>{{ props.row.deploymentTime }}</span>
             </el-form-item>
             <el-form-item>
               <el-button type="info" @click="openProjectDialog(props.row)">
@@ -86,6 +77,11 @@
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
         <template slot-scope="scope">
           <el-link icon="el-icon-edit" @click="update(scope.row)">{{ scope.row.displayName || '---' }}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('columns.status')" align="center" class-name="status-col" width="100">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.status | renderJobStatus">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.job.columns.nextFireTime')" width="160px">
@@ -191,11 +187,9 @@
           <el-col :span="4" :offset="8">
             <el-button type="info" @click="editDialog.trigger.visible = false">{{ $t('actions.cancel') }}</el-button>
           </el-col>
-          <el-tooltip :disabled="job.maxVersion > 0" :content="this.$t('dispatch.trigger.tip.jobNotPublished') " placement="right" effect="light">
-            <el-col :span="4" :offset="1">
-              <el-button :disabled="!job.maxVersion" type="success" @click="saveTrigger">{{ $t('actions.use') }}</el-button>
-            </el-col>
-          </el-tooltip>
+          <el-col :span="4" :offset="1">
+            <el-button type="success" @click="saveTrigger">{{ $t('actions.use') }}</el-button>
+          </el-col>
         </el-row>
       </div>
       <div v-show="editDialog.param.visible">
@@ -266,7 +260,7 @@ const DEF_OBJ = {
   status: 0,
   concurrent: false,
   remark: '',
-  jobContent: ''
+  content: ''
 }
 export default {
   name: 'job',
@@ -594,12 +588,7 @@ export default {
       const jobNames = []
       if (this.selections.length) {
         for (let i = 0; i < this.selections.length; i++) {
-          const sel = this.selections[i]
-          if (!sel.maxVersion) {
-            this.$message.warning(this.$t('tip.exportWithNoVersion') + ':' + sel.jobName)
-            return
-          }
-          jobNames.push(sel.jobName)
+          jobNames.push(this.selections[i].jobName)
         }
         this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
           .then(() => {
@@ -628,10 +617,9 @@ export default {
         const translatedHeader = [
           this.$t('dispatch.job.columns.jobName'),
           this.$t('columns.displayName'),
-          this.$t('columns.status'),
-          this.$t('dispatch.job.columns.version')
+          this.$t('columns.status')
         ]
-        const columnNames = ['jobName', 'displayName', 'status', 'maxReversion']
+        const columnNames = ['jobName', 'displayName', 'status']
         const data = this.formatJson(columnNames, this.list)
         excel.export_json_to_excel({
           header: translatedHeader,
@@ -698,10 +686,7 @@ export default {
       if (this.selections.length) {
         for (let i = 0; i < this.selections.length; i++) {
           const sel = this.selections[i]
-          if (!sel.maxVersion) {
-            this.$message.warning(this.$t('tip.manualWithNoVersion') + ':' + sel.jobName)
-            return
-          } else if (sel.status === 1) {
+          if (sel.status === 1) {
             this.$message.warning(this.$t('tip.disabledJobError') + ':' + sel.jobName)
             return
           }

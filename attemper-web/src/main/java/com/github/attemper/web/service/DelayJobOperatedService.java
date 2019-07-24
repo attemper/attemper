@@ -4,7 +4,7 @@ import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.delay.DelayJobIdParam;
 import com.github.attemper.common.param.dispatch.delay.DelayJobListParam;
-import com.github.attemper.common.param.dispatch.job.JobGetParam;
+import com.github.attemper.common.param.dispatch.job.JobNameParam;
 import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
 import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
 import com.github.attemper.common.param.dispatch.trigger.sub.DailyTimeIntervalTriggerParam;
@@ -106,7 +106,7 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
     }
 
     private void validateJob(String jobName) {
-        Job job = jobService.get(new JobGetParam().setJobName(jobName));
+        Job job = jobService.get(new JobNameParam().setJobName(jobName));
         if (job == null) {
             throw new RTException(6050, jobName);
         }

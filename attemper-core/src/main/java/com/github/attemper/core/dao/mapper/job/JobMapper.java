@@ -4,6 +4,7 @@ import com.github.attemper.common.base.BaseMapper;
 import com.github.attemper.common.result.dispatch.arg.Arg;
 import com.github.attemper.common.result.dispatch.job.ArgAllocatedResult;
 import com.github.attemper.common.result.dispatch.job.Job;
+import com.github.attemper.common.result.dispatch.job.JobWithVersionResult;
 import com.github.attemper.common.result.dispatch.project.Project;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -18,11 +19,9 @@ import java.util.Map;
 @Repository
 public interface JobMapper extends BaseMapper<Job> {
 
-    void addInfo(Job job);
+    void updateContent(Job job);
 
-    void updateInfo(Job job);
-
-    List<Job> versions(Map<String, Object> paramMap);
+    List<JobWithVersionResult> versions(Map<String, Object> paramMap);
 
     Project getProject(Map<String, Object> paramMap);
 

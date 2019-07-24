@@ -109,7 +109,8 @@ export default {
     testSql: '测试sql',
     retry: '重试',
     terminate: '终止',
-    saveOrPublish: '保存或发布'
+    publish: '发布',
+    saveAndPublish: '保存并发布'
   },
   tip: {
     usernameError: '请输入正确的用户名',
@@ -119,9 +120,8 @@ export default {
     confirmMsg: '确定操作',
     selectData: '请选中要操作的数据',
     saveConfirm: '确定保存',
-    saveOrPublishConfirm: '确定保存或发布',
-    manualWithNoVersion: '流程未被发布，不能手动发起',
-    exportWithNoVersion: '流程未被发布，不能导出模型',
+    publishConfirm: '确定发布',
+    saveAndPublishConfirm: '确定保存并发布',
     disabledJobError: '禁用的任务不可被发起',
     adminTenantCannotBeRemoved: '超管租户不能删除',
     preview: '预览',
@@ -210,7 +210,6 @@ export default {
         concurrent: '是否支持并行',
         createTime: '创建时间',
         updateTime: '最近修改时间',
-        deploymentTime: '最近发布时间',
         remark: '备注'
       },
       placeholder: {
@@ -238,7 +237,8 @@ export default {
         exchange: '将当前模型切换为最新的版本',
         copyConfirm: '确定复制',
         exchangeConfirm: '确定将当前模型切换为最新的版本',
-        jobNameNotChanged: '复制任务时，任务名称必须修改'
+        jobNameNotChanged: '复制任务时，任务名称必须修改',
+        versionIsLatest: '当前版本已为最新，无需切换'
       }
     },
     trigger: {

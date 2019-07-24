@@ -17,6 +17,14 @@ export const updateReq = (data) => {
   })
 }
 
+export const updateContentReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + '/content',
+    method: 'put',
+    data: data
+  })
+}
+
 export const listReq = (params) => {
   return request({
     url: APIPath.DISPATCH + APIPath.JOB,
@@ -44,6 +52,14 @@ export const removeReq = (data) => {
 export const getReq = (params) => {
   return request({
     url: APIPath.DISPATCH + APIPath.JOB + APIPath.GET,
+    method: 'get',
+    params: params
+  })
+}
+
+export const getContentReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + '/content',
     method: 'get',
     params: params
   })

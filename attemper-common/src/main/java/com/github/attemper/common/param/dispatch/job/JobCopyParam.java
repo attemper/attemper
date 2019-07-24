@@ -13,16 +13,13 @@ public class JobCopyParam implements CommonParam {
 
     protected String jobName;
 
-    protected Integer reversion;
+    protected Integer version;
 
     protected JobSaveParam targetJobParam;
 
     public String validate() {
         if (StringUtils.isBlank(jobName)) {
             return "6000";
-        }
-        if (reversion == null || reversion <= 0) {
-            return "6009";
         }
         if (targetJobParam == null) {
             return "6081";

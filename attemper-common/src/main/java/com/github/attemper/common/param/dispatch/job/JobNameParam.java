@@ -5,11 +5,9 @@ import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
 @ToString
-public class JobGetParam implements CommonParam {
+public class JobNameParam implements CommonParam {
 
     protected String jobName;
-
-    protected Integer reversion;
 
     public String validate() {
         if (StringUtils.isBlank(jobName)) {
@@ -22,17 +20,8 @@ public class JobGetParam implements CommonParam {
         return jobName;
     }
 
-    public JobGetParam setJobName(String jobName) {
+    public JobNameParam setJobName(String jobName) {
         this.jobName = jobName;
-        return this;
-    }
-
-    public Integer getReversion() {
-        return reversion;
-    }
-
-    public JobGetParam setReversion(Integer reversion) {
-        this.reversion = reversion;
         return this;
     }
 }

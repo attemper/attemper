@@ -4,7 +4,7 @@ import com.github.attemper.common.enums.ArgType;
 import com.github.attemper.common.param.dispatch.arg.ext.SqlArgParam;
 import com.github.attemper.common.param.dispatch.arg.ext.TradeDateArgParam;
 import com.github.attemper.common.param.dispatch.job.JobArgListParam;
-import com.github.attemper.common.param.dispatch.job.JobGetParam;
+import com.github.attemper.common.param.dispatch.job.JobNameParam;
 import com.github.attemper.common.param.dispatch.job.JobProjectSaveParam;
 import com.github.attemper.common.result.dispatch.arg.Arg;
 import com.github.attemper.common.result.dispatch.job.ArgAllocatedResult;
@@ -40,23 +40,12 @@ public class JobService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public Job get(JobGetParam param) {
+    public Job get(JobNameParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.get(paramMap);
     }
 
-    /**
-     * list all versions by a specified job displayName
-     *
-     * @param param
-     * @return
-     */
-    public List<Job> versions(JobGetParam param) {
-        Map<String, Object> paramMap = injectTenantIdToMap(param);
-        return mapper.versions(paramMap);
-    }
-
-    public Project getProject(JobGetParam param) {
+    public Project getProject(JobNameParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.getProject(paramMap);
     }
@@ -75,11 +64,11 @@ public class JobService extends BaseServiceAdapter {
     }
 
     public Job get(String jobName, String tenantId) {
-        return mapper.get(injectTenantIdToMap(new JobGetParam().setJobName(jobName), tenantId));
+        return mapper.get(injectTenantIdToMap(new JobNameParam().setJobName(jobName), tenantId));
     }
 
     public List<Arg> getAllArg(String jobName, String tenantId) {
-        return mapper.getAllArg(injectTenantIdToMap(new JobGetParam().setJobName(jobName), tenantId));
+        return mapper.getAllArg(injectTenantIdToMap(new JobNameParam().setJobName(jobName), tenantId));
     }
 
     /**
@@ -90,11 +79,11 @@ public class JobService extends BaseServiceAdapter {
      * @return
      */
     public Project getProject(String jobName, String tenantId) {
-        return mapper.getProject(injectTenantIdToMap(new JobGetParam().setJobName(jobName), tenantId));
+        return mapper.getProject(injectTenantIdToMap(new JobNameParam().setJobName(jobName), tenantId));
     }
 
-    public String getJsonArg(JobGetParam jobGetParam) {
-        Map<String, Object> map = transArgToMap(jobGetParam.getJobName(), injectTenantId());
+    public String getJsonArg(JobNameParam jobNameParam) {
+        Map<String, Object> map = transArgToMap(jobNameParam.getJobName(), injectTenantId());
         return map.isEmpty() ? null : BeanUtil.bean2JsonStr(map);
     }
 
