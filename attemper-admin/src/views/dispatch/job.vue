@@ -76,7 +76,7 @@
       </el-table-column>
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
         <template slot-scope="scope">
-          <el-link icon="el-icon-edit" @click="update(scope.row)">{{ scope.row.displayName || '---' }}</el-link>
+          <el-link @click="update(scope.row)">{{ scope.row.displayName || '---' }}</el-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.status')" align="center" class-name="status-col" width="100">
@@ -401,7 +401,6 @@ export default {
     update(row) {
       this.editDialog.oper = 'update'
       this.selectRow(row)
-      // this.job = Object.assign({}, row) // copy obj
       this.editDialog.title = this.$t('actions.update')
       this.editDialog.base.visible = true
       if (this.$refs.jobInfoForm) {
@@ -512,9 +511,11 @@ export default {
       this.editDialog.title = this.$t('dispatch.job.actions.project')
       this.selectRow(row)
       this.editDialog.project.visible = true
-      if (this.$refs.projectTree) {
-        this.$refs.projectTree.initTreeData()
-      }
+      this.$nextTick(() => {
+        if (this.$refs.projectTree) {
+          this.$refs.projectTree.initTreeData()
+        }
+      })
     },
     saveTrigger() {
       const trigger = { jobName: this.job.jobName }

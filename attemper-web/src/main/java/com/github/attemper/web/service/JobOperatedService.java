@@ -107,7 +107,7 @@ public class JobOperatedService extends BaseServiceAdapter {
             BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(job.getJobName())
                     .name(job.getDisplayName())
                     .startEvent()
-                    .id("start")
+                    .id(job.getJobName() + "_start")
                     .done();
             job.setContent(Bpmn.convertToString(modelInstance));
         } else {
@@ -132,23 +132,18 @@ public class JobOperatedService extends BaseServiceAdapter {
             throw new RTException(6080);
         }
         Job updatedJob = toJob(param);
-        if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
-            throw new RTException(6057);
-        }
         updatedJob.setUpdateTime(new Date());
         mapper.update(updatedJob);
         return updatedJob;
     }
 
-    public String getContent(JobNameWithVersionParam param) {
-        if (param.getVersion() == null) {
+    public String getContent(JobNameWithDefinitionParam param) {
+        if (StringUtils.isBlank(param.getProcDefId())) {
             Job job = validateAndGet(param.getJobName());
             return job.getContent();
         } else {
             ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
-                    .processDefinitionKey(param.getJobName())
-                    .tenantIdIn(injectTenantId())
-                    .processDefinitionVersion(param.getVersion())
+                    .processDefinitionId(param.getProcDefId())
                     .singleResult();
             InputStream is = repositoryService.getResourceAsStream(definition.getDeploymentId(), definition.getResourceName());
             return IoUtil.inputStreamAsString(is);
@@ -157,6 +152,9 @@ public class JobOperatedService extends BaseServiceAdapter {
 
     public JobWithVersionResult updateContent(JobContentSaveParam param) {
         Job job = validateAndGet(param.getJobName());
+        if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
+            throw new RTException(6057);
+        }
         JobWithVersionResult result = new JobWithVersionResult()
                 .setJobName(param.getJobName());
         ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
@@ -181,9 +179,9 @@ public class JobOperatedService extends BaseServiceAdapter {
         job.setContent(param.getContent());
         mapper.updateContent(job);
         if (definition == null) {
-            result.setReversion(0);
+            result.setVersion(0);
         } else {
-            return result.setReversion(definition.getVersion() + 1);
+            result.setProcDefId(definition.getId()).setVersion(definition.getVersion() + 1);
         }
         return result.setUpdateTime(job.getUpdateTime());
     }
@@ -249,14 +247,12 @@ public class JobOperatedService extends BaseServiceAdapter {
         Job sourceJob = validateAndGet(param.getJobName());
         Job targetJob = jobService.get(new JobNameParam().setJobName(targetJobParam.getJobName()));
         String content;
-        if (param.getVersion() == null) {
+        if (StringUtils.isBlank(param.getProcDefId())) {
             content = sourceJob.getContent();
         } else {
             ProcessDefinition processDefinition = repositoryService
                     .createProcessDefinitionQuery()
-                    .processDefinitionKey(param.getJobName())
-                    .tenantIdIn(injectTenantId())
-                    .processDefinitionVersion(param.getVersion())
+                    .processDefinitionId(param.getProcDefId())
                     .singleResult();
             if (processDefinition == null) {
                 throw new RTException(6059, param.getJobName());
@@ -283,16 +279,14 @@ public class JobOperatedService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public JobWithVersionResult exchange(JobNameWithVersionParam param) {
+    public JobWithVersionResult exchange(JobNameWithDefinitionParam param) {
         Job oldReversionJob = validateAndGet(param.getJobName());
-        if (param.getVersion() == null) {
+        if (StringUtils.isBlank(param.getProcDefId())) {
             return null;
         }
         ProcessDefinition processDefinition = repositoryService
                 .createProcessDefinitionQuery()
-                .processDefinitionKey(param.getJobName())
-                .tenantIdIn(injectTenantId())
-                .processDefinitionVersion(param.getVersion())
+                .processDefinitionId(param.getProcDefId())
                 .singleResult();
         if (processDefinition == null) {
             throw new RTException(6059, param.getJobName());
@@ -315,12 +309,12 @@ public class JobOperatedService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         List<JobWithVersionResult> jobWithVersionResults = mapper.versions(paramMap);
         Job job = validateAndGet(param.getJobName());
-        if (job.getContent() != null) {
+        if (StringUtils.isNotBlank(job.getContent())) {
             JobWithVersionResult result = new JobWithVersionResult()
                     .setJobName(job.getJobName())
                     .setUpdateTime(job.getUpdateTime())
-                    .setReversion(jobWithVersionResults.isEmpty() ? 0 :
-                            jobWithVersionResults.get(jobWithVersionResults.size() - 1).getReversion() + 1);
+                    .setVersion(jobWithVersionResults.isEmpty() ? 0 :
+                            jobWithVersionResults.get(jobWithVersionResults.size() - 1).getVersion() + 1);
             jobWithVersionResults.add(result);
         }
         return jobWithVersionResults;
@@ -455,5 +449,4 @@ public class JobOperatedService extends BaseServiceAdapter {
                 .tenantId(job.getTenantId())
                 .deploy();
     }
-
 }

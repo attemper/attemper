@@ -18,8 +18,10 @@
 }
 
 .djs-minimap {
-  top: 10px;
-  right: 270px;
+  bottom: 20px;
+  left: 200px;
+  top: auto;
+  right: auto;
 }
 
 .content{
@@ -38,7 +40,7 @@
 }
 .buttons{
   position: absolute;
-  left: 20px;
+  left: 0;
   bottom: 20px;
   &>li{
     display:inline-block;

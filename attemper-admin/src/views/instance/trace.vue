@@ -133,13 +133,12 @@
 
 <script>
 import { listReq, listActReq/* , retryReq, terminateReq */ } from '@/api/dispatch/instance'
-import { getReq } from '@/api/dispatch/job'
+import { getContentReq } from '@/api/dispatch/job'
 import BpmnViewer from 'bpmn-js'
 import miniMapModule from 'diagram-js-minimap'
 import customTranslate from '@/utils/customTranslate'
 import customElementTemplate from '../dispatch/components/job/element-templates/custom'
 import Pagination from '@/components/Pagination'
-import { getVersionByDefinition } from './scripts/support'
 import DateTimeGenerator from '@/components/DateTimeGenerator'
 
 export default {
@@ -152,7 +151,8 @@ export default {
     return {
       job: {
         jobName: null,
-        reversion: 0
+        procDefId: null,
+        content: null
       },
       bpmnViewer: null,
       list: null,
@@ -210,7 +210,7 @@ export default {
       this.page.jobName = this.$route.params.key
       this.job = {
         jobName: this.$route.params.key,
-        reversion: getVersionByDefinition(this.$route.params.procDefId)
+        procDefId: this.$route.params.procDefId
       }
     },
     bindBpmn() {
@@ -317,10 +317,9 @@ export default {
       }
       this.search()
     },
-    // fetch job by jobName and reversion(from procDefId which format was [jobName:version:randomId])
     fetchJob() {
-      getReq({ jobName: this.job.jobName, reversion: this.job.reversion }).then(res => {
-        this.job = res.data.result
+      getContentReq(this.job).then(res => {
+        this.job.content = res.data.result
         if (!this.bpmnViewer) {
           this.bindBpmn()
         }
@@ -337,7 +336,7 @@ export default {
       }
       this.job = {
         jobName: row.jobName,
-        reversion: getVersionByDefinition(row.procDefId)
+        procDefId: row.procDefId
       }
       this.procInstId = row.procInstId
       this.fetchJob()

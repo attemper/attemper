@@ -28,6 +28,7 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
             jobInstance = jobInstanceService.get(new JobInstanceGetParam().setId(historyEvent.getBusinessKey()));
             jobInstance.setProcInstId(historyEvent.getProcessInstanceId())
                     .setRootProcInstId(historyEvent.getRootProcessInstanceId())
+                    .setSuperProcInstId(historyEvent.getSuperProcessInstanceId())
                     .setProcDefId(historyEvent.getProcessDefinitionId());
             jobInstanceService.update(jobInstance);
         } else {
@@ -35,6 +36,7 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
                     .setId(SpringContextAware.getBean(IdGenerator.class).getNextId())
                     .setProcInstId(historyEvent.getProcessInstanceId())
                     .setRootProcInstId(historyEvent.getRootProcessInstanceId())
+                    .setSuperProcInstId(historyEvent.getSuperProcessInstanceId())
                     .setProcDefId(historyEvent.getProcessDefinitionId())
                     .setStatus(JobInstanceStatus.RUNNING.getStatus())
                     .setJobName(CamundaUtil.extractKeyFromProcessDefinitionId(historyEvent.getProcessDefinitionId()))

@@ -13,6 +13,8 @@ public class JobInstance {
 
     protected String rootProcInstId;
 
+    protected String superProcInstId;
+
     protected String jobName;
 
     protected String displayName;
@@ -73,6 +75,15 @@ public class JobInstance {
 
     public JobInstance setRootProcInstId(String rootProcInstId) {
         this.rootProcInstId = rootProcInstId;
+        return this;
+    }
+
+    public String getSuperProcInstId() {
+        return superProcInstId;
+    }
+
+    public JobInstance setSuperProcInstId(String superProcInstId) {
+        this.superProcInstId = superProcInstId;
         return this;
     }
 

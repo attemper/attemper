@@ -5,6 +5,7 @@
         <div slot="header">
           <span>{{ $t('dispatch.project.title.left') }}</span>
           <span style="float: right;">
+            <el-button type="primary" icon="el-icon-refresh" @click="initTreeData" />
             <el-input v-model="searchKey" :placeholder="$t('dispatch.project.tip.searchKey')" style="width: 170px;" @keyup.enter.native="search" />
           </span>
         </div>
@@ -40,15 +41,15 @@
         </el-tree>
       </el-card>
     </el-col>
-    <el-col v-show="project && project.projectName" :span="14">
+    <el-col v-if="visible" :span="14">
       <el-card>
         <div slot="header">
           <span>{{ $t('dispatch.project.title.rightTop') }}</span>
         </div>
-        <div v-if="visible">
+        <div>
           <el-form ref="form" :model="project" :rules="formRules" label-width="130px" label-position="right">
             <el-form-item :label="$t('dispatch.project.label.projectName')" prop="projectName">
-              <el-input v-model="project.projectName" :placeholder="$t('dispatch.project.placeholder.projectName')" />
+              <el-input v-model="project.projectName" :disabled="!project || !project.parentProjectName" :placeholder="$t('dispatch.project.placeholder.projectName')" />
             </el-form-item>
             <el-form-item :label="$t('columns.displayName')" prop="displayName">
               <el-input v-model="project.displayName" :placeholder="$t('placeholders.displayName')" />
@@ -217,12 +218,10 @@ export default {
           this.$confirm(this.$t('tip.saveConfirm'), this.$t('tip.confirm'), { type: 'info' })
             .then(() => {
               saveReq(this.project).then(res => {
-                saveExecutorReq(
-                  {
-                    projectName: this.project.projectName,
-                    executorUris: this.executorUris
-                  }
-                ).then(response => {
+                saveExecutorReq({
+                  projectName: this.project.projectName,
+                  executorUris: this.executorUris
+                }).then(response => {
                   this.$message.success(response.data.msg)
                   this.initTreeData()
                 })
@@ -271,11 +270,14 @@ export default {
       this.visible = false
     },
     selectNode(data) {
-      this.project = data
       this.visible = true
-      this.projectInfo.projectName = this.project.projectName
-      this.initInfos(this.projectInfo)
-      this.initExecutor()
+      console.log(123)
+      this.project = data
+      Object.assign(this.projectInfo, DEF_INSTANCE)
+      if (this.project.projectName) {
+        this.initInfos()
+        this.initExecutor()
+      }
     },
     initExecutor() {
       listExecutorServiceReq().then(res => {
@@ -312,17 +314,26 @@ export default {
     removeInfo(row) {
       this.$confirm(row.uri, this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
-          removeInfoReq(this.projectInfo).then(res => {
+          const data = {
+            projectName: this.project.projectName,
+            ...this.projectInfo
+          }
+          removeInfoReq(data).then(res => {
             this.$message.success(res.data.msg)
-            this.initInfos(this.projectInfo)
+            this.initInfos()
           })
         })
     },
     saveInfo() {
       const saveInfo = () => {
-        saveInfoReq(this.projectInfo).then(res => {
+        const data = {
+          projectName: this.project.projectName,
+          ...this.projectInfo
+        }
+        saveInfoReq(data).then(res => {
           this.$message.success(res.data.msg)
-          this.initInfos(this.projectInfo)
+          this.initInfos()
+          this.projectInfo = Object.assign({}, DEF_INSTANCE)
         })
       }
       pingReq(this.projectInfo).then(res => {
@@ -337,13 +348,13 @@ export default {
         }
       })
     },
-    initInfos(row) {
-      listInfoReq({ projectName: row.projectName }).then(res => {
+    initInfos() {
+      listInfoReq({ projectName: this.project.projectName }).then(res => {
         this.projectInfos = res.data.result
       })
     },
     handleCurrentChange(val) {
-      this.projectInfo = Object.assign({}, val) || Object.assign({ projectName: this.project.projectName }, DEF_INSTANCE)
+      this.projectInfo = Object.assign({}, val) || Object.assign({}, DEF_INSTANCE)
     },
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {

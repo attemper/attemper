@@ -105,8 +105,8 @@
         a.CONCURRENT,
         a.REMARK,
         a.TENANT_ID,
+        b.ID_ AS PROC_DEF_ID,
         b.VERSION_ AS VERSION,
-        b.VERSION_ AS REVERSION,
         c.DEPLOY_TIME_ AS UPDATE_TIME
         FROM
         ${tablePrefix}job a
@@ -119,6 +119,7 @@
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
         </where>
+        ORDER BY VERSION
     </select>
 
     <delete id="delete" parameterType="map">
@@ -130,6 +131,7 @@
             </foreach>
             <include refid="condTenantId"/>
         </where>
+        <!--
         ;
         DELETE FROM a,b,c USING
         act_re_procdef a
@@ -143,7 +145,7 @@
                 #{jobName}
             </foreach>
             AND a.TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
-        </where>
+        </where>-->
     </delete>
 
     <select id="listArg" parameterType="map"

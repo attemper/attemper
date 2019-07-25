@@ -5,7 +5,10 @@
 @import '~diagram-js-minimap/assets/diagram-js-minimap.css';
 
 .djs-minimap {
-  right: 10px;
+  bottom: 20px;
+  left: 10px;
+  top: auto;
+  right: auto;
 }
 
 .layout{

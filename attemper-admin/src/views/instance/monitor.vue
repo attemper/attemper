@@ -263,7 +263,7 @@ export default {
     },
     openTrace(row) {
       if (!row.procInstId) {
-        this.$message.success(this.$t('tip.flowNotStart'))
+        this.$message.info(this.$t('tip.flowNotStart'))
         return
       }
       const route = {

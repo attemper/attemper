@@ -13,13 +13,13 @@
     </ul>
     <div class="custom-area">
       <el-select
-        v-model="currentReversion"
+        v-model="currentVersion"
         :placeholder="$t('dispatch.job.columns.reversion') + '-' + $t('dispatch.job.columns.version')"
         class="filter-item"
         style="width: 160px"
         @change="changeJob"
       >
-        <el-option v-for="item in jobWithVersions" :key="item.reversion" :label="createVersionLabel(item)" :value="item.reversion">
+        <el-option v-for="item in jobWithVersions" :key="item.version" :label="createVersionLabel(item)" :value="item.version">
           <span style="float: left; font-size: 13px">{{ createVersionLabel(item) }}</span>
           <span style="float: right; color: #8492a6; margin-left: 20px;">{{ item.updateTime }}</span>
         </el-option>
@@ -47,7 +47,7 @@
         </el-tooltip>
         <el-tooltip :content="$t('actions.manual')" effect="dark" placement="top-start">
           <span style="margin-left: 10px;">
-            <el-button :disabled="!job.version && job.reversion === 0" type="danger" @click="openParam">
+            <el-button :disabled="!job.procDefId && job.version === 0" type="danger" @click="openParam">
               <svg-icon icon-class="hand" />
             </el-button>
           </span>
@@ -104,7 +104,7 @@ export default {
     return {
       job: {},
       jsonData: null,
-      currentReversion: 1,
+      currentVersion: -1,
       bpmnModeler: null,
       jobWithVersions: [],
       editDialog: {
@@ -227,12 +227,12 @@ export default {
     initJobWithVersions() {
       versionsReq({ jobName: this.$route.params.key }).then(res => {
         this.jobWithVersions = res.data.result.reverse()
-        this.currentReversion = this.jobWithVersions[0].reversion
+        this.currentVersion = this.jobWithVersions[0].version
         this.renderContent()
       })
     },
     renderContent() {
-      this.job = Object.assign({}, this.jobWithVersions.find(item => item.reversion === this.currentReversion))
+      this.job = Object.assign({}, this.jobWithVersions.find(item => item.version === this.currentVersion))
       getContentReq(this.job).then(res => {
         this.job.content = res.data.result
         this.openDiagram(this.job.content) // open the job content
@@ -243,7 +243,7 @@ export default {
       this.editDialog.copy.visible = true
       this.targetJobParam = Object.assign({}, this.job)
     },
-    // copy job with current reversion to another job(if the target was existent, will add its reversion)
+    // copy job with current version to another job(if the target was existent, will add its version)
     copy() {
       if (this.job.jobName === this.targetJobParam.jobName) {
         this.$message.warning(this.$t('dispatch.flow.tip.jobNameNotChanged'))
@@ -253,7 +253,7 @@ export default {
         .then(() => {
           const data = {
             jobName: this.job.jobName,
-            version: this.job.version,
+            procDefId: this.job.procDefId,
             targetJobParam: this.targetJobParam
           }
           copyReq(data).then(res => {
@@ -263,9 +263,9 @@ export default {
           })
         })
     },
-    // exchange current reversion to the latest
+    // exchange current version to the latest
     exchange() {
-      if (this.currentReversion === this.jobWithVersions[0].reversion) {
+      if (this.currentVersion === this.jobWithVersions[0].version) {
         this.$message.warning(this.$t('dispatch.flow.tip.versionIsLatest'))
         return
       }
@@ -327,8 +327,8 @@ export default {
       this.closeLoading(loading)
     },
     createVersionLabel(item) {
-      let label = item.reversion
-      if (item.version) {
+      let label = item.version
+      if (item.procDefId) {
         label += ' - ' + item.version
       }
       return label

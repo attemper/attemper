@@ -19,9 +19,9 @@ public class JobWithVersionResult {
 
     protected String remark;
 
-    protected Integer version;
+    protected String procDefId;
 
-    protected int reversion;
+    protected int version;
 
     public String getJobName() {
         return jobName;
@@ -29,24 +29,6 @@ public class JobWithVersionResult {
 
     public JobWithVersionResult setJobName(String jobName) {
         this.jobName = jobName;
-        return this;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public JobWithVersionResult setVersion(Integer version) {
-        this.version = version;
-        return this;
-    }
-
-    public int getReversion() {
-        return reversion;
-    }
-
-    public JobWithVersionResult setReversion(int reversion) {
-        this.reversion = reversion;
         return this;
     }
 
@@ -83,6 +65,24 @@ public class JobWithVersionResult {
 
     public JobWithVersionResult setConcurrent(boolean concurrent) {
         this.concurrent = concurrent;
+        return this;
+    }
+
+    public String getProcDefId() {
+        return procDefId;
+    }
+
+    public JobWithVersionResult setProcDefId(String procDefId) {
+        this.procDefId = procDefId;
+        return this;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public JobWithVersionResult setVersion(int version) {
+        this.version = version;
         return this;
     }
 

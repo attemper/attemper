@@ -74,7 +74,7 @@ public class JobController {
 	@ApiOperation("Get job content")
 	@ApiImplicitParam(value = "JobNameWithVersionParam", name = "param", dataType = "JobNameWithVersionParam", required = true)
 	@GetMapping(APIPath.JobPath.CONTENT)
-	public CommonResult<String> getContent(JobNameWithVersionParam param) {
+    public CommonResult<String> getContent(JobNameWithDefinitionParam param) {
 		return CommonResult.putResult(jobOperatedService.getContent(param));
 	}
 
@@ -102,7 +102,7 @@ public class JobController {
 	@ApiOperation("Exchange current reversion to the latest reversion")
 	@ApiImplicitParam(value = "JobNameParam", name = "param", dataType = "JobNameParam", required = true)
 	@PutMapping(APIPath.JobPath.EXCHANGE)
-	public CommonResult<JobWithVersionResult> exchange(@RequestBody JobNameWithVersionParam param) {
+    public CommonResult<JobWithVersionResult> exchange(@RequestBody JobNameWithDefinitionParam param) {
 		return CommonResult.putResult(jobOperatedService.exchange(param));
 	}
 

@@ -6,7 +6,7 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <span class="right-menu-item">{{ now }}</span>
+        <span class="right-menu-item" style="font-size: 17px;">{{ now }}</span>
         <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
@@ -54,6 +54,7 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import Search from '@/components/HeaderSearch'
+import { parseTime } from '@/utils'
 
 export default {
   components: {
@@ -81,8 +82,7 @@ export default {
   created() {
     this.timer = setInterval(() => {
       const date = new Date()
-      this.now = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' +
-          date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+      this.now = parseTime(date)
     }, 1000
     )
   },

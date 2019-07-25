@@ -9,11 +9,11 @@ import org.apache.commons.lang.StringUtils;
 @Getter
 @Setter
 @ToString
-public class JobNameWithVersionParam implements CommonParam {
+public class JobNameWithDefinitionParam implements CommonParam {
 
     protected String jobName;
 
-    protected Integer version;
+    protected String procDefId;
 
     public String validate() {
         if (StringUtils.isBlank(jobName)) {
