@@ -172,6 +172,9 @@ public class APIPath {
         public static final String LIST_EXECUTOR_SERVICE = API_PATH + DISPATCH + SUB_PATH + "/executor";
 
         public static final String PING = API_PATH + DISPATCH + SUB_PATH + "/ping";
+
+        public static final String TIME = API_PATH + DISPATCH + SUB_PATH + "/time";
+
     }
 
     public static final class SchedulerPath {

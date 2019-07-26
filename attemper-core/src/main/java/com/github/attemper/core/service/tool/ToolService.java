@@ -14,6 +14,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -76,6 +77,10 @@ public class ToolService {
 
     private List<ServiceInstance> listService(String serviceId) {
         return discoveryClient.getInstances(serviceId);
+    }
+
+    public Date getCurrentTime() {
+        return new Date();
     }
 
     public HikariDataSource getDataSource(String driverClassName, String jdbcUrl, String userName, String password) throws Exception {

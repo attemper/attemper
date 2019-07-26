@@ -6,7 +6,7 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <span class="right-menu-item" style="font-size: 17px;">{{ now }}</span>
+        <span class="right-menu-item" style="font-size: 17px;">{{ currentTimeStr }}</span>
         <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
@@ -55,6 +55,7 @@ import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import Search from '@/components/HeaderSearch'
 import { parseTime } from '@/utils'
+import { currentTimeReq } from '@/api/dispatch/tool'
 
 export default {
   components: {
@@ -69,7 +70,8 @@ export default {
   data() {
     return {
       timer: null,
-      now: null
+      now: null,
+      currentTimeStr: null
     }
   },
   computed: {
@@ -80,11 +82,13 @@ export default {
     ])
   },
   created() {
-    this.timer = setInterval(() => {
-      const date = new Date()
-      this.now = parseTime(date)
-    }, 1000
-    )
+    currentTimeReq().then(res => {
+      this.now = new Date(res.data.result)
+      this.timer = setInterval(() => {
+        this.now = new Date(this.now.getTime() + 1000)
+        this.currentTimeStr = parseTime(this.now)
+      }, 1000)
+    })
   },
   beforeDestroy() {
     if (this.timer) {

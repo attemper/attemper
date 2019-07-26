@@ -22,3 +22,11 @@ export const pingReq = (params) => {
     params: params
   })
 }
+
+export const currentTimeReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.TOOL + '/time',
+    method: 'get',
+    params: params
+  })
+}

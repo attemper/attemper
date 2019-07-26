@@ -47,13 +47,4 @@ public class SecurityConfiguration {
         filter.addUrlPatterns("/*");
         return filter;
     }
-
-    @Bean
-    public FilterRegistrationBean xssFilterRegistrationBean(){
-        FilterRegistrationBean filter = new FilterRegistrationBean();
-        filter.setFilter(new XssFilter());
-        filter.setOrder(Integer.MAX_VALUE);
-        filter.addUrlPatterns("/*");
-        return filter;
-    }
 }

@@ -10,6 +10,7 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,4 +41,9 @@ public class ToolController {
         return CommonResult.putResult(service.ping(uri, type));
     }
 
+    @ApiOperation("Get server time")
+    @GetMapping(APIPath.ToolPath.TIME)
+    public CommonResult<Date> getCurrentTime() {
+        return CommonResult.putResult(service.getCurrentTime());
+    }
 }

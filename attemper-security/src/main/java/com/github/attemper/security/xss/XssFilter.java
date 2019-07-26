@@ -14,7 +14,7 @@ import java.io.IOException;
 @Configuration
 public class XssFilter implements Filter {
 
-	@Value("${filter.enabled.xss:true}")
+	@Value("${filter.xss.enabled:true}")
 	private boolean enabledXss;
 
 	@Override
