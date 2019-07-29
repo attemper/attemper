@@ -17,11 +17,13 @@
       </el-button>
       <div style="float: right">
         <el-popover placement="bottom" trigger="hover">
-          <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button><br><br>
-          <el-button v-waves class="filter-item" :disabled="!selections || !selections.length" type="primary" icon="el-icon-download" @click="exportModel">{{ $t('actions.exportModel') }}</el-button><br><br>
           <el-upload action="" accept="application/zip" :on-change="importModel" :auto-upload="false" :show-file-list="false">
-            <el-button v-waves type="success" icon="el-icon-upload2">{{ $t('actions.importModel') }}</el-button>
+            <el-button class="high-operation" type="success" icon="el-icon-upload2">{{ $t('actions.importModel') }}</el-button>
           </el-upload>
+          <el-button class="high-operation" :disabled="!selections || !selections.length" type="primary" icon="el-icon-download" @click="exportModel">{{ $t('actions.exportModel') }}</el-button><br>
+          <el-button class="high-operation" :disabled="!selections || !selections.length" type="success" icon="el-icon-circle-check" @click="enable">{{ $t('actions.enable') }}</el-button><br>
+          <el-button class="high-operation" :disabled="!selections || !selections.length" type="danger" icon="el-icon-circle-close" @click="disable">{{ $t('actions.disable') }}</el-button><br>
+          <el-button :loading="downloadLoading" class="high-operation" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button>
           <el-button slot="reference" class="filter-item table-external-button" type="warning">{{ $t('actions.highOperation') }}</el-button>
         </el-popover>
         <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manualBatch">
@@ -241,7 +243,7 @@
 </template>
 
 <script>
-import { listReq, /* getReq,*/ removeReq, addReq, updateReq, publishReq, manualBatchReq, importModelReq, exportModelReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
+import { listReq, /* getReq,*/ removeReq, addReq, updateReq, enableReq, disableReq, publishReq, manualBatchReq, importModelReq, exportModelReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/dispatch/tool'
@@ -417,15 +419,7 @@ export default {
       })
     },
     publish() {
-      const jobNames = []
-      if (this.selections.length) {
-        this.selections.forEach((sel) => {
-          jobNames.push(sel.jobName)
-        })
-      } else {
-        this.$message.warning(this.$t('tip.selectData'))
-        return
-      }
+      const jobNames = this.ofKeys()
       this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           publishReq({ jobNames: jobNames }).then(res => {
@@ -433,6 +427,29 @@ export default {
             this.search()
           })
         })
+    },
+    enable() {
+      const jobNames = this.ofKeys()
+      this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
+        .then(() => {
+          enableReq({ jobNames: jobNames }).then(res => {
+            this.$message.success(res.data.msg)
+            this.search()
+          })
+        })
+    },
+    disable() {
+      const jobNames = this.ofKeys()
+      this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
+        .then(() => {
+          disableReq({ jobNames: jobNames }).then(res => {
+            this.$message.success(res.data.msg)
+            this.search()
+          })
+        })
+    },
+    ofKeys() {
+      return this.selections.map(sel => sel.jobName)
     },
     openTriggerDialog(row) {
       this.editDialog.title = this.$t('dispatch.job.actions.trigger')
@@ -534,15 +551,7 @@ export default {
       }
     },
     remove() {
-      const jobNames = []
-      if (this.selections.length) {
-        this.selections.forEach((sel) => {
-          jobNames.push(sel.jobName)
-        })
-      } else {
-        this.$message.warning(this.$t('tip.selectData'))
-        return
-      }
+      const jobNames = this.ofKeys()
       this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           removeReq({ jobNames: jobNames }).then(res => {
@@ -586,31 +595,23 @@ export default {
         })
     },
     exportModel() {
-      const jobNames = []
-      if (this.selections.length) {
-        for (let i = 0; i < this.selections.length; i++) {
-          jobNames.push(this.selections[i].jobName)
-        }
-        this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
-          .then(() => {
-            exportModelReq({ jobNames: jobNames }).then((res) => {
-              const data = res.data
-              if (!data) {
-                return
-              }
-              const url = window.URL.createObjectURL(new Blob([data]))
-              const link = document.createElement('a')
-              link.style.display = 'none'
-              link.href = url
-              link.setAttribute('download', 'models.zip')
-              document.body.appendChild(link)
-              link.click()
-            })
+      const jobNames = this.ofKeys()
+      this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
+        .then(() => {
+          exportModelReq({ jobNames: jobNames }).then((res) => {
+            const data = res.data
+            if (!data) {
+              return
+            }
+            const url = window.URL.createObjectURL(new Blob([data]))
+            const link = document.createElement('a')
+            link.style.display = 'none'
+            link.href = url
+            link.setAttribute('download', 'models.zip')
+            document.body.appendChild(link)
+            link.click()
           })
-      } else {
-        this.$message.warning(this.$t('tip.selectData'))
-        return
-      }
+        })
     },
     handleDownload() {
       this.downloadLoading = true
@@ -684,28 +685,23 @@ export default {
     },
     manualBatch() {
       const jobNames = []
-      if (this.selections.length) {
-        for (let i = 0; i < this.selections.length; i++) {
-          const sel = this.selections[i]
-          if (sel.status === 1) {
-            this.$message.warning(this.$t('tip.disabledJobError') + ':' + sel.jobName)
-            return
-          }
-          jobNames.push(sel.jobName)
+      for (let i = 0; i < this.selections.length; i++) {
+        const sel = this.selections[i]
+        if (sel.status === 1) {
+          this.$message.warning(this.$t('tip.disabledJobError') + ':' + sel.jobName)
+          return
         }
-        this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
-          .then(() => {
-            manualBatchReq({ jobNames: jobNames }).then(res => {
-              this.$message.success(res.data.msg)
-              setTimeout(() => {
-                this.$router.push({ name: 'total', replace: true })
-              }, 600)
-            })
-          })
-      } else {
-        this.$message.warning(this.$t('tip.selectData'))
-        return
+        jobNames.push(sel.jobName)
       }
+      this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
+        .then(() => {
+          manualBatchReq({ jobNames: jobNames }).then(res => {
+            this.$message.success(res.data.msg)
+            setTimeout(() => {
+              this.$router.push({ name: 'total', replace: true })
+            }, 600)
+          })
+        })
     },
     initCalendarGroups() {
       this.calendarGroups = []

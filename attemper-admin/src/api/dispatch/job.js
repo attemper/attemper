@@ -57,6 +57,22 @@ export const getReq = (params) => {
   })
 }
 
+export const enableReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + '/enable',
+    method: 'put',
+    data: data
+  })
+}
+
+export const disableReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + '/disable',
+    method: 'put',
+    data: data
+  })
+}
+
 export const getContentReq = (params) => {
   return request({
     url: APIPath.DISPATCH + APIPath.JOB + '/content',

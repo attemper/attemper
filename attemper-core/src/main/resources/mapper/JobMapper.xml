@@ -148,6 +148,20 @@
         </where>-->
     </delete>
 
+    <update id="updateStatus" parameterType="map">
+        UPDATE ${tablePrefix}job j
+        <set>
+            j.STATUS = #{status, jdbcType=INTEGER},
+        </set>
+        <where>
+            JOB_NAME in
+            <foreach item="jobName" collection="jobNames" open="(" separator="," close=")">
+                #{jobName}
+            </foreach>
+            <include refid="condTenantId"/>
+        </where>
+    </update>
+
     <select id="listArg" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.job.ArgAllocatedResult">
         SELECT ARG_NAME, ARG_TYPE, ARG_VALUE, ALLOCATED

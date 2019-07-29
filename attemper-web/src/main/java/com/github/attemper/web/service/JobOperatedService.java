@@ -1,5 +1,6 @@
 package com.github.attemper.web.service;
 
+import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.JobStatus;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.job.*;
@@ -448,5 +449,19 @@ public class JobOperatedService extends BaseServiceAdapter {
                 .name(job.getDisplayName())
                 .tenantId(job.getTenantId())
                 .deploy();
+    }
+
+    public Void enable(JobNamesParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        paramMap.put(CommonConstants.status, JobStatus.ENABLED.getStatus());
+        mapper.updateStatus(paramMap);
+        return null;
+    }
+
+    public Void disable(JobNamesParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        paramMap.put(CommonConstants.status, JobStatus.DISABLED.getStatus());
+        mapper.updateStatus(paramMap);
+        return null;
     }
 }

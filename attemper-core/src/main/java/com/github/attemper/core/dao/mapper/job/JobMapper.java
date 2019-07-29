@@ -23,6 +23,8 @@ public interface JobMapper extends BaseMapper<Job> {
 
     List<JobWithVersionResult> versions(Map<String, Object> paramMap);
 
+    void updateStatus(Map<String, Object> paramMap);
+
     Project getProject(Map<String, Object> paramMap);
 
     void saveProject(Map<String, Object> paramMap);

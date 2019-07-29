@@ -64,6 +64,20 @@ public class JobController {
 		return CommonResult.putResult(jobOperatedService.remove(param));
 	}
 
+	@ApiOperation("Enable job")
+	@ApiImplicitParam(value = "JobNamesParam", name = "param", dataType = "JobNamesParam", required = true)
+	@PutMapping(APIPath.JobPath.ENABLE)
+	public CommonResult<Void> enable(@RequestBody JobNamesParam param) {
+		return CommonResult.putResult(jobOperatedService.enable(param));
+	}
+
+	@ApiOperation("Disable job")
+	@ApiImplicitParam(value = "JobNamesParam", name = "param", dataType = "JobNamesParam", required = true)
+	@PutMapping(APIPath.JobPath.DISABLE)
+	public CommonResult<Void> disable(@RequestBody JobNamesParam param) {
+		return CommonResult.putResult(jobOperatedService.disable(param));
+	}
+
 	@ApiOperation("Get job")
 	@ApiImplicitParam(value = "JobNameParam", name = "param", dataType = "JobNameParam", required = true)
 	@GetMapping(APIPath.JobPath.GET)

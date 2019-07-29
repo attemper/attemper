@@ -27,6 +27,8 @@ public interface CommonConstants {
 
     String projectName = "projectName";
 
+    String status = "status";
+
     int DEF_CURRENT_PAGE = 1;
 
     int DEF_PAGE_SIZE = 10;

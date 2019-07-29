@@ -110,7 +110,9 @@ export default {
     retry: '重试',
     terminate: '终止',
     publish: '发布',
-    saveAndPublish: '保存并发布'
+    saveAndPublish: '保存并发布',
+    enable: '启用',
+    disable: '禁用'
   },
   tip: {
     usernameError: '请输入正确的用户名',
