@@ -165,7 +165,7 @@
         (
             ID,
             ACT_INST_ID,
-            PARENT_ACT_INST_ID_,
+            PARENT_ACT_INST_ID,
             EXECUTION_ID,
             PROC_INST_ID,
             ROOT_PROC_INST_ID,
@@ -282,7 +282,7 @@
     <select id="listAct" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
         SELECT j.* FROM (
-        SELECT jia.ID, jia.ACT_INST_ID, jia.PARENT_ACT_INST_ID_, jia.EXECUTION_ID, jia.PROC_INST_ID,
+        SELECT jia.ID, jia.ACT_INST_ID, jia.PARENT_ACT_INST_ID, jia.EXECUTION_ID, jia.PROC_INST_ID,
         jia.ROOT_PROC_INST_ID, jia.ACT_ID, jia.ACT_NAME, jia.ACT_TYPE, jia.STATUS, jia.LOG_KEY, jia.BIZ_URI,
         IFNULL(ha.START_TIME_, ji.START_TIME) as START_TIME, IFNULL(ha.END_TIME_, ji.END_TIME) as END_TIME,
         IFNULL(ha.DURATION_, ji.DURATION) as DURATION, ri.INCIDENT_MSG_ AS LOG_TEXT
