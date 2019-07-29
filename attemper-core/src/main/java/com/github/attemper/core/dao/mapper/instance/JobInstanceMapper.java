@@ -24,6 +24,8 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
 
     JobInstanceAct getAct(String actInstId);
 
+    void upgradeToHis(JobInstance jobInstance);
+
     void addAct(JobInstanceAct jobInstanceAct);
 
     void updateAct(JobInstanceAct jobInstanceAct);

@@ -87,7 +87,7 @@ export const constantRouterMap = [
       notMenu: true
     }
   },
-  {
+  /* {
     path: '/documentation',
     component: Layout,
     children: [
@@ -111,7 +111,7 @@ export const constantRouterMap = [
         meta: { title: 'guide', icon: 'guide', noCache: true }
       }
     ]
-  },
+  },*/
   {
     path: '/profile',
     component: Layout,

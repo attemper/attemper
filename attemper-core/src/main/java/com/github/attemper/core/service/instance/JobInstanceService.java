@@ -90,6 +90,8 @@ public class JobInstanceService extends BaseServiceAdapter {
     }
 
     public void add(JobInstance jobInstance) {
+        // upgrade form instance to history
+        mapper.upgradeToHis(jobInstance);
         if (jobInstance.getDisplayName() == null) {
             Job job = jobService.get(jobInstance.getJobName(), jobInstance.getTenantId());
             if (job != null) {

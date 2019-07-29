@@ -112,10 +112,7 @@ public class JobCallingService {
         int count = jobInstanceService.count(new JobInstanceListParam()
                 .setJobName(job.getJobName())
                 .setStatus(Arrays.asList(JobInstanceStatus.RUNNING.getStatus())), job.getTenantId());
-        if (count <= 0) {
-            return true;
-        }
-        return false;
+        return count <= 0;
     }
 
     @Autowired

@@ -8,7 +8,6 @@ import com.github.attemper.core.service.instance.JobInstanceService;
 import com.github.attemper.executor.camunda.history.event.EndEventing;
 import com.github.attemper.executor.camunda.history.event.EventingAdapter;
 import com.github.attemper.executor.camunda.history.event.StartEventing;
-import com.github.attemper.executor.util.CamundaUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.camunda.bpm.engine.impl.history.event.HistoricProcessInstanceEventEntity;
@@ -39,7 +38,8 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
                     .setSuperProcInstId(historyEvent.getSuperProcessInstanceId())
                     .setProcDefId(historyEvent.getProcessDefinitionId())
                     .setStatus(JobInstanceStatus.RUNNING.getStatus())
-                    .setJobName(CamundaUtil.extractKeyFromProcessDefinitionId(historyEvent.getProcessDefinitionId()))
+                    .setJobName(historyEvent.getProcessDefinitionKey())
+                    .setDisplayName(historyEvent.getProcessDefinitionName())
                     .setStartTime(historyEvent.getStartTime())
                     .setTenantId(historyEvent.getTenantId());
             JobInstance parentJobInstance = jobInstanceService.get(new JobInstanceGetParam().setProcInstId(historyEvent.getRootProcessInstanceId()));

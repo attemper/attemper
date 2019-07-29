@@ -102,6 +102,9 @@
 
     <sql id="updateSql">
         <set>
+            <if test="displayName != null">
+                DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
+            </if>
             <if test="procInstId != null">
                 PROC_INST_ID = #{procInstId, jdbcType=VARCHAR},
             </if>
@@ -137,6 +140,21 @@
             <include refid="condId"/>
         </where>
     </sql>
+
+    <update id="upgradeToHis" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
+        INSERT INTO ${tablePrefix}job_instance_history
+        SELECT * FROM ${tablePrefix}job_instance j
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+        ;
+        DELETE FROM j USING ${tablePrefix}job_instance j
+        <where>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </update>
 
     <insert id="addAct" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
         INSERT INTO ${tablePrefix}job_instance_act
@@ -221,7 +239,7 @@
         ji.TENANT_ID, IFNULL(hp.START_TIME_, ji.START_TIME) as START_TIME,
         IFNULL(hp.END_TIME_, ji.END_TIME) as END_TIME,
         IFNULL(hp.DURATION_, ji.DURATION) as DURATION
-        FROM ${tablePrefix}job_instance ji
+        FROM (select * from ${tablePrefix}job_instance UNION ALL select * from ${tablePrefix}job_instance_history) ji
         LEFT JOIN act_hi_procinst hp on ji.PROC_INST_ID = hp.PROC_INST_ID_) j
         <where>
             <if test="jobName != null">
@@ -315,7 +333,7 @@
 
     <sql id="condJobName">
         <if test="jobName != null">
-            AND JOB_NAME = #{jobName, jdbcType=VARCHAR}
+            AND j.JOB_NAME = #{jobName, jdbcType=VARCHAR}
         </if>
     </sql>
 
