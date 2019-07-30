@@ -15,10 +15,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ExecutorConfiguration {
 
-    @Value("${disruptor.buffer-size:1024}")
+    @Value("${disruptor.buffer-size:1048576}")
     private int bufferSize;
 
-    @Value("${disruptor.consumer-num:128}")
+    @Value("${disruptor.consumer-num:32}")
     private int consumerNum;
 
     @Bean

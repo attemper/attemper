@@ -147,12 +147,14 @@
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
+            and STATUS IN (1, 2, 3)
         </where>
         ;
         DELETE FROM j USING ${tablePrefix}job_instance j
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
+            and STATUS IN (1, 2, 3)
         </where>
     </update>
 
@@ -284,11 +286,9 @@
         SELECT j.* FROM (
         SELECT jia.ID, jia.ACT_INST_ID, jia.PARENT_ACT_INST_ID, jia.EXECUTION_ID, jia.PROC_INST_ID,
         jia.ROOT_PROC_INST_ID, jia.ACT_ID, jia.ACT_NAME, jia.ACT_TYPE, jia.STATUS, jia.LOG_KEY, jia.BIZ_URI,
-        IFNULL(ha.START_TIME_, ji.START_TIME) as START_TIME, IFNULL(ha.END_TIME_, ji.END_TIME) as END_TIME,
-        IFNULL(ha.DURATION_, ji.DURATION) as DURATION, ri.INCIDENT_MSG_ AS LOG_TEXT
+        IFNULL(ha.START_TIME_, jia.START_TIME) as START_TIME, IFNULL(ha.END_TIME_, jia.END_TIME) as END_TIME,
+        IFNULL(ha.DURATION_, jia.DURATION) as DURATION, ri.INCIDENT_MSG_ AS LOG_TEXT
         FROM ${tablePrefix}job_instance_act jia
-        JOIN ${tablePrefix}job_instance ji
-        USING (PROC_INST_ID)
         LEFT JOIN act_ru_incident ri ON jia.EXECUTION_ID = ri.EXECUTION_ID_
         LEFT JOIN act_hi_actinst ha ON jia.EXECUTION_ID = ha.EXECUTION_ID_ AND jia.ACT_ID = ha.ACT_ID_) j
         <where>
