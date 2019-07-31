@@ -11,7 +11,7 @@ import java.util.List;
 @ToString
 public class JobInstanceWithChildren extends JobInstance{
 
-    protected String rowKey;
+    protected boolean hasChildren;
 
     protected List<JobInstanceWithChildren> children;
 

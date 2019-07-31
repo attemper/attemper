@@ -4,7 +4,7 @@
       <el-input v-model="page.jobName" :placeholder="$t('dispatch.job.columns.jobName')" class="filter-item search-input" @keyup.enter.native="search" />
       <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" class="filter-item search-input" @keyup.enter.native="search" />
       <el-select v-model="page.status" :placeholder="$t('columns.status')" multiple clearable collapse-tags class="filter-item search-select">
-        <el-option v-for="item in currentJobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
+        <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <span v-if="selections.length === 1">
@@ -50,12 +50,14 @@
       ref="tables"
       v-loading="listLoading"
       :data="list"
-      row-key="rowKey"
+      row-key="id"
       border
       fit
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       highlight-current-row
       style="width: 100%;"
+      lazy
+      :load="load"
       @selection-change="handleSelectionChange"
       @sort-change="sortChange"
       @cell-click="clickCell"
@@ -64,7 +66,7 @@
         type="selection"
         width="40"
       />
-      <el-table-column :label="$t('dispatch.job.columns.jobName')" show-overflow-tooltip width="110px">
+      <el-table-column :label="$t('dispatch.job.columns.jobName')" show-overflow-tooltip min-width="120px">
         <template slot-scope="scope">
           <el-link type="primary" @click="openTrace(scope.row)">{{ scope.row.jobName }}</el-link>
         </template>
@@ -125,7 +127,7 @@
 </template>
 
 <script>
-import { listReq, retryReq, terminateReq } from '@/api/dispatch/instance'
+import { listReq, listRetryReq, listChildrenReq, listRetryChildrenReq, retryReq, terminateReq } from '@/api/dispatch/instance'
 import { getTimeStr } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
 import waves from '@/directive/waves'
@@ -141,7 +143,7 @@ export default {
   props: {
     monitorType: {
       type: String,
-      default: 'realTime'
+      default: 'total'
     }
   },
   data() {
@@ -158,19 +160,10 @@ export default {
         sort: 'START_TIME DESC',
         listChildren: true
       },
-      currentJobInstanceStatuses: [],
-      runningJobInstanceStatus: [],
       doingJobInstanceStatuses: [],
       doneJobInstanceStatuses: [],
       jobInstanceStatuses: [],
-      jobInstance: {
-        id: undefined,
-        jobName: null,
-        displayName: '',
-        status: 0,
-        startTime: null,
-        duration: 0
-      },
+      jobInstance: null,
       downloadLoading: false,
       selections: []
     }
@@ -207,15 +200,34 @@ export default {
         })
     },
     search() {
+      this.list = []
       this.listLoading = true
       this.initPageStatus()
+      let request
+      if (this.monitorType === 'retry') {
+        request = listRetryReq
+      } else {
+        request = listReq
+      }
       setTimeout(() => {
-        listReq(this.page).then(res => {
+        request(this.page).then(res => {
           this.list = res.data.result.list
           Object.assign(this.page, res.data.result.page)
           this.listLoading = false
         })
       }, 300)
+    },
+    load(row, treeNode, resolve) {
+      this.selectRow(row)
+      let request
+      if (this.monitorType === 'retry') {
+        request = listRetryChildrenReq
+      } else {
+        request = listChildrenReq
+      }
+      request(this.jobInstance).then(res => {
+        resolve(res.data.result)
+      })
     },
     sortChange(data) {
       const { prop, order } = data
@@ -232,8 +244,8 @@ export default {
       this.search()
     },
     formatStatus(item) {
-      for (let i = 0; i < this.currentJobInstanceStatuses.length; i++) {
-        const option = this.currentJobInstanceStatuses[i]
+      for (let i = 0; i < this.jobInstanceStatuses.length; i++) {
+        const option = this.jobInstanceStatuses[i]
         if (option.value === item) {
           return option.label
         }
@@ -258,7 +270,7 @@ export default {
     },
     initPageStatus() {
       if (this.page.status.length === 0) {
-        this.page.status = this.currentJobInstanceStatuses.map(item => item.value)
+        this.page.status = this.jobInstanceStatuses.map(item => item.value)
       }
     },
     openTrace(row) {
@@ -313,19 +325,9 @@ export default {
     },
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.runningJobInstanceStatus = array.runningJobInstanceStatus
         this.doingJobInstanceStatuses = array.doingJobInstanceStatuses
         this.doneJobInstanceStatuses = array.doneJobInstanceStatuses
         this.jobInstanceStatuses = array.jobInstanceStatuses
-        if (this.monitorType === 'realTime') {
-          this.currentJobInstanceStatuses = this.doingJobInstanceStatuses
-        } else if (this.monitorType === 'history') {
-          this.currentJobInstanceStatuses = this.doneJobInstanceStatuses
-        } else if (this.monitorType === 'total') {
-          this.currentJobInstanceStatuses = this.jobInstanceStatuses
-        } else {
-          this.currentJobInstanceStatuses = this.jobInstanceStatuses
-        }
         this.search()
       })
     }

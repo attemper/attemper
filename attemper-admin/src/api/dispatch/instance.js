@@ -9,6 +9,30 @@ export const listReq = (params) => {
   })
 }
 
+export const listChildrenReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.INSTANCE + '/children',
+    method: 'get',
+    params: params
+  })
+}
+
+export const listRetryReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.INSTANCE + '/retry',
+    method: 'get',
+    params: params
+  })
+}
+
+export const listRetryChildrenReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.INSTANCE + '/retry' + '/children',
+    method: 'get',
+    params: params
+  })
+}
+
 export const listActReq = (params) => {
   return request({
     url: APIPath.DISPATCH + APIPath.INSTANCE + '/act',

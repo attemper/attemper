@@ -5,7 +5,6 @@ import com.github.attemper.common.param.dispatch.instance.JobInstanceIdParam;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.core.service.instance.JobInstanceService;
-import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class JobInstanceUpdatedService {
         JobInstance jobInstance = getJobInstance(param);
         if (validateState(jobInstance)) {
             runtimeService.deleteProcessInstanceIfExists(
-                    jobInstance.getProcInstId(),
+                    jobInstance.getProcInstId().toString(),
                     StatusProperty.getValue(901),
                     true,
                     true,
@@ -36,7 +35,7 @@ public class JobInstanceUpdatedService {
     }
 
     private boolean validateState(JobInstance jobInstance) {
-        return StringUtils.isNotBlank(jobInstance.getProcInstId());
+        return jobInstance.getProcInstId() != null;
     }
 
     private JobInstance getJobInstance(JobInstanceIdParam param) {

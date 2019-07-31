@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JobEventExceptionHandler implements ExceptionHandler<JobEvent> {
     @Override
     public void handleEventException(Throwable throwable, long l, JobEvent jobEvent) {
-        log.error(jobEvent.getParam().getId(), throwable);
+        log.error(jobEvent.getParam().getId().toString(), throwable);
     }
 
     @Override

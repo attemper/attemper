@@ -16,15 +16,23 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
 
     List<JobInstanceWithChildren> listInstance(Map<String, Object> paramMap);
 
-    JobInstance get(String id);
+    int countProcessChildren(String superProcInstId);
+
+    int countRetriedChildren(String parentId);
 
     int count(Map<String, Object> paramMap);
 
-    List<JobInstanceWithChildren> listChildren(String parentId);
+    List<JobInstanceWithChildren> listProcessChildren(String superProcInstId);
 
-    JobInstanceAct getAct(String actInstId);
+    List<JobInstanceWithChildren> listRetriedChildren(String parentId);
 
-    void upgradeToHis(JobInstance jobInstance);
+    JobInstanceAct getAct(String id);
+
+    void updateHis(JobInstance jobInstance);
+
+    void addHis(List<JobInstance> jobInstance);
+
+    List<JobInstance> listUpgradedInstance(JobInstance jobInstance);
 
     void addAct(JobInstanceAct jobInstanceAct);
 

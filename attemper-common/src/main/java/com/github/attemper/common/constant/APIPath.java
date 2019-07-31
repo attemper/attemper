@@ -151,7 +151,11 @@ public class APIPath {
 
         public static final String $ = API_PATH + DISPATCH + SUB_PATH;
 
+        public static final String CHILDREN = $ + "/children";
+
         public static final String RETRY = $ + "/retry";
+
+        public static final String RETRY_CHILDREN = RETRY + "/children";
 
         public static final String TERMINATE = $ + "/terminate";
 

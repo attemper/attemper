@@ -7,6 +7,7 @@ import com.github.attemper.core.service.instance.JobInstanceService;
 import com.github.attemper.executor.camunda.history.event.EndEventing;
 import com.github.attemper.executor.camunda.history.event.EventingAdapter;
 import com.github.attemper.executor.camunda.history.event.StartEventing;
+import com.github.attemper.executor.util.CamundaUtil;
 import org.camunda.bpm.engine.impl.history.event.HistoricActivityInstanceEventEntity;
 
 public class HistoricActivityInstanceEventing extends EventingAdapter<HistoricActivityInstanceEventEntity> implements StartEventing<HistoricActivityInstanceEventEntity>, EndEventing<HistoricActivityInstanceEventEntity> {
@@ -26,7 +27,7 @@ public class HistoricActivityInstanceEventing extends EventingAdapter<HistoricAc
     @Override
     public void end() {
         JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
-        JobInstanceAct jobInstanceAct = new JobInstanceAct().setActInstId(historyEvent.getActivityInstanceId());
+        JobInstanceAct jobInstanceAct = new JobInstanceAct().setId(CamundaUtil.extractIdFromActInstanceId(historyEvent.getActivityInstanceId()));
         jobInstanceAct.setStatus(JobInstanceStatus.SUCCESS.getStatus());
         jobInstanceAct.setEndTime(historyEvent.getEndTime());
         if (historyEvent.getEndTime() != null && historyEvent.getStartTime() != null) {
@@ -37,7 +38,7 @@ public class HistoricActivityInstanceEventing extends EventingAdapter<HistoricAc
 
     private JobInstanceAct toJobInstanceAct(HistoricActivityInstanceEventEntity historyEvent) {
         return new JobInstanceAct()
-                .setId(historyEvent.getId().substring(historyEvent.getActivityId().length() + 1))
+                .setId(CamundaUtil.extractIdFromActInstanceId(historyEvent.getId()))
                 .setActInstId(historyEvent.getActivityInstanceId())
                 .setParentActInstId(historyEvent.getParentActivityInstanceId())
                 .setExecutionId(historyEvent.getExecutionId())

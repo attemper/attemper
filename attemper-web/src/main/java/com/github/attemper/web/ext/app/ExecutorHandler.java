@@ -8,7 +8,6 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
 import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.config.base.util.ServletUtil;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -37,7 +36,7 @@ public class ExecutorHandler extends CrossSystemHandler {
     }
 
     private void call(String fullPath, JobInstance jobInstance) {
-        if (StringUtils.isBlank(jobInstance.getRootProcInstId()) && StringUtils.isBlank(jobInstance.getProcInstId())) {
+        if (jobInstance.getProcInstId() == null) {
             return;
         }
         CommonResult result = webClient

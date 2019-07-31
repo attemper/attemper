@@ -1,5 +1,6 @@
 package com.github.attemper.core.service.instance;
 
+import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.JobInstanceStatus;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceActParam;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceGetParam;
@@ -26,7 +27,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
@@ -35,7 +35,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional
 public class JobInstanceService extends BaseServiceAdapter {
 
     @Autowired
@@ -58,30 +58,53 @@ public class JobInstanceService extends BaseServiceAdapter {
         return mapper.count(injectTenantIdToMap(param, tenantId));
     }
 
-    public JobInstanceAct getAct(String actInstId) {
-        return mapper.getAct(actInstId);
+    public JobInstanceAct getAct(String id) {
+        return mapper.getAct(id);
     }
 
-    public Map<String, Object> list(JobInstanceListParam param) {
+    public Map<String, Object> listMonitor(JobInstanceListParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<JobInstanceWithChildren> list = (Page<JobInstanceWithChildren>) mapper.listInstance(paramMap);
         if (param.isListChildren()) {
             list.forEach(item -> {
-                item.setRowKey(item.getId());
-                if (item.isRetried()) {
-                    List<JobInstanceWithChildren> children = mapper.listChildren(item.getId());
-                    if (children.isEmpty()) {
-                        log.error("children empty:{}", item.getId());
-                        item.setRetried(false);
-                    } else {
-                        children.forEach(child -> child.setRowKey(child.getParentId() + ":" + child.getId()));
-                        item.setChildren(children);
-                    }
+                if (item.getProcInstId() != null) {
+                    item.setHasChildren(mapper.countProcessChildren(item.getProcInstId()) > 0);
                 }
             });
         }
         return PageUtil.toResultMap(list);
+    }
+
+    public List<JobInstanceWithChildren> listMonitorChildren(JobInstanceGetParam param) {
+        List<JobInstanceWithChildren> list = mapper.listProcessChildren(param.getProcInstId());
+        list.forEach(item -> {
+            if (item.getProcInstId() != null) {
+                item.setHasChildren(mapper.countProcessChildren(item.getProcInstId()) > 0);
+            }
+        });
+        return list;
+    }
+
+    public Map<String, Object> listRetry(JobInstanceListParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        paramMap.put(CommonConstants.isRetry, true);
+        PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
+        Page<JobInstanceWithChildren> list = (Page<JobInstanceWithChildren>) mapper.listInstance(paramMap);
+        if (param.isListChildren()) {
+            list.forEach(item -> {
+                item.setHasChildren(mapper.countRetriedChildren(item.getId()) > 0);
+            });
+        }
+        return PageUtil.toResultMap(list);
+    }
+
+    public List<JobInstanceWithChildren> listRetriedChildren(JobInstanceGetParam param) {
+        List<JobInstanceWithChildren> list = mapper.listRetriedChildren(param.getId());
+        list.forEach(item -> {
+            item.setHasChildren(mapper.countRetriedChildren(item.getId()) > 0);
+        });
+        return list;
     }
 
     public List<JobInstanceAct> listAct(JobInstanceActParam param) {
@@ -91,7 +114,10 @@ public class JobInstanceService extends BaseServiceAdapter {
 
     public void add(JobInstance jobInstance) {
         // upgrade form instance to history
-        mapper.upgradeToHis(jobInstance);
+        List<JobInstance> jobInstances = mapper.listUpgradedInstance(jobInstance);
+        if (jobInstances.size() > 0) {
+            mapper.addHis(jobInstances);
+        }
         if (jobInstance.getDisplayName() == null) {
             Job job = jobService.get(jobInstance.getJobName(), jobInstance.getTenantId());
             if (job != null) {
@@ -104,7 +130,13 @@ public class JobInstanceService extends BaseServiceAdapter {
 
     public void update(JobInstance jobInstance) {
         mapper.update(jobInstance);
+        updateHis(jobInstance);
         noticeWithInstance(jobInstance);
+    }
+
+    @Async
+    public void updateHis(JobInstance jobInstance) {
+        mapper.updateHis(jobInstance);
     }
 
     public void addAct(JobInstanceAct jobInstanceAct) {

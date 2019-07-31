@@ -10,7 +10,6 @@ import com.github.attemper.core.service.instance.JobInstanceService;
 import com.github.attemper.invoker.service.JobCallingService;
 import com.github.attemper.web.ext.app.ExecutorHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,22 +37,10 @@ public class JobInstanceOperatedService {
         if(!isDone(jobInstance.getStatus())) {
             throw new RTException(6202, String.valueOf(jobInstance.getStatus()));
         }
-        String parentId;
-        if (StringUtils.isNotBlank(jobInstance.getParentId())) {
-            parentId = jobInstance.getParentId();
-            JobInstance rootRetriedJobInstance = jobInstanceService.get(new JobInstanceGetParam().setId(parentId));
-            if (rootRetriedJobInstance != null && !rootRetriedJobInstance.isRetried()) {
-                rootRetriedJobInstance.setRetried(true);
-                jobInstanceService.update(rootRetriedJobInstance);
-            } else {
-                log.error("{} is non-existent", jobInstance.getParentId());
-            }
-        } else {
-            parentId = jobInstance.getId();
-            if (!jobInstance.isRetried()) {
-                jobInstance.setRetried(true);
-                jobInstanceService.update(jobInstance);
-            }
+        String parentId = jobInstance.getId();
+        if (jobInstance.getParentId() == null) {
+            jobInstance.setParentId(jobInstance.getId());
+            jobInstanceService.update(jobInstance);
         }
         jobCallingService.retry(idGenerator.getNextId(), jobInstance.getJobName(), jobInstance.getTenantId(), parentId, null);
         return null;

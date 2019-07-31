@@ -12,8 +12,8 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
       <el-button class="filter-item table-external-button" type="success" icon="el-icon-plus" @click="add">{{ $t('actions.add') }}</el-button>
       <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
-      <el-button v-waves :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="publish">
-        <svg-icon icon-class="publish" /> {{ $t('table.publish') }}
+      <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="warning" @click="manualBatch">
+        <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
       </el-button>
       <div style="float: right">
         <el-popover placement="bottom" trigger="hover">
@@ -23,12 +23,12 @@
           <el-button class="high-operation" :disabled="!selections || !selections.length" type="primary" icon="el-icon-download" @click="exportModel">{{ $t('actions.exportModel') }}</el-button><br>
           <el-button class="high-operation" :disabled="!selections || !selections.length" type="success" icon="el-icon-circle-check" @click="enable">{{ $t('actions.enable') }}</el-button><br>
           <el-button class="high-operation" :disabled="!selections || !selections.length" type="danger" icon="el-icon-circle-close" @click="disable">{{ $t('actions.disable') }}</el-button><br>
-          <el-button :loading="downloadLoading" class="high-operation" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button>
+          <el-button :loading="downloadLoading" class="high-operation" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button><br>
+          <el-button :disabled="!selections || !selections.length" class="high-operation" type="primary" @click="publish">
+            <svg-icon icon-class="publish" /> {{ $t('table.publish') }}
+          </el-button>
           <el-button slot="reference" class="filter-item table-external-button" type="warning">{{ $t('actions.highOperation') }}</el-button>
         </el-popover>
-        <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manualBatch">
-          <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
-        </el-button>
       </div>
     </div>
 

@@ -29,6 +29,8 @@ public interface CommonConstants {
 
     String status = "status";
 
+    String isRetry = "isRetry";
+
     int DEF_CURRENT_PAGE = 1;
 
     int DEF_PAGE_SIZE = 10;

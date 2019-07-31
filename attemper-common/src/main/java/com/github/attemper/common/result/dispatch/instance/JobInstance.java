@@ -36,14 +36,9 @@ public class JobInstance {
     protected String msg;
 
     /**
-     * when you retried, the parent id point to the parent id
+     * when you retried, the field point to the parent id
      */
     protected String parentId;
-
-    /**
-     * when the job instance was retried, the retried is true
-     */
-    protected boolean retried;
 
     protected String schedulerUri;
 
@@ -84,6 +79,15 @@ public class JobInstance {
 
     public JobInstance setSuperProcInstId(String superProcInstId) {
         this.superProcInstId = superProcInstId;
+        return this;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public JobInstance setParentId(String parentId) {
+        this.parentId = parentId;
         return this;
     }
 
@@ -174,24 +178,6 @@ public class JobInstance {
 
     public JobInstance setMsg(String msg) {
         this.msg = msg;
-        return this;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public JobInstance setParentId(String parentId) {
-        this.parentId = parentId;
-        return this;
-    }
-
-    public boolean isRetried() {
-        return retried;
-    }
-
-    public JobInstance setRetried(boolean retried) {
-        this.retried = retried;
         return this;
     }
 

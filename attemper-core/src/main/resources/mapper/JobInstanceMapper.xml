@@ -6,14 +6,16 @@
 
     <select id="get" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.instance.JobInstance">
-        SELECT * FROM ${tablePrefix}job_instance j
+        SELECT * FROM
+        <include refid="currentJoinHistorySql"/>
+        j
         <where>
             <include refid="condId"/>
             <include refid="condProcInstId"/>
         </where>
     </select>
 
-    <select id="count" parameterType="map" resultType="int">
+    <select id="count" parameterType="map" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM ${tablePrefix}job_instance j
         <where>
             <include refid="condJobName"/>
@@ -34,22 +36,45 @@
         </where>
     </select>
 
-    <select id="listChildren" parameterType="string"
-            resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren">
-        SELECT * FROM ${tablePrefix}job_instance j WHERE PARENT_ID = #{1} ORDER BY START_TIME DESC
+    <select id="countProcessChildren" parameterType="string" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM
+        <include refid="currentJoinHistorySql"/>
+        j WHERE super_proc_inst_id = #{1}
     </select>
+
+    <select id="listProcessChildren" parameterType="string"
+            resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren">
+        SELECT * FROM
+        <include refid="currentJoinHistorySql"/>
+        j WHERE super_proc_inst_id = #{1} ORDER BY START_TIME
+    </select>
+
+    <select id="countRetriedChildren" parameterType="string" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM
+        <include refid="currentJoinHistorySql"/>
+        j WHERE parent_id = #{1} and id != parent_id
+    </select>
+
+    <select id="listRetriedChildren" parameterType="string"
+            resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren">
+        SELECT * FROM
+        <include refid="currentJoinHistorySql"/>
+        j WHERE parent_id = #{1} and id != parent_id ORDER BY START_TIME DESC
+    </select>
+
+    <sql id="currentJoinHistorySql">
+        (SELECT * FROM ${tablePrefix}job_instance
+        UNION ALL
+        SELECT * FROM ${tablePrefix}job_instance_history)
+    </sql>
 
     <select id="getAct" parameterType="string"
             resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
-        SELECT * FROM ${tablePrefix}job_instance_act j WHERE ACT_INST_ID = #{1}
+        SELECT * FROM ${tablePrefix}job_instance_act j WHERE ID = #{1}
     </select>
 
     <insert id="add" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
         INSERT INTO ${tablePrefix}job_instance
-        <include refid="insertSql"/>
-    </insert>
-
-    <sql id="insertSql">
         (
             ID,
             PROC_INST_ID,
@@ -66,7 +91,6 @@
             CODE,
             MSG,
             PARENT_ID,
-            RETRIED,
             SCHEDULER_URI,
             EXECUTOR_URI,
             TENANT_ID
@@ -88,15 +112,74 @@
             #{code, jdbcType=INTEGER},
             #{msg, jdbcType=VARCHAR},
             #{parentId, jdbcType=VARCHAR},
-            #{retried, jdbcType=INTEGER},
             #{schedulerUri, jdbcType=VARCHAR},
             #{executorUri, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
         )
-    </sql>
+    </insert>
+
+    <insert id="addHis" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
+        INSERT INTO ${tablePrefix}job_instance_history
+        (
+        ID,
+        PROC_INST_ID,
+        ROOT_PROC_INST_ID,
+        SUPER_PROC_INST_ID,
+        JOB_NAME,
+        DISPLAY_NAME,
+        TRIGGER_NAME,
+        PROC_DEF_ID,
+        START_TIME,
+        END_TIME,
+        DURATION,
+        STATUS,
+        CODE,
+        MSG,
+        PARENT_ID,
+        SCHEDULER_URI,
+        EXECUTOR_URI,
+        TENANT_ID
+        )
+        VALUES
+        <foreach collection="list" item="i" separator=",">
+            (
+            #{i.id, jdbcType=VARCHAR},
+            #{i.procInstId, jdbcType=VARCHAR},
+            #{i.rootProcInstId, jdbcType=VARCHAR},
+            #{i.superProcInstId, jdbcType=VARCHAR},
+            #{i.jobName, jdbcType=VARCHAR},
+            #{i.displayName, jdbcType=VARCHAR},
+            #{i.triggerName, jdbcType=VARCHAR},
+            #{i.procDefId, jdbcType=VARCHAR},
+            #{i.startTime, jdbcType=TIMESTAMP},
+            #{i.endTime, jdbcType=TIMESTAMP},
+            #{i.duration, jdbcType=INTEGER},
+            #{i.status, jdbcType=INTEGER},
+            #{i.code, jdbcType=INTEGER},
+            #{i.msg, jdbcType=VARCHAR},
+            #{i.parentId, jdbcType=VARCHAR},
+            #{i.schedulerUri, jdbcType=VARCHAR},
+            #{i.executorUri, jdbcType=VARCHAR},
+            #{i.tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+        ;
+        DELETE FROM j USING ${tablePrefix}job_instance j
+        <where>
+            ID in
+            <foreach item="i" collection="list" open="(" separator="," close=")">
+                #{i.id, jdbcType=VARCHAR}
+            </foreach>
+        </where>
+    </insert>
 
     <update id="update" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
         UPDATE ${tablePrefix}job_instance j
+        <include refid="updateSql"/>
+    </update>
+
+    <update id="updateHis" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
+        UPDATE ${tablePrefix}job_instance_history j
         <include refid="updateSql"/>
     </update>
 
@@ -110,6 +193,9 @@
             </if>
             <if test="rootProcInstId != null">
                 ROOT_PROC_INST_ID = #{rootProcInstId, jdbcType=VARCHAR},
+            </if>
+            <if test="superProcInstId != null">
+                SUPER_PROC_INST_ID = #{superProcInstId, jdbcType=VARCHAR},
             </if>
             <if test="procDefId != null">
                 PROC_DEF_ID = #{procDefId, jdbcType=VARCHAR},
@@ -132,31 +218,21 @@
             <if test="parentId != null">
                 PARENT_ID = #{parentId, jdbcType=VARCHAR},
             </if>
-            <if test="retried != null">
-                RETRIED = #{retried, jdbcType=INTEGER},
-            </if>
         </set>
         <where>
             <include refid="condId"/>
         </where>
     </sql>
 
-    <update id="upgradeToHis" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
-        INSERT INTO ${tablePrefix}job_instance_history
+    <select id="listUpgradedInstance" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance"
+            resultType="com.github.attemper.common.result.dispatch.instance.JobInstance">
         SELECT * FROM ${tablePrefix}job_instance j
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
             and STATUS IN (1, 2, 3)
         </where>
-        ;
-        DELETE FROM j USING ${tablePrefix}job_instance j
-        <where>
-            <include refid="condJobName"/>
-            <include refid="condTenantId"/>
-            and STATUS IN (1, 2, 3)
-        </where>
-    </update>
+    </select>
 
     <insert id="addAct" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
         INSERT INTO ${tablePrefix}job_instance_act
@@ -201,10 +277,6 @@
 
     <update id="updateAct" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
         UPDATE ${tablePrefix}job_instance_act j
-        <include refid="updateActSql"/>
-    </update>
-
-    <sql id="updateActSql">
         <set>
             <if test="status != null">
                 STATUS = #{status, jdbcType=INTEGER},
@@ -216,7 +288,7 @@
                 DURATION = #{duration, jdbcType=INTEGER},
             </if>
             <if test="bizUri != null">
-                BIZ_URI = #{bizUri, jdbcType=INTEGER},
+                BIZ_URI = #{bizUri, jdbcType=VARCHAR},
             </if>
             <if test="logKey != null">
                 LOG_KEY = IF(LOG_KEY IS NULL, #{logKey, jdbcType=VARCHAR}, concat(LOG_KEY, ',',
@@ -228,22 +300,29 @@
             </if>
         </set>
         <where>
-            <include refid="condActInstId"/>
+            <include refid="condId"/>
             <include refid="condExecutionId"/>
         </where>
-    </sql>
+    </update>
 
     <select id="listInstance" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren">
         SELECT * FROM (
         SELECT ji.ID, ji.PROC_INST_ID, ji.ROOT_PROC_INST_ID, ji.JOB_NAME, ji.DISPLAY_NAME, ji.TRIGGER_NAME,
-        ji.PROC_DEF_ID, ji.STATUS, ji.CODE, ji.MSG, ji.PARENT_ID, ji.RETRIED, ji.SCHEDULER_URI, ji.EXECUTOR_URI,
+        ji.PROC_DEF_ID, ji.STATUS, ji.CODE, ji.MSG, ji.PARENT_ID, ji.SCHEDULER_URI, ji.EXECUTOR_URI,
         ji.TENANT_ID, IFNULL(hp.START_TIME_, ji.START_TIME) as START_TIME,
         IFNULL(hp.END_TIME_, ji.END_TIME) as END_TIME,
         IFNULL(hp.DURATION_, ji.DURATION) as DURATION
-        FROM (select * from ${tablePrefix}job_instance UNION ALL select * from ${tablePrefix}job_instance_history) ji
+        FROM (
+        SELECT * FROM ${tablePrefix}job_instance where SUPER_PROC_INST_ID IS NULL
+        UNION ALL
+        SELECT * FROM ${tablePrefix}job_instance_history where SUPER_PROC_INST_ID IS NULL
+        )ji
         LEFT JOIN act_hi_procinst hp on ji.PROC_INST_ID = hp.PROC_INST_ID_) j
         <where>
+            <if test="isRetry != null">
+                PARENT_ID = ID
+            </if>
             <if test="jobName != null">
                 and lower(JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
             </if>
@@ -308,20 +387,6 @@
     <sql id="condProcInstId">
         <if test="procInstId != null">
             and j.PROC_INST_ID = #{procInstId, jdbcType=VARCHAR}
-        </if>
-    </sql>
-
-    <!--
-    <sql id="condRootProcInstId">
-        <if test="rootProcInstId != null">
-            and j.ROOT_PROC_INST_ID = #{rootProcInstId, jdbcType=VARCHAR}
-        </if>
-    </sql>
-    -->
-
-    <sql id="condActInstId">
-        <if test="actInstId != null">
-            and j.ACT_INST_ID = #{actInstId, jdbcType=VARCHAR}
         </if>
     </sql>
 

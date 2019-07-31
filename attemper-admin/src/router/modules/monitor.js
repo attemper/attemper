@@ -24,18 +24,6 @@ const monitorRouter = {
         title: 'realTime',
         icon: 'realTime'
       }
-    },
-    {
-      path: 'history',
-      component: () => import('@/views/instance/monitor'),
-      name: 'history',
-      props: {
-        monitorType: 'history'
-      },
-      meta: {
-        title: 'history',
-        icon: 'history'
-      }
     },*/
     {
       path: 'total',
@@ -47,6 +35,20 @@ const monitorRouter = {
       meta: {
         title: 'total',
         icon: 'total'
+        // noCache: false
+      }
+    },
+    {
+      path: 'retry',
+      component: () => import('@/views/instance/monitor'),
+      name: 'retry',
+      props: {
+        monitorType: 'retry'
+      },
+      meta: {
+        title: 'retry',
+        icon: 'retry'
+        // noCache: false
       }
     },
     {
