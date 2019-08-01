@@ -118,7 +118,7 @@
         )
     </insert>
 
-    <insert id="addHis" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
+    <insert id="upgradeToHis" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
         INSERT INTO ${tablePrefix}job_instance_history
         (
         ID,

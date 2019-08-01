@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
@@ -35,7 +36,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class JobInstanceService extends BaseServiceAdapter {
 
     @Autowired
@@ -116,7 +117,7 @@ public class JobInstanceService extends BaseServiceAdapter {
         // upgrade form instance to history
         List<JobInstance> jobInstances = mapper.listUpgradedInstance(jobInstance);
         if (jobInstances.size() > 0) {
-            mapper.addHis(jobInstances);
+            mapper.upgradeToHis(jobInstances);
         }
         if (jobInstance.getDisplayName() == null) {
             Job job = jobService.get(jobInstance.getJobName(), jobInstance.getTenantId());

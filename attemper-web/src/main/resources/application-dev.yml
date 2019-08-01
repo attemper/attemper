@@ -38,6 +38,7 @@ org:
   quartz:
     jobStore:
       isClustered: true
+      misfireThreshold: 10000
 
 logging:
   level:

@@ -30,7 +30,7 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
 
     void updateHis(JobInstance jobInstance);
 
-    void addHis(List<JobInstance> jobInstance);
+    void upgradeToHis(List<JobInstance> jobInstance);
 
     List<JobInstance> listUpgradedInstance(JobInstance jobInstance);
 
