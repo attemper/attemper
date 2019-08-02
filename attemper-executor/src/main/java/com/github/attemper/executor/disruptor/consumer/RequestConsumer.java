@@ -84,6 +84,6 @@ public class RequestConsumer implements WorkHandler<JobEvent> {
         jobInstance.setStatus(JobInstanceStatus.FAILURE.getStatus());
         jobInstance.setCode(code);
         jobInstance.setMsg(msg);
-        jobInstanceService.update(jobInstance);
+        jobInstanceService.updateDone(jobInstance);
     }
 }

@@ -14,9 +14,9 @@ import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.core.service.job.TriggerService;
 import com.github.attemper.invoker.service.JobCallingService;
+import com.github.attemper.invoker.util.QuartzUtil;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
-import com.github.attemper.web.util.SupportUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.net.MediaType;
@@ -82,12 +82,12 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     private void setNextFireTime(Job job) {
-        List<Date> allTriggerDates = new ArrayList<>();
+        List<Date> allTriggerDates = new ArrayList<>(16);
         TriggerResult triggerResult = triggerService.get(new TriggerGetParam().setJobName(job.getJobName()));
-        allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getCronTriggers(), injectTenantId()));
-        allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getCalendarOffsetTriggers(), injectTenantId()));
-        allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getDailyIntervalTriggers(), injectTenantId()));
-        allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getCalendarIntervalTriggers(), injectTenantId()));
+        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCronTriggers(), injectTenantId()));
+        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCalendarOffsetTriggers(), injectTenantId()));
+        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getDailyIntervalTriggers(), injectTenantId()));
+        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCalendarIntervalTriggers(), injectTenantId()));
         if (allTriggerDates.size() > 0) {
             Collections.sort(allTriggerDates);
             job.setNextFireTimes(allTriggerDates);
@@ -223,7 +223,7 @@ public class JobOperatedService extends BaseServiceAdapter {
                 .setDisplayName(saveParam.getDisplayName())
                 .setContent(saveParam.getContent())
                 .setStatus(saveParam.getStatus())
-                .setConcurrent(saveParam.getConcurrent())
+                .setConcurrent(saveParam.isConcurrent())
                 .setRemark(saveParam.getRemark())
                 .setTenantId(injectTenantId());
     }

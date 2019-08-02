@@ -354,7 +354,7 @@ export function parseDuration(duration) {
     return ''
   }
   if (duration < 1000) {
-    return duration
+    return duration + 'ms'
   }
   const seconds = parseInt(duration / 1000)
   if (seconds < 60) {

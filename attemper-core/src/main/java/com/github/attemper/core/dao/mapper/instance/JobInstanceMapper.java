@@ -28,16 +28,11 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
 
     JobInstanceAct getAct(String id);
 
-    void updateHis(JobInstance jobInstance);
-
-    void upgradeToHis(List<JobInstance> jobInstance);
-
-    List<JobInstance> listUpgradedInstance(JobInstance jobInstance);
-
     void addAct(JobInstanceAct jobInstanceAct);
 
     void updateAct(JobInstanceAct jobInstanceAct);
 
     List<JobInstanceAct> listAct(Map<String, Object> paramMap);
 
+    void updateDone(JobInstance jobInstance);
 }

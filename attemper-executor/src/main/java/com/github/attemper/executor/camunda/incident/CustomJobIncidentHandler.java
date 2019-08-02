@@ -37,6 +37,12 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
             for (Execution execution : executions) {
                 ExecutionEntity executionEntity = (ExecutionEntity) execution;
                 updateInstance(runtimeService, jobInstanceService, executionEntity, 3052);
+                // make super fail
+                ExecutionEntity superExecution = executionEntity.getSuperExecution();
+                while (superExecution != null) {
+                    updateInstance(runtimeService, jobInstanceService, superExecution, 3052);
+                    superExecution = superExecution.getSuperExecution();
+                }
             }
             updateInstanceAct(jobInstanceService, context.getExecutionId());
         } catch (Exception e) {
@@ -63,7 +69,7 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
             } else {
                 jobInstance.setMsg(jobInstance.getMsg() + "," + message);
             }
-            jobInstanceService.update(jobInstance);
+            jobInstanceService.updateDone(jobInstance);
         }
         runtimeService.getCommandExecutor().execute(new UpdateHistoricInstanceCmd(
                 execution.getProcessInstanceId(),

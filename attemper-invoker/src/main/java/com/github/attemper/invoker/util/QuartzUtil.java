@@ -8,17 +8,20 @@ import com.github.attemper.common.param.dispatch.calendar.DayCalendarListParam;
 import com.github.attemper.common.param.dispatch.trigger.sub.*;
 import com.github.attemper.common.result.dispatch.calendar.CalendarInfo;
 import com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig;
+import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
 import com.github.attemper.common.util.DateTimeUtil;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.core.service.calendar.CalendarService;
 import com.github.attemper.invoker.job.ExecutableJob;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.quartz.Calendar;
 import org.quartz.*;
 import org.quartz.impl.calendar.BaseCalendar;
 import org.quartz.impl.calendar.HolidayCalendar;
 import org.quartz.impl.jdbcjobstore.Constants;
 import org.quartz.impl.triggers.AbstractTrigger;
+import org.quartz.spi.OperableTrigger;
 import org.springframework.http.HttpStatus;
 
 import java.util.*;
@@ -200,6 +203,32 @@ public class QuartzUtil {
         } catch (SchedulerException e) {
             throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
         }
+    }
+
+    public static List<Date> getNextFireTimes(List<? extends CommonTriggerResult> list, String tenantId) {
+        List<Date> allNextFireTimes = new ArrayList<>(10);
+        if (list != null && list.size() > 0) {
+            for (CommonTriggerResult item : list) {
+                allNextFireTimes.addAll(getNextFireTimes(item.getTriggerName(), tenantId));
+            }
+        }
+        return allNextFireTimes;
+    }
+
+    public static List<Date> getNextFireTimes(String triggerName, String tenantId) {
+        List<Date> nextFireTimes = new ArrayList<>(10);
+        try {
+            Scheduler scheduler = SpringContextAware.getBean(Scheduler.class);
+            Trigger trigger = scheduler.getTrigger(new TriggerKey(triggerName, tenantId));
+            if (trigger != null) {
+                Calendar calendar = trigger.getCalendarName() != null ?
+                        scheduler.getCalendar(trigger.getCalendarName()) : null;
+                nextFireTimes.addAll(TriggerUtils.computeFireTimes((OperableTrigger) trigger, calendar, 10));
+            }
+        } catch (SchedulerException e) {
+            throw new RTException(6150, e);
+        }
+        return nextFireTimes;
     }
 
     /**

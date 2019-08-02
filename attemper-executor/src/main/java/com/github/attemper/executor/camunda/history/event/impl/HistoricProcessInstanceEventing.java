@@ -59,6 +59,6 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
         jobInstance.setStatus(JobInstanceStatus.SUCCESS.getStatus());
         jobInstance.setEndTime(historyEvent.getEndTime());
         jobInstance.setDuration(jobInstance.getEndTime().getTime() - jobInstance.getStartTime().getTime());
-        jobInstanceService.update(jobInstance);
+        jobInstanceService.updateDone(jobInstance);
     }
 }

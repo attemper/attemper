@@ -44,7 +44,7 @@ public class TriggerOperatedService extends BaseServiceAdapter {
 
     public Void update(TriggerSaveParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
-        Map<Integer, List<? extends CommonTriggerParam>> paramsOfTriggerMap = new HashMap<>();
+        Map<Integer, List<? extends CommonTriggerParam>> paramsOfTriggerMap = new HashMap<>(4);
         paramsOfTriggerMap.put(0, param.getCronTriggers());
         paramsOfTriggerMap.put(1, param.getCalendarOffsetTriggers());
         paramsOfTriggerMap.put(2, param.getDailyIntervalTriggers());

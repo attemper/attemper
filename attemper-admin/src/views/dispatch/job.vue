@@ -260,7 +260,7 @@ const DEF_OBJ = {
   jobName: undefined,
   displayName: '',
   status: 0,
-  concurrent: false,
+  concurrent: true,
   remark: '',
   content: ''
 }

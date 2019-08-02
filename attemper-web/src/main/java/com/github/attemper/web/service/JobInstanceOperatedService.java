@@ -40,7 +40,7 @@ public class JobInstanceOperatedService {
         String parentId = jobInstance.getId();
         if (jobInstance.getParentId() == null) {
             jobInstance.setParentId(jobInstance.getId());
-            jobInstanceService.update(jobInstance);
+            jobInstanceService.updateDone(jobInstance);
         }
         jobCallingService.retry(idGenerator.getNextId(), jobInstance.getJobName(), jobInstance.getTenantId(), parentId, null);
         return null;
@@ -61,7 +61,7 @@ public class JobInstanceOperatedService {
 
     private void updateJobInstanceStatus(JobInstance jobInstance, int status) {
         jobInstance.setStatus(status);
-        jobInstanceService.update(jobInstance);
+        jobInstanceService.updateDone(jobInstance);
     }
 
     private boolean isDoing(int status) {

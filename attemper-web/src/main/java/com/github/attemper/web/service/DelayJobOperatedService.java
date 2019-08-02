@@ -14,13 +14,13 @@ import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
 import com.github.attemper.core.dao.mapper.delay.DelayJobMapper;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.core.service.job.TriggerService;
+import com.github.attemper.invoker.util.QuartzUtil;
 import com.github.attemper.java.sdk.common.web.enums.DelayJobStatus;
 import com.github.attemper.java.sdk.common.web.param.delay.DelayJobExtSaveParam;
 import com.github.attemper.java.sdk.common.web.param.delay.DelayJobIdsParam;
 import com.github.attemper.java.sdk.common.web.result.delay.DelayJobResult;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
-import com.github.attemper.web.util.SupportUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.StringUtils;
@@ -63,7 +63,7 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
     private void setNextFireTime(DelayJob delayJob) {
         List<Date> allTriggerDates = new ArrayList<>();
         TriggerResult triggerResult = triggerService.get(new TriggerGetParam().setJobName(delayJob.getId()));
-        allTriggerDates.addAll(SupportUtil.getNextDateList(triggerResult.getDailyIntervalTriggers(), injectTenantId()));
+        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getDailyIntervalTriggers(), injectTenantId()));
         if (allTriggerDates.size() > 0) {
             Collections.sort(allTriggerDates);
             delayJob.setNextFireTimes(allTriggerDates);
@@ -82,7 +82,6 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
             if (delayJob != null) {
                 throw new DuplicateKeyException(param.getId());
             }
-
         }
         validateJob(param.getJobName());
         DelayJob delayJob = toDelayJob(param);

@@ -17,6 +17,14 @@ import java.util.stream.Collectors;
 
 public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extends CommonTriggerResult> extends TriggerHandlerInDatabase {
 
+    default void deleteAndUnschedule(Map<String, Object> jobNameWithTenantIdMap) {
+        List<V> resultOfTriggers = getTriggers(jobNameWithTenantIdMap);
+        deleteTriggers(jobNameWithTenantIdMap);
+        if (resultOfTriggers.size() > 0) {
+            unscheduleTriggers(TenantHolder.get().getUserName(), resultOfTriggers.stream().map(V::getTriggerName).collect(Collectors.toList()));
+        }
+    }
+
     void deleteTriggers(Map<String, Object> jobNameWithTenantIdMap);
 
     default void unscheduleTriggers(String tenantId, List oldTriggerNames) {
@@ -31,22 +39,16 @@ public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extend
         }
     }
 
-    default void deleteAndUnschedule(Map<String, Object> jobNameWithTenantIdMap) {
-        List<V> resultOfTriggers = getTriggers(jobNameWithTenantIdMap);
-        deleteTriggers(jobNameWithTenantIdMap);
-        if (resultOfTriggers.size() > 0) {
-            unscheduleTriggers(TenantHolder.get().getUserName(), resultOfTriggers.stream().map(V::getTriggerName).collect(Collectors.toList()));
+    default void saveAndSchedule(String jobName, Map<String, Object> jobDataMap, List<K> paramOfTriggers) {
+        if (paramOfTriggers != null && paramOfTriggers.size() > 0) {
+            saveTriggers(jobName, paramOfTriggers);
+            schedule(jobName, TenantHolder.get().getUserName(), jobDataMap, paramOfTriggers);
         }
     }
 
     void saveTriggers(String jobName, List<K> paramOfTriggers);
 
-    Set<Trigger> buildTriggers(String tenantId, List<K> paramOfTriggers);
-
     default void schedule(String jobName, String tenantId, Map<String, Object> jobDataMap, List paramOfTriggers) {
-        if (paramOfTriggers == null || paramOfTriggers.isEmpty()) {
-            return;
-        }
         Set<Trigger> quartzTriggers = buildTriggers(tenantId, paramOfTriggers);
         JobDetail jobDetail = QuartzUtil.newJobDetail(jobName, tenantId, jobDataMap);
         try {
@@ -56,11 +58,5 @@ public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extend
         }
     }
 
-    default void saveAndSchedule(String jobName, Map<String, Object> jobDataMap, List<K> paramOfTriggers) {
-        if (paramOfTriggers == null || paramOfTriggers.isEmpty()) {
-            return;
-        }
-        saveTriggers(jobName, paramOfTriggers);
-        schedule(jobName, TenantHolder.get().getUserName(), jobDataMap, paramOfTriggers);
-    }
+    Set<Trigger> buildTriggers(String tenantId, List<K> paramOfTriggers);
 }

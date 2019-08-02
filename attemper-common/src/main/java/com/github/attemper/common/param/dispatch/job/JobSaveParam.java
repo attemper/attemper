@@ -11,7 +11,7 @@ public class JobSaveParam extends JobContentSaveParam {
 
     protected Integer status;
 
-    protected Boolean concurrent;
+    protected boolean concurrent;
 
     protected String remark;
 
@@ -23,13 +23,6 @@ public class JobSaveParam extends JobContentSaveParam {
             return "6004";
         }
         return super.validate();
-    }
-
-    @Override
-    public void preHandle() {
-        if (concurrent == null) {
-            concurrent = false;
-        }
     }
 
     public String getDisplayName() {
@@ -50,11 +43,11 @@ public class JobSaveParam extends JobContentSaveParam {
         return this;
     }
 
-    public Boolean getConcurrent() {
+    public boolean isConcurrent() {
         return concurrent;
     }
 
-    public JobSaveParam setConcurrent(Boolean concurrent) {
+    public JobSaveParam setConcurrent(boolean concurrent) {
         this.concurrent = concurrent;
         return this;
     }

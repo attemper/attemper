@@ -114,11 +114,6 @@ public class JobInstanceService extends BaseServiceAdapter {
     }
 
     public void add(JobInstance jobInstance) {
-        // upgrade form instance to history
-        List<JobInstance> jobInstances = mapper.listUpgradedInstance(jobInstance);
-        if (jobInstances.size() > 0) {
-            mapper.upgradeToHis(jobInstances);
-        }
         if (jobInstance.getDisplayName() == null) {
             Job job = jobService.get(jobInstance.getJobName(), jobInstance.getTenantId());
             if (job != null) {
@@ -131,13 +126,12 @@ public class JobInstanceService extends BaseServiceAdapter {
 
     public void update(JobInstance jobInstance) {
         mapper.update(jobInstance);
-        updateHis(jobInstance);
         noticeWithInstance(jobInstance);
     }
 
-    @Async
-    public void updateHis(JobInstance jobInstance) {
-        mapper.updateHis(jobInstance);
+    public void updateDone(JobInstance jobInstance) {
+        mapper.updateDone(jobInstance);
+        noticeWithInstance(jobInstance);
     }
 
     public void addAct(JobInstanceAct jobInstanceAct) {
