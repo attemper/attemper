@@ -68,7 +68,7 @@ public class JobInstanceService extends BaseServiceAdapter {
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<JobInstanceWithChildren> list = (Page<JobInstanceWithChildren>) mapper.listInstance(paramMap);
         if (param.isListChildren()) {
-            list.forEach(item -> {
+            list.parallelStream().forEach(item -> {
                 if (item.getProcInstId() != null) {
                     item.setHasChildren(mapper.countProcessChildren(item.getProcInstId()) > 0);
                 }
@@ -79,7 +79,7 @@ public class JobInstanceService extends BaseServiceAdapter {
 
     public List<JobInstanceWithChildren> listMonitorChildren(JobInstanceGetParam param) {
         List<JobInstanceWithChildren> list = mapper.listProcessChildren(param.getProcInstId());
-        list.forEach(item -> {
+        list.parallelStream().forEach(item -> {
             if (item.getProcInstId() != null) {
                 item.setHasChildren(mapper.countProcessChildren(item.getProcInstId()) > 0);
             }
@@ -93,7 +93,7 @@ public class JobInstanceService extends BaseServiceAdapter {
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<JobInstanceWithChildren> list = (Page<JobInstanceWithChildren>) mapper.listInstance(paramMap);
         if (param.isListChildren()) {
-            list.forEach(item -> {
+            list.parallelStream().forEach(item -> {
                 item.setHasChildren(mapper.countRetriedChildren(item.getId()) > 0);
             });
         }
@@ -102,7 +102,7 @@ public class JobInstanceService extends BaseServiceAdapter {
 
     public List<JobInstanceWithChildren> listRetriedChildren(JobInstanceGetParam param) {
         List<JobInstanceWithChildren> list = mapper.listRetriedChildren(param.getId());
-        list.forEach(item -> {
+        list.parallelStream().forEach(item -> {
             item.setHasChildren(mapper.countRetriedChildren(item.getId()) > 0);
         });
         return list;

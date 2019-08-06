@@ -26,20 +26,20 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
-		<spring.boot.version>2.1.5.RELEASE</spring.boot.version>
+		<spring.boot.version>2.1.6.RELEASE</spring.boot.version>
 		<spring.cloud.version>Greenwich.SR1</spring.cloud.version>
 
 		<sdk.version>1.0.0-SNAPSHOT</sdk.version>
 		<sdk.artifactId>attemper-java-sdk</sdk.artifactId>
 
-		<camunda.spring.boot.version>3.3.1</camunda.spring.boot.version>
+		<camunda.spring.boot.version>3.3.3</camunda.spring.boot.version>
 		<camunda.version>7.11.0</camunda.version>
 		<disruptor.version>3.4.2</disruptor.version>
 		<quartz.spring.boot.version>1.0.0-SNAPSHOT</quartz.spring.boot.version>
 		<quartz.version>3.0.0-SNAPSHOT</quartz.version>
 
 		<mysql.version>5.1.27</mysql.version>
-		<mybatis.spring.boot.version>2.0.0</mybatis.spring.boot.version>
+		<mybatis.spring.boot.version>2.1.0</mybatis.spring.boot.version>
 		<pagehelper.spring.boot.version>1.2.7</pagehelper.spring.boot.version>
 		<jackson.version>2.9.9</jackson.version>
 		<httpclient.version>4.5.5</httpclient.version>
