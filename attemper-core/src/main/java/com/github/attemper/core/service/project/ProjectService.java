@@ -1,9 +1,9 @@
 package com.github.attemper.core.service.project;
 
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.dispatch.project.*;
-import com.github.attemper.common.result.dispatch.project.Project;
-import com.github.attemper.common.result.dispatch.project.ProjectInfo;
+import com.github.attemper.common.param.app.project.*;
+import com.github.attemper.common.result.app.project.Project;
+import com.github.attemper.common.result.app.project.ProjectInfo;
 import com.github.attemper.core.dao.mapper.project.ProjectMapper;
 import com.github.attemper.sys.holder.TenantHolder;
 import com.github.attemper.sys.service.BaseServiceAdapter;

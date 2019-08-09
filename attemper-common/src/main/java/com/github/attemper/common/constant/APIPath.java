@@ -13,6 +13,8 @@ public class APIPath {
 
     private static final String DISPATCH = SdkAPIPath.DISPATCH;
 
+    private static final String APP = "/app";
+
     private static final String STATISTICS = "/statistics";
 
     private static final String SCHEDULER = "/scheduler";
@@ -125,7 +127,6 @@ public class APIPath {
     public static final class CalendarPath {
         public static final String SUB_PATH = "/calendar";
 
-
         public static final String $ = API_PATH + DISPATCH + SUB_PATH;
 
         public static final String DAY = $ + "/day";
@@ -136,14 +137,38 @@ public class APIPath {
     public static final class ProjectPath {
         public static final String SUB_PATH = "/project";
 
-        public static final String $ = API_PATH + DISPATCH + SUB_PATH;
+        public static final String $ = API_PATH + APP + SUB_PATH;
 
-        public static final String LIST_TREE = API_PATH + DISPATCH + SUB_PATH + "/treeList";
+        public static final String LIST_TREE = API_PATH + APP + SUB_PATH + "/treeList";
 
-        public static final String INFO = API_PATH + DISPATCH + SUB_PATH + "/info";
+        public static final String INFO = API_PATH + APP + SUB_PATH + "/info";
 
-        public static final String EXECUTOR = API_PATH + DISPATCH + SUB_PATH + "/executor";
+        public static final String EXECUTOR = API_PATH + APP + SUB_PATH + "/executor";
 
+    }
+
+    public static final class ProgramPath {
+        public static final String SUB_PATH = "/program";
+
+        public static final String $ = API_PATH + APP + SUB_PATH;
+
+        public static final String GET = $ + _GET;
+
+        public static final String PACKAGE = $ + "/package";
+
+        public static final String PACKAGE_CATEGORY = PACKAGE + "/category";
+
+        public static final String UPLOAD_PACKAGE = PACKAGE + "/upload";
+
+        public static final String DOWNLOAD_PACKAGE = PACKAGE + "/download";
+
+        public static final String LOAD_PACKAGE = PACKAGE + "/load";
+
+        public static final String UNLOAD_PACKAGE = PACKAGE + "/unload";
+
+        public static final String VIEW_FILE = PACKAGE + "/file/view";
+
+        public static final String DOWNLOAD_FILE = PACKAGE + "/file/download";
     }
 
     public static final class InstancePath {

@@ -32,7 +32,6 @@ import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.commons.utils.IoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -373,7 +372,7 @@ public class JobOperatedService extends BaseServiceAdapter {
                 createZipEntry(zipOutputStream, definition.getResourceName(), resourceAsStream);
             }
         } catch (IOException e) {
-            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+            throw new RTException(1100, e);
         }
     }
 
@@ -409,7 +408,7 @@ public class JobOperatedService extends BaseServiceAdapter {
             }
             publish(new JobNamesParam().setJobNames(new ArrayList<>(jobNames)));
         } catch (IOException e) {
-            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+            throw new RTException(1100, e);
         }
 
         return null;

@@ -2,7 +2,7 @@
 
 import Layout from '@/layout'
 
-const jobRouter = {
+const dispatchRouter = {
   name: 'dispatch',
   path: '/dispatch',
   component: Layout,
@@ -54,16 +54,6 @@ const jobRouter = {
       }
     },
     {
-      path: 'project',
-      component: () => import('@/views/dispatch/project'),
-      name: 'project',
-      meta: {
-        title: 'project',
-        icon: 'project',
-        noCache: false
-      }
-    },
-    {
       path: 'calendar',
       component: () => import('@/views/dispatch/calendar'),
       name: 'calendar',
@@ -87,4 +77,4 @@ const jobRouter = {
     }
   ]
 }
-export default jobRouter
+export default dispatchRouter

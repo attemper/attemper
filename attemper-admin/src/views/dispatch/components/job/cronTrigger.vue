@@ -13,7 +13,7 @@
                 <el-button slot="prepend" @click="generateId(item)">
                   <svg-icon icon-class="random" />
                 </el-button>
-                <el-button slot="append" icon="el-icon-minus" @click="removeId(item, index)" />
+                <el-button slot="append" icon="el-icon-close" @click="removeId(item, index)" />
               </el-input>
             </el-form-item>
             <el-form-item :label="$t('dispatch.trigger.title.expression')">

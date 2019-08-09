@@ -17,11 +17,11 @@
       </el-button>
       <div style="float: right">
         <el-popover placement="bottom" trigger="hover">
-          <el-upload action="" accept="application/zip" :on-change="importModel" :auto-upload="false" :show-file-list="false">
+          <el-upload style="display: inline;" action="" accept="application/zip" :on-change="importModel" :auto-upload="false" :show-file-list="false">
             <el-button class="high-operation" type="success" icon="el-icon-upload2">{{ $t('actions.importModel') }}</el-button>
           </el-upload>
           <el-button class="high-operation" :disabled="!selections || !selections.length" type="primary" icon="el-icon-download" @click="exportModel">{{ $t('actions.exportModel') }}</el-button><br>
-          <el-button class="high-operation" :disabled="!selections || !selections.length" type="success" icon="el-icon-circle-check" @click="enable">{{ $t('actions.enable') }}</el-button><br>
+          <el-button class="high-operation" :disabled="!selections || !selections.length" type="success" icon="el-icon-circle-check" @click="enable">{{ $t('actions.enable') }}</el-button>
           <el-button class="high-operation" :disabled="!selections || !selections.length" type="danger" icon="el-icon-circle-close" @click="disable">{{ $t('actions.disable') }}</el-button><br>
           <el-button :loading="downloadLoading" class="high-operation" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button><br>
           <el-button :disabled="!selections || !selections.length" class="high-operation" type="primary" @click="publish">
@@ -51,7 +51,7 @@
             <el-form-item :label="$t('dispatch.job.columns.concurrent')">
               <el-tag :type="props.row.concurrent ? 'success' : 'info'">{{ props.row.concurrent ? $t('tip.yes') : $t('tip.no') }}</el-tag>
             </el-form-item>
-            <el-form-item :label="$t('dispatch.job.columns.updateTime')">
+            <el-form-item :label="$t('columns.updateTime')">
               <span>{{ props.row.updateTime }}</span>
             </el-form-item>
             <el-form-item>
@@ -248,7 +248,7 @@ import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/dispatch/tool'
 import waves from '@/directive/waves'
-import { buildMsg, getTimeStr } from '@/utils/tools'
+import { buildMsg, getTimeStr, download } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
 import JobInfoForm from './components/job/jobInfoForm'
 import CronTrigger from './components/job/cronTrigger'
@@ -583,7 +583,6 @@ export default {
       this.selectRow(row)
     },
     importModel(file) {
-      console.log('import')
       this.$confirm(this.$t('tip.confirm') + ' ' + file.name, this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           const data = new FormData()
@@ -599,17 +598,7 @@ export default {
       this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           exportModelReq({ jobNames: jobNames }).then((res) => {
-            const data = res.data
-            if (!data) {
-              return
-            }
-            const url = window.URL.createObjectURL(new Blob([data]))
-            const link = document.createElement('a')
-            link.style.display = 'none'
-            link.href = url
-            link.setAttribute('download', 'models.zip')
-            document.body.appendChild(link)
-            link.click()
+            download(res.data, 'models.zip')
           })
         })
     },

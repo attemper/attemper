@@ -12,6 +12,7 @@ import com.github.attemper.core.dao.mapper.delay.DelayJobMapper;
 import com.github.attemper.core.dao.mapper.instance.JobInstanceMapper;
 import com.github.attemper.core.dao.mapper.job.JobMapper;
 import com.github.attemper.core.dao.mapper.job.TriggerMapper;
+import com.github.attemper.core.dao.mapper.program.ProgramMapper;
 import com.github.attemper.core.dao.mapper.project.ProjectMapper;
 import com.github.attemper.core.dao.mapper.statistics.CountMapper;
 import com.github.attemper.core.ext.notice.NoticeService;
@@ -50,6 +51,7 @@ import javax.validation.ValidatorFactory;
         ArgMapper.class,
         DataSourceMapper.class,
         ProjectMapper.class,
+        ProgramMapper.class,
         JobInstanceMapper.class,
         CalendarMapper.class,
         CountMapper.class,

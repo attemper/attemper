@@ -18,6 +18,8 @@ public interface BaseMapper<T> {
 
     List<T> list(Map<String, Object> paramMap);
 
+    int count(Map<String, Object> paramMap);
+
     void add(Map<String, Object> paramMap);
 
     void update(Map<String, Object> paramMap);

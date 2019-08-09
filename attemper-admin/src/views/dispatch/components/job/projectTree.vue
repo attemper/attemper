@@ -30,7 +30,7 @@
 
 <script>
 import { getProjectReq, saveProjectReq } from '@/api/dispatch/job'
-import { treeListReq } from '@/api/dispatch/project'
+import { treeListReq } from '@/api/application/project'
 
 export default {
   name: 'ProjectTree',

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.attemper.core.dao.mapper.program.ProgramMapper">
+    <insert id="add" parameterType="com.github.attemper.common.result.app.program.Program">
+        INSERT INTO ${tablePrefix}program (
+            PROGRAM_NAME,
+            INJECT_ORDER,
+            CREATE_TIME,
+            TENANT_ID
+        )
+        VALUES
+        (
+            #{programName, jdbcType=VARCHAR},
+            #{injectOrder, jdbcType=INTEGER},
+            #{createTime, jdbcType=TIMESTAMP},
+            #{tenantId, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="addPackage" parameterType="com.github.attemper.common.result.app.program.ProgramPackage">
+        INSERT INTO ${tablePrefix}program_package (
+            ID,
+            PROGRAM_NAME,
+            PACKAGE_NAME,
+            UPLOAD_TIME,
+            PACKAGE_CONTENT,
+            TENANT_ID
+        )
+        VALUES
+        (
+            #{id, jdbcType=VARCHAR},
+            #{programName, jdbcType=VARCHAR},
+            #{packageName, jdbcType=VARCHAR},
+            #{uploadTime, jdbcType=TIMESTAMP},
+            #{packageContent, jdbcType=BLOB},
+            #{tenantId, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.github.attemper.common.result.app.program.Program">
+        UPDATE
+        ${tablePrefix}program
+        <set>
+            INJECT_ORDER = #{injectOrder, jdbcType=INTEGER},
+        </set>
+        <where>
+            <include refid="condProgramName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </update>
+
+    <select id="get" parameterType="map"
+            resultType="com.github.attemper.common.result.app.program.Program">
+        SELECT *
+        FROM ${tablePrefix}program
+        <where>
+            <include refid="condProgramName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <select id="getPackage" parameterType="map"
+            resultType="com.github.attemper.common.result.app.program.ProgramPackage">
+        SELECT *
+        FROM ${tablePrefix}program_package
+        <where>
+            <include refid="condId"/>
+        </where>
+    </select>
+
+    <select id="list" parameterType="map"
+            resultType="com.github.attemper.common.result.app.program.Program">
+        SELECT *
+        FROM ${tablePrefix}program
+        <where>
+            <include refid="condProgramName"/>
+            <include refid="condTenantId"/>
+        </where>
+        <choose>
+            <when test="sort == null">
+                order by INJECT_ORDER ${direction}
+            </when>
+            <otherwise>
+                order by ${sort} ${direction}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="listPackage" parameterType="map"
+            resultType="com.github.attemper.common.result.app.program.ProgramPackage">
+        SELECT *
+        FROM ${tablePrefix}program_package
+        <where>
+            <if test="packageName != null">
+                and lower(PACKAGE_NAME) like concat('%', lower(#{packageName, jdbcType=VARCHAR}), '%')
+            </if>
+            <include refid="condProgramName"/>
+            <include refid="condTenantId"/>
+        </where>
+        <choose>
+            <when test="sort == null">
+                order by ID ${direction}
+            </when>
+            <otherwise>
+                order by ${sort} ${direction}
+            </otherwise>
+        </choose>
+    </select>
+
+    <delete id="delete" parameterType="map">
+        DELETE FROM ${tablePrefix}program
+        <where>
+            PROGRAM_NAME in
+            <foreach item="programName" collection="programNames" open="(" separator="," close=")">
+                #{programName, jdbcType=VARCHAR}
+            </foreach>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
+    <delete id="deletePackage" parameterType="list">
+        DELETE FROM ${tablePrefix}program_package
+        <where>
+            ID in
+            <foreach item="id" collection="list" open="(" separator="," close=")">
+                #{id, jdbcType=VARCHAR}
+            </foreach>
+        </where>
+    </delete>
+
+    <sql id="condProgramName">
+        <if test="programName != null">
+            and PROGRAM_NAME = #{programName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condId">
+        and ID = #{id, jdbcType=VARCHAR}
+    </sql>
+</mapper>

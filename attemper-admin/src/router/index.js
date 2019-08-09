@@ -9,9 +9,9 @@ import Layout from '@/layout'
 /* Router Modules */
 import componentsRouter from './modules/components'
 import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
 import sysRouter from './modules/sys'
 import dispatchRouter from './modules/dispatch'
+import applicationRouter from './modules/application'
 import monitorRouter from './modules/monitor'
 
 /**
@@ -195,9 +195,8 @@ export const devRouterMap = [
 
   /** when your routing map is too long, you can split it into small modules **/
   componentsRouter,
-  nestedRouter,
   tableRouter,
-
+  /*
   {
     path: '/example',
     component: Layout,
@@ -229,7 +228,7 @@ export const devRouterMap = [
       }
     ]
   },
-
+  */
   {
     path: '/tab',
     component: Layout,
@@ -379,7 +378,7 @@ export const devRouterMap = [
       }
     ]
   },
-
+  /*
   {
     name: 'i18n',
     path: '/i18n',
@@ -393,7 +392,7 @@ export const devRouterMap = [
       }
     ]
   },
-
+*/
   {
     path: 'external-link',
     component: Layout,
@@ -409,6 +408,7 @@ export const devRouterMap = [
 export const asyncRouterMap = [
   sysRouter,
   dispatchRouter,
+  applicationRouter,
   monitorRouter,
   { path: '*', redirect: '/404', hidden: true }
 ]

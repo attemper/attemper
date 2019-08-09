@@ -39,6 +39,7 @@ module.exports = {
   APIPath: {
     SYS: 'sys',
     DISPATCH: 'dispatch',
+    APPLICATION: 'app',
     STATISTICS: 'statistics',
     LOGIN: '/login',
     TENANT: '/tenant',
@@ -51,6 +52,7 @@ module.exports = {
     DATASOURCE: '/datasource',
     CALENDAR: '/calendar',
     PROJECT: '/project',
+    PROGRAM: '/program',
     INSTANCE: '/instance',
     COUNT: '/count',
     TOOL: '/tool',

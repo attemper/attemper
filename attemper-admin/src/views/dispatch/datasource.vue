@@ -28,6 +28,7 @@
       highlight-current-row
       style="width: 100%;"
       @selection-change="handleSelectionChange"
+      @cell-click="clickCell"
       @sort-change="sortChange"
     >
       <el-table-column
@@ -293,6 +294,9 @@ export default {
         this.$refs.tables.toggleRowSelection(row, true)
       }
       this.reset() // get the newest or reset to origin
+    },
+    clickCell(row, column, cell, event) {
+      this.selectRow(row)
     },
     handleSelectionChange(val) {
       this.selections = val

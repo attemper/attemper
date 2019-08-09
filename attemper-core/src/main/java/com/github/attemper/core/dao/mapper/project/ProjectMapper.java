@@ -1,17 +1,14 @@
 package com.github.attemper.core.dao.mapper.project;
 
 import com.github.attemper.common.base.BaseMapper;
-import com.github.attemper.common.result.dispatch.project.Project;
-import com.github.attemper.common.result.dispatch.project.ProjectInfo;
+import com.github.attemper.common.result.app.project.Project;
+import com.github.attemper.common.result.app.project.ProjectInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author ldang
- */
 @Mapper
 @Repository
 public interface ProjectMapper extends BaseMapper<Project> {

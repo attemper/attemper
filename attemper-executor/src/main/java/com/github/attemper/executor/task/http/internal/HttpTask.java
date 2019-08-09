@@ -2,8 +2,8 @@ package com.github.attemper.executor.task.http.internal;
 
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.result.dispatch.project.Project;
-import com.github.attemper.common.result.dispatch.project.ProjectInfo;
+import com.github.attemper.common.result.app.project.Project;
+import com.github.attemper.common.result.app.project.ProjectInfo;
 import com.github.attemper.config.base.conf.LocalServerConfig;
 import com.github.attemper.core.service.job.JobService;
 import com.github.attemper.core.service.project.ProjectService;

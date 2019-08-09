@@ -1,20 +1,17 @@
 package com.github.attemper.core.dao.mapper.job;
 
 import com.github.attemper.common.base.BaseMapper;
+import com.github.attemper.common.result.app.project.Project;
 import com.github.attemper.common.result.dispatch.arg.Arg;
 import com.github.attemper.common.result.dispatch.job.ArgAllocatedResult;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.job.JobWithVersionResult;
-import com.github.attemper.common.result.dispatch.project.Project;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author ldang
- */
 @Mapper
 @Repository
 public interface JobMapper extends BaseMapper<Job> {

@@ -12,10 +12,12 @@ export default {
     delay: '延迟任务',
     arg: '参数管理',
     datasource: '数据源管理',
-    project: '项目管理',
     monitor: '监控管理',
     total: '执行监控',
     retry: '重试监控',
+    application: '应用管理',
+    project: '项目管理',
+    program: '程序包管理',
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',
@@ -111,7 +113,10 @@ export default {
     publish: '发布',
     saveAndPublish: '保存并发布',
     enable: '启用',
-    disable: '禁用'
+    disable: '禁用',
+    upload: '上传',
+    load: '部署',
+    unload: '卸载'
   },
   tip: {
     usernameError: '请输入正确的用户名',
@@ -135,12 +140,16 @@ export default {
     pingError: '地址ping不通',
     yes: '是',
     no: '否',
-    flowNotStart: '任务流未成功发起，无法查看节点执行详情'
+    flowNotStart: '任务流未成功发起，无法查看节点执行详情',
+    fileSizeOutOfBound: '文件大小不能超过',
+    currentFileSize: '该文件大小'
   },
   columns: {
     displayName: '中文名',
     status: '状态',
     remark: '备注',
+    createTime: '创建时间',
+    updateTime: '更新时间',
     startTime: '开始时间',
     endTime: '结束时间',
     interval: '周期'
@@ -209,8 +218,6 @@ export default {
         jobName: '任务名称',
         nextFireTime: '下次执行时间',
         concurrent: '是否支持并行',
-        createTime: '创建时间',
-        updateTime: '最近修改时间',
         remark: '备注'
       },
       placeholder: {
@@ -336,7 +343,9 @@ export default {
         testSuccess: '成功：',
         testError: '不成功：'
       }
-    },
+    }
+  },
+  application: {
     project: {
       title: {
         left: '项目树',
@@ -360,6 +369,27 @@ export default {
       tip: {
         searchKey: '项目名称/中文名称',
         projectRemoveWarning: '请先删除子节点'
+      }
+    },
+    program: {
+      title: {
+        programList: '程序列表',
+        packageList: '程序包列表'
+      },
+      columns: {
+        programName: '程序名称',
+        packageName: '程序包名称',
+        injectOrder: '程序加载顺序',
+        uploadTime: '上传时间',
+        loadTime: '部署时间',
+        unloadTime: '卸载时间'
+      },
+      rules: {
+        programName: '程序名称不能为空',
+        injectOrder: '程序加载顺序不能为空'
+      },
+      placeholder: {
+        programName: '请输入程序名称'
       }
     }
   },

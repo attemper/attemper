@@ -80,3 +80,17 @@ export const getTimeStr = () => {
     (min < 10 ? '0' + min : min) +
     (sec < 10 ? '0' + sec : sec)
 }
+
+export const download = (data, fileName) => {
+  if (!data) {
+    console.error('data is null:' + fileName)
+    return
+  }
+  const url = window.URL.createObjectURL(new Blob([data]))
+  const link = document.createElement('a')
+  link.style.display = 'none'
+  link.href = url
+  link.setAttribute('download', fileName)
+  document.body.appendChild(link)
+  link.click()
+}

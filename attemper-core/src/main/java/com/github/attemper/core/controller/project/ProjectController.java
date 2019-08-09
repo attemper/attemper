@@ -1,10 +1,10 @@
 package com.github.attemper.core.controller.project;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.project.*;
+import com.github.attemper.common.param.app.project.*;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.common.result.dispatch.project.Project;
-import com.github.attemper.common.result.dispatch.project.ProjectInfo;
+import com.github.attemper.common.result.app.project.Project;
+import com.github.attemper.common.result.app.project.ProjectInfo;
 import com.github.attemper.core.service.project.ProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

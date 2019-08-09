@@ -242,7 +242,8 @@
         </where>
     </delete>
 
-    <select id="getProject" parameterType="map" resultType="com.github.attemper.common.result.dispatch.project.Project">
+    <select id="getProject" parameterType="map"
+            resultType="com.github.attemper.common.result.app.project.Project">
         select jp.*
         from ${tablePrefix}job_project jp
         join ${tablePrefix}job j
