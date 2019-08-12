@@ -182,3 +182,174 @@ export const modes = [
     label: '.vue'
   }
 ]
+
+export const themes = [
+  {
+    value: '3024-day'
+  },
+  {
+    value: '3024-night'
+  },
+  {
+    value: 'abcdef'
+  },
+  {
+    value: 'ambiance'
+  },
+  {
+    value: 'base16-dark'
+  },
+  {
+    value: 'base16-light'
+  },
+  {
+    value: 'bespin'
+  },
+  {
+    value: 'blackboard'
+  },
+  {
+    value: 'cobalt'
+  },
+  {
+    value: 'colorforth'
+  },
+  {
+    value: 'darcula'
+  },
+  {
+    value: 'dracula'
+  },
+  {
+    value: 'duotone-dark'
+  },
+  {
+    value: 'duotone-light'
+  },
+  {
+    value: 'eclipse'
+  },
+  {
+    value: 'elegant'
+  },
+  {
+    value: 'erlang-dark'
+  },
+  {
+    value: 'gruvbox-dark'
+  },
+  {
+    value: 'hopscotch'
+  },
+  {
+    value: 'icecoder'
+  },
+  {
+    value: 'idea'
+  },
+  {
+    value: 'isotope'
+  },
+  {
+    value: 'lesser-dark'
+  },
+  {
+    value: 'liquibyte'
+  },
+  {
+    value: 'lucario'
+  },
+  {
+    value: 'material'
+  },
+  {
+    value: 'mbo'
+  },
+  {
+    value: 'mdn-like'
+  },
+  {
+    value: 'midnight'
+  },
+  {
+    value: 'monokai'
+  },
+  {
+    value: 'neat'
+  },
+  {
+    value: 'neo'
+  },
+  {
+    value: 'night'
+  },
+  {
+    value: 'nord'
+  },
+  {
+    value: 'oceanic-next'
+  },
+  {
+    value: 'panda-syntax'
+  },
+  {
+    value: 'paraiso-dark'
+  },
+  {
+    value: 'paraiso-light'
+  },
+  {
+    value: 'pastel-on-dark'
+  },
+  {
+    value: 'railscasts'
+  },
+  {
+    value: 'rubyblue'
+  },
+  {
+    value: 'seti'
+  },
+  {
+    value: 'shadowfox'
+  },
+  {
+    value: 'solarized'
+  },
+  {
+    value: 'ssms'
+  },
+  {
+    value: 'the-matrix'
+  },
+  {
+    value: 'tomorrow-night-bright'
+  },
+  {
+    value: 'tomorrow-night-eighties'
+  },
+  {
+    value: 'ttcn'
+  },
+  {
+    value: 'twilight'
+  },
+  {
+    value: 'vibrant-ink'
+  },
+  {
+    value: 'xq-dark'
+  },
+  {
+    value: 'xq-light'
+  },
+  {
+    value: 'yeti'
+  },
+  {
+    value: 'yonce'
+  },
+  {
+    value: 'zenburn'
+  }
+]

@@ -136,7 +136,7 @@
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq, listPackageReq, removePackageReq, uploadPackageReq, downloadPackageReq } from '@/api/application/program'
+import { listReq, removeReq, addReq, updateReq, listPackageReq, removePackageReq, uploadPackageReq, loadPackageReq, unloadPackageReq, downloadPackageReq } from '@/api/application/program'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import { buildMsg, download } from '@/utils/tools'
@@ -226,10 +226,22 @@ export default {
         })
     },
     loadPackage(row) {
-      //
+      this.$confirm(this.$t('tip.confirm'), this.$t('tip.confirmMsg'), { type: 'warning' })
+        .then(() => {
+          loadPackageReq({ id: row.id }).then(res => {
+            this.$message.success(res.data.msg)
+            this.searchPackage()
+          })
+        })
     },
     unloadPackage(row) {
-      //
+      this.$confirm(this.$t('tip.confirm'), this.$t('tip.confirmMsg'), { type: 'warning' })
+        .then(() => {
+          unloadPackageReq({ id: row.id }).then(res => {
+            this.$message.success(res.data.msg)
+            this.searchPackage()
+          })
+        })
     },
     openPackageCategory(row) {
       const route = {

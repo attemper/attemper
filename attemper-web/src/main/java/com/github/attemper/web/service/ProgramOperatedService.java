@@ -8,10 +8,13 @@ import com.github.attemper.common.param.app.program.*;
 import com.github.attemper.common.result.app.program.CategoryResult;
 import com.github.attemper.common.result.app.program.Program;
 import com.github.attemper.common.result.app.program.ProgramPackage;
+import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.core.dao.mapper.program.ProgramMapper;
+import com.github.attemper.core.service.project.ProjectService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.FileUtil;
 import com.github.attemper.sys.util.PageUtil;
+import com.github.attemper.web.ext.app.ExecutorHandler;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.net.MediaType;
@@ -19,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.camunda.commons.utils.IoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +49,18 @@ public class ProgramOperatedService extends BaseServiceAdapter {
 
     @Autowired
     private IdGenerator idGenerator;
+
+    @Autowired
+    private ExecutorHandler executorHandler;
+
+    @Autowired
+    private ProjectService projectService;
+
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @Autowired
+    private AppProperties appProperties;
 
     public Program get(ProgramNameParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
@@ -134,11 +151,26 @@ public class ProgramOperatedService extends BaseServiceAdapter {
     }
 
     public ProgramPackage loadPackage(IdParam param) {
+        for (String url : toExecutorUrls()) {
+            executorHandler.load(url, param);
+        }
         return null;
     }
 
     public ProgramPackage unloadPackage(IdParam param) {
+        for (String url : toExecutorUrls()) {
+            executorHandler.unload(url, param);
+        }
         return null;
+    }
+
+    private List<String> toExecutorUrls() {
+        List<String> list = projectService.listExecutor(null);
+        if (list.size() == 0) {
+            List<ServiceInstance> instances = discoveryClient.getInstances(appProperties.getExecutor().getName());
+            instances.forEach(item -> list.add(item.getUri().toString()));
+        }
+        return list;
     }
 
     public String viewFile(String filePath) {

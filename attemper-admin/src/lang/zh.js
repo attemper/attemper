@@ -29,7 +29,6 @@ export default {
     components: '组件',
     componentIndex: '介绍',
     markdown: 'Markdown',
-    jsonEditor: 'JSON编辑器',
     dndList: '列表拖拽',
     splitPane: 'Splitpane',
     avatarUpload: '头像上传',

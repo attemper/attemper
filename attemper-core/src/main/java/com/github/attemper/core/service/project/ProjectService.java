@@ -152,7 +152,6 @@ public class ProjectService extends BaseServiceAdapter {
 
     public List<String> listExecutor(String projectName, String tenantId) {
         Map<String, Object> paramMap = injectTenantIdToMap(new ProjectGetParam().setProjectName(projectName), tenantId);
-        ;
         return mapper.listExecutor(paramMap);
     }
 

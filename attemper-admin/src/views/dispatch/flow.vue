@@ -69,7 +69,7 @@
         <job-info-form :job="targetJobParam" @save="copy" @cancel="editDialog.copy.visible = false" />
       </div>
       <div v-show="editDialog.param.visible">
-        <json-editor ref="jsonEditor" v-model="jsonData" />
+        <code-editor v-model="jsonData" :read-only="false" file-extension=".json" />
         <div style="text-align: center; margin-top: 10px">
           <el-button type="danger" @click="manual">
             <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
@@ -92,13 +92,13 @@ import JobInfoForm from './components/job/jobInfoForm'
 import { getTimeStr } from '@/utils/tools'
 import customElementTemplate from './components/job/element-templates/custom'
 import customControlsModule from './components/job/custom'
-import JsonEditor from '@/components/JsonEditor'
+import CodeEditor from '@/components/CodeEditor'
 
 export default {
   name: 'flow',
   components: {
     JobInfoForm,
-    JsonEditor
+    CodeEditor
   },
   data() {
     return {
@@ -385,7 +385,7 @@ export default {
       if (!window.FileList || !window.FileReader) {
         window.alert(
           'Looks like you use an older browser that does not support drag and drop. ' +
-          'Try using Chrome, Firefox or the Internet Explorer > 10.')
+            'Try using Chrome, Firefox or the Internet Explorer > 10.')
       } else {
         registerFileDrop(self.$refs.container, this.openDiagram)
       }
@@ -405,7 +405,7 @@ export default {
     },
     close() {
       this.editDialog.copy.visible =
-        this.editDialog.param.visible = false
+          this.editDialog.param.visible = false
     }
   }
 }

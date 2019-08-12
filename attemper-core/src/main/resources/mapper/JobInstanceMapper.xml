@@ -248,7 +248,7 @@
         <where>
             AND j.SUPER_PROC_INST_ID IS NULL
             <if test="isRetry != null">
-                PARENT_ID = ID
+                AND PARENT_ID = ID
             </if>
             <if test="jobName != null">
                 and lower(JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')

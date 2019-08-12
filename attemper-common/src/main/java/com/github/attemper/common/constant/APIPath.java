@@ -222,5 +222,9 @@ public class APIPath {
         public static final String JOB_INVOKING = API_PATH + EXECUTOR + "/invoke";
 
         public static final String TERMINATE = API_PATH + EXECUTOR + "/terminate";
+
+        public static final String LOAD_PACKAGE = API_PATH + EXECUTOR + "/package/load";
+
+        public static final String UNLOAD_PACKAGE = API_PATH + EXECUTOR + "/package/unload";
     }
 }

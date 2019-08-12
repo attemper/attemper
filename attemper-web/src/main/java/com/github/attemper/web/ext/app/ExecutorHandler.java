@@ -3,6 +3,7 @@ package com.github.attemper.web.ext.app;
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.common.param.IdParam;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceIdParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
@@ -32,19 +33,27 @@ public class ExecutorHandler extends CrossSystemHandler {
     private WebClient webClient;
 
     public void terminate(String baseUrl, JobInstance jobInstance) {
-        call(buildFullPath(baseUrl, APIPath.ExecutorPath.TERMINATE), jobInstance);
-    }
-
-    private void call(String fullPath, JobInstance jobInstance) {
         if (jobInstance.getProcInstId() == null) {
             return;
         }
+        call(baseUrl, APIPath.ExecutorPath.TERMINATE, new JobInstanceIdParam().setId(jobInstance.getId()));
+    }
+
+    public void load(String baseUrl, IdParam param) {
+        call(baseUrl, APIPath.ExecutorPath.LOAD_PACKAGE, param);
+    }
+
+    public void unload(String baseUrl, IdParam param) {
+        call(baseUrl, APIPath.ExecutorPath.UNLOAD_PACKAGE, param);
+    }
+
+    private void call(String baseUrl, String apiSubPath, Object param) {
         CommonResult result = webClient
                 .method(HttpMethod.POST)
-                .uri(fullPath)
+                .uri(buildFullPath(baseUrl, apiSubPath))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(CommonConstants.token, ServletUtil.getHeader(CommonConstants.token))
-                .syncBody(new JobInstanceIdParam().setId(jobInstance.getId()))
+                .syncBody(param)
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, resp -> Mono.error(new RTException(resp.rawStatusCode(), resp.statusCode().getReasonPhrase())))
                 .bodyToMono(CommonResult.class)

@@ -1,5 +1,8 @@
 <template>
   <div class="base-editor">
+    <el-select v-model="theme" style="width: 200px; margin: 10px 0 10px 10px;" filterable @change="selectTheme">
+      <el-option v-for="item in themes" :key="item.value" :value="item.value" :label="item.value" />
+    </el-select>
     <textarea ref="textarea" />
   </div>
 </template>
@@ -9,8 +12,6 @@ import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/lint/lint.css'
 import 'codemirror/addon/hint/show-hint.css'
-// import 'codemirror/theme/rubyblue.css'
-import 'codemirror/theme/xq-light.css'
 // lint
 import 'codemirror/addon/lint/lint'
 /* import 'codemirror/addon/lint/css-lint'
@@ -42,27 +43,30 @@ import 'codemirror/mode/shell/shell'
 import 'codemirror/mode/sql/sql'
 import 'codemirror/mode/xml/xml'
 import 'codemirror/mode/vue/vue'
-
+const DEF_THEME_NAME = 'idea'
+const THEME_KEY = 'theme'
 export default {
   name: 'CodeEditor',
   /* eslint-disable vue/require-prop-types */
   props: {
     value: {
-      type: String,
+      type: [Object, String],
       default: null
-    },
-    disabled: {
-      type: Boolean,
-      default: true
     },
     fileExtension: {
       type: String,
-      default: '.js'
+      default: null
+    },
+    readOnly: {
+      type: [Boolean, String],
+      default: 'nocursor'
     }
   },
   data() {
     return {
-      editor: false
+      editor: false,
+      theme: DEF_THEME_NAME,
+      themes: []
     }
   },
   watch: {
@@ -74,28 +78,46 @@ export default {
     }
   },
   created() {
-    import(`@/constant/common.js`).then((array) => {
-      const mode = array.modes.find(item => {
-        return item.label === this.fileExtension
-      })
-      this.editor = CodeMirror.fromTextArea(this.$refs.textarea, {
-        lineNumbers: true,
-        mode: mode ? mode.value : 'text/javascript',
-        gutters: ['CodeMirror-lint-markers'],
-        theme: 'xq-light',
-        lint: true
-      })
-
-      this.editor.setValue(this.fileExtension === '.json' ? JSON.stringify(this.value, null, 2) : this.value)
-      this.editor.on('change', cm => {
-        this.$emit('changed', cm.getValue())
-        this.$emit('input', cm.getValue())
-      })
-    })
+    this.initTheme()
+    this.initEditor()
   },
   methods: {
+    initEditor() {
+      import(`@/constant/common.js`).then((array) => {
+        const mode = array.modes.find(item => {
+          return item.label === this.fileExtension
+        })
+        this.themes = array.themes
+        this.editor = CodeMirror.fromTextArea(this.$refs.textarea, {
+          lineNumbers: true,
+          mode: mode ? mode.value : 'text/javascript',
+          gutters: ['CodeMirror-lint-markers'],
+          theme: this.theme,
+          readOnly: this.readOnly,
+          lint: true
+        })
+        this.editor.setValue(this.fileExtension === '.json' ? JSON.stringify(this.value, null, 2) : this.value)
+        this.editor.on('change', cm => {
+          this.$emit('changed', cm.getValue())
+          this.$emit('input', cm.getValue())
+        })
+      })
+    },
     getValue() {
       return this.editor.getValue()
+    },
+    initTheme() {
+      this.theme = sessionStorage.getItem(THEME_KEY) || DEF_THEME_NAME
+      this.importTheme(this.theme)
+    },
+    selectTheme(themeName) {
+      sessionStorage.setItem(THEME_KEY, themeName)
+      this.importTheme(themeName)
+    },
+    importTheme(themeName) {
+      import(`codemirror/theme/${themeName}.css`).then(() => {
+        this.editor.setOption(THEME_KEY, themeName)
+      })
     }
   }
 }

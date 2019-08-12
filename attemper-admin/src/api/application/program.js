@@ -71,7 +71,7 @@ export const downloadPackageReq = (params) => {
 export const loadPackageReq = (data) => {
   return request({
     url: APIPath.APPLICATION + APIPath.PROGRAM + PACKAGE + '/load',
-    method: 'put',
+    method: 'post',
     data: data
   })
 }
@@ -79,7 +79,7 @@ export const loadPackageReq = (data) => {
 export const unloadPackageReq = (data) => {
   return request({
     url: APIPath.APPLICATION + APIPath.PROGRAM + PACKAGE + '/unload',
-    method: 'put',
+    method: 'post',
     data: data
   })
 }

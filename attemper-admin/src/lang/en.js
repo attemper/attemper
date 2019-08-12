@@ -19,7 +19,6 @@ export default {
     components: 'Components',
     componentIndex: 'Introduction',
     markdown: 'Markdown',
-    jsonEditor: 'JSON Editor',
     dndList: 'Dnd List',
     splitPane: 'SplitPane',
     avatarUpload: 'Avatar Upload',

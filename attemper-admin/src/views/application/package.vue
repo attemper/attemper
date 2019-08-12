@@ -25,7 +25,7 @@
         </el-tree>
       </el-col>
       <el-col :span="18">
-        <code-editor v-if="fileInfo" ref="codeEditor" v-model="fileContent" :file-extension="fileExtension" :disabled="disabled" />
+        <code-editor v-if="visible" v-model="fileContent" :file-extension="fileExtension" />
       </el-col>
     </el-row>
   </div>
@@ -34,37 +34,18 @@
 <script>
 import { listPackageCategoryReq, viewFileReq, downloadFileReq } from '@/api/application/program'
 import CodeEditor from '@/components/CodeEditor'
-import waves from '@/directive/waves'
 import { download } from '@/utils/tools'
 
 export default {
   name: 'package',
   components: { CodeEditor },
-  directives: { waves },
   data() {
     return {
-      packagePage: {
-        currentPage: 1,
-        pageSize: 10,
-        total: 0,
-        programName: null
-      },
-      editDialog: {
-        oper: undefined,
-        title: undefined,
-        base: {
-          visible: false
-        },
-        category: {
-          visible: false
-        }
-      },
       treeData: [],
       searchKey: '',
-      fileInfo: null,
+      visible: null,
       fileContent: null,
-      fileExtension: '.js',
-      disabled: true
+      fileExtension: '.js'
     }
   },
   watch: {
@@ -77,20 +58,20 @@ export default {
   },
   methods: {
     selectNode(data) {
-      this.fileInfo = null
+      this.visible = false
       if (!data.dir) {
         viewFileReq({ filePath: data.filePath }).then((res) => {
           this.fileExtension = data.fileName.indexOf('.') !== -1 ? data.fileName.substring(data.fileName.lastIndexOf('.')) : data.fileName
           this.fileContent = res.data.result
-          this.fileInfo = data
+          this.visible = true
         })
       }
     },
-    downloadFile(fileInfo) {
+    downloadFile(data) {
       this.$confirm(this.$t('tip.confirm'), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
-          downloadFileReq({ filePath: fileInfo.filePath }).then((res) => {
-            download(res.data, fileInfo.fileName)
+          downloadFileReq({ filePath: data.filePath }).then((res) => {
+            download(res.data, data.fileName)
           })
         })
     },
@@ -127,10 +108,6 @@ export default {
         return true
       }
       return data.fileName.indexOf(value) !== -1
-    },
-    closeCodeEditor() {
-      this.fileContent = null
-      this.fileExtension = '.js'
     }
   }
 }

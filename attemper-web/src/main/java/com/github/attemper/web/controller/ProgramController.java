@@ -76,14 +76,14 @@ public class ProgramController {
 
     @ApiOperation("Load program package")
     @ApiImplicitParam(value = "IdParam", name = "param", dataType = "IdParam", required = true)
-    @PutMapping(value = APIPath.ProgramPath.LOAD_PACKAGE)
+    @PostMapping(value = APIPath.ProgramPath.LOAD_PACKAGE)
     public CommonResult<ProgramPackage> loadPackage(@RequestBody IdParam param) {
         return CommonResult.putResult(service.loadPackage(param));
     }
 
     @ApiOperation("Unload program package")
     @ApiImplicitParam(value = "IdParam", name = "param", dataType = "IdParam", required = true)
-    @PutMapping(value = APIPath.ProgramPath.UNLOAD_PACKAGE)
+    @PostMapping(value = APIPath.ProgramPath.UNLOAD_PACKAGE)
     public CommonResult<ProgramPackage> unloadPackage(@RequestBody IdParam param) {
         return CommonResult.putResult(service.unloadPackage(param));
     }
