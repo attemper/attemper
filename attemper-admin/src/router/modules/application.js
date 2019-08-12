@@ -32,6 +32,17 @@ const applicationRouter = {
         icon: 'program',
         noCache: false
       }
+    },
+    {
+      path: 'package/:key',
+      component: () => import('@/views/application/package'),
+      name: 'package',
+      hidden: true,
+      meta: {
+        title: route => `${route.params.key}`,
+        notMenu: true,
+        noCache: false
+      }
     }
   ]
 }

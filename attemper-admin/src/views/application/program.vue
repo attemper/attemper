@@ -85,7 +85,7 @@
             />
             <el-table-column :label="$t('application.program.columns.packageName')" align="center" min-width="100px">
               <template slot-scope="scope">
-                <el-link type="info" @click="showPackageCategory(scope.row)">{{ scope.row.packageName }}</el-link>
+                <el-link type="info" @click="openPackageCategory(scope.row)">{{ scope.row.packageName }}</el-link>
               </template>
             </el-table-column>
             <el-table-column :label="$t('application.program.columns.uploadTime')" align="center" min-width="100px">
@@ -117,7 +117,7 @@
       </el-col>
     </el-row>
 
-    <el-dialog :title="editDialog.title" :visible.sync="editDialog.base.visible || editDialog.category.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false" :before-close="close">
+    <el-dialog :title="editDialog.title" :visible.sync="editDialog.base.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false" :before-close="close">
       <div v-if="editDialog.base.visible">
         <el-form ref="form" :rules="formRules" :model="program" label-position="right" label-width="150px" class="form-layout">
           <el-form-item :label="$t('application.program.columns.programName')" prop="dbName">
@@ -131,39 +131,12 @@
           </el-form-item>
         </el-form>
       </div>
-      <div v-if="editDialog.category.visible">
-        <el-input v-model="searchKey" style="margin-bottom: 10px; width: 200px;">
-          <i v-show="searchKey.length > 0" slot="suffix" class="el-input__icon el-icon-close" @click="searchKey = ''" />
-        </el-input>
-        <el-tree
-          ref="tree"
-          :data="treeData"
-          :filter-node-method="filterNode"
-          node-key="fileName"
-          :default-expand-all="canExpandAll"
-        >
-          <span slot-scope="{ node, data }" class="custom-tree-node">
-            <span>
-              <i :class="data.dir ? (node.expanded ? 'el-icon-folder-opened' : 'el-icon-folder') : (node.isCurrent ? 'el-icon-notebook-2' : 'el-icon-notebook-1')" />
-              {{ data.fileName }}
-              <span v-show="node.isCurrent && !data.dir" style="margin-left: 30px;">
-                <i class="el-icon-view" @click="viewFile(data)" />
-                <i style="margin-left: 10px;" class="el-icon-download" @click="downloadFile(data)" />
-              </span>
-            </span>
-          </span>
-        </el-tree>
-      </div>
-    </el-dialog>
-    <el-dialog :visible.sync="codeVisible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false" :before-close="closeCodeEditor">
-      <code-editor ref="codeEditor" v-model="fileContent" :file-extension="fileExtension" :disabled="disabled" />
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { listReq, removeReq, addReq, updateReq, listPackageReq, removePackageReq, uploadPackageReq, listPackageCategoryReq, downloadPackageReq, viewFileReq, downloadFileReq } from '@/api/application/program'
-import CodeEditor from '@/components/CodeEditor'
+import { listReq, removeReq, addReq, updateReq, listPackageReq, removePackageReq, uploadPackageReq, downloadPackageReq } from '@/api/application/program'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import { buildMsg, download } from '@/utils/tools'
@@ -174,7 +147,7 @@ const DEF_OBJ = {
 }
 export default {
   name: 'program',
-  components: { CodeEditor, Pagination },
+  components: { Pagination },
   directives: { waves },
   data() {
     return {
@@ -200,9 +173,6 @@ export default {
         title: undefined,
         base: {
           visible: false
-        },
-        category: {
-          visible: false
         }
       },
       formRules: {
@@ -216,14 +186,7 @@ export default {
       program: DEF_OBJ,
       programPackage: null,
       selections: [],
-      packageSelections: [],
-      treeData: [],
-      searchKey: '',
-      canExpandAll: false,
-      fileContent: null,
-      fileExtension: '.js',
-      codeVisible: false,
-      disabled: true
+      packageSelections: []
     }
   },
   watch: {
@@ -268,65 +231,14 @@ export default {
     unloadPackage(row) {
       //
     },
-    viewFile(fileInfo) {
-      viewFileReq({ filePath: fileInfo.filePath }).then((res) => {
-        this.codeVisible = true
-        this.$nextTick(() => {
-          if (this.$refs.codeEditor) {
-            this.fileExtension = fileInfo.fileName.indexOf('.') !== -1 ? fileInfo.fileName.substring(fileInfo.fileName.lastIndexOf('.')) : fileInfo.fileName
-            this.fileContent = res.data.result
-          }
-        })
-      })
-    },
-    downloadFile(fileInfo) {
-      this.$confirm(this.$t('tip.confirm'), this.$t('tip.confirmMsg'), { type: 'warning' })
-        .then(() => {
-          downloadFileReq({ filePath: fileInfo.filePath }).then((res) => {
-            download(res.data, fileInfo.fileName)
-          })
-        })
-    },
-    showPackageCategory(row) {
-      this.searchKey = ''
-      listPackageCategoryReq({ id: row.id }).then(res => {
-        const sourceList = res.data.result
-        let root
-        for (let i = 0; i < sourceList.length; i++) {
-          const item = sourceList[i]
-          if (!item.parentFileName) {
-            root = item
-            break
-          }
-        }
-        this.createTree(sourceList, root)
-        this.treeData = [root]
-        this.canExpandAll = (sourceList.length < 30)
-        this.editDialog.category.visible = true
-      })
-    },
-    createTree(sourceList, cell) {
-      for (let i = 0; i < sourceList.length; i++) {
-        const item = sourceList[i]
-        if (item.parentFileName === cell.fileName) {
-          if (!cell.children) {
-            cell.children = []
-          }
-          cell.children.push(item)
-          this.createTree(sourceList, item)
+    openPackageCategory(row) {
+      const route = {
+        name: 'package',
+        params: {
+          key: row.id
         }
       }
-    },
-    filterNode(value, data) {
-      if (!value) {
-        return true
-      }
-      return data.fileName.indexOf(value) !== -1
-    },
-    closeCodeEditor() {
-      this.codeVisible = false
-      this.fileContent = null
-      this.fileExtension = '.js'
+      this.$router.push(route)
     },
     setFormRules() {
       this.formRules.programName[0].message = this.$t('application.program.rules.programName')
@@ -453,8 +365,7 @@ export default {
       }
     },
     close() {
-      this.editDialog.base.visible =
-        this.editDialog.category.visible = false
+      this.editDialog.base.visible = false
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="base-editor">
-    <textarea ref="textarea" :disabled="disabled" />
+    <textarea ref="textarea" />
   </div>
 </template>
 
@@ -9,7 +9,8 @@ import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/lint/lint.css'
 import 'codemirror/addon/hint/show-hint.css'
-import 'codemirror/theme/rubyblue.css'
+// import 'codemirror/theme/rubyblue.css'
+import 'codemirror/theme/xq-light.css'
 // lint
 import 'codemirror/addon/lint/lint'
 /* import 'codemirror/addon/lint/css-lint'
@@ -81,7 +82,7 @@ export default {
         lineNumbers: true,
         mode: mode ? mode.value : 'text/javascript',
         gutters: ['CodeMirror-lint-markers'],
-        theme: 'rubyblue',
+        theme: 'xq-light',
         lint: true
       })
 
