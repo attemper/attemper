@@ -95,3 +95,90 @@ export const databases = [
     value: 'sun.jdbc.odbc.JdbcOdbcDriver'
   }
 ]
+
+export const modes = [
+  {
+    value: 'text/x-java',
+    label: '.java'
+  },
+  {
+    value: 'text/css',
+    label: '.css'
+  },
+  {
+    value: 'text/x-dockerfile',
+    label: 'Dockerfile'
+  },
+  {
+    value: 'text/x-go',
+    label: '.go'
+  },
+  {
+    value: 'text/x-groovy',
+    label: '.groovy'
+  },
+  {
+    value: 'text/html',
+    label: '.html'
+  },
+  {
+    value: 'text/javascript',
+    label: '.js'
+  },
+  {
+    value: 'application/json',
+    label: '.json'
+  },
+  {
+    value: 'application/x-jsp',
+    label: '.jsp'
+  },
+  {
+    value: 'text/x-less',
+    label: '.less'
+  },
+  {
+    value: 'text/x-markdown',
+    label: '.md'
+  },
+  {
+    value: 'application/x-httpd-php',
+    label: '.php'
+  },
+  {
+    value: 'text/x-perl',
+    label: '.pl'
+  },
+  {
+    value: 'text/x-python',
+    label: '.py'
+  },
+  {
+    value: 'text/x-ruby',
+    label: '.rb'
+  },
+  {
+    value: 'text/x-sass',
+    label: '.sass'
+  },
+  {
+    value: 'text/x-scss',
+    label: '.scss'
+  },
+  {
+    value: 'text/x-sh',
+    label: '.sh'
+  },
+  {
+    value: 'text/x-mysql',
+    label: '.sql'
+  },
+  {
+    value: 'application/xml',
+    label: '.xml'
+  },
+  {
+    value: 'x-vue',
+    label: '.vue'
+  }
+]

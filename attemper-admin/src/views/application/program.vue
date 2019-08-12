@@ -103,7 +103,7 @@
                 <span>{{ scope.row.unloadTime }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('actions.handle')" align="center" width="200">
+            <el-table-column :label="$t('actions.handle')" min-width="150px">
               <template slot-scope="scope">
                 <el-button type="primary" @click="downloadPackage(scope.row)">{{ $t('actions.download') }}</el-button>
                 <el-button v-if="scope.row.loadTime && !scope.row.unloadTime" type="danger" @click="unloadPackage(scope.row)">{{ $t('actions.unload') }}</el-button>
@@ -155,21 +155,26 @@
         </el-tree>
       </div>
     </el-dialog>
+    <el-dialog :visible.sync="codeVisible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false" :before-close="closeCodeEditor">
+      <code-editor ref="codeEditor" v-model="fileContent" :file-extension="fileExtension" :disabled="disabled" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { listReq, removeReq, addReq, updateReq, listPackageReq, removePackageReq, uploadPackageReq, listPackageCategoryReq, downloadPackageReq, viewFileReq, downloadFileReq } from '@/api/application/program'
+import CodeEditor from '@/components/CodeEditor'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import { buildMsg, download } from '@/utils/tools'
+
 const DEF_OBJ = {
   programName: null,
   injectOrder: 0
 }
 export default {
   name: 'program',
-  components: { Pagination },
+  components: { CodeEditor, Pagination },
   directives: { waves },
   data() {
     return {
@@ -214,7 +219,11 @@ export default {
       packageSelections: [],
       treeData: [],
       searchKey: '',
-      canExpandAll: false
+      canExpandAll: false,
+      fileContent: null,
+      fileExtension: '.js',
+      codeVisible: false,
+      disabled: true
     }
   },
   watch: {
@@ -261,7 +270,13 @@ export default {
     },
     viewFile(fileInfo) {
       viewFileReq({ filePath: fileInfo.filePath }).then((res) => {
-        console.log(res.data.result)
+        this.codeVisible = true
+        this.$nextTick(() => {
+          if (this.$refs.codeEditor) {
+            this.fileExtension = fileInfo.fileName.indexOf('.') !== -1 ? fileInfo.fileName.substring(fileInfo.fileName.lastIndexOf('.')) : fileInfo.fileName
+            this.fileContent = res.data.result
+          }
+        })
       })
     },
     downloadFile(fileInfo) {
@@ -307,6 +322,11 @@ export default {
         return true
       }
       return data.fileName.indexOf(value) !== -1
+    },
+    closeCodeEditor() {
+      this.codeVisible = false
+      this.fileContent = null
+      this.fileExtension = '.js'
     },
     setFormRules() {
       this.formRules.programName[0].message = this.$t('application.program.rules.programName')
