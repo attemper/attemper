@@ -17,7 +17,8 @@ public enum ArgType {
 
     // sql type
     SQL("Sql", 40),
-
+    // gist
+    GIST("Gist", 41),
     //trade date
     TRADE_DATE("TradeDate", 50),;
 

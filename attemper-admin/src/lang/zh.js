@@ -18,6 +18,7 @@ export default {
     application: '应用管理',
     project: '项目管理',
     program: '程序包管理',
+    gist: '代码片段',
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',

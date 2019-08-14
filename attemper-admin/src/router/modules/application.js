@@ -34,6 +34,16 @@ const applicationRouter = {
       }
     },
     {
+      path: 'gist',
+      component: () => import('@/views/application/gist'),
+      name: 'gist',
+      meta: {
+        title: 'gist',
+        icon: 'gist',
+        noCache: false
+      }
+    },
+    {
       path: 'package/:key',
       component: () => import('@/views/application/package'),
       name: 'package',
