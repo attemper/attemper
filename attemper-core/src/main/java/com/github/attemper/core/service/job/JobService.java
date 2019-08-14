@@ -96,7 +96,7 @@ public class JobService extends BaseServiceAdapter {
         for (Arg arg : args) {
             if (arg.getArgValue() != null) {
                 if (ArgType.get(arg.getArgType()) == null) {
-                    arg.setArgType(ArgType.STRING.getType());
+                    arg.setArgType(ArgType.STRING.getValue());
                 }
                 Object realArgValue;
                 switch (ArgType.get(arg.getArgType())) {
@@ -130,7 +130,7 @@ public class JobService extends BaseServiceAdapter {
 
     private Object toGenericValue(int argType, String argValue) {
         if (ArgType.get(argType) == null) {
-            argType = ArgType.STRING.getType();
+            argType = ArgType.STRING.getValue();
         }
         try {
             switch (ArgType.get(argType)) {

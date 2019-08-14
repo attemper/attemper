@@ -9,20 +9,20 @@ public enum PredefinedDateArgType {
     YEAR("Y"),
     ;
 
-    PredefinedDateArgType(String type) {
-        this.type = type;
+    PredefinedDateArgType(String value) {
+        this.value = value;
     }
 
-    private String type;
+    private String value;
 
-    public String getType() {
-        return type;
+    public String getValue() {
+        return value;
     }
 
     public static PredefinedDateArgType get(String type) {
         if (type != null) {
             for (PredefinedDateArgType item : PredefinedDateArgType.values()) {
-                if (item.getType().equals(type)) {
+                if (item.getValue().equals(type)) {
                     return item;
                 }
             }

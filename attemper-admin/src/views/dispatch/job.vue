@@ -640,8 +640,11 @@ export default {
         this.calendarTypes = array.calendarTypes
         this.search()
       })
-      import(`@/constant/common.js`).then((array) => {
-        this.argTypes = array.argTypes
+      this.initArgTypes()
+    },
+    initArgTypes() {
+      toolApi.argTypesReq().then(res => {
+        this.argTypes = res.data.result
       })
     },
     formatArgType(item) {

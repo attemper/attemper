@@ -23,6 +23,7 @@
       style="width: 100%;"
       @selection-change="handleSelectionChange"
       @sort-change="sortChange"
+      @cell-click="clickCell"
     >
       <el-table-column
         type="selection"
@@ -40,17 +41,12 @@
       </el-table-column>
       <el-table-column :label="$t('dispatch.arg.columns.argValue')" min-width="150px">
         <template slot-scope="scope">
-          <span>{{ scope.row.argValue }}</span>
+          <el-link type="success" @click="update(scope.row)">{{ scope.row.argValue }}</el-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.remark')" min-width="150px">
         <template slot-scope="scope">
           <span>{{ scope.row.remark }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button type="primary" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -92,8 +88,9 @@
             <date-input v-else-if="arg.argType === 10" v-model="arg.argValue" />
             <time-input v-else-if="arg.argType === 11" v-model="arg.argValue" />
             <date-time-input v-else-if="arg.argType === 12" v-model="arg.argValue" />
-            <list-input v-else-if="arg.argType === 20" ref="listInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
-            <map-input v-else-if="arg.argType === 21" ref="mapInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
+            <list-input v-else-if="arg.argType === 30" ref="listInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
+            <map-input v-else-if="arg.argType === 31" ref="mapInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
+            <trade-date-input v-else-if="arg.argType === 50" ref="tradeDateInput" v-model="arg.argValue" :trade-date-units="tradeDateUnits" @change="change" />
             <string-input v-else v-model="arg.argValue" :placeholder="$t('dispatch.arg.placeholder.argValue')" />
           </el-form-item>
           <el-form-item v-show="isTradeDate" :label="$t('tip.preview')">
@@ -146,6 +143,7 @@
 import { listReq, getReq, removeReq, addReq, updateReq, getSqlResultReq, getTradeDateReq } from '@/api/dispatch/arg'
 import * as dataSourceApi from '@/api/dispatch/datasource'
 import * as calendarApi from '@/api/dispatch/calendar'
+import { argTypesReq, tradeDateUnitsReq } from '@/api/dispatch/tool'
 import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import StringInput from './components/arg/StringInput'
@@ -157,6 +155,7 @@ import DateInput from './components/arg/DateInput'
 import DateTimeInput from './components/arg/DateTimeInput'
 import TimeInput from './components/arg/TimeInput'
 import { buildMsg } from '@/utils/tools'
+import TradeDateInput from './components/arg/TradeDateInput'
 const DEF_OBJ = {
   argName: null,
   argType: 0,
@@ -165,10 +164,10 @@ const DEF_OBJ = {
   attribute: null,
   remark: null
 }
-// const REGEX = /^([TWMSHY]{1})((([+-])([0123456789]*))?)(( ((([+-])([0123456789]*))?))?)$/g
+
 export default {
   name: 'arg',
-  components: { TimeInput, DateTimeInput, DateInput, MapInput, ListInput, BooleanInput, NumberInput, StringInput, Pagination },
+  components: { TradeDateInput, TimeInput, DateTimeInput, DateInput, MapInput, ListInput, BooleanInput, NumberInput, StringInput, Pagination },
   directives: { waves },
   data() {
     return {
@@ -222,7 +221,8 @@ export default {
       preview: {
         type: 'success',
         result: null
-      }
+      },
+      tradeDateUnits: []
     }
   },
   computed: {
@@ -237,6 +237,7 @@ export default {
     }
   },
   created() {
+    this.init()
     this.loadConst()
     this.setFormRules()
     this.search()
@@ -271,6 +272,9 @@ export default {
       }
       this.search()
     },
+    clickCell(row, column, cell, event) {
+      this.selectRow(row)
+    },
     reset() {
       if (!this.selections || !this.selections.length || !this.selections[0].argName) {
         this.arg = Object.assign({}, DEF_OBJ)
@@ -285,6 +289,10 @@ export default {
           }
           if (this.$refs.mapInput) {
             this.$refs.mapInput.initValue(this.arg.argValue)
+          }
+          if (this.$refs.tradeDateInput) {
+            this.$refs.tradeDateInput.initUnit(this.arg.argValue)
+            this.$refs.tradeDateInput.initNum(this.arg.argValue)
           }
           if (this.isSql) {
             this.getDatabases()
@@ -431,12 +439,23 @@ export default {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.calendarTypes = array.dateCalendarTypes
       })
-      import(`@/constant/common.js`).then((array) => {
-        this.genericTypes = array.genericTypes
-        this.rawTypes = array.rawTypes
-        this.sqlTypes = array.sqlTypes
-        this.tradeDateTypes = array.tradeDateTypes
-        this.argTypes = array.argTypes
+    },
+    init() {
+      this.initArgTypes()
+      this.initTradeDateUnits()
+    },
+    initArgTypes() {
+      argTypesReq().then(res => {
+        this.argTypes = res.data.result
+        this.genericTypes = this.argTypes.map(item => item.value < 30)
+        this.rawTypes = this.argTypes.map(item => item.value >= 30 && item.value < 40)
+        this.sqlTypes = this.argTypes.map(item => item.value === 40)
+        this.tradeDateTypes = this.argTypes.map(item => item.value === 50)
+      })
+    },
+    initTradeDateUnits() {
+      tradeDateUnitsReq().then(res => {
+        this.tradeDateUnits = res.data.result
       })
     }
   }

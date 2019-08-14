@@ -30,3 +30,19 @@ export const currentTimeReq = (params) => {
     params: params
   })
 }
+
+export const argTypesReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.TOOL + '/argTypes',
+    method: 'get',
+    params: params
+  })
+}
+
+export const tradeDateUnitsReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.TOOL + '/tradeDateUnits',
+    method: 'get',
+    params: params
+  })
+}

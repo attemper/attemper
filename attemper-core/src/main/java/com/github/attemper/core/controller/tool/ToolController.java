@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ldang
@@ -45,5 +46,17 @@ public class ToolController {
     @GetMapping(APIPath.ToolPath.TIME)
     public CommonResult<Date> getCurrentTime() {
         return CommonResult.putResult(service.getCurrentTime());
+    }
+
+    @ApiOperation("Get arg types")
+    @GetMapping(APIPath.ToolPath.ARG_TYPES)
+    public CommonResult<List<Map<String, Object>>> listArgType() {
+        return CommonResult.putResult(service.listArgType());
+    }
+
+    @ApiOperation("Get trade date units")
+    @GetMapping(APIPath.ToolPath.TRADE_DATE_UNITS)
+    public CommonResult<List<String>> listTradeDateUnit() {
+        return CommonResult.putResult(service.listTradeDateUnit());
     }
 }

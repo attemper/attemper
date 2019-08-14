@@ -1,5 +1,8 @@
 package com.github.attemper.core.service.tool;
 
+import com.github.attemper.common.constant.CommonConstants;
+import com.github.attemper.common.enums.ArgType;
+import com.github.attemper.common.enums.PredefinedDateArgType;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.config.base.property.AppProperties;
@@ -14,9 +17,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -107,5 +108,24 @@ public class ToolService {
             log.error(e.getMessage(), e);
             return e.getMessage();
         }
+    }
+
+    public List<Map<String, Object>> listArgType() {
+        List<Map<String, Object>> list = new ArrayList<>(20);
+        for (ArgType type : ArgType.values()) {
+            Map<String, Object> map = new HashMap<>(2);
+            map.put(CommonConstants.label, type.getName());
+            map.put(CommonConstants.value, type.getValue());
+            list.add(map);
+        }
+        return list;
+    }
+
+    public List<String> listTradeDateUnit() {
+        List<String> values = new ArrayList<>(10);
+        for (PredefinedDateArgType type : PredefinedDateArgType.values()) {
+            values.add(type.getValue());
+        }
+        return values;
     }
 }

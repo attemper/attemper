@@ -208,6 +208,10 @@ public class APIPath {
 
         public static final String TIME = API_PATH + DISPATCH + SUB_PATH + "/time";
 
+        public static final String ARG_TYPES = API_PATH + DISPATCH + SUB_PATH + "/argTypes";
+
+        public static final String TRADE_DATE_UNITS = API_PATH + DISPATCH + SUB_PATH + "/tradeDateUnits";
+
     }
 
     public static final class SchedulerPath {
