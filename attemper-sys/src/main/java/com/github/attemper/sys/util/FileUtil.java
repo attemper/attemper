@@ -1,5 +1,6 @@
 package com.github.attemper.sys.util;
 
+import com.github.attemper.common.constant.GlobalConstants;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 
 import java.io.*;
@@ -22,26 +23,29 @@ public class FileUtil {
         try (ZipFile zipFile = new ZipFile(inputFile);
              ZipInputStream zipInput = new ZipInputStream(new FileInputStream(inputFile));){
             ZipEntry entry;
-            boolean isWin = isWindows();
             while ((entry = zipInput.getNextEntry()) != null) {
                 if (!entry.isDirectory()) {
-                    String fileName = outputFolder.getAbsolutePath() + File.separator + (isWin ? entry.getName().replace("/", File.separator) : entry.getName().replace("\\", File.separator));
-                    File folder = new File(fileName.substring(0, fileName.lastIndexOf(File.separator)));
-                    if (!folder.exists()) {
-                        folder.mkdirs();
+                    String fileName = outputFolder.getAbsolutePath().replace("\\", "/") + '/' + entry.getName().replace("\\", "/");
+                    if (!new File(fileName).exists()) {
+                        File folder = new File(fileName.substring(0, fileName.lastIndexOf('/')));
+                        if (!folder.exists()) {
+                            folder.mkdirs();
+                        }
+                        IOUtils.copy(zipFile.getInputStream(entry), new FileOutputStream(fileName));
                     }
-                    IOUtils.copy(zipFile.getInputStream(entry), new FileOutputStream(fileName));
                 }
             }
         }
     }
 
-    public static String getUserHomePath() {
-        return System.getProperty("user.home");
+    /**
+     * /user/.../attemper/{programName}
+     *
+     * @param programName
+     * @return
+     */
+    public static String joinUserFolder(String programName) {
+        return System.getProperty("user.home").replace("\\", "/") + '/' + GlobalConstants.defaultContextPath + '/' + programName;
     }
 
-    public static boolean isWindows() {
-        String os = System.getProperty("os.name");
-        return os.toLowerCase().startsWith("win");
-    }
 }

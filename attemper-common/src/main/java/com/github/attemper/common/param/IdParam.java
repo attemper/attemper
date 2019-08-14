@@ -1,12 +1,8 @@
 package com.github.attemper.common.param;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
-@Getter
-@Setter
 @ToString
 public class IdParam implements CommonParam {
 
@@ -17,5 +13,14 @@ public class IdParam implements CommonParam {
             return "1504";
         }
         return null;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public IdParam setId(String id) {
+        this.id = id;
+        return this;
     }
 }

@@ -17,6 +17,7 @@ import com.github.attemper.core.dao.mapper.project.ProjectMapper;
 import com.github.attemper.core.dao.mapper.statistics.CountMapper;
 import com.github.attemper.core.ext.notice.NoticeService;
 import com.github.attemper.core.ext.notice.channel.mail.EmailSender;
+import com.github.attemper.core.service.ProgramService;
 import com.github.attemper.core.service.arg.ArgService;
 import com.github.attemper.core.service.calendar.CalendarService;
 import com.github.attemper.core.service.datasource.DataSourceService;
@@ -64,6 +65,7 @@ import javax.validation.ValidatorFactory;
         TriggerService.class,
         ProjectService.class,
         ToolService.class,
+        ProgramService.class,
         JobInstanceService.class,
         CalendarService.class,
         CountService.class,

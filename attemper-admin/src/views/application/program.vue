@@ -107,7 +107,7 @@
               <template slot-scope="scope">
                 <el-button type="primary" @click="downloadPackage(scope.row)">{{ $t('actions.download') }}</el-button>
                 <el-button v-if="scope.row.loadTime && !scope.row.unloadTime" type="danger" @click="unloadPackage(scope.row)">{{ $t('actions.unload') }}</el-button>
-                <el-button v-if="!scope.row.loadTime && !scope.row.unloadTime" type="success" @click="loadPackage(scope.row)">{{ $t('actions.load') }}</el-button>
+                <el-button v-if="(!scope.row.loadTime && !scope.row.unloadTime) || (scope.row.loadTime && scope.row.unloadTime)" type="success" @click="loadPackage(scope.row)">{{ $t('actions.load') }}</el-button>
               </template>
             </el-table-column>
           </el-table>

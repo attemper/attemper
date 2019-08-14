@@ -1,22 +1,20 @@
 package com.github.attemper.web.service;
 
-import com.github.attemper.common.constant.GlobalConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.IdParam;
 import com.github.attemper.common.param.IdsParam;
-import com.github.attemper.common.param.app.program.*;
-import com.github.attemper.common.result.app.program.CategoryResult;
+import com.github.attemper.common.param.app.program.ProgramNameParam;
+import com.github.attemper.common.param.app.program.ProgramNamesParam;
+import com.github.attemper.common.param.app.program.ProgramSaveParam;
 import com.github.attemper.common.result.app.program.Program;
 import com.github.attemper.common.result.app.program.ProgramPackage;
 import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.core.dao.mapper.program.ProgramMapper;
+import com.github.attemper.core.service.ProgramService;
 import com.github.attemper.core.service.project.ProjectService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.FileUtil;
-import com.github.attemper.sys.util.PageUtil;
 import com.github.attemper.web.ext.app.ExecutorHandler;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.google.common.net.MediaType;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
@@ -34,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +43,9 @@ public class ProgramOperatedService extends BaseServiceAdapter {
 
     @Autowired
     private ProgramMapper mapper;
+
+    @Autowired
+    private ProgramService programService;
 
     @Autowired
     private IdGenerator idGenerator;
@@ -62,13 +62,8 @@ public class ProgramOperatedService extends BaseServiceAdapter {
     @Autowired
     private AppProperties appProperties;
 
-    public Program get(ProgramNameParam param) {
-        Map<String, Object> paramMap = injectTenantIdToMap(param);
-        return mapper.get(paramMap);
-    }
-
     public Program add(ProgramSaveParam param) {
-        Program program = get(new ProgramNameParam().setProgramName(param.getProgramName()));
+        Program program = programService.get(new ProgramNameParam().setProgramName(param.getProgramName()));
         if (program != null) {
             throw new DuplicateKeyException(param.getProgramName());
         }
@@ -79,20 +74,13 @@ public class ProgramOperatedService extends BaseServiceAdapter {
     }
 
     public Program update(ProgramSaveParam param) {
-        Program oldProgram = get(new ProgramNameParam().setProgramName(param.getProgramName()));
+        Program oldProgram = programService.get(new ProgramNameParam().setProgramName(param.getProgramName()));
         if (oldProgram == null) {
             return add(param);
         }
         Program updatedProgram = toProgram(param);
         mapper.update(updatedProgram);
         return updatedProgram;
-    }
-
-    public Map<String, Object> list(ProgramListParam param) {
-        Map<String, Object> paramMap = injectTenantIdToMap(param);
-        PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
-        Page<Program> list = (Page<Program>) mapper.list(paramMap);
-        return PageUtil.toResultMap(list);
     }
 
     public Void remove(ProgramNamesParam param) {
@@ -108,15 +96,8 @@ public class ProgramOperatedService extends BaseServiceAdapter {
                 .setTenantId(injectTenantId());
     }
 
-    public Map<String, Object> listPackage(ProgramPackageListParam param) {
-        Map<String, Object> paramMap = injectTenantIdToMap(param);
-        PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
-        Page<ProgramPackage> list = (Page<ProgramPackage>) mapper.listPackage(paramMap);
-        return PageUtil.toResultMap(list);
-    }
-
     public ProgramPackage uploadPackage(String programName, MultipartFile file) {
-        Program program = get(new ProgramNameParam().setProgramName(programName));
+        Program program = programService.get(new ProgramNameParam().setProgramName(programName));
         if (program == null) {
             throw new RTException(6650);
         }
@@ -140,7 +121,7 @@ public class ProgramOperatedService extends BaseServiceAdapter {
     }
 
     public void downloadPackage(HttpServletResponse response, IdParam param) {
-        ProgramPackage programPackage = mapper.getPackage(param.getId());
+        ProgramPackage programPackage = programService.getPackage(param);
         response.setHeader("Content-Disposition", "attachment; filename=" + programPackage.getPackageName());
         response.setContentType(MediaType.ZIP.toString());
         try {
@@ -151,17 +132,61 @@ public class ProgramOperatedService extends BaseServiceAdapter {
     }
 
     public ProgramPackage loadPackage(IdParam param) {
+        ProgramPackage programPackage = validateAndGet(param);
+        if (programPackage.getLoadTime() != null && programPackage.getUnloadTime() == null) {
+            throw new RTException(2008);
+        }
+        List<ProgramPackage> loadedPackages = programService.listLoadedPackage(new ProgramNameParam().setProgramName(programPackage.getProgramName()));
+        if (loadedPackages.size() != 0) {
+            throw new RTException(2009);
+        }
         for (String url : toExecutorUrls()) {
             executorHandler.load(url, param);
         }
+        programPackage.setLoadTime(new Date());
+        programPackage.setUnloadTime(null);
+        mapper.updatePackage(programPackage);
         return null;
     }
 
     public ProgramPackage unloadPackage(IdParam param) {
+        ProgramPackage loadedPackage = validateAndGet(param);
+        if (loadedPackage.getLoadTime() == null) {
+            throw new RTException(2006);
+        }
+        if (loadedPackage.getUnloadTime() != null) {
+            throw new RTException(2007);
+        }
         for (String url : toExecutorUrls()) {
-            executorHandler.unload(url, param);
+            executorHandler.unload(url, new IdParam().setId(loadedPackage.getId()));
+        }
+        loadedPackage.setUnloadTime(new Date());
+        mapper.updatePackage(loadedPackage);
+        return null;
+    }
+
+    public Void removePackage(IdsParam param) {
+        List<ProgramPackage> packages = mapper.listPackageByIds(param.getIds());
+        long count = packages.stream()
+                .filter(item -> item.getLoadTime() != null && item.getUnloadTime() == null)
+                .count();
+        if (count > 0) {
+            throw new RTException(6652);
+        }
+        mapper.deletePackage(param.getIds());
+        for (String id : param.getIds()) {
+            File dir = new File(FileUtil.joinUserFolder(id));
+            dir.delete();
         }
         return null;
+    }
+
+    private ProgramPackage validateAndGet(IdParam param) {
+        ProgramPackage programPackage = programService.getPackage(param);
+        if (programPackage == null) {
+            throw new RTException(6650);
+        }
+        return programPackage;
     }
 
     private List<String> toExecutorUrls() {
@@ -189,67 +214,4 @@ public class ProgramOperatedService extends BaseServiceAdapter {
         }
     }
 
-    public List<CategoryResult> listPackageCategory(IdParam param) {
-        ProgramPackage programPackage = mapper.getPackage(param.getId());
-        File dir = new File(folder(param.getId()));
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        File jarFile = new File(dir.getAbsolutePath() + File.separator + programPackage.getPackageName());
-        if (log.isDebugEnabled()) {
-            log.debug("jar file path: {}", jarFile.getAbsolutePath());
-        }
-        try {
-            FileUtil.byteArray2File(programPackage.getPackageContent(), jarFile);
-        } catch (IOException e) {
-            throw new RTException(1100, e);
-        }
-        File jarFolderFile = new File(dir.getAbsolutePath() + File.separator +
-                programPackage.getPackageName().substring(0, programPackage.getPackageName().lastIndexOf(".")));
-        try {
-            FileUtil.unZip(jarFile, jarFolderFile);
-        } catch (IOException e) {
-            throw new RTException(1100, e);
-        }
-        List<CategoryResult> list = new ArrayList<>(32);
-        list.add(new CategoryResult()
-                .setFileName(jarFolderFile.getName())
-                .setFilePath(jarFolderFile.getAbsolutePath())
-                .setDir(true));
-        recurseCategory(list, jarFolderFile);
-        return list;
-    }
-
-    public Void removePackage(IdsParam param) {
-        mapper.deletePackage(param.getIds());
-        for (String id : param.getIds()) {
-            File dir = new File(folder(id));
-            dir.delete();
-        }
-        return null;
-    }
-
-    private void recurseCategory(List<CategoryResult> list, File parentFolder) {
-        File[] files = parentFolder.listFiles();
-        for (File subFile : files) {
-            CategoryResult category = new CategoryResult()
-                    .setFileName(subFile.getName())
-                    .setFilePath(subFile.getAbsolutePath())
-                    .setParentFileName(parentFolder.getName());
-            list.add(category);
-            if (subFile.isDirectory()) {
-                category.setDir(true);
-                recurseCategory(list, subFile);
-            }
-        }
-    }
-
-    /**
-     * xxx/usr/xxx/attemper/{id}
-     * @param id
-     * @return
-     */
-    private String folder(String id) {
-        return FileUtil.getUserHomePath() + File.separatorChar + GlobalConstants.defaultContextPath + File.separatorChar + id;
-    }
 }

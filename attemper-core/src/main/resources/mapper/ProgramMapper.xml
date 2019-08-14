@@ -50,6 +50,18 @@
         </where>
     </update>
 
+    <update id="updatePackage" parameterType="com.github.attemper.common.result.app.program.ProgramPackage">
+        UPDATE
+        ${tablePrefix}program_package
+        <set>
+            LOAD_TIME = #{loadTime, jdbcType=TIMESTAMP},
+            UNLOAD_TIME = #{unloadTime, jdbcType=TIMESTAMP},
+        </set>
+        <where>
+            <include refid="condId"/>
+        </where>
+    </update>
+
     <select id="get" parameterType="map"
             resultType="com.github.attemper.common.result.app.program.Program">
         SELECT *
@@ -67,6 +79,22 @@
         <where>
             <include refid="condId"/>
         </where>
+    </select>
+
+    <select id="listLoadedPackage" parameterType="map"
+            resultType="com.github.attemper.common.result.app.program.ProgramPackage">
+        SELECT * FROM (
+        SELECT pp.*, p.INJECT_ORDER
+        FROM ${tablePrefix}program_package pp
+        JOIN ${tablePrefix}program p
+        USING (PROGRAM_NAME, TENANT_ID)
+        ) t
+        <where>
+            and load_time is not null and unload_time is null
+            <include refid="condProgramName"/>
+            <include refid="condTenantId"/>
+        </where>
+        ORDER BY INJECT_ORDER
     </select>
 
     <select id="list" parameterType="map"
@@ -89,7 +117,13 @@
 
     <select id="listPackage" parameterType="map"
             resultType="com.github.attemper.common.result.app.program.ProgramPackage">
-        SELECT *
+        SELECT ID,
+        PROGRAM_NAME,
+        PACKAGE_NAME,
+        UPLOAD_TIME,
+        LOAD_TIME,
+        UNLOAD_TIME,
+        TENANT_ID
         FROM ${tablePrefix}program_package
         <where>
             <if test="packageName != null">
@@ -100,13 +134,33 @@
         </where>
         <choose>
             <when test="sort == null">
-                order by ID ${direction}
+                order by ID DESC
             </when>
             <otherwise>
                 order by ${sort} ${direction}
             </otherwise>
         </choose>
     </select>
+
+    <select id="listPackageByIds" parameterType="list"
+            resultType="com.github.attemper.common.result.app.program.ProgramPackage">
+        SELECT ID,
+        PROGRAM_NAME,
+        PACKAGE_NAME,
+        UPLOAD_TIME,
+        LOAD_TIME,
+        UNLOAD_TIME,
+        TENANT_ID
+        FROM ${tablePrefix}program_package
+        <where>
+            ID in
+            <foreach item="id" collection="list" open="(" separator="," close=")">
+                #{id, jdbcType=VARCHAR}
+            </foreach>
+        </where>
+        order by ID DESC
+    </select>
+
 
     <delete id="delete" parameterType="map">
         DELETE FROM ${tablePrefix}program
