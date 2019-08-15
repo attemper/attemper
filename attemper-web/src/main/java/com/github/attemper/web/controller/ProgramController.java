@@ -8,7 +8,7 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.app.program.CategoryResult;
 import com.github.attemper.common.result.app.program.Program;
 import com.github.attemper.common.result.app.program.ProgramPackage;
-import com.github.attemper.core.service.ProgramService;
+import com.github.attemper.core.service.application.ProgramService;
 import com.github.attemper.web.service.ProgramOperatedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

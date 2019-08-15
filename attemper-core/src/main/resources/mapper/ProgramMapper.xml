@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.github.attemper.core.dao.mapper.program.ProgramMapper">
+<mapper namespace="com.github.attemper.core.dao.application.ProgramMapper">
     <insert id="add" parameterType="com.github.attemper.common.result.app.program.Program">
         INSERT INTO ${tablePrefix}program (
             PROGRAM_NAME,

@@ -5,7 +5,7 @@ import com.github.attemper.common.param.dispatch.trigger.sub.CronTriggerParam;
 import com.github.attemper.common.result.dispatch.trigger.sub.CronTriggerResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.util.BeanUtil;
-import com.github.attemper.core.dao.mapper.job.TriggerMapper;
+import com.github.attemper.core.dao.dispatch.TriggerMapper;
 import com.github.attemper.core.ext.trigger.CronTriggerHandler;
 import com.github.attemper.invoker.util.QuartzUtil;
 import com.github.attemper.sys.holder.TenantHolder;

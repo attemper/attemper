@@ -5,7 +5,7 @@ import com.github.attemper.common.param.sys.tenant.*;
 import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.util.BeanUtil;
-import com.github.attemper.sys.dao.mapper.TenantMapper;
+import com.github.attemper.sys.dao.TenantMapper;
 import com.github.attemper.sys.store.Store;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.attemper.sys.util.PasswordUtil;

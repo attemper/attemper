@@ -6,7 +6,7 @@ public interface GlobalConstants {
 
 	String basePackageLocation = "com.github." + defaultContextPath + ".";
 
-	String mybatisPlusMapperLocation = basePackageLocation + "**.dao.mapper*";
+	String mybatisPlusMapperLocation = basePackageLocation + "**.dao*";
 
 	String statusPropertiesName = "status";
 

@@ -7,7 +7,7 @@ import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.calendar.CalendarInfo;
 import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
-import com.github.attemper.core.service.job.TriggerService;
+import com.github.attemper.core.service.dispatch.TriggerService;
 import com.github.attemper.web.service.TriggerOperatedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

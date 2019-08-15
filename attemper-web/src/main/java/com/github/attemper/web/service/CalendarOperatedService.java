@@ -6,7 +6,7 @@ import com.github.attemper.common.param.dispatch.calendar.CalendarGetParam;
 import com.github.attemper.common.param.dispatch.calendar.DayCalendarRemoveParam;
 import com.github.attemper.common.param.dispatch.calendar.DayCalendarSaveParam;
 import com.github.attemper.common.util.DateTimeUtil;
-import com.github.attemper.core.dao.mapper.calendar.CalendarMapper;
+import com.github.attemper.core.dao.dispatch.CalendarMapper;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.web.ext.app.SchedulerHandler;
 import org.quartz.Calendar;

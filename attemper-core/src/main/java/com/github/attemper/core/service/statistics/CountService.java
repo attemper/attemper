@@ -1,6 +1,6 @@
 package com.github.attemper.core.service.statistics;
 
-import com.github.attemper.core.dao.mapper.statistics.CountMapper;
+import com.github.attemper.core.dao.statistics.CountMapper;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

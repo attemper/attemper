@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.github.attemper.config.base.dao.mapper.ApiLogMapper">
+<mapper namespace="com.github.attemper.config.base.dao.ApiLogMapper">
     <insert id="add" parameterType="com.github.attemper.config.base.entity.ApiLog">
         INSERT INTO api_log (
             ID,

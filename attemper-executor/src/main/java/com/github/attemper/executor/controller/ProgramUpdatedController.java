@@ -3,7 +3,7 @@ package com.github.attemper.executor.controller;
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.param.IdParam;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.executor.service.core.ProgramUpdatedService;
+import com.github.attemper.executor.service.ProgramUpdatedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

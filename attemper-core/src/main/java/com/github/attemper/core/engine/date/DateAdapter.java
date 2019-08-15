@@ -5,7 +5,7 @@ import com.github.attemper.common.param.dispatch.calendar.DayCalendarListParam;
 import com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig;
 import com.github.attemper.common.util.DateTimeUtil;
 import com.github.attemper.config.base.bean.SpringContextAware;
-import com.github.attemper.core.service.calendar.CalendarService;
+import com.github.attemper.core.service.dispatch.CalendarService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;

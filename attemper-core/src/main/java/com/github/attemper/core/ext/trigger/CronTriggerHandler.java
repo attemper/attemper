@@ -1,7 +1,7 @@
 package com.github.attemper.core.ext.trigger;
 
 import com.github.attemper.config.base.bean.SpringContextAware;
-import com.github.attemper.core.dao.mapper.job.TriggerMapper;
+import com.github.attemper.core.dao.dispatch.TriggerMapper;
 
 import java.util.List;
 import java.util.Map;

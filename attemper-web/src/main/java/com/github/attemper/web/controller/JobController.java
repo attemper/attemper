@@ -6,7 +6,7 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.app.project.Project;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.job.JobWithVersionResult;
-import com.github.attemper.core.service.job.JobService;
+import com.github.attemper.core.service.dispatch.JobService;
 import com.github.attemper.web.service.JobOperatedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

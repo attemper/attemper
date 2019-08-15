@@ -8,7 +8,7 @@ import com.github.attemper.common.param.dispatch.calendar.DayCalendarSaveParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.calendar.CalendarInfo;
 import com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig;
-import com.github.attemper.core.service.calendar.CalendarService;
+import com.github.attemper.core.service.dispatch.CalendarService;
 import com.github.attemper.web.service.CalendarOperatedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

@@ -11,9 +11,9 @@ import com.github.attemper.common.param.dispatch.trigger.sub.DailyTimeIntervalTr
 import com.github.attemper.common.result.dispatch.delay.DelayJob;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
-import com.github.attemper.core.dao.mapper.delay.DelayJobMapper;
-import com.github.attemper.core.service.job.JobService;
-import com.github.attemper.core.service.job.TriggerService;
+import com.github.attemper.core.dao.dispatch.DelayJobMapper;
+import com.github.attemper.core.service.dispatch.JobService;
+import com.github.attemper.core.service.dispatch.TriggerService;
 import com.github.attemper.invoker.util.QuartzUtil;
 import com.github.attemper.java.sdk.common.web.enums.DelayJobStatus;
 import com.github.attemper.java.sdk.common.web.param.delay.DelayJobExtSaveParam;

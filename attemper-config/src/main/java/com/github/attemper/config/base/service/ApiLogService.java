@@ -1,7 +1,7 @@
 package com.github.attemper.config.base.service;
 
 import com.github.attemper.config.base.annotation.MultiDataSource;
-import com.github.attemper.config.base.dao.mapper.ApiLogMapper;
+import com.github.attemper.config.base.dao.ApiLogMapper;
 import com.github.attemper.config.base.entity.ApiLog;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;

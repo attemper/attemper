@@ -5,7 +5,7 @@ import com.github.attemper.common.param.sys.tag.*;
 import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.util.BeanUtil;
-import com.github.attemper.sys.dao.mapper.TagMapper;
+import com.github.attemper.sys.dao.TagMapper;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;

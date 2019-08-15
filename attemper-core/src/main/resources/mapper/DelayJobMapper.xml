@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.github.attemper.core.dao.mapper.delay.DelayJobMapper">
+<mapper namespace="com.github.attemper.core.dao.dispatch.DelayJobMapper">
 
     <insert id="add" parameterType="com.github.attemper.common.result.dispatch.delay.DelayJob">
         INSERT INTO ${tablePrefix}delay_job (

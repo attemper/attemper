@@ -11,7 +11,7 @@ import com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig;
 import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
 import com.github.attemper.common.util.DateTimeUtil;
 import com.github.attemper.config.base.bean.SpringContextAware;
-import com.github.attemper.core.service.calendar.CalendarService;
+import com.github.attemper.core.service.dispatch.CalendarService;
 import com.github.attemper.invoker.job.ExecutableJob;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
