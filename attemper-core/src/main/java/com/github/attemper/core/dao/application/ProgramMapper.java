@@ -17,7 +17,7 @@ public interface ProgramMapper extends BaseMapper<Program> {
 
     void addPackage(ProgramPackage programPackage);
 
-    ProgramPackage getPackage(Map<String, Object> paramMap);
+    ProgramPackage getPackage(String id);
 
     void updatePackage(ProgramPackage programPackage);
 

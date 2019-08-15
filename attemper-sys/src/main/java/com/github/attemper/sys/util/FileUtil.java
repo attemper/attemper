@@ -39,13 +39,13 @@ public class FileUtil {
     }
 
     /**
-     * /user/.../attemper/{programName}
+     * /user/.../attemper/{id}
      *
-     * @param programName
+     * @param id
      * @return
      */
-    public static String joinUserFolder(String programName) {
-        return System.getProperty("user.home").replace("\\", "/") + '/' + GlobalConstants.defaultContextPath + '/' + programName;
+    public static String joinUserFolder(String id) {
+        return System.getProperty("user.home").replace("\\", "/") + '/' + GlobalConstants.defaultContextPath + '/' + id;
     }
 
 }

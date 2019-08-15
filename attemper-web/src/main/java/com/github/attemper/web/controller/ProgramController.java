@@ -100,7 +100,7 @@ public class ProgramController {
     }
 
     @ApiOperation("List program packages")
-    @ApiImplicitParam(value = "ProgramNameParam", name = "param", dataType = "ProgramNameParam", required = true)
+    @ApiImplicitParam(value = "ProgramPackageListParam", name = "param", dataType = "ProgramPackageListParam", required = true)
     @GetMapping(APIPath.ProgramPath.PACKAGE)
     public CommonResult<Map<String, Object>> listPackage(ProgramPackageListParam param) {
         return CommonResult.putResult(programService.listPackage(param));

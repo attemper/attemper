@@ -103,7 +103,7 @@ public class ProjectService extends BaseServiceAdapter {
             Project project = save(root);
             projects.add(project);
         } else if (projects.size() > 1) {
-            throw new RTException(6570, String.valueOf(projects.size()));
+            throw new RTException(6570, projects.size());
         }
         return projects.get(0);
     }

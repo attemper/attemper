@@ -25,7 +25,7 @@
         </el-tree>
       </el-col>
       <el-col :span="18">
-        <code-editor v-if="visible" v-model="fileContent" :file-extension="fileExtension" />
+        <code-editor v-if="visible" v-model="content" :extension="extension" />
       </el-col>
     </el-row>
   </div>
@@ -44,8 +44,8 @@ export default {
       treeData: [],
       searchKey: '',
       visible: null,
-      fileContent: null,
-      fileExtension: '.js'
+      content: null,
+      extension: '.js'
     }
   },
   watch: {
@@ -61,8 +61,8 @@ export default {
       this.visible = false
       if (!data.dir) {
         viewFileReq({ filePath: data.filePath }).then((res) => {
-          this.fileExtension = data.fileName.indexOf('.') !== -1 ? data.fileName.substring(data.fileName.lastIndexOf('.')) : data.fileName
-          this.fileContent = res.data.result
+          this.extension = data.fileName.indexOf('.') !== -1 ? data.fileName.substring(data.fileName.lastIndexOf('.')) : data.fileName
+          this.content = res.data.result
           this.visible = true
         })
       }

@@ -47,7 +47,7 @@
           <span>{{ $t('application.project.title.rightTop') }}</span>
         </div>
         <div>
-          <el-form ref="form" :model="project" :rules="formRules" label-width="130px" label-position="right">
+          <el-form ref="form" :rules="formRules" :model="project" label-width="130px" label-position="right">
             <el-form-item :label="$t('application.project.label.projectName')" prop="projectName">
               <el-input v-model="project.projectName" :disabled="!project || !project.parentProjectName" :placeholder="$t('application.project.placeholder.projectName')" />
             </el-form-item>
@@ -103,7 +103,7 @@
             </el-table-column>
             <el-table-column :label="$t('actions.handle')" align="center" class-name="small-padding">
               <template slot-scope="scope">
-                <el-button type="danger" @click="removeInfo(scope.row)">{{ $t('actions.remove') }}</el-button>
+                <el-button type="danger" icon="el-icon-delete" @click="removeInfo(scope.row)" />
               </template>
             </el-table-column>
           </el-table>

@@ -35,7 +35,7 @@ public class JobInstanceOperatedService {
     public Void retry(JobInstanceIdParam param) {
         JobInstance jobInstance = getJobInstance(param);
         if(!isDone(jobInstance.getStatus())) {
-            throw new RTException(6202, String.valueOf(jobInstance.getStatus()));
+            throw new RTException(6202, jobInstance.getStatus());
         }
         String parentId = jobInstance.getId();
         if (jobInstance.getParentId() == null) {
@@ -49,7 +49,7 @@ public class JobInstanceOperatedService {
     public Void terminate(JobInstanceIdParam param) {
         JobInstance jobInstance = getJobInstance(param);
         if (!isDoing(jobInstance.getStatus())) {
-            throw new RTException(6202, String.valueOf(jobInstance.getStatus()));
+            throw new RTException(6202, jobInstance.getStatus());
         }
         executorHandler.terminate(jobInstance.getExecutorUri(), jobInstance);
         int code = 901;

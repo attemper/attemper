@@ -8,7 +8,6 @@ import com.github.attemper.common.param.app.program.ProgramPackageListParam;
 import com.github.attemper.common.result.app.program.CategoryResult;
 import com.github.attemper.common.result.app.program.Program;
 import com.github.attemper.common.result.app.program.ProgramPackage;
-import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.dao.application.ProgramMapper;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.FileUtil;
@@ -40,7 +39,7 @@ public class ProgramService extends BaseServiceAdapter {
     }
 
     public ProgramPackage getPackage(IdParam param) {
-        return mapper.getPackage(BeanUtil.bean2Map(param));
+        return mapper.getPackage(param.getId());
     }
 
     public Map<String, Object> list(ProgramListParam param) {
@@ -89,7 +88,7 @@ public class ProgramService extends BaseServiceAdapter {
         File jarFile = new File(dir.getAbsolutePath() + '/' + programPackage.getPackageName());
         if (!jarFile.exists()) {
             try {
-                FileUtil.byteArray2File(programPackage.getPackageContent(), jarFile);
+                FileUtil.byteArray2File(programPackage.getContent(), jarFile);
             } catch (IOException e) {
                 throw new RTException(1100, e);
             }

@@ -6,9 +6,9 @@
         <el-option v-for="item in argTypes" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <el-input v-model="page.argValue" :placeholder="$t('dispatch.arg.columns.argValue')" class="filter-item search-input" @keyup.enter.native="search" />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
-      <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
+      <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)" />
+      <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove" />
       <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>-->
     </div>
 
@@ -102,7 +102,7 @@
               @dblclick.native="testTradeDate"
             />
           </el-form-item>
-          <el-form-item :label="$t('columns.remark')">
+          <el-form-item :label="$t('columns.remark')" prop="remark">
             <el-input v-model="arg.remark" type="textarea" :autosize="{ minRows: 1, maxRows: 5}" :placeholder="$t('placeholders.remark')" />
           </el-form-item>
           <el-form-item>

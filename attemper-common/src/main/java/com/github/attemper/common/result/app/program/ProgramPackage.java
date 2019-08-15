@@ -19,7 +19,7 @@ public class ProgramPackage {
 
     protected Date unloadTime;
 
-    protected byte[] packageContent;
+    protected byte[] content;
 
     protected String tenantId;
 
@@ -77,12 +77,12 @@ public class ProgramPackage {
         return this;
     }
 
-    public byte[] getPackageContent() {
-        return packageContent;
+    public byte[] getContent() {
+        return content;
     }
 
-    public ProgramPackage setPackageContent(byte[] packageContent) {
-        this.packageContent = packageContent;
+    public ProgramPackage setContent(byte[] content) {
+        this.content = content;
         return this;
     }
 

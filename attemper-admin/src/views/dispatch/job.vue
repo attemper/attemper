@@ -9,9 +9,9 @@
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>-->
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
-      <el-button class="filter-item table-external-button" type="success" icon="el-icon-plus" @click="add">{{ $t('actions.add') }}</el-button>
-      <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
+      <el-button class="filter-item table-external-button" type="success" icon="el-icon-plus" @click="add" />
+      <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" icon="el-icon-delete" @click="remove" />
       <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="warning" @click="manualBatch">
         <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
       </el-button>
@@ -201,7 +201,7 @@
             <el-option v-for="item in argTypes" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
           <el-input v-model="argPage.argValue" :placeholder="$t('dispatch.arg.columns.argValue')" class="filter-item search-input" @keyup.enter.native="argSearch" />
-          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="argSearch">{{ $t('actions.search') }}</el-button>
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="argSearch" />
         </div>
 
         <el-table

@@ -13,7 +13,6 @@ public class ProgramPackageSaveParam implements CommonParam {
 
     protected String programName;
 
-
     public String validate() {
         if (StringUtils.isBlank(programName)) {
             return "6600";

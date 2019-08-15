@@ -43,6 +43,9 @@ import 'codemirror/mode/shell/shell'
 import 'codemirror/mode/sql/sql'
 import 'codemirror/mode/xml/xml'
 import 'codemirror/mode/vue/vue'
+//
+import 'codemirror/addon/edit/matchbrackets'
+
 const DEF_THEME_NAME = 'idea'
 const THEME_KEY = 'theme'
 export default {
@@ -53,7 +56,7 @@ export default {
       type: [Object, String],
       default: null
     },
-    fileExtension: {
+    extension: {
       type: String,
       default: null
     },
@@ -72,7 +75,7 @@ export default {
   watch: {
     value(value) {
       const editorValue = this.editor.getValue()
-      if (value !== editorValue && this.fileExtension === '.json') {
+      if (value !== editorValue && this.extension === '.json') {
         this.editor.setValue(JSON.stringify(this.value, null, 2))
       }
     }
@@ -85,18 +88,20 @@ export default {
     initEditor() {
       import(`@/constant/common.js`).then((array) => {
         const mode = array.modes.find(item => {
-          return item.label === this.fileExtension
+          return item.label === this.extension
         })
         this.themes = array.themes
         this.editor = CodeMirror.fromTextArea(this.$refs.textarea, {
           lineNumbers: true,
           mode: mode ? mode.value : 'text/javascript',
           gutters: ['CodeMirror-lint-markers'],
-          theme: this.theme,
           readOnly: this.readOnly,
-          lint: true
+          lint: true,
+          extraKeys: { 'Ctrl': 'autocomplete' },
+          matchBrackets: true
         })
-        this.editor.setValue(this.fileExtension === '.json' ? JSON.stringify(this.value, null, 2) : this.value)
+        this.importTheme(this.theme)
+        this.editor.setValue(this.extension === '.json' ? JSON.stringify(this.value, null, 2) : this.value)
         this.editor.on('change', cm => {
           this.$emit('changed', cm.getValue())
           this.$emit('input', cm.getValue())
@@ -108,7 +113,6 @@ export default {
     },
     initTheme() {
       this.theme = sessionStorage.getItem(THEME_KEY) || DEF_THEME_NAME
-      this.importTheme(this.theme)
     },
     selectTheme(themeName) {
       sessionStorage.setItem(THEME_KEY, themeName)

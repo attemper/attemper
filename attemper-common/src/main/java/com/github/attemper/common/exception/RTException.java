@@ -38,10 +38,10 @@ public class RTException extends RuntimeException {
 		log.error("{} \n {}", this.code, this.msg, e);
     }
 
-    public RTException(int code, String msg) {
-        super(StatusProperty.getValue(code) + ":" + msg);
+	public RTException(int code, Object msg) {
+		super(StatusProperty.getValue(code) + ":" + String.valueOf(msg));
         this.code = code;
-        this.msg = StatusProperty.getValue(code) + ":" + msg;
+		this.msg = StatusProperty.getValue(code) + ":" + String.valueOf(msg);
 		log.error("{} \n {}", this.code, this.msg);
     }
 

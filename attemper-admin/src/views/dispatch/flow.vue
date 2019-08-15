@@ -69,7 +69,7 @@
         <job-info-form :job="targetJobParam" @save="copy" @cancel="editDialog.copy.visible = false" />
       </div>
       <div v-show="editDialog.param.visible">
-        <code-editor v-model="jsonData" :read-only="false" file-extension=".json" />
+        <code-editor v-model="jsonData" :read-only="false" extension=".json" />
         <div style="text-align: center; margin-top: 10px">
           <el-button type="danger" @click="manual">
             <svg-icon icon-class="hand" />{{ $t('actions.manual') }}

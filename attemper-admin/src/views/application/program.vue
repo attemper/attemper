@@ -8,9 +8,9 @@
           </div>
           <div class="filter-container">
             <el-input v-model="page.programName" :placeholder="$t('application.program.columns.programName')" class="filter-item search-input" @keyup.enter.native="search" />
-            <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
-            <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)">{{ $t('actions.add') }}</el-button>
-            <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove">{{ $t('actions.remove') }}</el-button>
+            <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
+            <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)" />
+            <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove" />
           </div>
 
           <el-table
@@ -54,15 +54,15 @@
 
         </el-card>
       </el-col>
-      <el-col v-show="selections && selections.length === 1" :span="14">
+      <el-col v-if="selections && selections.length === 1" :span="14">
         <el-card>
           <div slot="header">
             <span>{{ selections && selections.length === 1 ? selections[0].programName : '' }}{{ $t('application.program.title.packageList') }}</span>
           </div>
           <div class="filter-container">
             <el-input v-model="packagePage.packageName" :placeholder="$t('application.program.columns.packageName')" class="filter-item search-input" @keyup.enter.native="searchPackage" />
-            <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="searchPackage">{{ $t('actions.search') }}</el-button>
-            <el-button :disabled="!packageSelections || !packageSelections.length" class="filter-item" type="danger" icon="el-icon-delete" @click="removePackage">{{ $t('actions.remove') }}</el-button>
+            <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="searchPackage" />
+            <el-button :disabled="!packageSelections || !packageSelections.length" class="filter-item" type="danger" icon="el-icon-delete" @click="removePackage" />
             <el-upload style="display: inline; margin-left: 10px;" action="" accept=".jar" :on-change="upload" :auto-upload="false" :show-file-list="false">
               <el-button class="filter-item" type="success" icon="el-icon-upload2">{{ $t('actions.upload') }}</el-button>
             </el-upload>
@@ -120,10 +120,10 @@
     <el-dialog :title="editDialog.title" :visible.sync="editDialog.base.visible" :center="true" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false" :before-close="close">
       <div v-if="editDialog.base.visible">
         <el-form ref="form" :rules="formRules" :model="program" label-position="right" label-width="150px" class="form-layout">
-          <el-form-item :label="$t('application.program.columns.programName')" prop="dbName">
+          <el-form-item :label="$t('application.program.columns.programName')" prop="programName">
             <el-input v-model="program.programName" :placeholder="$t('application.program.placeholder.programName')" />
           </el-form-item>
-          <el-form-item :label="$t('application.program.columns.injectOrder')">
+          <el-form-item :label="$t('application.program.columns.injectOrder')" prop="injectOrder">
             <el-input-number v-model="program.injectOrder" :precision="0" :min="0" :step="1" />
           </el-form-item>
           <el-form-item>
@@ -203,7 +203,7 @@ export default {
       this.$confirm(this.$t('tip.confirm') + ' ' + file.name, this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
           const currentSize = Math.ceil(file.size / 1024 / 1024)
-          const maxSize = 50
+          const maxSize = 20
           if (currentSize > maxSize) {
             this.$message.error(this.$t('tip.fileSizeOutOfBound') + maxSize + 'M,' + this.$t('tip.currentFileSize') + currentSize + 'M')
             return

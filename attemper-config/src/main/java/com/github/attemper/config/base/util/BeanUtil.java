@@ -20,7 +20,7 @@ public class BeanUtil {
         try {
             return injectObjectMapper().readValue(obj instanceof String ? (String) obj : bean2JsonStr(obj), Map.class);
         } catch (IOException e) {
-            throw new RTException(1400, String.valueOf(obj));
+            throw new RTException(1400, e);
         }
     }
 
@@ -28,7 +28,7 @@ public class BeanUtil {
         try {
             return injectObjectMapper().readValue(bean2JsonStr(map), t);
         } catch (IOException e) {
-            throw new RTException(1400, String.valueOf(map));
+            throw new RTException(1400, e);
         }
     }
 
@@ -36,7 +36,7 @@ public class BeanUtil {
         try {
             return injectObjectMapper().writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            throw new RTException(1400, String.valueOf(obj));
+            throw new RTException(1400, e);
         }
     }
 

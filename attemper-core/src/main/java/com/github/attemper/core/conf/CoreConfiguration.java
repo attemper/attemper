@@ -1,10 +1,12 @@
 package com.github.attemper.core.conf;
 
+import com.github.attemper.core.controller.application.GistController;
 import com.github.attemper.core.controller.application.ProjectController;
 import com.github.attemper.core.controller.dispatch.ArgController;
 import com.github.attemper.core.controller.dispatch.DataSourceController;
 import com.github.attemper.core.controller.statistics.CountController;
 import com.github.attemper.core.controller.tool.ToolController;
+import com.github.attemper.core.dao.application.GistMapper;
 import com.github.attemper.core.dao.application.ProgramMapper;
 import com.github.attemper.core.dao.application.ProjectMapper;
 import com.github.attemper.core.dao.dispatch.*;
@@ -12,6 +14,7 @@ import com.github.attemper.core.dao.instance.JobInstanceMapper;
 import com.github.attemper.core.dao.statistics.CountMapper;
 import com.github.attemper.core.ext.notice.NoticeService;
 import com.github.attemper.core.ext.notice.channel.mail.EmailSender;
+import com.github.attemper.core.service.application.GistService;
 import com.github.attemper.core.service.application.ProgramService;
 import com.github.attemper.core.service.application.ProjectService;
 import com.github.attemper.core.service.dispatch.*;
@@ -43,6 +46,7 @@ import javax.validation.ValidatorFactory;
         DataSourceMapper.class,
         ProjectMapper.class,
         ProgramMapper.class,
+        GistMapper.class,
         JobInstanceMapper.class,
         CalendarMapper.class,
         CountMapper.class,
@@ -54,8 +58,9 @@ import javax.validation.ValidatorFactory;
         DataSourceService.class,
         TriggerService.class,
         ProjectService.class,
-        ToolService.class,
         ProgramService.class,
+        GistService.class,
+        ToolService.class,
         JobInstanceService.class,
         CalendarService.class,
         CountService.class,
@@ -67,6 +72,7 @@ import javax.validation.ValidatorFactory;
         ArgController.class,
         DataSourceController.class,
         ProjectController.class,
+        GistController.class,
         ToolController.class,
         CountController.class
 })

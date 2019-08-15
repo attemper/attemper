@@ -53,6 +53,7 @@ module.exports = {
     CALENDAR: '/calendar',
     PROJECT: '/project',
     PROGRAM: '/program',
+    GIST: '/gist',
     INSTANCE: '/instance',
     COUNT: '/count',
     TOOL: '/tool',

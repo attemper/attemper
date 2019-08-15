@@ -112,7 +112,7 @@ public class ProgramOperatedService extends BaseServiceAdapter {
                     .setPackageName(file.getResource().getFilename())
                     .setUploadTime(new Date())
                     .setTenantId(injectTenantId())
-                    .setPackageContent(file.getBytes());
+                    .setContent(file.getBytes());
         } catch (IOException e) {
             throw new RTException(1100, e);
         }
@@ -125,7 +125,7 @@ public class ProgramOperatedService extends BaseServiceAdapter {
         response.setHeader("Content-Disposition", "attachment; filename=" + programPackage.getPackageName());
         response.setContentType(MediaType.ZIP.toString());
         try {
-            FileCopyUtils.copy(programPackage.getPackageContent(), response.getOutputStream());
+            FileCopyUtils.copy(programPackage.getContent(), response.getOutputStream());
         } catch (IOException e) {
             throw new RTException(1100, e);
         }

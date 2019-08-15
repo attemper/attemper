@@ -142,7 +142,9 @@ export default {
     no: '否',
     flowNotStart: '任务流未成功发起，无法查看节点执行详情',
     fileSizeOutOfBound: '文件大小不能超过',
-    currentFileSize: '该文件大小'
+    currentFileSize: '该文件大小',
+    entryVersion: '请输入版本',
+    versionNotBlank: '版本不能为空'
   },
   columns: {
     displayName: '中文名',
@@ -390,6 +392,20 @@ export default {
       },
       placeholder: {
         programName: '请输入程序名称'
+      }
+    },
+    gist: {
+      title: {
+        gistList: '代码片段列表'
+      },
+      columns: {
+        gistName: '代码片段名称'
+      },
+      rules: {
+        gistName: '代码片段名称必须为文件名（比如hello.sh）'
+      },
+      placeholder: {
+        gistName: '请输入代码片段名称'
       }
     }
   },

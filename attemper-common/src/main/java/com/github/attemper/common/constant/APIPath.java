@@ -171,6 +171,17 @@ public class APIPath {
         public static final String DOWNLOAD_FILE = PACKAGE + "/file/download";
     }
 
+    public static final class GistPath {
+        public static final String SUB_PATH = "/gist";
+
+        public static final String $ = API_PATH + APP + SUB_PATH;
+
+        public static final String INFO = $ + "/info";
+
+        public static final String CONTENT = INFO + "/content";
+
+    }
+
     public static final class InstancePath {
         private static final String SUB_PATH = "/instance";
 

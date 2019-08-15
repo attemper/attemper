@@ -6,7 +6,7 @@
       <el-select v-model="page.status" :placeholder="$t('columns.status')" multiple clearable collapse-tags class="filter-item search-select">
         <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
       <span v-if="selections.length === 1">
         <el-button v-if="retryVisible" v-waves class="filter-item" type="warning" icon="el-icon-s-operation" @click="retry">{{ $t('actions.retry') }}</el-button>
         <el-button v-if="terminateVisible" v-waves class="filter-item" type="danger" icon="el-icon-stopwatch" @click="terminate">{{ $t('actions.terminate') }}</el-button>
