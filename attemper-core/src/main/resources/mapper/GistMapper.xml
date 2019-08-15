@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.attemper.core.dao.application.GistMapper">
+    <insert id="add" parameterType="com.github.attemper.common.result.app.gist.Gist">
+        INSERT INTO ${tablePrefix}gist (
+            GIST_NAME,
+            CREATE_TIME,
+            TENANT_ID
+        )
+        VALUES
+        (
+            #{gistName, jdbcType=VARCHAR},
+            #{createTime, jdbcType=TIMESTAMP},
+            #{tenantId, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="addInfo" parameterType="com.github.attemper.common.result.app.gist.GistInfo">
+            INSERT INTO ${tablePrefix}gist_info (
+                ID,
+                GIST_NAME,
+                VERSION,
+                CONTENT,
+                UPDATE_TIME,
+                TENANT_ID
+            )
+            VALUES
+            (
+                #{id, jdbcType=VARCHAR},
+                #{gistName, jdbcType=VARCHAR},
+                #{version, jdbcType=VARCHAR},
+                #{content, jdbcType=VARCHAR},
+                #{updateTime, jdbcType=TIMESTAMP},
+                #{tenantId, jdbcType=VARCHAR}
+            )
+    </insert>
+
+    <update id="updateContent" parameterType="map">
+        UPDATE
+        ${tablePrefix}gist_info
+        <set>
+            CONTENT = #{content, jdbcType=VARCHAR},
+        </set>
+        <where>
+            <include refid="condId"/>
+        </where>
+    </update>
+
+    <select id="get" parameterType="map"
+            resultType="com.github.attemper.common.result.app.gist.Gist">
+        SELECT *
+        FROM ${tablePrefix}gist
+        <where>
+            <include refid="condGistName"/>
+            <include refid="condTenantId"/>
+        </where>
+    </select>
+
+    <select id="getContent" parameterType="string"
+            resultType="string">
+        SELECT CONTENT
+        FROM ${tablePrefix}gist_info
+        <where>
+            <include refid="condId_1"/>
+        </where>
+    </select>
+
+    <select id="list" parameterType="map"
+            resultType="com.github.attemper.common.result.app.gist.Gist">
+        SELECT *
+        FROM ${tablePrefix}gist
+        <where>
+            <if test="gistName != null">
+                and lower(GIST_NAME) like concat('%', lower(#{gistName, jdbcType=VARCHAR}), '%')
+            </if>
+            <include refid="condTenantId"/>
+        </where>
+        <choose>
+            <when test="sort == null">
+                order by GIST_NAME
+            </when>
+            <otherwise>
+                order by ${sort} ${direction}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="listInfo" parameterType="map"
+            resultType="com.github.attemper.common.result.app.gist.GistInfo">
+        SELECT ID,
+        GIST_NAME,
+        VERSION,
+        UPDATE_TIME,
+        TENANT_ID
+        FROM ${tablePrefix}gist_info
+        <where>
+            <include refid="condGistName"/>
+            <include refid="condTenantId"/>
+        </where>
+        ORDER BY ID DESC
+    </select>
+
+    <delete id="delete" parameterType="map">
+        DELETE FROM ${tablePrefix}gist
+        <where>
+            GIST_NAME in
+            <foreach item="gistName" collection="gistNames" open="(" separator="," close=")">
+                #{gistName, jdbcType=VARCHAR}
+            </foreach>
+            <include refid="condTenantId"/>
+        </where>
+    </delete>
+
+    <delete id="removeInfo" parameterType="string">
+        DELETE FROM ${tablePrefix}gist_info
+        <where>
+            <include refid="condId_1"/>
+        </where>
+    </delete>
+
+    <sql id="condGistName">
+        <if test="gistName != null">
+            and GIST_NAME = #{gistName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condId">
+        and ID = #{id, jdbcType=VARCHAR}
+    </sql>
+
+    <sql id="condId_1">
+        and ID = #{1, jdbcType=VARCHAR}
+    </sql>
+</mapper>
