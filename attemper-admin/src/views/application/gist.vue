@@ -114,7 +114,7 @@ export default {
   },
   computed: {
     canSave() {
-      return !this.readOnly && this.bakCode !== this.code
+      return this.currentId && this.gistList.length > 0 && this.gistList[0].id === this.currentId && this.bakCode !== this.code
     }
   },
   created() {
@@ -180,6 +180,7 @@ export default {
     },
     resetInfo() {
       this.currentId = null
+      this.code = ''
       this.getListInfo()
     },
     getListInfo() {
@@ -188,6 +189,8 @@ export default {
         if (this.gistList.length > 0) {
           this.currentId = this.gistList[0].id
           this.getContent(this.gistList[0].id)
+        } else {
+          this.visible = false
         }
       })
     },

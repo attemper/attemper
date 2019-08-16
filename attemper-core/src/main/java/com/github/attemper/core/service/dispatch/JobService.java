@@ -105,6 +105,9 @@ public class JobService extends BaseServiceAdapter {
                                         .setCalendarName(arg.getAttribute())
                                         .setExpression(arg.getArgValue()));
                         break;
+                    case GIST:
+                        realArgValue = argService.getGistCode(arg.getArgValue(), tenantId);
+                        break;
                     case SQL:
                         realArgValue = argService.getSqlResult(
                                 new SqlArgParam()

@@ -280,8 +280,8 @@
     }
   },
   {
-    "name": "Bash Shell(Text)",
-    "id": "Bash Shell Text Script Task",
+    "name": "Bash Shell(Expression)",
+    "id": "Bash Shell Expression Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -300,9 +300,9 @@
         }
       },
       {
-        "label": "Script",
+        "label": "Expression",
         "type": "Text",
-        "value": "echo $PATH",
+        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -339,8 +339,8 @@
     }
   },
   {
-    "name": "CMD Shell(Text)",
-    "id": "CMD Shell Text Script Task",
+    "name": "CMD Shell(Expression)",
+    "id": "CMD Shell Expression Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -359,9 +359,9 @@
         }
       },
       {
-        "label": "Script",
+        "label": "Expression",
         "type": "Text",
-        "value": "echo %PATH%",
+        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -398,8 +398,8 @@
     }
   },
   {
-    "name": "Python(Text)",
-    "id": "Python Text Script Task",
+    "name": "Python(Expression)",
+    "id": "Python Expression Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -418,8 +418,9 @@
         }
       },
       {
-        "label": "Script",
+        "label": "Expression",
         "type": "Text",
+        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -456,8 +457,8 @@
     }
   },
   {
-    "name": "Perl(Text)",
-    "id": "Perl Text Script Task",
+    "name": "Perl(Expression)",
+    "id": "Perl Expression Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -476,8 +477,9 @@
         }
       },
       {
-        "label": "Script",
+        "label": "Expression",
         "type": "Text",
+        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -514,8 +516,8 @@
     }
   },
   {
-    "name": "Ruby(Text)",
-    "id": "Ruby Text Script Task",
+    "name": "Ruby(Expression)",
+    "id": "Ruby Expression Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -534,8 +536,9 @@
         }
       },
       {
-        "label": "Script",
+        "label": "Expression",
         "type": "Text",
+        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -572,8 +575,8 @@
     }
   },
   {
-    "name": "Groovy(Text)",
-    "id": "Groovy Text Script Task",
+    "name": "Groovy(Expression)",
+    "id": "Groovy Expression Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -592,8 +595,9 @@
         }
       },
       {
-        "label": "Script",
+        "label": "Expression",
         "type": "Text",
+        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -630,8 +634,8 @@
     }
   },
   {
-    "name": "Java Script(Text)",
-    "id": "Java Script Text Script Task",
+    "name": "Java Script(Expression)",
+    "id": "Java Script Expression Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -650,8 +654,9 @@
         }
       },
       {
-        "label": "Script",
+        "label": "Expression",
         "type": "Text",
+        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -688,8 +693,8 @@
     }
   },
   {
-    "name": "PHP(Text)",
-    "id": "PHP Text Script Task",
+    "name": "PHP(Expression)",
+    "id": "PHP Expression Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -708,8 +713,9 @@
         }
       },
       {
-        "label": "Script",
+        "label": "Expression",
         "type": "Text",
+        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -1156,6 +1162,472 @@
         "binding": {
           "type": "property",
           "name": "camunda:resource"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Bash Shell(Text)",
+    "id": "Bash Shell Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "bash",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "value": "echo $PATH",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "CMD Shell(Text)",
+    "id": "CMD Shell Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "cmd",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "value": "echo %PATH%",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Python(Text)",
+    "id": "Python Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "python",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Perl(Text)",
+    "id": "Perl Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "perl",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Ruby(Text)",
+    "id": "Ruby Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "ruby",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Groovy(Text)",
+    "id": "Groovy Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "groovy",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "Java Script(Text)",
+    "id": "Java Script Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "js",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false
+    }
+  },
+  {
+    "name": "PHP(Text)",
+    "id": "PHP Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "php",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
         }
       },
       {

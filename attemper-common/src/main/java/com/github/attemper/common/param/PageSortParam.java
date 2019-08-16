@@ -45,6 +45,8 @@ public class PageSortParam implements CommonParam {
         //preview handle pageSize
         if(this.pageSize == 0){
             this.pageSize = CommonConstants.DEF_PAGE_SIZE;
+        } else if (this.pageSize == -1) {
+            this.pageSize = CommonConstants.MAX_PAGE_SIZE;
         }
     }
 

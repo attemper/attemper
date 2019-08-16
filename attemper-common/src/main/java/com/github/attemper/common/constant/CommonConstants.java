@@ -39,7 +39,7 @@ public interface CommonConstants {
 
     int DEF_PAGE_SIZE = 10;
 
-    int MAX_PAGE_SIZE = 1000;
+    int MAX_PAGE_SIZE = 5000;
 
     String REGEX_EMAIL = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?";
 

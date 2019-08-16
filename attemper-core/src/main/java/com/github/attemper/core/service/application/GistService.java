@@ -102,6 +102,11 @@ public class GistService extends BaseServiceAdapter {
         return mapper.getContent(param.getId());
     }
 
+    public String getLatestContent(String gistName, String tenantId) {
+        Map<String, Object> paramMap = injectTenantIdToMap(new GistNameParam().setGistName(gistName), tenantId);
+        return mapper.getLatestContent(paramMap);
+    }
+
     public Void updateContent(GistInfoContentParam param) {
         mapper.updateContent(BeanUtil.bean2Map(param));
         return null;

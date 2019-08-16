@@ -21,5 +21,7 @@ public interface GistMapper extends BaseMapper<Gist> {
 
     String getContent(String id);
 
+    String getLatestContent(Map<String, Object> paramMap);
+
     void updateContent(Map<String, Object> paramMap);
 }

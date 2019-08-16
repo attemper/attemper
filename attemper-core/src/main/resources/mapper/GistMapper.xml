@@ -66,6 +66,16 @@
         </where>
     </select>
 
+    <select id="getLatestContent" parameterType="map"
+            resultType="string">
+        SELECT CONTENT FROM ${tablePrefix}gist JOIN ${tablePrefix}gist_info USING (GIST_NAME, TENANT_ID)
+        <where>
+            <include refid="condGistName"/>
+            <include refid="condTenantId"/>
+        </where>
+        ORDER BY ID DESC LIMIT 1
+    </select>
+
     <select id="list" parameterType="map"
             resultType="com.github.attemper.common.result.app.gist.Gist">
         SELECT *

@@ -20,10 +20,6 @@ export default {
       type: String,
       default: ''
     },
-    placeholder: {
-      type: String,
-      default: ''
-    },
     tradeDateUnits: {
       type: Array,
       default: null
@@ -37,7 +33,7 @@ export default {
   },
   methods: {
     initUnit(value) {
-      if (value && value.length >= 1 && this.tradeDateUnits.find(item => { return item === value.substring(0, 1) !== undefined })) {
+      if (value && value.length >= 1 && this.tradeDateUnits.find(item => { return item === value.substring(0, 1) }) !== undefined) {
         this.unit = value.substring(0, 1)
       }
     },

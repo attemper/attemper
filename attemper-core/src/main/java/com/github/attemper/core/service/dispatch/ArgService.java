@@ -14,12 +14,14 @@ import com.github.attemper.config.base.datasource.DynamicDataSource;
 import com.github.attemper.core.dao.dispatch.ArgMapper;
 import com.github.attemper.core.engine.DateCalculatorFactory;
 import com.github.attemper.core.engine.date.DateHandler;
+import com.github.attemper.core.service.application.GistService;
 import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -35,6 +37,7 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional
 public class ArgService extends BaseServiceAdapter {
@@ -47,6 +50,9 @@ public class ArgService extends BaseServiceAdapter {
 
     @Autowired
     private ToolService toolService;
+
+    @Autowired
+    private GistService gistService;
 
     public Arg get(ArgGetParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
@@ -147,4 +153,11 @@ public class ArgService extends BaseServiceAdapter {
         return dateHandler.calculateTradeDate();
     }
 
+    public String getGistCode(String gistName, String tenantId) {
+        String latestContent = gistService.getLatestContent(gistName, tenantId);
+        if (StringUtils.isBlank(latestContent)) {
+            log.error("gist code is blank:{}-{}", gistName, tenantId);
+        }
+        return latestContent;
+    }
 }

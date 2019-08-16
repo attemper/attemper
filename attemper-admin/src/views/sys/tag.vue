@@ -366,7 +366,7 @@ export default {
       this.targetKeys = []
       const page = {
         currentPage: 1,
-        pageSize: 1000
+        pageSize: -1
       }
       tenantApi.listReq(page).then(res => {
         res.data.result.list.forEach(item => {

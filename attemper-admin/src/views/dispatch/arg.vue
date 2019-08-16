@@ -90,6 +90,7 @@
             <date-time-input v-else-if="arg.argType === 12" v-model="arg.argValue" />
             <list-input v-else-if="arg.argType === 30" ref="listInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
             <map-input v-else-if="arg.argType === 31" ref="mapInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
+            <gist-input v-else-if="arg.argType === 41" ref="gistInput" v-model="arg.argValue" @change="change" />
             <trade-date-input v-else-if="arg.argType === 50" ref="tradeDateInput" v-model="arg.argValue" :trade-date-units="tradeDateUnits" @change="change" />
             <string-input v-else v-model="arg.argValue" :placeholder="$t('dispatch.arg.placeholder.argValue')" />
           </el-form-item>
@@ -156,6 +157,7 @@ import DateTimeInput from './components/arg/DateTimeInput'
 import TimeInput from './components/arg/TimeInput'
 import { buildMsg } from '@/utils/tools'
 import TradeDateInput from './components/arg/TradeDateInput'
+import GistInput from './components/arg/GistInput'
 const DEF_OBJ = {
   argName: null,
   argType: 0,
@@ -167,7 +169,7 @@ const DEF_OBJ = {
 
 export default {
   name: 'arg',
-  components: { TradeDateInput, TimeInput, DateTimeInput, DateInput, MapInput, ListInput, BooleanInput, NumberInput, StringInput, Pagination },
+  components: { GistInput, TradeDateInput, TimeInput, DateTimeInput, DateInput, MapInput, ListInput, BooleanInput, NumberInput, StringInput, Pagination },
   directives: { waves },
   data() {
     return {
@@ -294,6 +296,9 @@ export default {
             this.$refs.tradeDateInput.initUnit(this.arg.argValue)
             this.$refs.tradeDateInput.initNum(this.arg.argValue)
           }
+          if (this.$refs.gistInput) {
+            this.$refs.gistInput.initValue(this.arg.argValue)
+          }
           if (this.isSql) {
             this.getDatabases()
           }
@@ -323,7 +328,7 @@ export default {
     },
     testSql() {
       this.sqlResult.columns = this.sqlResult.list = []
-      getSqlResultReq({ dbName: this.dbName, sql: this.arg.argValue, pageSize: 1000 }).then(res => {
+      getSqlResultReq({ dbName: this.dbName, sql: this.arg.argValue, pageSize: -1 }).then(res => {
         if (res.data.result && res.data.result.length > 0) {
           this.showSqlResult = true
           for (const field in res.data.result[0]) {
@@ -421,7 +426,7 @@ export default {
       }
     },
     getDatabases() {
-      dataSourceApi.listReq({ pageSize: 1000 }).then(res => {
+      dataSourceApi.listReq({ pageSize: -1 }).then(res => {
         this.dataSources = res.data.result.list
         this.dbName = this.arg.attribute
       })
