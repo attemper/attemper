@@ -103,21 +103,27 @@
             <artifactId>camunda-template-engines-freemarker</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.6</version>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.python/jython -->
         <dependency>
             <groupId>org.python</groupId>
             <artifactId>jython</artifactId>
-            <version>2.7.1b3</version>
+            <version>2.5.3</version>
         </dependency>
-		<!-- 
+        <!--
         <dependency>
             <groupId>org.jruby</groupId>
             <artifactId>jruby</artifactId>
             <version>9.2.7.0</version>
         </dependency>
-		-->
+        -->
         <!-- https://github.com/youribonnaffe/jsr223-nativeshell -->
         <dependency>
             <groupId>jsr223</groupId>

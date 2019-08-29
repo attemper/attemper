@@ -1,11 +1,5 @@
 package com.github.attemper.core.conf;
 
-import com.github.attemper.core.controller.application.GistController;
-import com.github.attemper.core.controller.application.ProjectController;
-import com.github.attemper.core.controller.dispatch.ArgController;
-import com.github.attemper.core.controller.dispatch.DataSourceController;
-import com.github.attemper.core.controller.statistics.CountController;
-import com.github.attemper.core.controller.tool.ToolController;
 import com.github.attemper.core.dao.application.GistMapper;
 import com.github.attemper.core.dao.application.ProgramMapper;
 import com.github.attemper.core.dao.application.ProjectMapper;
@@ -67,14 +61,6 @@ import javax.validation.ValidatorFactory;
 
         EmailSender.class,
         NoticeService.class,
-
-        //controller
-        ArgController.class,
-        DataSourceController.class,
-        ProjectController.class,
-        GistController.class,
-        ToolController.class,
-        CountController.class
 })
 public class CoreConfiguration {
 

@@ -6,7 +6,6 @@ import com.github.attemper.common.enums.PredefinedDateArgType;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.config.base.property.AppProperties;
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -82,32 +81,6 @@ public class ToolService {
 
     public Date getCurrentTime() {
         return new Date();
-    }
-
-    public HikariDataSource getDataSource(String driverClassName, String jdbcUrl, String userName, String password) throws Exception {
-        HikariDataSource dataSource = new HikariDataSource();
-        try {
-            dataSource.setMinimumIdle(2);
-            dataSource.setMaximumPoolSize(2);
-            dataSource.setDriverClassName(driverClassName);
-            dataSource.setJdbcUrl(jdbcUrl);
-            dataSource.setUsername(userName);
-            dataSource.setPassword(password);
-            return dataSource;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw e;
-        }
-    }
-
-    public String testConnection(String driverClassName, String jdbcUrl, String userName, String password) {
-        try (HikariDataSource dataSource = getDataSource(driverClassName, jdbcUrl, userName, password)) {
-            dataSource.getConnection();
-            return null;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return e.getMessage();
-        }
     }
 
     public List<Map<String, Object>> listArgType() {

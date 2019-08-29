@@ -21,7 +21,7 @@ public class DataSourceSaveParam implements CommonParam {
 
     protected String password;
 
-    protected String remark;
+    protected String attribute;
 
     public String validate() {
         if (StringUtils.isBlank(dbName)) {

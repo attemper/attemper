@@ -7,9 +7,7 @@ import com.github.attemper.common.param.dispatch.arg.ArgRemoveParam;
 import com.github.attemper.common.param.dispatch.arg.ArgSaveParam;
 import com.github.attemper.common.param.dispatch.arg.ext.SqlArgParam;
 import com.github.attemper.common.param.dispatch.arg.ext.TradeDateArgParam;
-import com.github.attemper.common.param.dispatch.datasource.DataSourceGetParam;
 import com.github.attemper.common.result.dispatch.arg.Arg;
-import com.github.attemper.common.result.dispatch.datasource.DataSourceInfo;
 import com.github.attemper.config.base.datasource.DynamicDataSource;
 import com.github.attemper.core.dao.dispatch.ArgMapper;
 import com.github.attemper.core.engine.DateCalculatorFactory;
@@ -20,7 +18,6 @@ import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,14 +105,8 @@ public class ArgService extends BaseServiceAdapter {
 
     public List<Map<String, Object>> getSqlResult(SqlArgParam param) {
         DataSource targetDataSource;
-        boolean externalDB = StringUtils.isNotBlank(param.getDbName());
-        if (externalDB) {
-            DataSourceInfo dsInfo = dataSourceService.get(new DataSourceGetParam().setDbName(param.getDbName()));
-            try {
-                targetDataSource = toolService.getDataSource(dsInfo.getDriverClassName(), dsInfo.getJdbcUrl(), dsInfo.getUserName(), dsInfo.getPassword());
-            } catch (Exception e) {
-                throw new RTException(1270, e);
-            }
+        if (StringUtils.isNotBlank(param.getDbName())) {
+            targetDataSource = dataSourceService.getDataSource(param.getDbName(), injectTenantId());
         } else {
             targetDataSource = dynamicDataSource;
         }
@@ -124,10 +115,6 @@ public class ArgService extends BaseServiceAdapter {
             return jdbcTemplate.queryForList(param.getSql());
         } catch (Exception e) {
             throw new RTException(1201, e);
-        } finally {
-            if (externalDB && targetDataSource != null) {
-                ((HikariDataSource) targetDataSource).close();
-            }
         }
     }
 

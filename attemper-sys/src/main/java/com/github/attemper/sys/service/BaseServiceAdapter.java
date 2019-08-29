@@ -3,7 +3,7 @@ package com.github.attemper.sys.service;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.sys.holder.TenantHolder;
-import com.github.attemper.sys.store.Store;
+import com.github.attemper.sys.store.SysStore;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ public abstract class BaseServiceAdapter implements BaseService {
 
     protected Map<String, Object> injectTenantIdExceptAdminToMap(Object obj) {
         Map<String, Object> paramMap = obj2Map(obj);
-        if (injectTenantId() == null || Store.getAdminTenant().getUserName().equals(injectTenantId())) {
+        if (injectTenantId() == null || SysStore.getAdminTenant().getUserName().equals(injectTenantId())) {
             paramMap.put(CommonConstants.tenantId, null);
         } else {
             paramMap.put(CommonConstants.tenantId, injectTenantId());

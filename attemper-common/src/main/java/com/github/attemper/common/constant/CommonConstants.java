@@ -35,6 +35,8 @@ public interface CommonConstants {
 
     String value = "value";
 
+    String FALSE = "false";
+
     int DEF_CURRENT_PAGE = 1;
 
     int DEF_PAGE_SIZE = 10;

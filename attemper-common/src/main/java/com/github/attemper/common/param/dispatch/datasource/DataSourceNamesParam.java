@@ -1,14 +1,10 @@
 package com.github.attemper.common.param.dispatch.datasource;
 
 import com.github.attemper.common.param.CommonParam;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
 
-@Getter
-@Setter
 @ToString
 public class DataSourceNamesParam implements CommonParam {
 
@@ -19,5 +15,14 @@ public class DataSourceNamesParam implements CommonParam {
             return "7100";
         }
         return null;
+    }
+
+    public List<String> getDbNames() {
+        return dbNames;
+    }
+
+    public DataSourceNamesParam setDbNames(List<String> dbNames) {
+        this.dbNames = dbNames;
+        return this;
     }
 }

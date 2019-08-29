@@ -40,6 +40,7 @@ mybatis:
       map-underscore-to-camel-case: true
       variables:
         tablePrefix: attemper_
+
 # eureka
 eureka:
   instance:
@@ -53,3 +54,7 @@ eureka:
     availabilityZones:
       default: defaultZone
     preferSameZone: false
+
+camunda:
+  bpm:
+    default-number-of-retries: 1

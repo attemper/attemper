@@ -196,5 +196,14 @@ export default {
   'From': '发送者',
   'To': '接收人',
   'Subject': '主题',
-  'Content': '内容'
+  'Content': '内容',
+  'Remote Path': '文件目录',
+  'File Name': '文件名',
+  'Include Flag': '是否有标志文件',
+  'Check Row': '是否校验数据行',
+  'Regex for Check': '校验数据行的正则',
+  'Database': '数据库',
+  'Format Field': '是否格式化',
+  'Padding Msg': '格式化补全规则',
+  'Temporary Store': '是否落地中间文件'
 }

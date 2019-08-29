@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-    <div ref="canvas" class="canvas" />
+    <div ref="canvas" class="canvas-monitor" />
     <div class="external">
       <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane :label="$t('monitor.label.flow')" name="flow">
@@ -408,5 +408,5 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  @import "./styles/flow.scss";
+  @import "~@/styles/bpmn.scss";
 </style>

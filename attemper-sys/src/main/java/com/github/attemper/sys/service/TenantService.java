@@ -6,7 +6,7 @@ import com.github.attemper.common.result.sys.tag.Tag;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.sys.dao.TenantMapper;
-import com.github.attemper.sys.store.Store;
+import com.github.attemper.sys.store.SysStore;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.attemper.sys.util.PasswordUtil;
 import com.github.pagehelper.Page;
@@ -80,7 +80,7 @@ public class TenantService extends BaseServiceAdapter {
 
     public Void remove(TenantRemoveParam param) {
         for (String userName : param.getUserNames()) {
-            if (StringUtils.equals(userName, Store.getAdminTenant().getUserName())) {
+            if (StringUtils.equals(userName, SysStore.getAdminTenant().getUserName())) {
                 throw new RTException(5115, userName);
             }
         }

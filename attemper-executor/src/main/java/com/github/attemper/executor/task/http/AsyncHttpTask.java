@@ -1,7 +1,7 @@
 package com.github.attemper.executor.task.http;
 
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.executor.store.ExecutionStore;
+import com.github.attemper.executor.store.ExecutorStore;
 import com.github.attemper.executor.task.http.internal.HttpTask;
 import com.github.attemper.java.sdk.common.executor.constant.ExecutorAPIPath;
 import com.github.attemper.java.sdk.common.executor.param.execution.EndParam;
@@ -25,7 +25,7 @@ public class AsyncHttpTask extends HttpTask {
         synchronized (execution.getActivityInstanceId().intern()) { // lock
             try {
                 execution.getActivityInstanceId().intern().wait(injectTimeout(fieldMap) * 1000L);
-                EndParam endParam = ExecutionStore.getEndMap().get(execution.getId());
+                EndParam endParam = ExecutorStore.getEndMap().get(execution.getId());
                 TaskResult taskResult = endParam.getTaskResult();
                 if (taskResult != null) {
                     saveVariables(execution, taskResult);
@@ -36,14 +36,14 @@ public class AsyncHttpTask extends HttpTask {
                 }
             } catch (InterruptedException e) {
                 int code = 3053;
-                saveLogKey(execution, String.valueOf(code));
+                saveLogKey(execution, code);
                 throw new RTException(code, e);
             } catch (Exception e) {
                 int code = HttpStatus.INTERNAL_SERVER_ERROR.value();
-                saveLogKey(execution, String.valueOf(code));
+                saveLogKey(execution, code);
                 throw new RTException(code, e);
             } finally {
-                ExecutionStore.getEndMap().remove(execution.getId());
+                ExecutorStore.getEndMap().remove(execution.getId());
             }
         }
     }

@@ -15,7 +15,7 @@ public class DataSourceInfo {
 
     protected String password;
 
-    protected String remark;
+    protected String attribute;
 
     protected String tenantId;
 
@@ -64,12 +64,12 @@ public class DataSourceInfo {
         return this;
     }
 
-    public String getRemark() {
-        return remark;
+    public String getAttribute() {
+        return attribute;
     }
 
-    public DataSourceInfo setRemark(String remark) {
-        this.remark = remark;
+    public DataSourceInfo setAttribute(String attribute) {
+        this.attribute = attribute;
         return this;
     }
 

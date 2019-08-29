@@ -4,11 +4,14 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.app.project.*;
 import com.github.attemper.common.result.app.project.Project;
 import com.github.attemper.common.result.app.project.ProjectInfo;
+import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.core.dao.application.ProjectMapper;
 import com.github.attemper.sys.holder.TenantHolder;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -164,4 +167,18 @@ public class ProjectService extends BaseServiceAdapter {
         return null;
     }
 
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @Autowired
+    private AppProperties appProperties;
+
+    public List<String> toExecutorUrls() {
+        List<String> list = listExecutor(null);
+        if (list.size() == 0) {
+            List<ServiceInstance> instances = discoveryClient.getInstances(appProperties.getExecutor().getName());
+            instances.forEach(item -> list.add(item.getUri().toString()));
+        }
+        return list;
+    }
 }

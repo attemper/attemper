@@ -328,13 +328,15 @@ export default {
         driverClassName: '驱动',
         jdbcUrl: '连接信息',
         userName: '用户名',
-        password: '密码'
+        password: '密码',
+        attribute: '其他属性'
       },
       placeholder: {
         dbName: '请输入数据源名称',
         jdbcUrl: '请输入连接信息',
         userName: '请输入用户名',
-        password: '请输入密码'
+        password: '请输入密码',
+        attribute: '请输入其他属性'
       },
       rules: {
         dbName: '数据源名称不能为空',

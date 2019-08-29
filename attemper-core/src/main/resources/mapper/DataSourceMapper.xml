@@ -9,7 +9,7 @@
             JDBC_URL,
             USER_NAME,
             PASSWORD,
-            REMARK,
+            ATTRIBUTE,
             TENANT_ID
         )
         VALUES
@@ -19,7 +19,7 @@
             #{jdbcUrl, jdbcType=VARCHAR},
             #{userName, jdbcType=VARCHAR},
             #{password, jdbcType=VARCHAR},
-            #{remark, jdbcType=VARCHAR},
+            #{attribute, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
         );
     </insert>
@@ -32,7 +32,7 @@
         JDBC_URL = #{jdbcUrl, jdbcType=VARCHAR},
         USER_NAME = #{userName, jdbcType=VARCHAR},
         PASSWORD = #{password, jdbcType=VARCHAR},
-        REMARK = #{remark, jdbcType=VARCHAR}
+        ATTRIBUTE = #{attribute, jdbcType=VARCHAR}
         <where>
             <include refid="condDbName"/>
             <include refid="condTenantId"/>
@@ -81,11 +81,6 @@
     <delete id="delete" parameterType="map">
         DELETE <include refid="dbNamesSql"/>
     </delete>
-
-    <select id="getByNames" parameterType="map"
-            resultType="com.github.attemper.common.result.dispatch.datasource.DataSourceInfo">
-        SELECT * <include refid="dbNamesSql"/>
-    </select>
 
     <sql id="dbNamesSql">
         FROM ${tablePrefix}datasource

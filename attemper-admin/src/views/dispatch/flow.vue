@@ -412,5 +412,5 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  @import "./styles/flow.scss";
+  @import "~@/styles/bpmn.scss";
 </style>

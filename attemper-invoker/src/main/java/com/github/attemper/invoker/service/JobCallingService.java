@@ -25,7 +25,7 @@ import com.github.attemper.java.sdk.common.param.sys.login.LoginParam;
 import com.github.attemper.java.sdk.common.result.sys.login.LoginResult;
 import com.github.attemper.security.service.LoginService;
 import com.github.attemper.sys.service.TenantService;
-import com.github.attemper.sys.store.Store;
+import com.github.attemper.sys.store.SysStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -96,7 +96,7 @@ public class JobCallingService {
             throw new RTException(code);
         }
         String baseUrl = computeUrl(param, parentId);
-        String token = Store.getTenantTokenMap().get(tenantId);
+        String token = SysStore.getTenantTokenMap().get(tenantId);
         saveInstance(buildInstance(param, baseUrl, parentId, JobInstanceStatus.RUNNING));
         try {
             invokeByWebClient(baseUrl, token, param);
@@ -186,7 +186,7 @@ public class JobCallingService {
         Tenant tenant = tenantService.get(new TenantGetParam().setUserName(tenantId));
         LoginResult loginResult = loginService.loginByEncoded(new LoginParam().setUserName(tenantId).setPassword(tenant.getPassword()));
         String token = loginResult.getToken();
-        Store.getTenantTokenMap().put(tenantId, token);
+        SysStore.getTenantTokenMap().put(tenantId, token);
         return token;
     }
 

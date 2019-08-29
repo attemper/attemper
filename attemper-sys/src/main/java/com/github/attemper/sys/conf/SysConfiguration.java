@@ -9,7 +9,7 @@ import com.github.attemper.sys.dao.TenantMapper;
 import com.github.attemper.sys.exception.SysExceptionAdvisor;
 import com.github.attemper.sys.service.TagService;
 import com.github.attemper.sys.service.TenantService;
-import com.github.attemper.sys.store.Store;
+import com.github.attemper.sys.store.SysStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +45,6 @@ public class SysConfiguration {
 
     @PostConstruct
     public void initAdminTenant() {
-        Store.setAdminTenant(tenantService.getAdmin());
+        SysStore.setAdminTenant(tenantService.getAdmin());
     }
 }

@@ -36,15 +36,15 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
             List<Execution> executions = runtimeService.createExecutionQuery().executionId(context.getExecutionId()).list();
             for (Execution execution : executions) {
                 ExecutionEntity executionEntity = (ExecutionEntity) execution;
-                updateInstance(runtimeService, jobInstanceService, executionEntity, 3052);
+                updateInstance(runtimeService, jobInstanceService, executionEntity, 2500);
                 // make super fail
                 ExecutionEntity superExecution = executionEntity.getSuperExecution();
                 while (superExecution != null) {
-                    updateInstance(runtimeService, jobInstanceService, superExecution, 3052);
+                    updateInstance(runtimeService, jobInstanceService, superExecution, 2500);
                     superExecution = superExecution.getSuperExecution();
                 }
             }
-            updateInstanceAct(jobInstanceService, context.getExecutionId());
+            updateInstanceAct(jobInstanceService, context.getExecutionId(), context.getActivityId());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -78,9 +78,10 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
                 HistoricProcessInstance.STATE_EXTERNALLY_TERMINATED));
     }
 
-    private void updateInstanceAct(JobInstanceService jobInstanceService, String executionId) {
+    private void updateInstanceAct(JobInstanceService jobInstanceService, String procInstId, String actId) {
         JobInstanceAct jobInstanceAct = new JobInstanceAct()
-                .setExecutionId(executionId)
+                .setProcInstId(procInstId)
+                .setActId(actId)
                 .setEndTime(new Date())
                 .setStatus(JobInstanceStatus.FAILURE.getStatus());
         jobInstanceService.updateAct(jobInstanceAct);

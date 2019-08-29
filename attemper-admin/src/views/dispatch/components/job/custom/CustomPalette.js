@@ -21,7 +21,7 @@ export default class CustomPalette {
     }
 
     function createParallelGateway(event) {
-      createShape(event, 'ServiceTask')
+      createShape(event, 'ParallelGateway')
     }
 
     function createServiceTask(event) {

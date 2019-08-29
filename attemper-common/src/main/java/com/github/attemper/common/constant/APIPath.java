@@ -241,5 +241,7 @@ public class APIPath {
         public static final String LOAD_PACKAGE = API_PATH + EXECUTOR + "/package/load";
 
         public static final String UNLOAD_PACKAGE = API_PATH + EXECUTOR + "/package/unload";
+
+        public static final String REMOVE_DATA_SOURCE = API_PATH + EXECUTOR + "/datasource/remove";
     }
 }

@@ -1,25 +1,34 @@
 package com.github.attemper.core.service.dispatch;
 
+import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceGetParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceListParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceNamesParam;
-import com.github.attemper.common.param.dispatch.datasource.DataSourceSaveParam;
 import com.github.attemper.common.result.dispatch.datasource.ConnectionTestResult;
 import com.github.attemper.common.result.dispatch.datasource.DataSourceInfo;
 import com.github.attemper.core.dao.dispatch.DataSourceMapper;
-import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
+import com.github.attemper.sys.store.SysStore;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.apache.commons.lang.StringUtils;
+import org.camunda.commons.utils.IoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 @Transactional
 @Service
@@ -28,32 +37,9 @@ public class DataSourceService extends BaseServiceAdapter {
     @Autowired
     private DataSourceMapper mapper;
 
-    @Autowired
-    private ToolService toolService;
-
     public DataSourceInfo get(DataSourceGetParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.get(paramMap);
-    }
-
-    public DataSourceInfo add(DataSourceSaveParam param) {
-        DataSourceInfo arg = get(new DataSourceGetParam().setDbName(param.getDbName()));
-        if (arg != null) {
-            throw new DuplicateKeyException(param.getDbName());
-        }
-        arg = toDataSource(param);
-        mapper.add(arg);
-        return arg;
-    }
-
-    public DataSourceInfo update(DataSourceSaveParam param) {
-        DataSourceInfo oldDataSourceInfo = get(new DataSourceGetParam().setDbName(param.getDbName()));
-        if (oldDataSourceInfo == null) {
-            return add(param);
-        }
-        DataSourceInfo updatedDataSourceInfo = toDataSource(param);
-        mapper.update(updatedDataSourceInfo);
-        return updatedDataSourceInfo;
     }
 
     public Map<String, Object> list(DataSourceListParam param) {
@@ -63,32 +49,53 @@ public class DataSourceService extends BaseServiceAdapter {
         return PageUtil.toResultMap(list);
     }
 
-    public Void remove(DataSourceNamesParam param) {
-        Map<String, Object> paramMap = injectTenantIdToMap(param);
-        mapper.delete(paramMap);
-        return null;
-    }
-
     public List<ConnectionTestResult> testConnection(DataSourceNamesParam param) {
-        Map<String, Object> paramMap = injectTenantIdToMap(param);
-        List<DataSourceInfo> dataSources = mapper.getByNames(paramMap);
         List<ConnectionTestResult> resultList = new ArrayList<>();
-        for (DataSourceInfo item : dataSources) {
-            String errorMsg = toolService.testConnection(item.getDriverClassName(), item.getJdbcUrl(), item.getUserName(), item.getPassword());
-            resultList.add(new ConnectionTestResult().setDbName(item.getDbName()).setErrorMsg(errorMsg));
+        for (String dbName : param.getDbNames()) {
+            DataSource dataSource = getDataSource(dbName, injectTenantId());
+            String errorMsg = testConnection(dataSource);
+            resultList.add(new ConnectionTestResult().setDbName(dbName).setErrorMsg(errorMsg));
         }
         return resultList;
     }
 
-    private DataSourceInfo toDataSource(DataSourceSaveParam param) {
-        return new DataSourceInfo()
-                .setDbName(param.getDbName())
-                .setDriverClassName(param.getDriverClassName())
-                .setJdbcUrl(param.getJdbcUrl())
-                .setUserName(param.getUserName())
-                .setPassword(param.getPassword())
-                .setRemark(param.getRemark())
-                .setTenantId(injectTenantId());
+    private String testConnection(DataSource dataSource) {
+        try (Connection conn = dataSource.getConnection()) {
+            return null;
+        } catch (SQLException e) {
+            return e.getMessage();
+        }
+    }
+
+    public DataSource getDataSource(String dbName, String tenantId) {
+        DataSource dataSource = SysStore.getBizDataSource(dbName, tenantId);
+        if (dataSource == null) {
+            DataSourceInfo dataSourceInfo = get(new DataSourceGetParam().setDbName(dbName));
+            if (dataSourceInfo == null) {
+                throw new RTException(7150, dbName);
+            }
+            HikariConfig hikariConfig = new HikariConfig();
+            hikariConfig.setDriverClassName(dataSourceInfo.getDriverClassName());
+            hikariConfig.setJdbcUrl(dataSourceInfo.getJdbcUrl());
+            hikariConfig.setUsername(dataSourceInfo.getUserName());
+            hikariConfig.setPassword(dataSourceInfo.getPassword());
+            if (StringUtils.isBlank(dataSourceInfo.getAttribute())) {
+                hikariConfig.setMinimumIdle(10);
+                hikariConfig.setMaximumPoolSize(10);
+            } else {
+                Properties properties = new Properties();
+                InputStream is = IoUtil.stringAsInputStream(dataSourceInfo.getAttribute());
+                try {
+                    properties.load(is);
+                } catch (IOException e) {
+                    throw new RTException(7102, e);
+                }
+                hikariConfig.setDataSourceProperties(properties);
+            }
+            dataSource = new HikariDataSource(hikariConfig);
+            SysStore.putBizDataSource(dbName, tenantId, dataSource);
+        }
+        return dataSource;
     }
 
 }

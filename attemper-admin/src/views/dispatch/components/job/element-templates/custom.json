@@ -1,5 +1,296 @@
 [
   {
+    "name": "FTP->DB(BI)",
+    "id": "DownloadFtpTask",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Executor Component",
+        "type": "String",
+        "editable": false,
+        "value": "${downloadFtpTask}",
+        "binding": {
+          "type": "property",
+          "name": "camunda:delegateExpression"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Remote Path",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "remote_path"
+        }
+      },
+      {
+        "label": "File Name",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "file_name"
+        }
+      },
+      {
+        "label": "Include Flag",
+        "type": "Boolean",
+        "value": "true",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "include_flag"
+        }
+      },
+      {
+        "label": "Check Row",
+        "type": "Boolean",
+        "value": "true",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "check"
+        }
+      },
+      {
+        "label": "Regex for Check",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "check_items"
+        }
+      },
+      {
+        "label": "Temporary Store",
+        "type": "Boolean",
+        "value": "true",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "temp_store"
+        }
+      },
+      {
+        "label": "Sql",
+        "description": "Sql expression",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "sql"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "editable": false,
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "editable": false,
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "delegate": false,
+      "implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
+    }
+  },
+  {
+    "name": "DB->FTP(BI)",
+    "id": "UploadFtpTask",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Executor Component",
+        "type": "String",
+        "editable": false,
+        "value": "${uploadFtpTask}",
+        "binding": {
+          "type": "property",
+          "name": "camunda:delegateExpression"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Remote Path",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "remote_path"
+        }
+      },
+      {
+        "label": "File Name",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "file_name"
+        }
+      },
+      {
+        "label": "Include Flag",
+        "type": "Boolean",
+        "value": "true",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "include_flag"
+        }
+      },
+      {
+        "label": "Format Field",
+        "type": "Boolean",
+        "value": "true",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "format_field"
+        }
+      },
+      {
+        "label": "Padding Msg",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "field_padding_msg"
+        }
+      },
+      {
+        "label": "Temporary Store",
+        "type": "Boolean",
+        "value": "true",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "temp_store"
+        }
+      },
+      {
+        "label": "Sql",
+        "description": "Sql expression",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "sql"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "editable": false,
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "editable": false,
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "delegate": false,
+      "implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
+    }
+  },
+  {
+    "name": "Sql",
+    "id": "SqlTask",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Executor Component",
+        "type": "String",
+        "editable": false,
+        "value": "${sqlTask}",
+        "binding": {
+          "type": "property",
+          "name": "camunda:delegateExpression"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Sql",
+        "description": "Sql expression",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "sql"
+        }
+      },
+      {
+        "label": "Asynchronous Before",
+        "type": "Boolean",
+        "editable": false,
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      },
+      {
+        "label": "Asynchronous After",
+        "type": "Boolean",
+        "editable": false,
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncAfter"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "delegate": false,
+      "implementation": false,
+      "asyncBefore": false,
+      "asyncAfter": false,
+      "exclusive": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
+    }
+  },
+  {
     "name": "Http(Sync)",
     "id": "SyncHttpTask",
     "appliesTo": [
@@ -9,7 +300,7 @@
       {
         "label": "Executor Component",
         "type": "String",
-        "editable": true,
+        "editable": false,
         "value": "${syncHttpTask}",
         "binding": {
           "type": "property",
@@ -66,6 +357,7 @@
       {
         "label": "Asynchronous Before",
         "type": "Boolean",
+        "editable": false,
         "value": true,
         "binding": {
           "type": "property",
@@ -75,6 +367,7 @@
       {
         "label": "Asynchronous After",
         "type": "Boolean",
+        "editable": false,
         "value": true,
         "binding": {
           "type": "property",
@@ -88,7 +381,11 @@
       "implementation": false,
       "asyncBefore": false,
       "asyncAfter": false,
-      "exclusive": false
+      "exclusive": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
     }
   },
   {
@@ -101,7 +398,7 @@
       {
         "label": "Executor Component",
         "type": "String",
-        "editable": true,
+        "editable": false,
         "value": "${asyncHttpTask}",
         "binding": {
           "type": "property",
@@ -158,6 +455,7 @@
       {
         "label": "Asynchronous Before",
         "type": "Boolean",
+        "editable": false,
         "value": true,
         "binding": {
           "type": "property",
@@ -167,6 +465,7 @@
       {
         "label": "Asynchronous After",
         "type": "Boolean",
+        "editable": false,
         "value": true,
         "binding": {
           "type": "property",
@@ -180,7 +479,11 @@
       "implementation": false,
       "asyncBefore": false,
       "asyncAfter": false,
-      "exclusive": false
+      "exclusive": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
     }
   },
   {
@@ -194,7 +497,7 @@
         "label": "Executor Component",
         "type": "String",
         "value": "${customMailTask}",
-        "editable": true,
+        "editable": false,
         "binding": {
           "type": "property",
           "name": "camunda:delegateExpression"
@@ -254,6 +557,7 @@
       {
         "label": "Asynchronous Before",
         "type": "Boolean",
+        "editable": false,
         "value": true,
         "binding": {
           "type": "property",
@@ -263,6 +567,7 @@
       {
         "label": "Asynchronous After",
         "type": "Boolean",
+        "editable": false,
         "value": true,
         "binding": {
           "type": "property",
@@ -276,7 +581,11 @@
       "implementation": false,
       "asyncBefore": false,
       "asyncAfter": false,
-      "exclusive": false
+      "exclusive": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
     }
   },
   {

@@ -87,8 +87,8 @@
           <el-form-item :label="$t('dispatch.datasource.columns.password')" prop="password">
             <el-input v-model="datasource.password" type="password" :placeholder="$t('dispatch.datasource.placeholder.password')" />
           </el-form-item>
-          <el-form-item :label="$t('columns.remark')" prop="remark">
-            <el-input v-model="datasource.remark" type="textarea" :autosize="{ minRows: 1, maxRows: 5}" :placeholder="$t('placeholders.remark')" />
+          <el-form-item :label="$t('dispatch.datasource.columns.attribute')" prop="attribute">
+            <el-input v-model="datasource.attribute" type="textarea" :autosize="{ minRows: 1, maxRows: 5}" :placeholder="$t('dispatch.datasource.placeholder.attribute')" />
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="save">{{ $t('actions.save') }}</el-button>
@@ -110,7 +110,7 @@ const DEF_OBJ = {
   jdbcUrl: null,
   userName: null,
   password: null,
-  remark: null
+  attribute: null
 }
 export default {
   name: 'datasource',
@@ -145,7 +145,7 @@ export default {
         jdbcUrl: [
           { required: true, trigger: 'blur' }
         ],
-        remark: [
+        attribute: [
           { required: false, trigger: 'blur', len: 255 }
         ]
       },

@@ -18,5 +18,5 @@ public class DataSourceListParam extends PageSortParam {
 
     protected String userName;
 
-    protected String remark;
+    protected String attribute;
 }

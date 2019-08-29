@@ -235,7 +235,8 @@
         </set>
         <where>
             <include refid="condId"/>
-            <include refid="condExecutionId"/>
+            <include refid="condProcInstId"/>
+            <include refid="condActId"/>
         </where>
     </update>
 
@@ -293,9 +294,9 @@
         SELECT jia.ID, jia.ACT_INST_ID, jia.PARENT_ACT_INST_ID, jia.EXECUTION_ID, jia.PROC_INST_ID,
         jia.ROOT_PROC_INST_ID, jia.ACT_ID, jia.ACT_NAME, jia.ACT_TYPE, jia.STATUS, jia.LOG_KEY, jia.BIZ_URI,
         IFNULL(ha.START_TIME_, jia.START_TIME) as START_TIME, IFNULL(ha.END_TIME_, jia.END_TIME) as END_TIME,
-        IFNULL(ha.DURATION_, jia.DURATION) as DURATION, ri.INCIDENT_MSG_ AS LOG_TEXT
+        IFNULL(ha.DURATION_, jia.DURATION) as DURATION, IFNULL(jia.LOG_TEXT, ri.INCIDENT_MSG_) AS LOG_TEXT
         FROM ${tablePrefix}job_instance_act jia
-        LEFT JOIN act_ru_incident ri ON jia.EXECUTION_ID = ri.EXECUTION_ID_
+        LEFT JOIN act_ru_incident ri ON jia.PROC_INST_ID = ri.PROC_INST_ID_ AND jia.ACT_ID = ri.ACTIVITY_ID_
         LEFT JOIN act_hi_actinst ha ON jia.EXECUTION_ID = ha.EXECUTION_ID_ AND jia.ACT_ID = ha.ACT_ID_) j
         <where>
             <include refid="condProcInstId"/>
@@ -317,12 +318,6 @@
         </if>
     </sql>
 
-    <sql id="condExecutionId">
-        <if test="executionId != null">
-            and j.EXECUTION_ID = #{executionId, jdbcType=VARCHAR}
-        </if>
-    </sql>
-
     <sql id="condJobName">
         <if test="jobName != null">
             AND j.JOB_NAME = #{jobName, jdbcType=VARCHAR}
@@ -332,6 +327,12 @@
     <sql id="condTenantId">
         <if test="tenantId != null">
             and j.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condActId">
+        <if test="actId != null">
+            and j.ACT_ID = #{actId, jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>

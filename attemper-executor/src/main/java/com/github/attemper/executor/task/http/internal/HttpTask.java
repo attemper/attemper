@@ -4,11 +4,11 @@ import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.result.app.project.Project;
 import com.github.attemper.common.result.app.project.ProjectInfo;
+import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
 import com.github.attemper.config.base.conf.LocalServerConfig;
 import com.github.attemper.core.service.application.ProjectService;
 import com.github.attemper.core.service.dispatch.JobService;
 import com.github.attemper.core.service.tool.ToolService;
-import com.github.attemper.executor.constant.PropertyConstants;
 import com.github.attemper.executor.task.ParentTask;
 import com.github.attemper.executor.util.CamundaUtil;
 import com.github.attemper.java.sdk.common.executor.param.execution.MetaParam;
@@ -20,8 +20,6 @@ import com.github.attemper.java.sdk.common.result.execution.TaskResult;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.model.bpmn.impl.instance.camunda.CamundaPropertiesImpl;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -33,12 +31,15 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class HttpTask extends ParentTask implements JavaDelegate {
 
     @Override
-    public void execute(DelegateExecution execution) {
+    public void execute(DelegateExecution execution) throws Exception {
         String jobName = CamundaUtil.extractKeyFromProcessDefinitionId(execution.getProcessDefinitionId());
         Map<String, String> fieldMap = resolveExtensionElement(execution);
         String url = resolveUrl(execution, fieldMap, jobName);
@@ -58,12 +59,12 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
                     .onStatus(HttpStatus::is4xxClientError, resp -> Mono.error(new RTException(resp.rawStatusCode(), resp.statusCode().getReasonPhrase())))
                     .bodyToMono(v)
                     .doOnError(WebClientResponseException.class, e -> {
-                        saveLogKey(execution, String.valueOf(code));
+                        saveLogKey(execution, code);
                         throw new RTException(code, e);
                     })
                     .block(Duration.ofSeconds(injectTimeout(fieldMap)));
         } catch (Exception e) {
-            saveLogKey(execution, String.valueOf(code));
+            saveLogKey(execution, code);
             throw new RTException(code, e);
         }
     }
@@ -81,15 +82,15 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
                 .setRequestPath(localServerConfig.getRequestPath())
                 .setActInstId(execution.getActivityInstanceId())
                 .setExecutionId(execution.getId());
-        if (fieldMap.get(PropertyConstants.subUrl) == null) { // router
+        if (fieldMap.get(SUB_URL) == null) { // router
             RouterParam routerParam = new RouterParam();
             routerParam.setBizParamMap(execution.getVariables());
             BeanParam beanParam = new BeanParam();
-            beanParam.setBeanName(fieldMap.get(PropertyConstants.beanName) == null ?
+            beanParam.setBeanName(fieldMap.get(BEAN_NAME) == null ?
                     CamundaUtil.extractKeyFromProcessDefinitionId(execution.getProcessDefinitionId())
-                    : fieldMap.get(PropertyConstants.beanName));
-            beanParam.setMethodName(fieldMap.get(PropertyConstants.methodName) == null ?
-                    execution.getCurrentActivityId() : fieldMap.get(PropertyConstants.methodName));
+                    : fieldMap.get(BEAN_NAME));
+            beanParam.setMethodName(fieldMap.get(METHOD_NAME) == null ?
+                    execution.getCurrentActivityId() : fieldMap.get(METHOD_NAME));
             routerParam.setBeanParam(beanParam);
             routerParam.setMetaParam(executionParam);
             return routerParam;
@@ -122,7 +123,7 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
         List<ProjectInfo> allProjectInfo = projectService.listInfo(projectName, execution.getTenantId());
         if (allProjectInfo.isEmpty()) {
             int code = 6550;
-            saveLogKey(execution, String.valueOf(code));
+            saveLogKey(execution, code);
             throw new RTException(code);
         }
 
@@ -144,11 +145,11 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
         }
         if (urls.isEmpty()) {
             int code = 3050;
-            saveLogKey(execution, String.valueOf(code));
+            saveLogKey(execution, code);
             throw new RTException(code);
         }
         int randomIndex = (int) (Math.random() * urls.size());
-        return optimizePath(String.valueOf(urls.toArray()[randomIndex]), fieldMap.get(PropertyConstants.subUrl), project.getContextPath());
+        return optimizePath(String.valueOf(urls.toArray()[randomIndex]), fieldMap.get(SUB_URL), project.getContextPath());
     }
 
     @Autowired
@@ -175,20 +176,6 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
         return sb.toString();
     }
 
-    private Map<String, String> resolveExtensionElement(DelegateExecution execution) {
-        Map<String, String> map = new HashMap<>();
-        Collection<ModelElementInstance> elements = execution.getBpmnModelElementInstance().getExtensionElements().getElements();
-        elements.forEach(item -> {
-            if (item instanceof CamundaPropertiesImpl) {
-                CamundaPropertiesImpl cpi = (CamundaPropertiesImpl) item;
-                cpi.getCamundaProperties().forEach(cell -> {
-                    map.put(cell.getCamundaName(), cell.getCamundaValue());
-                });
-            }
-        });
-        return map;
-    }
-
     protected void saveVariables(DelegateExecution execution, TaskResult taskResult) {
         if (taskResult.getParamMap() != null) {
             execution.setVariables(taskResult.getParamMap());
@@ -205,11 +192,26 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
     private static final int defTimeout = 3600;
 
     protected int injectTimeout(Map<String, String> fieldMap) {
-        String timeoutStr = fieldMap.get(PropertyConstants.timeout);
+        String timeoutStr = fieldMap.get(TIMEOUT);
         try {
             return Integer.parseInt(timeoutStr);
         } catch (NumberFormatException e) {
             return defTimeout;
         }
     }
+
+    private void saveUrl(DelegateExecution execution, String url) {
+        JobInstanceAct jobInstanceAct = new JobInstanceAct()
+                .setId(CamundaUtil.extractIdFromActInstanceId(execution.getActivityInstanceId()))
+                .setBizUri(url);
+        jobInstanceService.updateAct(jobInstanceAct);
+    }
+
+    protected static final String SUB_URL = "subUrl";
+
+    protected static final String BEAN_NAME = "beanName";
+
+    protected static final String METHOD_NAME = "methodName";
+
+    protected static final String TIMEOUT = "timeout";
 }

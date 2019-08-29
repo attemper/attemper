@@ -452,10 +452,10 @@ export default {
     initArgTypes() {
       argTypesReq().then(res => {
         this.argTypes = res.data.result
-        this.genericTypes = this.argTypes.map(item => item.value < 30)
-        this.rawTypes = this.argTypes.map(item => item.value >= 30 && item.value < 40)
-        this.sqlTypes = this.argTypes.map(item => item.value === 40)
-        this.tradeDateTypes = this.argTypes.map(item => item.value === 50)
+        this.genericTypes = this.argTypes.filter(item => item.value < 30)
+        this.rawTypes = this.argTypes.filter(item => item.value >= 30 && item.value < 40)
+        this.sqlTypes = this.argTypes.filter(item => item.value === 40)
+        this.tradeDateTypes = this.argTypes.filter(item => item.value === 50)
       })
     },
     initTradeDateUnits() {

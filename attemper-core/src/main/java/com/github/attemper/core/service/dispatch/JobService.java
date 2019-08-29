@@ -109,10 +109,15 @@ public class JobService extends BaseServiceAdapter {
                         realArgValue = argService.getGistCode(arg.getArgValue(), tenantId);
                         break;
                     case SQL:
-                        realArgValue = argService.getSqlResult(
+                        List<Map<String, Object>> mapList = argService.getSqlResult(
                                 new SqlArgParam()
                                         .setDbName(arg.getAttribute())
                                         .setSql(arg.getArgValue()));
+                        if (mapList.size() == 1 && mapList.get(0).values() != null) {
+                            realArgValue = mapList.get(0).values().toArray()[0];
+                        } else {
+                            realArgValue = mapList;
+                        }
                         break;
                     case LIST:
                         realArgValue = toListValue(arg);

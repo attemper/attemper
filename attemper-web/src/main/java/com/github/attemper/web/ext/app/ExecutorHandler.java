@@ -4,6 +4,7 @@ import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.IdParam;
+import com.github.attemper.common.param.dispatch.datasource.DataSourceNamesParam;
 import com.github.attemper.common.param.dispatch.instance.JobInstanceIdParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.instance.JobInstance;
@@ -45,6 +46,10 @@ public class ExecutorHandler extends CrossSystemHandler {
 
     public void unload(String baseUrl, IdParam param) {
         call(baseUrl, APIPath.ExecutorPath.UNLOAD_PACKAGE, param);
+    }
+
+    public void removeDataSource(String baseUrl, DataSourceNamesParam param) {
+        call(baseUrl, APIPath.ExecutorPath.REMOVE_DATA_SOURCE, param);
     }
 
     private void call(String baseUrl, String apiSubPath, Object param) {
