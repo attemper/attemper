@@ -80,8 +80,8 @@ public class DataSourceService extends BaseServiceAdapter {
             hikariConfig.setUsername(dataSourceInfo.getUserName());
             hikariConfig.setPassword(dataSourceInfo.getPassword());
             if (StringUtils.isBlank(dataSourceInfo.getAttribute())) {
-                hikariConfig.setMinimumIdle(10);
-                hikariConfig.setMaximumPoolSize(10);
+                hikariConfig.setMinimumIdle(5);
+                hikariConfig.setMaximumPoolSize(50);
             } else {
                 Properties properties = new Properties();
                 InputStream is = IoUtil.stringAsInputStream(dataSourceInfo.getAttribute());
