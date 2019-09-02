@@ -8,7 +8,7 @@
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
       <span v-if="selections.length === 1">
-        <el-button v-if="retryVisible" v-waves class="filter-item" type="warning" icon="el-icon-s-operation" @click="retry">{{ $t('actions.retry') }}</el-button>
+        <el-button v-if="retryVisible" v-waves class="filter-item" type="warning" icon="el-icon-s-operation" @click="openParam">{{ $t('actions.retry') }}</el-button>
         <el-button v-if="terminateVisible" v-waves class="filter-item" type="danger" icon="el-icon-stopwatch" @click="terminate">{{ $t('actions.terminate') }}</el-button>
       </span>
       <div style="float: right">
@@ -123,20 +123,42 @@
       :limit.sync="page.pageSize"
       @pagination="search"
     />
+
+    <el-dialog
+      :title="editDialog.title"
+      :visible.sync="editDialog.param.visible "
+      :center="true"
+      :modal="true"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :before-close="close"
+    >
+      <div v-show="editDialog.param.visible">
+        <code-editor v-model="jsonData" :read-only="false" extension=".json" />
+        <div style="text-align: center; margin-top: 10px">
+          <el-button type="danger" @click="retry">
+            <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
+          </el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { listReq, listRetryReq, listChildrenReq, listRetryChildrenReq, retryReq, terminateReq } from '@/api/dispatch/instance'
+import { getJsonArgReq } from '@/api/dispatch/job'
 import { getTimeStr } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
 import waves from '@/directive/waves'
 import DateTimeGenerator from '@/components/DateTimeGenerator'
+import CodeEditor from '@/components/CodeEditor'
 
 export default {
   name: 'Monitor',
   components: {
     DateTimeGenerator,
+    CodeEditor,
     Pagination
   },
   directives: { waves },
@@ -165,7 +187,14 @@ export default {
       instanceStatuses: [],
       instance: null,
       downloadLoading: false,
-      selections: []
+      selections: [],
+      jsonData: null,
+      editDialog: {
+        title: undefined,
+        param: {
+          visible: false
+        }
+      }
     }
   },
   computed: {
@@ -180,16 +209,38 @@ export default {
     this.loadConst()
   },
   methods: {
+    openParam() {
+      this.jsonData = null
+      getJsonArgReq({ jobName: this.instance.jobName }).then(res => {
+        if (!res.data.result) {
+          this.retry()
+        } else {
+          this.editDialog.title = this.$t('dispatch.job.actions.param')
+          this.editDialog.param.visible = true
+          this.jsonData = JSON.parse(res.data.result)
+        }
+      })
+    },
     retry() {
-      this.handleRequest(retryReq)
-    },
-    terminate() {
-      this.handleRequest(terminateReq)
-    },
-    handleRequest(request) {
       this.$confirm(this.$t('tip.confirmMsg'), this.$t('tip.confirm'), { type: 'info' })
         .then(() => {
-          request({ id: this.instance.id })
+          retryReq({
+            id: this.instance.id,
+            jsonData: (!this.jsonData ? null : (typeof this.jsonData === 'string' ? JSON.parse(this.jsonData) : this.jsonData))
+          })
+            .then(res => {
+              this.$message.success(res.data.msg)
+              this.search()
+            })
+            .catch(() => {
+              this.search()
+            })
+        })
+    },
+    terminate() {
+      this.$confirm(this.$t('tip.confirmMsg'), this.$t('tip.confirm'), { type: 'info' })
+        .then(() => {
+          terminateReq({ id: this.instance.id })
             .then(res => {
               this.$message.success(res.data.msg)
               this.search()
@@ -322,6 +373,9 @@ export default {
           return v[j]
         }
       }))
+    },
+    close() {
+      this.editDialog.param.visible = false
     },
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
