@@ -61,6 +61,31 @@
         </where>
     </select>
 
+    <delete id="delete" parameterType="map">
+        DELETE FROM dj USING ${tablePrefix}delay_job dj
+        <where>
+            ID in
+            <foreach item="id" collection="ids" open="(" separator="," close=")">
+                #{id, jdbcType=VARCHAR}
+            </foreach>
+        </where>
+        <!--
+        ;
+        DELETE FROM a,b,c USING
+        act_re_procdef a
+        JOIN act_ge_bytearray c
+        ON a.DEPLOYMENT_ID_ = c.DEPLOYMENT_ID_ AND a.RESOURCE_NAME_ = c.NAME_
+        JOIN act_re_deployment b
+        ON a.DEPLOYMENT_ID_ = b.ID_
+        <where>
+            a.KEY_ in
+            <foreach item="jobName" collection="jobNames" open="(" separator="," close=")">
+                #{jobName}
+            </foreach>
+            AND a.TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+        </where>-->
+    </delete>
+
     <sql id="infoSql">
         SELECT dj.*, j.`DISPLAY_NAME` FROM ${tablePrefix}delay_job dj JOIN ${tablePrefix}job j USING(JOB_NAME, TENANT_ID)
     </sql>

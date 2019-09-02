@@ -3,7 +3,6 @@ package com.github.attemper.config.base.conf;
 import com.github.attemper.common.exception.RTException;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
@@ -27,7 +26,7 @@ public class LocalServerConfig implements ApplicationListener<WebServerInitializ
         try {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+            throw new RTException(e);
         }
     }
 

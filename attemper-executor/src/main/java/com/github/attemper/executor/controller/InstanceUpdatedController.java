@@ -1,9 +1,9 @@
 package com.github.attemper.executor.controller;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.instance.JobInstanceIdParam;
+import com.github.attemper.common.param.dispatch.instance.InstanceIdParam;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.executor.service.JobInstanceUpdatedService;
+import com.github.attemper.executor.service.InstanceUpdatedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api("Operate job instance")
 @RestController
-public class JobInstanceUpdatedController {
+public class InstanceUpdatedController {
 
     @Autowired
-    private JobInstanceUpdatedService service;
+    private InstanceUpdatedService service;
 
     @ApiOperation("Terminate")
-    @ApiImplicitParam(value = "JobInstanceIdParam", name = "param", dataType = "JobInstanceIdParam", required = true)
+    @ApiImplicitParam(value = "InstanceIdParam", name = "param", dataType = "InstanceIdParam", required = true)
     @PostMapping(APIPath.ExecutorPath.TERMINATE)
-    public CommonResult<Void> terminate(@RequestBody JobInstanceIdParam param) {
+    public CommonResult<Void> terminate(@RequestBody InstanceIdParam param) {
         return CommonResult.putResult(service.terminate(param));
     }
 

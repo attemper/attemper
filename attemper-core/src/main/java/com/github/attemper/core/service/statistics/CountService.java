@@ -23,9 +23,9 @@ public class CountService extends BaseServiceAdapter {
         return mapper.getJobCount(paramMap);
     }
 
-    public List<Map<String, Object>> getJobInstanceCount() {
+    public List<Map<String, Object>> getInstanceCount() {
         Map<String, Object> paramMap = injectTenantIdExceptAdminToMap(null);
-        return mapper.getJobInstanceCount(paramMap);
+        return mapper.getInstanceCount(paramMap);
     }
 
 }

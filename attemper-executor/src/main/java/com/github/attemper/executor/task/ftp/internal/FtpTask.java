@@ -75,7 +75,7 @@ public abstract class FtpTask extends ParentTask implements JavaDelegate {
                 return content;
             }
         } catch (IOException e) {
-            log.error(fileName + e.getMessage(), e);
+            log.error(fileName, e);
             throw new RTException(2561, e);
         }
     }

@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.github.attemper.core.dao.instance.JobInstanceMapper">
+<mapper namespace="com.github.attemper.core.dao.instance.InstanceMapper">
 
     <select id="get" parameterType="map"
-            resultType="com.github.attemper.common.result.dispatch.instance.JobInstance">
-        SELECT * FROM ${tablePrefix}job_instance j
+            resultType="com.github.attemper.common.result.dispatch.instance.Instance">
+        SELECT * FROM ${tablePrefix}instance j
         <where>
             <include refid="condId"/>
             <include refid="condProcInstId"/>
@@ -14,7 +14,7 @@
     </select>
 
     <select id="count" parameterType="map" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM ${tablePrefix}job_execution j
+        SELECT COUNT(*) FROM ${tablePrefix}execution j
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
@@ -35,33 +35,33 @@
     </select>
 
     <select id="countProcessChildren" parameterType="string" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM ${tablePrefix}job_instance j WHERE super_proc_inst_id = #{1, jdbcType=VARCHAR}
+        SELECT COUNT(*) FROM ${tablePrefix}instance j WHERE super_proc_inst_id = #{1, jdbcType=VARCHAR}
     </select>
 
     <select id="listProcessChildren" parameterType="string"
-            resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren">
-        SELECT * FROM ${tablePrefix}job_instance j WHERE super_proc_inst_id = #{1, jdbcType=VARCHAR} ORDER BY id
+            resultType="com.github.attemper.common.result.dispatch.instance.InstanceWithChildren">
+        SELECT * FROM ${tablePrefix}instance j WHERE super_proc_inst_id = #{1, jdbcType=VARCHAR} ORDER BY id
     </select>
 
     <select id="countRetriedChildren" parameterType="string" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM ${tablePrefix}job_instance j WHERE parent_id = #{1, jdbcType=VARCHAR} and id != parent_id
+        SELECT COUNT(*) FROM ${tablePrefix}instance j WHERE parent_id = #{1, jdbcType=VARCHAR} and id != parent_id
     </select>
 
     <select id="listRetriedChildren" parameterType="string"
-            resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren">
-        SELECT * FROM ${tablePrefix}job_instance j WHERE parent_id = #{1, jdbcType=VARCHAR} and id != parent_id ORDER BY id DESC
+            resultType="com.github.attemper.common.result.dispatch.instance.InstanceWithChildren">
+        SELECT * FROM ${tablePrefix}instance j WHERE parent_id = #{1, jdbcType=VARCHAR} and id != parent_id ORDER BY id DESC
     </select>
 
     <select id="getAct" parameterType="string"
-            resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
-        SELECT * FROM ${tablePrefix}job_instance_act j WHERE ID = #{1}
+            resultType="com.github.attemper.common.result.dispatch.instance.InstanceAct">
+        SELECT * FROM ${tablePrefix}instance_act j WHERE ID = #{1}
     </select>
 
-    <insert id="add" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
-        INSERT INTO ${tablePrefix}job_execution
+    <insert id="add" parameterType="com.github.attemper.common.result.dispatch.instance.Instance">
+        INSERT INTO ${tablePrefix}execution
         <include refid="insertSql"/>
         ;
-        INSERT INTO ${tablePrefix}job_instance
+        INSERT INTO ${tablePrefix}instance
         <include refid="insertSql"/>
     </insert>
 
@@ -109,19 +109,19 @@
         )
     </sql>
 
-    <update id="update" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
-        UPDATE ${tablePrefix}job_execution j
+    <update id="update" parameterType="com.github.attemper.common.result.dispatch.instance.Instance">
+        UPDATE ${tablePrefix}execution j
         <include refid="updateSql"/>
         ;
-        UPDATE ${tablePrefix}job_instance j
+        UPDATE ${tablePrefix}instance j
         <include refid="updateSql"/>
     </update>
 
-    <update id="updateDone" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstance">
-        UPDATE ${tablePrefix}job_instance j
+    <update id="updateDone" parameterType="com.github.attemper.common.result.dispatch.instance.Instance">
+        UPDATE ${tablePrefix}instance j
         <include refid="updateSql"/>
         ;
-        DELETE FROM j USING ${tablePrefix}job_execution j
+        DELETE FROM j USING ${tablePrefix}execution j
         <where>
             <include refid="condProcInstId"/>
         </where>
@@ -168,8 +168,8 @@
         </where>
     </sql>
 
-    <insert id="addAct" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
-        INSERT INTO ${tablePrefix}job_instance_act
+    <insert id="addAct" parameterType="com.github.attemper.common.result.dispatch.instance.InstanceAct">
+        INSERT INTO ${tablePrefix}instance_act
         <include refid="insertActSql"/>
     </insert>
 
@@ -209,8 +209,8 @@
         )
     </sql>
 
-    <update id="updateAct" parameterType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
-        UPDATE ${tablePrefix}job_instance_act j
+    <update id="updateAct" parameterType="com.github.attemper.common.result.dispatch.instance.InstanceAct">
+        UPDATE ${tablePrefix}instance_act j
         <set>
             <if test="status != null">
                 STATUS = #{status, jdbcType=INTEGER},
@@ -241,11 +241,11 @@
     </update>
 
     <select id="listInstance" parameterType="map"
-            resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren">
+            resultType="com.github.attemper.common.result.dispatch.instance.InstanceWithChildren">
         SELECT j.ID, j.PROC_INST_ID, j.ROOT_PROC_INST_ID, j.JOB_NAME, j.DISPLAY_NAME, j.TRIGGER_NAME,
         j.PROC_DEF_ID, j.STATUS, j.CODE, j.MSG, j.PARENT_ID, j.SCHEDULER_URI, j.EXECUTOR_URI,
         j.TENANT_ID, j.START_TIME, j.END_TIME, j.DURATION
-        FROM ${tablePrefix}job_instance j
+        FROM ${tablePrefix}instance j
         <where>
             AND j.SUPER_PROC_INST_ID IS NULL
             <if test="isRetry != null">
@@ -289,14 +289,14 @@
     </select>
 
     <select id="listAct" parameterType="map"
-            resultType="com.github.attemper.common.result.dispatch.instance.JobInstanceAct">
+            resultType="com.github.attemper.common.result.dispatch.instance.InstanceAct">
         SELECT j.* FROM (
         SELECT jia.ID, jia.ACT_INST_ID, jia.PARENT_ACT_INST_ID, jia.EXECUTION_ID, jia.PROC_INST_ID,
         jia.ROOT_PROC_INST_ID, jia.ACT_ID, jia.ACT_NAME, jia.ACT_TYPE, jia.STATUS, jia.LOG_KEY, jia.BIZ_URI,
         IFNULL(ha.START_TIME_, jia.START_TIME) as START_TIME, IFNULL(ha.END_TIME_, jia.END_TIME) as END_TIME,
         IFNULL(ha.DURATION_, jia.DURATION) as DURATION, CONCAT(IFNULL(jia.LOG_TEXT, ''), ' ', IFNULL(ri.INCIDENT_MSG_,
         '')) AS LOG_TEXT
-        FROM ${tablePrefix}job_instance_act jia
+        FROM ${tablePrefix}instance_act jia
         LEFT JOIN act_ru_incident ri ON jia.PROC_INST_ID = ri.PROC_INST_ID_ AND jia.ACT_ID = ri.ACTIVITY_ID_
         LEFT JOIN act_hi_actinst ha ON jia.EXECUTION_ID = ha.EXECUTION_ID_ AND jia.ACT_ID = ha.ACT_ID_) j
         <where>
@@ -304,6 +304,15 @@
             <if test="actId != null">
                 and j.ACT_ID = #{actId, jdbcType=VARCHAR}
             </if>
+        </where>
+    </select>
+
+    <select id="listRunningOfExecutor" parameterType="string"
+            resultType="com.github.attemper.common.result.dispatch.instance.Instance">
+        SELECT * FROM ${tablePrefix}execution
+        <where>
+            AND EXECUTOR_URI LIKE CONCAT('%', #{1, jdbcType=VARCHAR}, '%')
+            AND STATUS = 0
         </where>
     </select>
 

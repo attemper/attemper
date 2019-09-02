@@ -14,7 +14,6 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.calendar.HolidayCalendar;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,7 +65,7 @@ public class CalendarOperatedService extends BaseServiceAdapter {
             scheduler.addCalendar(calendarName, holidayCalendar, true, true);
             schedulerHandler.saveCalendar(new CalendarGetParam().setCalendarName(calendarName));
         } catch (SchedulerException e) {
-            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+            throw new RTException(e);
         }
     }
 }

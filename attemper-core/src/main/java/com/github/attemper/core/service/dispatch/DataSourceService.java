@@ -7,6 +7,7 @@ import com.github.attemper.common.param.dispatch.datasource.DataSourceNamesParam
 import com.github.attemper.common.result.dispatch.datasource.ConnectionTestResult;
 import com.github.attemper.common.result.dispatch.datasource.DataSourceInfo;
 import com.github.attemper.core.dao.dispatch.DataSourceMapper;
+import com.github.attemper.java.sdk.common.util.ExceptionUtil;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.store.SysStore;
 import com.github.attemper.sys.util.PageUtil;
@@ -63,7 +64,7 @@ public class DataSourceService extends BaseServiceAdapter {
         try (Connection conn = dataSource.getConnection()) {
             return null;
         } catch (SQLException e) {
-            return e.getMessage();
+            return ExceptionUtil.getStackTrace(e);
         }
     }
 

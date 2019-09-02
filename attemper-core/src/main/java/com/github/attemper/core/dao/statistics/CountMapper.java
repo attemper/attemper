@@ -14,5 +14,5 @@ public interface CountMapper {
 
     List<Map<String, Object>> getJobCount(Map<String, Object> paramMap);
 
-    List<Map<String, Object>> getJobInstanceCount(Map<String, Object> paramMap);
+    List<Map<String, Object>> getInstanceCount(Map<String, Object> paramMap);
 }

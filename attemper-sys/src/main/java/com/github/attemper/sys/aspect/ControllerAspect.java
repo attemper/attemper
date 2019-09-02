@@ -14,6 +14,7 @@ import com.github.attemper.config.base.util.ServletUtil;
 import com.github.attemper.config.base.util.StringUtil;
 import com.github.attemper.java.sdk.common.param.BaseParam;
 import com.github.attemper.java.sdk.common.param.sys.login.LoginParam;
+import com.github.attemper.java.sdk.common.util.ExceptionUtil;
 import com.github.attemper.sys.ext.service.JWTService;
 import com.github.attemper.sys.holder.TenantHolder;
 import io.swagger.annotations.Api;
@@ -80,7 +81,7 @@ public class ControllerAspect {
             result = CommonResult.error(rte);
             throw rte;
         } catch (Exception e){
-            result = CommonResult.error(e.getMessage());
+            result = CommonResult.error(ExceptionUtil.getStackTrace(e));
             throw e;
         }finally {
             if (result != null) {

@@ -4,7 +4,7 @@ import com.github.attemper.core.dao.application.GistMapper;
 import com.github.attemper.core.dao.application.ProgramMapper;
 import com.github.attemper.core.dao.application.ProjectMapper;
 import com.github.attemper.core.dao.dispatch.*;
-import com.github.attemper.core.dao.instance.JobInstanceMapper;
+import com.github.attemper.core.dao.instance.InstanceMapper;
 import com.github.attemper.core.dao.statistics.CountMapper;
 import com.github.attemper.core.ext.notice.NoticeService;
 import com.github.attemper.core.ext.notice.channel.mail.EmailSender;
@@ -12,7 +12,7 @@ import com.github.attemper.core.service.application.GistService;
 import com.github.attemper.core.service.application.ProgramService;
 import com.github.attemper.core.service.application.ProjectService;
 import com.github.attemper.core.service.dispatch.*;
-import com.github.attemper.core.service.instance.JobInstanceService;
+import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.core.service.statistics.CountService;
 import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.sys.conf.SysConfiguration;
@@ -41,7 +41,7 @@ import javax.validation.ValidatorFactory;
         ProjectMapper.class,
         ProgramMapper.class,
         GistMapper.class,
-        JobInstanceMapper.class,
+        InstanceMapper.class,
         CalendarMapper.class,
         CountMapper.class,
         DelayJobMapper.class,
@@ -55,7 +55,7 @@ import javax.validation.ValidatorFactory;
         ProgramService.class,
         GistService.class,
         ToolService.class,
-        JobInstanceService.class,
+        InstanceService.class,
         CalendarService.class,
         CountService.class,
 

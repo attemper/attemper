@@ -1,18 +1,18 @@
 package com.github.attemper.core.service.instance;
 
 import com.github.attemper.common.constant.CommonConstants;
-import com.github.attemper.common.enums.JobInstanceStatus;
-import com.github.attemper.common.param.dispatch.instance.JobInstanceActParam;
-import com.github.attemper.common.param.dispatch.instance.JobInstanceGetParam;
-import com.github.attemper.common.param.dispatch.instance.JobInstanceListParam;
+import com.github.attemper.common.enums.InstanceStatus;
+import com.github.attemper.common.param.dispatch.instance.InstanceActParam;
+import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
+import com.github.attemper.common.param.dispatch.instance.InstanceListParam;
 import com.github.attemper.common.param.sys.tenant.TenantGetParam;
 import com.github.attemper.common.property.StatusProperty;
-import com.github.attemper.common.result.dispatch.instance.JobInstance;
-import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
-import com.github.attemper.common.result.dispatch.instance.JobInstanceWithChildren;
+import com.github.attemper.common.result.dispatch.instance.Instance;
+import com.github.attemper.common.result.dispatch.instance.InstanceAct;
+import com.github.attemper.common.result.dispatch.instance.InstanceWithChildren;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.sys.tenant.Tenant;
-import com.github.attemper.core.dao.instance.JobInstanceMapper;
+import com.github.attemper.core.dao.instance.InstanceMapper;
 import com.github.attemper.core.ext.notice.MessageBean;
 import com.github.attemper.core.ext.notice.NoticeService;
 import com.github.attemper.core.ext.notice.channel.Sender;
@@ -37,10 +37,10 @@ import java.util.Map;
 @Slf4j
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
-public class JobInstanceService extends BaseServiceAdapter {
+public class InstanceService extends BaseServiceAdapter {
 
     @Autowired
-    private JobInstanceMapper mapper;
+    private InstanceMapper mapper;
 
     @Autowired
     private JobService jobService;
@@ -51,22 +51,18 @@ public class JobInstanceService extends BaseServiceAdapter {
     @Autowired
     private TenantService tenantService;
 
-    public JobInstance get(JobInstanceGetParam param) {
+    public Instance get(InstanceGetParam param) {
         return mapper.get(injectTenantIdToMap(param));
     }
 
-    public int count(JobInstanceListParam param, String tenantId) {
+    public int count(InstanceListParam param, String tenantId) {
         return mapper.count(injectTenantIdToMap(param, tenantId));
     }
 
-    public JobInstanceAct getAct(String id) {
-        return mapper.getAct(id);
-    }
-
-    public Map<String, Object> listMonitor(JobInstanceListParam param) {
+    public Map<String, Object> listMonitor(InstanceListParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
-        Page<JobInstanceWithChildren> list = (Page<JobInstanceWithChildren>) mapper.listInstance(paramMap);
+        Page<InstanceWithChildren> list = (Page<InstanceWithChildren>) mapper.listInstance(paramMap);
         if (param.isListChildren()) {
             list.parallelStream().forEach(item -> {
                 if (item.getProcInstId() != null) {
@@ -77,8 +73,8 @@ public class JobInstanceService extends BaseServiceAdapter {
         return PageUtil.toResultMap(list);
     }
 
-    public List<JobInstanceWithChildren> listMonitorChildren(JobInstanceGetParam param) {
-        List<JobInstanceWithChildren> list = mapper.listProcessChildren(param.getProcInstId());
+    public List<InstanceWithChildren> listMonitorChildren(InstanceGetParam param) {
+        List<InstanceWithChildren> list = mapper.listProcessChildren(param.getProcInstId());
         list.parallelStream().forEach(item -> {
             if (item.getProcInstId() != null) {
                 item.setHasChildren(mapper.countProcessChildren(item.getProcInstId()) > 0);
@@ -87,11 +83,11 @@ public class JobInstanceService extends BaseServiceAdapter {
         return list;
     }
 
-    public Map<String, Object> listRetry(JobInstanceListParam param) {
+    public Map<String, Object> listRetry(InstanceListParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         paramMap.put(CommonConstants.isRetry, true);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
-        Page<JobInstanceWithChildren> list = (Page<JobInstanceWithChildren>) mapper.listInstance(paramMap);
+        Page<InstanceWithChildren> list = (Page<InstanceWithChildren>) mapper.listInstance(paramMap);
         if (param.isListChildren()) {
             list.parallelStream().forEach(item -> {
                 item.setHasChildren(mapper.countRetriedChildren(item.getId()) > 0);
@@ -100,57 +96,61 @@ public class JobInstanceService extends BaseServiceAdapter {
         return PageUtil.toResultMap(list);
     }
 
-    public List<JobInstanceWithChildren> listRetriedChildren(JobInstanceGetParam param) {
-        List<JobInstanceWithChildren> list = mapper.listRetriedChildren(param.getId());
+    public List<InstanceWithChildren> listRetriedChildren(InstanceGetParam param) {
+        List<InstanceWithChildren> list = mapper.listRetriedChildren(param.getId());
         list.parallelStream().forEach(item -> {
             item.setHasChildren(mapper.countRetriedChildren(item.getId()) > 0);
         });
         return list;
     }
 
-    public List<JobInstanceAct> listAct(JobInstanceActParam param) {
+    public List<InstanceAct> listAct(InstanceActParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.listAct(paramMap);
     }
 
-    public void add(JobInstance jobInstance) {
-        if (jobInstance.getDisplayName() == null) {
-            Job job = jobService.get(jobInstance.getJobName(), jobInstance.getTenantId());
+    public void add(Instance instance) {
+        if (instance.getDisplayName() == null) {
+            Job job = jobService.get(instance.getJobName(), instance.getTenantId());
             if (job != null) {
-                jobInstance.setDisplayName(job.getDisplayName());
+                instance.setDisplayName(job.getDisplayName());
             }
         }
-        mapper.add(jobInstance);
-        noticeWithInstance(jobInstance);
+        mapper.add(instance);
+        noticeWithInstance(instance);
     }
 
-    public void update(JobInstance jobInstance) {
-        mapper.update(jobInstance);
-        noticeWithInstance(jobInstance);
+    public void update(Instance instance) {
+        mapper.update(instance);
+        noticeWithInstance(instance);
     }
 
-    public void updateDone(JobInstance jobInstance) {
-        mapper.updateDone(jobInstance);
-        noticeWithInstance(jobInstance);
+    public void updateDone(Instance instance) {
+        mapper.updateDone(instance);
+        noticeWithInstance(instance);
     }
 
-    public void addAct(JobInstanceAct jobInstanceAct) {
-        mapper.addAct(jobInstanceAct);
+    public void addAct(InstanceAct instanceAct) {
+        mapper.addAct(instanceAct);
     }
 
-    public void updateAct(JobInstanceAct jobInstanceAct) {
-        mapper.updateAct(jobInstanceAct);
+    public void updateAct(InstanceAct instanceAct) {
+        mapper.updateAct(instanceAct);
+    }
+
+    public List<Instance> listRunningOfExecutor(String executorAddress) {
+        return mapper.listRunningOfExecutor(executorAddress);
     }
 
     @Async
-    public void noticeWithInstance(JobInstance jobInstance) {
-        if (JobInstanceStatus.FAILURE.getStatus() == jobInstance.getStatus()) {
+    public void noticeWithInstance(Instance instance) {
+        if (InstanceStatus.FAILURE.getStatus() == instance.getStatus()) {
             try {
-                Tenant tenant = tenantService.get(new TenantGetParam().setUserName(jobInstance.getTenantId()));
+                Tenant tenant = tenantService.get(new TenantGetParam().setUserName(instance.getTenantId()));
                 MessageBean messageBean = new MessageBean()
                         .setTo(tenant.getEmail())
-                        .setSubject(MessageFormat.format(StatusProperty.getValue(900), jobInstance.getJobName(), jobInstance.getDisplayName()))
-                        .setContent(jobInstance.getMsg());
+                        .setSubject(MessageFormat.format(StatusProperty.getValue(900), instance.getJobName(), instance.getDisplayName()))
+                        .setContent(instance.getMsg());
                 String sendConfig = tenant.getSendConfig();
                 if (StringUtils.isNotBlank(sendConfig)) {
                     for (int i = 0; i < sendConfig.length(); i++) {

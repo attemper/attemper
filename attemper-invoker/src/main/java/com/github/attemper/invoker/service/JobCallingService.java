@@ -2,24 +2,24 @@ package com.github.attemper.invoker.service;
 
 import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.constant.CommonConstants;
-import com.github.attemper.common.enums.JobInstanceStatus;
+import com.github.attemper.common.enums.InstanceStatus;
 import com.github.attemper.common.enums.JobStatus;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.dispatch.instance.JobInstanceListParam;
+import com.github.attemper.common.param.dispatch.instance.InstanceListParam;
 import com.github.attemper.common.param.executor.JobInvokingParam;
 import com.github.attemper.common.param.sys.tenant.TenantGetParam;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.app.project.Project;
-import com.github.attemper.common.result.dispatch.instance.JobInstance;
+import com.github.attemper.common.result.dispatch.instance.Instance;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.config.base.conf.LocalServerConfig;
 import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.core.service.application.ProjectService;
 import com.github.attemper.core.service.dispatch.JobService;
-import com.github.attemper.core.service.instance.JobInstanceService;
+import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.java.sdk.common.param.sys.login.LoginParam;
 import com.github.attemper.java.sdk.common.result.sys.login.LoginResult;
@@ -56,7 +56,7 @@ public class JobCallingService {
     private JobService jobService;
 
     @Autowired
-    private JobInstanceService jobInstanceService;
+    private InstanceService instanceService;
 
     public void execute(String id, String jobName, String triggerName, String tenantId, Map<String, Object> dataMap) {
         this.invoke(id, jobName, triggerName, tenantId, null, dataMap);
@@ -87,17 +87,17 @@ public class JobCallingService {
             code = 3008;
         }
         if (code != -1) {
-            JobInstance jobInstance = buildInstance(param, null, parentId, JobInstanceStatus.FAILURE);
-            jobInstance.setEndTime(jobInstance.getStartTime());
-            jobInstance.setDuration(0L);
-            jobInstance.setCode(code);
-            jobInstance.setMsg(StatusProperty.getValue(code));
-            saveInstance(jobInstance);
+            Instance instance = buildInstance(param, null, parentId, InstanceStatus.FAILURE);
+            instance.setEndTime(instance.getStartTime());
+            instance.setDuration(0L);
+            instance.setCode(code);
+            instance.setMsg(StatusProperty.getValue(code));
+            saveInstance(instance);
             throw new RTException(code);
         }
         String baseUrl = computeUrl(param, parentId);
         String token = SysStore.getTenantTokenMap().get(tenantId);
-        saveInstance(buildInstance(param, baseUrl, parentId, JobInstanceStatus.RUNNING));
+        saveInstance(buildInstance(param, baseUrl, parentId, InstanceStatus.RUNNING));
         try {
             invokeByWebClient(baseUrl, token, param);
         } catch (RTException e) {
@@ -109,9 +109,9 @@ public class JobCallingService {
         if (job.isConcurrent()) {
             return true;
         }
-        int count = jobInstanceService.count(new JobInstanceListParam()
+        int count = instanceService.count(new InstanceListParam()
                 .setJobName(job.getJobName())
-                .setStatus(Arrays.asList(JobInstanceStatus.RUNNING.getStatus())), job.getTenantId());
+                .setStatus(Arrays.asList(InstanceStatus.RUNNING.getStatus())), job.getTenantId());
         return count <= 0;
     }
 
@@ -136,12 +136,12 @@ public class JobCallingService {
         }
         if (urls.isEmpty()) {
             int code = 3005;
-            JobInstance jobInstance = buildInstance(param, null, parentId, JobInstanceStatus.FAILURE);
-            jobInstance.setEndTime(jobInstance.getStartTime());
-            jobInstance.setDuration(0L);
-            jobInstance.setCode(code);
-            jobInstance.setMsg(StatusProperty.getValue(code));
-            saveInstance(jobInstance);
+            Instance instance = buildInstance(param, null, parentId, InstanceStatus.FAILURE);
+            instance.setEndTime(instance.getStartTime());
+            instance.setDuration(0L);
+            instance.setCode(code);
+            instance.setMsg(StatusProperty.getValue(code));
+            saveInstance(instance);
             throw new RTException(code);
         }
         int randomIndex = (int) (Math.random() * urls.size());
@@ -193,20 +193,20 @@ public class JobCallingService {
     @Autowired
     private LocalServerConfig localServerConfig;
 
-    private JobInstance buildInstance(JobInvokingParam param, String executorUri, String parentId, JobInstanceStatus jobInstanceStatus) {
-        return new JobInstance()
+    private Instance buildInstance(JobInvokingParam param, String executorUri, String parentId, InstanceStatus instanceStatus) {
+        return new Instance()
                 .setId(param.getId())
                 .setJobName(param.getJobName())
                 .setTriggerName(param.getTriggerName())
                 .setStartTime(new Date())
-                .setStatus(jobInstanceStatus.getStatus())
+                .setStatus(instanceStatus.getStatus())
                 .setSchedulerUri(localServerConfig.getRequestPath())
                 .setExecutorUri(executorUri)
                 .setParentId(parentId)
                 .setTenantId(param.getTenantId());
     }
 
-    private void saveInstance(JobInstance jobInstance) {
-        jobInstanceService.add(jobInstance);
+    private void saveInstance(Instance instance) {
+        instanceService.add(instance);
     }
 }

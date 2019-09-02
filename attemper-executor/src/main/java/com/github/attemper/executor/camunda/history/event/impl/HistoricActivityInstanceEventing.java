@@ -1,9 +1,9 @@
 package com.github.attemper.executor.camunda.history.event.impl;
 
-import com.github.attemper.common.enums.JobInstanceStatus;
-import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
+import com.github.attemper.common.enums.InstanceStatus;
+import com.github.attemper.common.result.dispatch.instance.InstanceAct;
 import com.github.attemper.config.base.bean.SpringContextAware;
-import com.github.attemper.core.service.instance.JobInstanceService;
+import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.executor.camunda.history.event.EndEventing;
 import com.github.attemper.executor.camunda.history.event.EventingAdapter;
 import com.github.attemper.executor.camunda.history.event.StartEventing;
@@ -17,27 +17,27 @@ public class HistoricActivityInstanceEventing extends EventingAdapter<HistoricAc
 
     @Override
     public void start() {
-        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
-        JobInstanceAct jobInstanceAct = toJobInstanceAct(historyEvent);
-        jobInstanceAct.setStatus(JobInstanceStatus.RUNNING.getStatus());
-        jobInstanceAct.setStartTime(historyEvent.getStartTime());
-        jobInstanceService.addAct(jobInstanceAct);
+        InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
+        InstanceAct instanceAct = toInstanceAct(historyEvent);
+        instanceAct.setStatus(InstanceStatus.RUNNING.getStatus());
+        instanceAct.setStartTime(historyEvent.getStartTime());
+        instanceService.addAct(instanceAct);
     }
 
     @Override
     public void end() {
-        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
-        JobInstanceAct jobInstanceAct = new JobInstanceAct().setId(CamundaUtil.extractIdFromActInstanceId(historyEvent.getActivityInstanceId()));
-        jobInstanceAct.setStatus(JobInstanceStatus.SUCCESS.getStatus());
-        jobInstanceAct.setEndTime(historyEvent.getEndTime());
+        InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
+        InstanceAct instanceAct = new InstanceAct().setId(CamundaUtil.extractIdFromActInstanceId(historyEvent.getActivityInstanceId()));
+        instanceAct.setStatus(InstanceStatus.SUCCESS.getStatus());
+        instanceAct.setEndTime(historyEvent.getEndTime());
         if (historyEvent.getEndTime() != null && historyEvent.getStartTime() != null) {
-            jobInstanceAct.setDuration(historyEvent.getEndTime().getTime() - historyEvent.getStartTime().getTime());
+            instanceAct.setDuration(historyEvent.getEndTime().getTime() - historyEvent.getStartTime().getTime());
         }
-        jobInstanceService.updateAct(jobInstanceAct);
+        instanceService.updateAct(instanceAct);
     }
 
-    private JobInstanceAct toJobInstanceAct(HistoricActivityInstanceEventEntity historyEvent) {
-        return new JobInstanceAct()
+    private InstanceAct toInstanceAct(HistoricActivityInstanceEventEntity historyEvent) {
+        return new InstanceAct()
                 .setId(CamundaUtil.extractIdFromActInstanceId(historyEvent.getId()))
                 .setActInstId(historyEvent.getActivityInstanceId())
                 .setParentActInstId(historyEvent.getParentActivityInstanceId())

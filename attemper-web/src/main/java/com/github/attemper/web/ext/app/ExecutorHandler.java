@@ -5,9 +5,9 @@ import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.IdParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceNamesParam;
-import com.github.attemper.common.param.dispatch.instance.JobInstanceIdParam;
+import com.github.attemper.common.param.dispatch.instance.InstanceIdParam;
 import com.github.attemper.common.result.CommonResult;
-import com.github.attemper.common.result.dispatch.instance.JobInstance;
+import com.github.attemper.common.result.dispatch.instance.Instance;
 import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.config.base.util.ServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +33,11 @@ public class ExecutorHandler extends CrossSystemHandler {
     @Autowired
     private WebClient webClient;
 
-    public void terminate(String baseUrl, JobInstance jobInstance) {
-        if (jobInstance.getProcInstId() == null) {
+    public void terminate(String baseUrl, Instance instance) {
+        if (instance.getProcInstId() == null) {
             return;
         }
-        call(baseUrl, APIPath.ExecutorPath.TERMINATE, new JobInstanceIdParam().setId(jobInstance.getId()));
+        call(baseUrl, APIPath.ExecutorPath.TERMINATE, new InstanceIdParam().setId(instance.getId()));
     }
 
     public void load(String baseUrl, IdParam param) {
@@ -66,7 +66,7 @@ public class ExecutorHandler extends CrossSystemHandler {
                     if (err.getMessage() != null && err.getMessage().contains("Connection refused")) {
                         throw new RTException(3009, err.getMessage());
                     }
-                    throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), err);
+                    throw new RTException(err);
                 })
                 .block();
         preHandleResult(result);

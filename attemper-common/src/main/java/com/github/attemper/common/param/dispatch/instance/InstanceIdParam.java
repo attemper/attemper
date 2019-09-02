@@ -5,7 +5,7 @@ import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
 @ToString
-public class JobInstanceIdParam implements CommonParam {
+public class InstanceIdParam implements CommonParam {
 
     protected String id;
 
@@ -21,7 +21,7 @@ public class JobInstanceIdParam implements CommonParam {
         return id;
     }
 
-    public JobInstanceIdParam setId(String id) {
+    public InstanceIdParam setId(String id) {
         this.id = id;
         return this;
     }

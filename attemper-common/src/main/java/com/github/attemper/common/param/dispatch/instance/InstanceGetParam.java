@@ -1,6 +1,6 @@
 package com.github.attemper.common.param.dispatch.instance;
 
-public class JobInstanceGetParam {
+public class InstanceGetParam {
 
     protected String id;
 
@@ -10,7 +10,7 @@ public class JobInstanceGetParam {
         return id;
     }
 
-    public JobInstanceGetParam setId(String id) {
+    public InstanceGetParam setId(String id) {
         this.id = id;
         return this;
     }
@@ -19,7 +19,7 @@ public class JobInstanceGetParam {
         return procInstId;
     }
 
-    public JobInstanceGetParam setProcInstId(String procInstId) {
+    public InstanceGetParam setProcInstId(String procInstId) {
         this.procInstId = procInstId;
         return this;
     }

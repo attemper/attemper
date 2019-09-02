@@ -15,7 +15,7 @@ export const jobCountReq = () => {
   })
 }
 
-export const jobInstanceCountReq = () => {
+export const instanceCountReq = () => {
   return request({
     url: APIPath.STATISTICS + APIPath.COUNT + '/instance',
     method: 'get'

@@ -118,49 +118,49 @@ export const uriTypes = [
   }
 ]
 
-export const runningJobInstanceStatus = [
+export const runningInstanceStatus = [
   {
     label: 'Running',
     value: 0
   }
 ]
 
-export const successJobInstanceStatus = [
+export const successInstanceStatus = [
   {
     label: 'Success',
     value: 1
   }
 ]
 
-export const failureJobInstanceStatus = [
+export const failureInstanceStatus = [
   {
     label: 'Failure',
     value: 2
   }
 ]
 
-export const terminatedJobInstanceStatus = [
+export const terminatedInstanceStatus = [
   {
     label: 'Terminated',
     value: 3
   }
 ]
 
-export const doingJobInstanceStatuses = [
-  ...runningJobInstanceStatus
+export const doingInstanceStatuses = [
+  ...runningInstanceStatus
 ]
 
-export const doneJobInstanceStatuses = [
-  ...successJobInstanceStatus,
-  ...failureJobInstanceStatus,
-  ...terminatedJobInstanceStatus
+export const doneInstanceStatuses = [
+  ...successInstanceStatus,
+  ...failureInstanceStatus,
+  ...terminatedInstanceStatus
 ]
 
-export const jobInstanceStatuses = [
-  ...runningJobInstanceStatus,
-  ...successJobInstanceStatus,
-  ...failureJobInstanceStatus,
-  ...terminatedJobInstanceStatus
+export const instanceStatuses = [
+  ...runningInstanceStatus,
+  ...successInstanceStatus,
+  ...failureInstanceStatus,
+  ...terminatedInstanceStatus
 ]
 
 export const requestMethods = [

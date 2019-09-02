@@ -22,7 +22,6 @@ import org.quartz.impl.calendar.HolidayCalendar;
 import org.quartz.impl.jdbcjobstore.Constants;
 import org.quartz.impl.triggers.AbstractTrigger;
 import org.quartz.spi.OperableTrigger;
-import org.springframework.http.HttpStatus;
 
 import java.util.*;
 
@@ -156,7 +155,7 @@ public class QuartzUtil {
                 try {
                     scheduler.addCalendar(combinedCalendarName, currentCalendar, false, false);
                 } catch (SchedulerException e) {
-                    throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+                    throw new RTException(e);
                 }
             }
             triggerBuilder.modifiedByCalendar(combinedCalendarName);
@@ -201,7 +200,7 @@ public class QuartzUtil {
             }
             return baseCalendar;
         } catch (SchedulerException e) {
-            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+            throw new RTException(e);
         }
     }
 

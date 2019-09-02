@@ -5,7 +5,7 @@ import lombok.ToString;
 import java.util.Date;
 
 @ToString
-public class JobInstance {
+public class Instance {
 
     protected String id;
 
@@ -50,7 +50,7 @@ public class JobInstance {
         return id;
     }
 
-    public JobInstance setId(String id) {
+    public Instance setId(String id) {
         this.id = id;
         return this;
     }
@@ -59,7 +59,7 @@ public class JobInstance {
         return procInstId;
     }
 
-    public JobInstance setProcInstId(String procInstId) {
+    public Instance setProcInstId(String procInstId) {
         this.procInstId = procInstId;
         return this;
     }
@@ -68,7 +68,7 @@ public class JobInstance {
         return rootProcInstId;
     }
 
-    public JobInstance setRootProcInstId(String rootProcInstId) {
+    public Instance setRootProcInstId(String rootProcInstId) {
         this.rootProcInstId = rootProcInstId;
         return this;
     }
@@ -77,7 +77,7 @@ public class JobInstance {
         return superProcInstId;
     }
 
-    public JobInstance setSuperProcInstId(String superProcInstId) {
+    public Instance setSuperProcInstId(String superProcInstId) {
         this.superProcInstId = superProcInstId;
         return this;
     }
@@ -86,7 +86,7 @@ public class JobInstance {
         return parentId;
     }
 
-    public JobInstance setParentId(String parentId) {
+    public Instance setParentId(String parentId) {
         this.parentId = parentId;
         return this;
     }
@@ -95,7 +95,7 @@ public class JobInstance {
         return jobName;
     }
 
-    public JobInstance setJobName(String jobName) {
+    public Instance setJobName(String jobName) {
         this.jobName = jobName;
         return this;
     }
@@ -104,7 +104,7 @@ public class JobInstance {
         return displayName;
     }
 
-    public JobInstance setDisplayName(String displayName) {
+    public Instance setDisplayName(String displayName) {
         this.displayName = displayName;
         return this;
     }
@@ -113,7 +113,7 @@ public class JobInstance {
         return triggerName;
     }
 
-    public JobInstance setTriggerName(String triggerName) {
+    public Instance setTriggerName(String triggerName) {
         this.triggerName = triggerName;
         return this;
     }
@@ -122,7 +122,7 @@ public class JobInstance {
         return procDefId;
     }
 
-    public JobInstance setProcDefId(String procDefId) {
+    public Instance setProcDefId(String procDefId) {
         this.procDefId = procDefId;
         return this;
     }
@@ -131,7 +131,7 @@ public class JobInstance {
         return startTime;
     }
 
-    public JobInstance setStartTime(Date startTime) {
+    public Instance setStartTime(Date startTime) {
         this.startTime = startTime;
         return this;
     }
@@ -140,7 +140,7 @@ public class JobInstance {
         return endTime;
     }
 
-    public JobInstance setEndTime(Date endTime) {
+    public Instance setEndTime(Date endTime) {
         this.endTime = endTime;
         return this;
     }
@@ -149,7 +149,7 @@ public class JobInstance {
         return duration;
     }
 
-    public JobInstance setDuration(Long duration) {
+    public Instance setDuration(Long duration) {
         this.duration = duration;
         return this;
     }
@@ -158,7 +158,7 @@ public class JobInstance {
         return status;
     }
 
-    public JobInstance setStatus(int status) {
+    public Instance setStatus(int status) {
         this.status = status;
         return this;
     }
@@ -167,7 +167,7 @@ public class JobInstance {
         return code;
     }
 
-    public JobInstance setCode(Integer code) {
+    public Instance setCode(Integer code) {
         this.code = code;
         return this;
     }
@@ -176,7 +176,7 @@ public class JobInstance {
         return msg;
     }
 
-    public JobInstance setMsg(String msg) {
+    public Instance setMsg(String msg) {
         this.msg = msg;
         return this;
     }
@@ -185,7 +185,7 @@ public class JobInstance {
         return schedulerUri;
     }
 
-    public JobInstance setSchedulerUri(String schedulerUri) {
+    public Instance setSchedulerUri(String schedulerUri) {
         this.schedulerUri = schedulerUri;
         return this;
     }
@@ -194,7 +194,7 @@ public class JobInstance {
         return executorUri;
     }
 
-    public JobInstance setExecutorUri(String executorUri) {
+    public Instance setExecutorUri(String executorUri) {
         this.executorUri = executorUri;
         return this;
     }
@@ -203,7 +203,7 @@ public class JobInstance {
         return tenantId;
     }
 
-    public JobInstance setTenantId(String tenantId) {
+    public Instance setTenantId(String tenantId) {
         this.tenantId = tenantId;
         return this;
     }

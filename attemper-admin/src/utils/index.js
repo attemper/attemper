@@ -368,7 +368,7 @@ export function parseDuration(duration) {
   return hours + 'h ' + parseDuration(duration - hours * 60 * 60 * 1000)
 }
 
-export function renderJobInstanceStatus(item) {
+export function renderInstanceStatus(item) {
   const map = {
     0: 'primary',
     1: 'success',

@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,7 +133,7 @@ public class ArgService extends BaseServiceAdapter {
                     dateHandler.setDayOrder((Integer) scriptEngine.eval(arr[1].trim()));
                 }
             } catch (ScriptException e) {
-                throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+                throw new RTException(e);
             }
         }
         return dateHandler.calculateTradeDate();

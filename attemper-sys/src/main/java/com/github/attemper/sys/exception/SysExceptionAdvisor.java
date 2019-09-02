@@ -1,6 +1,7 @@
 package com.github.attemper.sys.exception;
 
 import com.github.attemper.common.result.CommonResult;
+import com.github.attemper.java.sdk.common.util.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.core.annotation.Order;
@@ -24,7 +25,7 @@ public class SysExceptionAdvisor {
 	@ExceptionHandler(Exception.class)
 	public CommonResult handleException(Exception e) {
 		log.error(e.getMessage(), e);
-		return CommonResult.error(e.getMessage());
+		return CommonResult.error(ExceptionUtil.getStackTrace(e));
 	}
 
 }

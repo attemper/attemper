@@ -14,7 +14,7 @@
               v-for="item in actNodes"
               :key="item.id"
               :timestamp="(item.actName || item.actId)"
-              :type="item.status | renderJobInstanceStatus"
+              :type="item.status | renderInstanceStatus"
               placement="top"
             >
               <el-card>
@@ -43,7 +43,7 @@
               >
                 <el-form-item :label="$t('columns.status')">
                   <el-select v-if="showAll" v-model="page.status" :placeholder="$t('columns.status')" multiple clearable collapse-tags class="filter-item" style="width: 150px" @change="search">
-                    <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
+                    <el-option v-for="item in instanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
                   </el-select>
                 </el-form-item>
                 <el-form-item :label="$t('columns.startTime')" style="margin-bottom: 5px;">
@@ -114,7 +114,7 @@
               v-for="item in singleActNodes"
               :key="item.id"
               :timestamp="(item.actName || item.actId)"
-              :type="item.status | renderJobInstanceStatus"
+              :type="item.status | renderInstanceStatus"
               placement="top"
             >
               <el-card>
@@ -171,7 +171,7 @@ export default {
       },
       procInstId: null,
       nodeOverlay: {},
-      jobInstanceStatuses: [],
+      instanceStatuses: [],
       showAll: false,
       visible: false,
       activeName: 'flow',
@@ -195,7 +195,7 @@ export default {
     handleRequest(request) {
       this.$confirm(this.$t('tip.confirmMsg'), this.$t('tip.confirm'), { type: 'info' })
         .then(() => {
-          request({ id: this.jobInstance.id })
+          request({ id: this.instance.id })
             .then(res => {
               this.$message.success(res.data.msg)
               this.search()
@@ -400,7 +400,7 @@ export default {
     },
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.jobInstanceStatuses = array.jobInstanceStatuses
+        this.instanceStatuses = array.instanceStatuses
       })
     }
   }

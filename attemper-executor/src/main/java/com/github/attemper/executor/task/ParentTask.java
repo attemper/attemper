@@ -1,7 +1,7 @@
 package com.github.attemper.executor.task;
 
-import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
-import com.github.attemper.core.service.instance.JobInstanceService;
+import com.github.attemper.common.result.dispatch.instance.InstanceAct;
+import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.executor.util.CamundaUtil;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.model.bpmn.impl.instance.camunda.CamundaPropertiesImpl;
@@ -19,13 +19,13 @@ public abstract class ParentTask {
     protected Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    protected JobInstanceService jobInstanceService;
+    protected InstanceService instanceService;
 
     protected void saveLogKey(DelegateExecution execution, String logKey) {
-        JobInstanceAct jobInstanceAct = new JobInstanceAct()
+        InstanceAct instanceAct = new InstanceAct()
                 .setId(CamundaUtil.extractIdFromActInstanceId(execution.getActivityInstanceId()))
                 .setLogKey(logKey);
-        jobInstanceService.updateAct(jobInstanceAct);
+        instanceService.updateAct(instanceAct);
     }
 
     protected void saveLogKey(DelegateExecution execution, int code) {
@@ -33,10 +33,10 @@ public abstract class ParentTask {
     }
 
     protected void appendLogText(DelegateExecution execution, String logText) {
-        JobInstanceAct jobInstanceAct = new JobInstanceAct()
+        InstanceAct instanceAct = new InstanceAct()
                 .setId(CamundaUtil.extractIdFromActInstanceId(execution.getActivityInstanceId()))
                 .setLogText(logText);
-        jobInstanceService.updateAct(jobInstanceAct);
+        instanceService.updateAct(instanceAct);
     }
 
     /**

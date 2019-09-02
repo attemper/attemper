@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class JobInstanceActParam implements CommonParam {
+public class InstanceActParam implements CommonParam {
 
     protected String procInstId;
 

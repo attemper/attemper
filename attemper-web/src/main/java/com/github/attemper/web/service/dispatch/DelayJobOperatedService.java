@@ -92,6 +92,12 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
     }
 
     public Void remove(DelayJobIdsParam param) {
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        param.getIds().forEach(item -> {
+            TriggerSaveParam triggerSaveParam = new TriggerSaveParam(item);
+            triggerOperatedService.update(triggerSaveParam);
+        });
+        mapper.delete(paramMap);
         return null;
     }
 

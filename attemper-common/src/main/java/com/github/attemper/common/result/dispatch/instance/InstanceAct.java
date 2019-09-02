@@ -5,7 +5,7 @@ import lombok.ToString;
 import java.util.Date;
 
 @ToString
-public class JobInstanceAct {
+public class InstanceAct {
 
     protected String id;
 
@@ -43,7 +43,7 @@ public class JobInstanceAct {
         return id;
     }
 
-    public JobInstanceAct setId(String id) {
+    public InstanceAct setId(String id) {
         this.id = id;
         return this;
     }
@@ -52,7 +52,7 @@ public class JobInstanceAct {
         return actInstId;
     }
 
-    public JobInstanceAct setActInstId(String actInstId) {
+    public InstanceAct setActInstId(String actInstId) {
         this.actInstId = actInstId;
         return this;
     }
@@ -61,7 +61,7 @@ public class JobInstanceAct {
         return parentActInstId;
     }
 
-    public JobInstanceAct setParentActInstId(String parentActInstId) {
+    public InstanceAct setParentActInstId(String parentActInstId) {
         this.parentActInstId = parentActInstId;
         return this;
     }
@@ -70,7 +70,7 @@ public class JobInstanceAct {
         return executionId;
     }
 
-    public JobInstanceAct setExecutionId(String executionId) {
+    public InstanceAct setExecutionId(String executionId) {
         this.executionId = executionId;
         return this;
     }
@@ -79,7 +79,7 @@ public class JobInstanceAct {
         return procInstId;
     }
 
-    public JobInstanceAct setProcInstId(String procInstId) {
+    public InstanceAct setProcInstId(String procInstId) {
         this.procInstId = procInstId;
         return this;
     }
@@ -88,7 +88,7 @@ public class JobInstanceAct {
         return rootProcInstId;
     }
 
-    public JobInstanceAct setRootProcInstId(String rootProcInstId) {
+    public InstanceAct setRootProcInstId(String rootProcInstId) {
         this.rootProcInstId = rootProcInstId;
         return this;
     }
@@ -97,7 +97,7 @@ public class JobInstanceAct {
         return actId;
     }
 
-    public JobInstanceAct setActId(String actId) {
+    public InstanceAct setActId(String actId) {
         this.actId = actId;
         return this;
     }
@@ -106,7 +106,7 @@ public class JobInstanceAct {
         return actName;
     }
 
-    public JobInstanceAct setActName(String actName) {
+    public InstanceAct setActName(String actName) {
         this.actName = actName;
         return this;
     }
@@ -115,7 +115,7 @@ public class JobInstanceAct {
         return actType;
     }
 
-    public JobInstanceAct setActType(String actType) {
+    public InstanceAct setActType(String actType) {
         this.actType = actType;
         return this;
     }
@@ -124,7 +124,7 @@ public class JobInstanceAct {
         return startTime;
     }
 
-    public JobInstanceAct setStartTime(Date startTime) {
+    public InstanceAct setStartTime(Date startTime) {
         this.startTime = startTime;
         return this;
     }
@@ -133,7 +133,7 @@ public class JobInstanceAct {
         return endTime;
     }
 
-    public JobInstanceAct setEndTime(Date endTime) {
+    public InstanceAct setEndTime(Date endTime) {
         this.endTime = endTime;
         return this;
     }
@@ -142,7 +142,7 @@ public class JobInstanceAct {
         return duration;
     }
 
-    public JobInstanceAct setDuration(Long duration) {
+    public InstanceAct setDuration(Long duration) {
         this.duration = duration;
         return this;
     }
@@ -151,7 +151,7 @@ public class JobInstanceAct {
         return status;
     }
 
-    public JobInstanceAct setStatus(int status) {
+    public InstanceAct setStatus(int status) {
         this.status = status;
         return this;
     }
@@ -160,7 +160,7 @@ public class JobInstanceAct {
         return logKey;
     }
 
-    public JobInstanceAct setLogKey(String logKey) {
+    public InstanceAct setLogKey(String logKey) {
         this.logKey = logKey;
         return this;
     }
@@ -169,7 +169,7 @@ public class JobInstanceAct {
         return logText;
     }
 
-    public JobInstanceAct setLogText(String logText) {
+    public InstanceAct setLogText(String logText) {
         this.logText = logText;
         return this;
     }
@@ -178,7 +178,7 @@ public class JobInstanceAct {
         return bizUri;
     }
 
-    public JobInstanceAct setBizUri(String bizUri) {
+    public InstanceAct setBizUri(String bizUri) {
         this.bizUri = bizUri;
         return this;
     }

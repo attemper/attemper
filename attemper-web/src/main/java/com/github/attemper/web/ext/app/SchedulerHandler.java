@@ -9,12 +9,12 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.config.base.util.ServletUtil;
+import com.github.attemper.java.sdk.common.util.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -78,9 +78,9 @@ public class SchedulerHandler extends CrossSystemHandler {
             return CommonResult.ok();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("Connection refused")) {
-                throw new RTException(3001, e.getMessage());
+                throw new RTException(3001, ExceptionUtil.getStackTrace(e));
             }
-            throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+            throw new RTException(e);
         }
     }
 

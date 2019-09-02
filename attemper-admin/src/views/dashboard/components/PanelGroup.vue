@@ -10,7 +10,7 @@
             <span class="card-panel-text">
               {{ $t('statistics.instance') }}
             </span>
-            <count-to :start-val="0" :end-val="totalJobInstanceCount" :duration="3000" class="card-panel-num" />
+            <count-to :start-val="0" :end-val="totalInstanceCount" :duration="3000" class="card-panel-num" />
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@
 
 <script>
 import CountTo from 'vue-count-to'
-import { jobInstanceCountReq, jobCountReq, tenantCountReq } from '@/api/statistics/count'
+import { instanceCountReq, jobCountReq, tenantCountReq } from '@/api/statistics/count'
 
 export default {
   components: {
@@ -66,33 +66,33 @@ export default {
   },
   data() {
     return {
-      totalJobInstanceCount: 0,
-      jobInstanceCount: [],
+      totalInstanceCount: 0,
+      instanceCount: [],
       totalJobCount: 0,
       jobCount: [],
       tenantCount: 0,
       jobStatuses: [],
-      jobInstanceStatuses: []
+      instanceStatuses: []
     }
   },
   created() {
     this.loadConst()
-    this.getJobInstanceCount()
+    this.getInstanceCount()
     this.getJobCount()
     this.getTenantCount()
   },
   methods: {
-    getJobInstanceCount() {
-      this.totalJobInstanceCount = 0
-      this.jobInstanceCount = []
-      jobInstanceCountReq().then(res => {
+    getInstanceCount() {
+      this.totalInstanceCount = 0
+      this.instanceCount = []
+      instanceCountReq().then(res => {
         res.data.result.forEach(item => {
-          this.jobInstanceCount.push({
-            label: this.jobInstanceStatuses.find(cell => cell.value === item.status).label,
+          this.instanceCount.push({
+            label: this.instanceStatuses.find(cell => cell.value === item.status).label,
             status: item.status,
             value: item.count
           })
-          this.totalJobInstanceCount += item.count
+          this.totalInstanceCount += item.count
         })
       })
     },
@@ -119,7 +119,7 @@ export default {
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
         this.jobStatuses = array.jobStatuses
-        this.jobInstanceStatuses = array.jobInstanceStatuses
+        this.instanceStatuses = array.instanceStatuses
       })
     }
   }

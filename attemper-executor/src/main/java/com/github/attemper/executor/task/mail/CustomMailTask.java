@@ -26,7 +26,7 @@ public class CustomMailTask extends ParentTask implements JavaDelegate {
             emailSender.send(messageBean);
         } catch (Exception e) {
             saveLogKey(execution, HttpStatus.INTERNAL_SERVER_ERROR.value());
-            throw new RTException(e.getMessage());
+            throw new RTException(e);
         }
     }
 

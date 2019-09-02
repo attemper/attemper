@@ -9,10 +9,10 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class JobInstanceWithChildren extends JobInstance{
+public class InstanceWithChildren extends Instance {
 
     protected boolean hasChildren;
 
-    protected List<JobInstanceWithChildren> children;
+    protected List<InstanceWithChildren> children;
 
 }

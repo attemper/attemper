@@ -7,7 +7,6 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPReply;
-import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.TimeZone;
@@ -71,7 +70,7 @@ public class FtpUtil {
             try {
                 Thread.sleep(5000L);
             } catch (InterruptedException e) {
-                throw new RTException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+                throw new RTException(e);
             }
         }
         return null;

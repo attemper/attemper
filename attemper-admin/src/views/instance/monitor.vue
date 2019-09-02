@@ -4,7 +4,7 @@
       <el-input v-model="page.jobName" :placeholder="$t('dispatch.job.columns.jobName')" class="filter-item search-input" @keyup.enter.native="search" />
       <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" class="filter-item search-input" @keyup.enter.native="search" />
       <el-select v-model="page.status" :placeholder="$t('columns.status')" multiple clearable collapse-tags class="filter-item search-select">
-        <el-option v-for="item in jobInstanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
+        <el-option v-for="item in instanceStatuses" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
       <span v-if="selections.length === 1">
@@ -84,7 +84,7 @@
       <el-table-column :label="$t('columns.status')" align="center" class-name="status-col" width="100px">
         <template slot-scope="scope">
           <span v-show="!scope.row.triggerName"><svg-icon icon-class="hand" /></span>
-          <el-tag :type="scope.row.status | renderJobInstanceStatus">{{ formatStatus(scope.row.status) }}</el-tag>
+          <el-tag :type="scope.row.status | renderInstanceStatus">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.startTime')" width="160px" align="center">
@@ -160,20 +160,20 @@ export default {
         sort: 'START_TIME DESC',
         listChildren: true
       },
-      doingJobInstanceStatuses: [],
-      doneJobInstanceStatuses: [],
-      jobInstanceStatuses: [],
-      jobInstance: null,
+      doingInstanceStatuses: [],
+      doneInstanceStatuses: [],
+      instanceStatuses: [],
+      instance: null,
       downloadLoading: false,
       selections: []
     }
   },
   computed: {
     retryVisible() {
-      return this.doneJobInstanceStatuses.find(item => { return item.value === this.selections[0].status }) !== undefined
+      return this.doneInstanceStatuses.find(item => { return item.value === this.selections[0].status }) !== undefined
     },
     terminateVisible() {
-      return this.doingJobInstanceStatuses.find(item => { return item.value === this.selections[0].status }) !== undefined
+      return this.doingInstanceStatuses.find(item => { return item.value === this.selections[0].status }) !== undefined
     }
   },
   created() {
@@ -189,7 +189,7 @@ export default {
     handleRequest(request) {
       this.$confirm(this.$t('tip.confirmMsg'), this.$t('tip.confirm'), { type: 'info' })
         .then(() => {
-          request({ id: this.jobInstance.id })
+          request({ id: this.instance.id })
             .then(res => {
               this.$message.success(res.data.msg)
               this.search()
@@ -225,7 +225,7 @@ export default {
       } else {
         request = listChildrenReq
       }
-      request(this.jobInstance).then(res => {
+      request(this.instance).then(res => {
         resolve(res.data.result)
       })
     },
@@ -244,8 +244,8 @@ export default {
       this.search()
     },
     formatStatus(item) {
-      for (let i = 0; i < this.jobInstanceStatuses.length; i++) {
-        const option = this.jobInstanceStatuses[i]
+      for (let i = 0; i < this.instanceStatuses.length; i++) {
+        const option = this.instanceStatuses[i]
         if (option.value === item) {
           return option.label
         }
@@ -260,7 +260,7 @@ export default {
       this.reset() // get the newest or reset to origin
     },
     reset() {
-      this.jobInstance = Object.assign({}, this.selections[0])
+      this.instance = Object.assign({}, this.selections[0])
     },
     handleSelectionChange(val) {
       this.selections = val
@@ -270,7 +270,7 @@ export default {
     },
     initPageStatus() {
       if (this.page.status.length === 0) {
-        this.page.status = this.jobInstanceStatuses.map(item => item.value)
+        this.page.status = this.instanceStatuses.map(item => item.value)
       }
     },
     openTrace(row) {
@@ -325,9 +325,9 @@ export default {
     },
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.doingJobInstanceStatuses = array.doingJobInstanceStatuses
-        this.doneJobInstanceStatuses = array.doneJobInstanceStatuses
-        this.jobInstanceStatuses = array.jobInstanceStatuses
+        this.doingInstanceStatuses = array.doingInstanceStatuses
+        this.doneInstanceStatuses = array.doneInstanceStatuses
+        this.instanceStatuses = array.instanceStatuses
         this.search()
       })
     }

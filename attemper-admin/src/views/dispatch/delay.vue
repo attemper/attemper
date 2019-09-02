@@ -242,7 +242,7 @@ export default {
       })
     },
     saveTrigger() {
-      const trigger = { jobName: this.deplay.jobName }
+      const trigger = { jobName: this.deplay.id }
       const result2 = this.$refs.dailyIntervalTrigger.validateThenSet(trigger)
       if (result2) {
         triggerApi.updateReq(trigger).then(res => {

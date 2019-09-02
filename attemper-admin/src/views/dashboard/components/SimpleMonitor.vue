@@ -24,7 +24,7 @@
     <el-table-column :label="$t('columns.status')" align="center" class-name="status-col" width="100px">
       <template slot-scope="scope">
         <span v-show="!scope.row.triggerName"><svg-icon icon-class="hand" /></span>
-        <el-tag :type="scope.row.status | renderJobInstanceStatus">{{ formatStatus(scope.row.status) }}</el-tag>
+        <el-tag :type="scope.row.status | renderInstanceStatus">{{ formatStatus(scope.row.status) }}</el-tag>
       </template>
     </el-table-column>
     <el-table-column :label="$t('columns.startTime')" width="160px" align="center">
@@ -59,8 +59,8 @@ export default {
         status: [],
         sort: 'START_TIME DESC'
       },
-      jobInstanceStatuses: [],
-      currentJobInstanceStatuses: []
+      instanceStatuses: [],
+      currentInstanceStatuses: []
     }
   },
   created() {
@@ -78,8 +78,8 @@ export default {
       }, 300)
     },
     formatStatus(item) {
-      for (let i = 0; i < this.currentJobInstanceStatuses.length; i++) {
-        const option = this.currentJobInstanceStatuses[i]
+      for (let i = 0; i < this.currentInstanceStatuses.length; i++) {
+        const option = this.currentInstanceStatuses[i]
         if (option.value === item) {
           return option.label
         }
@@ -88,7 +88,7 @@ export default {
     },
     initPageStatus() {
       if (this.page.status || this.page.status.length === 0) {
-        this.page.status = this.currentJobInstanceStatuses.map(item => item.value)
+        this.page.status = this.currentInstanceStatuses.map(item => item.value)
       }
     },
     openTrace(row) {
@@ -104,8 +104,8 @@ export default {
     },
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.jobInstanceStatuses = array.jobInstanceStatuses
-        this.currentJobInstanceStatuses = this.jobInstanceStatuses
+        this.instanceStatuses = array.instanceStatuses
+        this.currentInstanceStatuses = this.instanceStatuses
         this.search()
       })
     }

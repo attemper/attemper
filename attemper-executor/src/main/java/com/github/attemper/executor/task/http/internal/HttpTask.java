@@ -4,7 +4,7 @@ import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.result.app.project.Project;
 import com.github.attemper.common.result.app.project.ProjectInfo;
-import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
+import com.github.attemper.common.result.dispatch.instance.InstanceAct;
 import com.github.attemper.config.base.conf.LocalServerConfig;
 import com.github.attemper.core.service.application.ProjectService;
 import com.github.attemper.core.service.dispatch.JobService;
@@ -201,10 +201,10 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
     }
 
     private void saveUrl(DelegateExecution execution, String url) {
-        JobInstanceAct jobInstanceAct = new JobInstanceAct()
+        InstanceAct instanceAct = new InstanceAct()
                 .setId(CamundaUtil.extractIdFromActInstanceId(execution.getActivityInstanceId()))
                 .setBizUri(url);
-        jobInstanceService.updateAct(jobInstanceAct);
+        instanceService.updateAct(instanceAct);
     }
 
     protected static final String SUB_URL = "subUrl";

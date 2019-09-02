@@ -41,7 +41,7 @@ public class FtpInfo {
                 this.port = Integer.parseInt(portStr);
             }
         } catch (NumberFormatException e) {
-            log.error(portStr + e.getMessage(), e);
+            log.error(portStr, e);
         }
         return this;
     }
@@ -77,7 +77,7 @@ public class FtpInfo {
                 }
             }
         } catch (NumberFormatException e) {
-            log.error(retryCountStr + e.getMessage(), e);
+            log.error(retryCountStr, e);
         }
         return this;
     }
@@ -95,7 +95,7 @@ public class FtpInfo {
                 }
             }
         } catch (NumberFormatException e) {
-            log.error(timeoutStr + e.getMessage(), e);
+            log.error(timeoutStr, e);
         }
         return this;
     }

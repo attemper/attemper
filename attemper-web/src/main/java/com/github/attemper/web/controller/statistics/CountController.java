@@ -33,8 +33,8 @@ public class CountController {
 
     @GetMapping(APIPath.CountPath.INSTANCE)
     @ApiOperation("Get job instance's count by status")
-    public CommonResult<List<Map<String, Object>>> getJobInstanceCount() {
-        return CommonResult.putResult(service.getJobInstanceCount());
+    public CommonResult<List<Map<String, Object>>> getInstanceCount() {
+        return CommonResult.putResult(service.getInstanceCount());
     }
 
 }

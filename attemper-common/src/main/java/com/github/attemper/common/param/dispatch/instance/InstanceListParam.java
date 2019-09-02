@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import java.util.List;
 
 @ToString
-public class JobInstanceListParam extends PageSortParam {
+public class InstanceListParam extends PageSortParam {
 
     protected String procInstId;
 
@@ -43,7 +43,7 @@ public class JobInstanceListParam extends PageSortParam {
         return procInstId;
     }
 
-    public JobInstanceListParam setProcInstId(String procInstId) {
+    public InstanceListParam setProcInstId(String procInstId) {
         this.procInstId = procInstId;
         return this;
     }
@@ -52,7 +52,7 @@ public class JobInstanceListParam extends PageSortParam {
         return jobName;
     }
 
-    public JobInstanceListParam setJobName(String jobName) {
+    public InstanceListParam setJobName(String jobName) {
         this.jobName = jobName;
         return this;
     }
@@ -61,7 +61,7 @@ public class JobInstanceListParam extends PageSortParam {
         return displayName;
     }
 
-    public JobInstanceListParam setDisplayName(String displayName) {
+    public InstanceListParam setDisplayName(String displayName) {
         this.displayName = displayName;
         return this;
     }
@@ -70,7 +70,7 @@ public class JobInstanceListParam extends PageSortParam {
         return status;
     }
 
-    public JobInstanceListParam setStatus(List<Integer> status) {
+    public InstanceListParam setStatus(List<Integer> status) {
         this.status = status;
         return this;
     }
@@ -79,7 +79,7 @@ public class JobInstanceListParam extends PageSortParam {
         return lowerStartTime;
     }
 
-    public JobInstanceListParam setLowerStartTime(String lowerStartTime) {
+    public InstanceListParam setLowerStartTime(String lowerStartTime) {
         this.lowerStartTime = lowerStartTime;
         return this;
     }
@@ -88,7 +88,7 @@ public class JobInstanceListParam extends PageSortParam {
         return upperStartTime;
     }
 
-    public JobInstanceListParam setUpperStartTime(String upperStartTime) {
+    public InstanceListParam setUpperStartTime(String upperStartTime) {
         this.upperStartTime = upperStartTime;
         return this;
     }
@@ -97,7 +97,7 @@ public class JobInstanceListParam extends PageSortParam {
         return lowerEndTime;
     }
 
-    public JobInstanceListParam setLowerEndTime(String lowerEndTime) {
+    public InstanceListParam setLowerEndTime(String lowerEndTime) {
         this.lowerEndTime = lowerEndTime;
         return this;
     }
@@ -106,7 +106,7 @@ public class JobInstanceListParam extends PageSortParam {
         return upperEndTime;
     }
 
-    public JobInstanceListParam setUpperEndTime(String upperEndTime) {
+    public InstanceListParam setUpperEndTime(String upperEndTime) {
         this.upperEndTime = upperEndTime;
         return this;
     }
@@ -115,7 +115,7 @@ public class JobInstanceListParam extends PageSortParam {
         return lowerDuration;
     }
 
-    public JobInstanceListParam setLowerDuration(Long lowerDuration) {
+    public InstanceListParam setLowerDuration(Long lowerDuration) {
         this.lowerDuration = lowerDuration;
         return this;
     }
@@ -124,7 +124,7 @@ public class JobInstanceListParam extends PageSortParam {
         return upperDuration;
     }
 
-    public JobInstanceListParam setUpperDuration(Long upperDuration) {
+    public InstanceListParam setUpperDuration(Long upperDuration) {
         this.upperDuration = upperDuration;
         return this;
     }
@@ -133,7 +133,7 @@ public class JobInstanceListParam extends PageSortParam {
         return listChildren;
     }
 
-    public JobInstanceListParam setListChildren(boolean listChildren) {
+    public InstanceListParam setListChildren(boolean listChildren) {
         this.listChildren = listChildren;
         return this;
     }

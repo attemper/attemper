@@ -2,7 +2,7 @@
   <el-row v-if="visible" :gutter="32">
     <el-col :xs="24" :sm="24" :lg="cellNumber">
       <div class="chart-wrapper">
-        <pie-chart ref="jobInstanceChart" />
+        <pie-chart ref="instanceChart" />
       </div>
     </el-col>
     <el-col :xs="24" :sm="24" :lg="cellNumber">
@@ -15,7 +15,7 @@
 
 <script>
 import PieChart from './PieChart'
-import { jobInstanceCountReq, jobCountReq } from '@/api/statistics/count'
+import { instanceCountReq, jobCountReq } from '@/api/statistics/count'
 
 export default {
   components: {
@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       visible: true,
-      jobInstance: {
+      instance: {
         statuses: [],
         chartName: '',
         legendData: [],
@@ -48,29 +48,29 @@ export default {
   },
   created() {
     this.loadConst()
-    this.initJobInstance()
+    this.initInstance()
     this.initJob()
   },
   methods: {
-    initJobInstance() {
-      jobInstanceCountReq().then(res => {
-        const jobInstanceCount = []
+    initInstance() {
+      instanceCountReq().then(res => {
+        const instanceCount = []
         res.data.result.forEach(item => {
-          jobInstanceCount.push({
-            name: this.jobInstance.statuses.find(cell => cell.value === item.status).label,
+          instanceCount.push({
+            name: this.instance.statuses.find(cell => cell.value === item.status).label,
             status: item.status,
             value: item.count
           })
         })
-        if (jobInstanceCount.length === 0) {
+        if (instanceCount.length === 0) {
           this.visible = false
           return
         }
-        if (this.$refs['jobInstanceChart']) {
-          this.$refs['jobInstanceChart'].initOption({
+        if (this.$refs['instanceChart']) {
+          this.$refs['instanceChart'].initOption({
             chartName: this.$t('chart.instance'),
-            legendData: this.jobInstance.statuses.map(item => item.label),
-            seriesData: jobInstanceCount,
+            legendData: this.instance.statuses.map(item => item.label),
+            seriesData: instanceCount,
             colorList: [
               '#409EFF',
               '#67C23A',
@@ -107,7 +107,7 @@ export default {
     },
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.jobInstance.statuses = array.jobInstanceStatuses
+        this.instance.statuses = array.instanceStatuses
         this.job.statuses = array.jobStatuses
       })
     }

@@ -1,6 +1,7 @@
 package com.github.attemper.executor.disruptor.exception;
 
 import com.github.attemper.executor.disruptor.event.JobEvent;
+import com.github.attemper.java.sdk.common.util.ExceptionUtil;
 import com.lmax.disruptor.ExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,11 +17,11 @@ public class JobEventExceptionHandler implements ExceptionHandler<JobEvent> {
 
     @Override
     public void handleOnStartException(Throwable throwable) {
-        log.error(throwable.getMessage(), throwable);
+        log.error(ExceptionUtil.getStackTrace(throwable), throwable);
     }
 
     @Override
     public void handleOnShutdownException(Throwable throwable) {
-        log.error(throwable.getMessage(), throwable);
+        log.error(ExceptionUtil.getStackTrace(throwable), throwable);
     }
 }

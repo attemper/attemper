@@ -1,12 +1,12 @@
 package com.github.attemper.executor.camunda.incident;
 
-import com.github.attemper.common.enums.JobInstanceStatus;
-import com.github.attemper.common.param.dispatch.instance.JobInstanceGetParam;
+import com.github.attemper.common.enums.InstanceStatus;
+import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
 import com.github.attemper.common.property.StatusProperty;
-import com.github.attemper.common.result.dispatch.instance.JobInstance;
-import com.github.attemper.common.result.dispatch.instance.JobInstanceAct;
+import com.github.attemper.common.result.dispatch.instance.Instance;
+import com.github.attemper.common.result.dispatch.instance.InstanceAct;
 import com.github.attemper.config.base.bean.SpringContextAware;
-import com.github.attemper.core.service.instance.JobInstanceService;
+import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.executor.camunda.cmd.UpdateHistoricInstanceCmd;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
@@ -32,44 +32,44 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
     public Incident handleIncident(IncidentContext context, String message) {
         try {
             RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) SpringContextAware.getBean(RuntimeService.class);
-            JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
+            InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
             List<Execution> executions = runtimeService.createExecutionQuery().executionId(context.getExecutionId()).list();
             for (Execution execution : executions) {
                 ExecutionEntity executionEntity = (ExecutionEntity) execution;
-                updateInstance(runtimeService, jobInstanceService, executionEntity, 2500);
+                updateInstance(runtimeService, instanceService, executionEntity, 2500);
                 // make super fail
                 ExecutionEntity superExecution = executionEntity.getSuperExecution();
                 while (superExecution != null) {
-                    updateInstance(runtimeService, jobInstanceService, superExecution, 2500);
+                    updateInstance(runtimeService, instanceService, superExecution, 2500);
                     superExecution = superExecution.getSuperExecution();
                 }
             }
-            updateInstanceAct(jobInstanceService, context.getExecutionId(), context.getActivityId());
+            updateInstanceAct(instanceService, context.getExecutionId(), context.getActivityId());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
         return super.handleIncident(context, message);
     }
 
-    private void updateInstance(RuntimeServiceImpl runtimeService, JobInstanceService jobInstanceService, ExecutionEntity execution, int code) {
-        JobInstance jobInstance = jobInstanceService.get(new JobInstanceGetParam().setProcInstId(execution.getProcessInstanceId()));
+    private void updateInstance(RuntimeServiceImpl runtimeService, InstanceService instanceService, ExecutionEntity execution, int code) {
+        Instance instance = instanceService.get(new InstanceGetParam().setProcInstId(execution.getProcessInstanceId()));
         Date endTime = new Date();
         long duration = 0;
-        if (jobInstance != null) {
-            duration = endTime.getTime() - jobInstance.getStartTime().getTime();
-            jobInstance
+        if (instance != null) {
+            duration = endTime.getTime() - instance.getStartTime().getTime();
+            instance
                     .setEndTime(endTime)
                     .setDuration(duration)
-                    .setStatus(JobInstanceStatus.FAILURE.getStatus())
+                    .setStatus(InstanceStatus.FAILURE.getStatus())
                     .setCode(code);
             String message = execution.getCurrentActivityId() == null ?
                     execution.getCurrentActivityName() : execution.getCurrentActivityId();
-            if (jobInstance.getMsg() == null) {
-                jobInstance.setMsg(StatusProperty.getValue(code) + ":" + message);
+            if (instance.getMsg() == null) {
+                instance.setMsg(StatusProperty.getValue(code) + ":" + message);
             } else {
-                jobInstance.setMsg(jobInstance.getMsg() + "," + message);
+                instance.setMsg(instance.getMsg() + "," + message);
             }
-            jobInstanceService.updateDone(jobInstance);
+            instanceService.updateDone(instance);
         }
         runtimeService.getCommandExecutor().execute(new UpdateHistoricInstanceCmd(
                 execution.getProcessInstanceId(),
@@ -78,12 +78,12 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
                 HistoricProcessInstance.STATE_EXTERNALLY_TERMINATED));
     }
 
-    private void updateInstanceAct(JobInstanceService jobInstanceService, String procInstId, String actId) {
-        JobInstanceAct jobInstanceAct = new JobInstanceAct()
+    private void updateInstanceAct(InstanceService instanceService, String procInstId, String actId) {
+        InstanceAct instanceAct = new InstanceAct()
                 .setProcInstId(procInstId)
                 .setActId(actId)
                 .setEndTime(new Date())
-                .setStatus(JobInstanceStatus.FAILURE.getStatus());
-        jobInstanceService.updateAct(jobInstanceAct);
+                .setStatus(InstanceStatus.FAILURE.getStatus());
+        instanceService.updateAct(instanceAct);
     }
 }

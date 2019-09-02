@@ -1,15 +1,16 @@
 package com.github.attemper.executor.disruptor.consumer;
 
-import com.github.attemper.common.enums.JobInstanceStatus;
+import com.github.attemper.common.enums.InstanceStatus;
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.dispatch.instance.JobInstanceGetParam;
+import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
 import com.github.attemper.common.param.executor.JobInvokingParam;
 import com.github.attemper.common.property.StatusProperty;
-import com.github.attemper.common.result.dispatch.instance.JobInstance;
+import com.github.attemper.common.result.dispatch.instance.Instance;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.core.service.dispatch.JobService;
-import com.github.attemper.core.service.instance.JobInstanceService;
+import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.executor.disruptor.event.JobEvent;
+import com.github.attemper.java.sdk.common.util.ExceptionUtil;
 import com.lmax.disruptor.WorkHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -69,21 +70,21 @@ public class RequestConsumer implements WorkHandler<JobEvent> {
                 } else {
                     code = 2001;
                 }
-                updateInstance(param, code, StatusProperty.getValue(code) + ":" + e.getMessage());
+                updateInstance(param, code, StatusProperty.getValue(code) + ":" + ExceptionUtil.getStackTrace(e));
                 throw new RTException(code, e);
             }
         }
     }
 
     private void updateInstance(JobInvokingParam param, int code, String msg) {
-        JobInstanceService jobInstanceService = SpringContextAware.getBean(JobInstanceService.class);
-        JobInstance jobInstance = jobInstanceService.get(new JobInstanceGetParam().setId(param.getId()));
+        InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
+        Instance instance = instanceService.get(new InstanceGetParam().setId(param.getId()));
         Date now = new Date();
-        jobInstance.setEndTime(now);
-        jobInstance.setDuration(now.getTime() - jobInstance.getStartTime().getTime());
-        jobInstance.setStatus(JobInstanceStatus.FAILURE.getStatus());
-        jobInstance.setCode(code);
-        jobInstance.setMsg(msg);
-        jobInstanceService.updateDone(jobInstance);
+        instance.setEndTime(now);
+        instance.setDuration(now.getTime() - instance.getStartTime().getTime());
+        instance.setStatus(InstanceStatus.FAILURE.getStatus());
+        instance.setCode(code);
+        instance.setMsg(msg);
+        instanceService.updateDone(instance);
     }
 }

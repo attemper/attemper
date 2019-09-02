@@ -118,7 +118,7 @@ public abstract class StorageGatewayTask extends FtpTask implements Databasing {
                 try {
                     this.flagType = Integer.parseInt(flagType);
                 } catch (NumberFormatException e) {
-                    log.error("flagType=" +flagType + "," + e.getMessage(), e);
+                    log.error("flagType=" + flagType, e);
                 }
             }
             return this;

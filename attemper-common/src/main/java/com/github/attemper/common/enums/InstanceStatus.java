@@ -1,6 +1,6 @@
 package com.github.attemper.common.enums;
 
-public enum JobInstanceStatus {
+public enum InstanceStatus {
 
     /** running */
     RUNNING(0),
@@ -22,7 +22,7 @@ public enum JobInstanceStatus {
 
     private int status;
 
-    JobInstanceStatus(int status) {
+    InstanceStatus(int status) {
         this.status = status;
     }
 
@@ -30,8 +30,8 @@ public enum JobInstanceStatus {
         return status;
     }
 
-    public static JobInstanceStatus get(int status) {
-        for (JobInstanceStatus item : JobInstanceStatus.values()) {
+    public static InstanceStatus get(int status) {
+        for (InstanceStatus item : InstanceStatus.values()) {
             if(item.getStatus() == status){
                 return item;
             }
