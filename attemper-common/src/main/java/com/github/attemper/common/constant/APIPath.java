@@ -195,7 +195,10 @@ public class APIPath {
 
         public static final String TERMINATE = $ + "/terminate";
 
-        public static final String LIST_ACT = $ + "/act";
+        public static final String ACT = $ + "/act";
+
+        public static final String ARG = $ + "/arg";
+
     }
 
     public static final class CountPath {

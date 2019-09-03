@@ -1,7 +1,6 @@
 package com.github.attemper.executor.camunda.history.event.impl;
 
 import com.github.attemper.common.enums.InstanceStatus;
-import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
 import com.github.attemper.common.result.dispatch.instance.Instance;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.core.service.instance.InstanceService;
@@ -24,7 +23,7 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
         InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
         Instance instance;
         if (historyEvent.getBusinessKey() != null) {
-            instance = instanceService.get(new InstanceGetParam().setId(historyEvent.getBusinessKey()));
+            instance = instanceService.get(historyEvent.getBusinessKey());
             instance.setProcInstId(historyEvent.getProcessInstanceId())
                     .setRootProcInstId(historyEvent.getRootProcessInstanceId())
                     .setSuperProcInstId(historyEvent.getSuperProcessInstanceId())
@@ -42,7 +41,7 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
                     .setDisplayName(historyEvent.getProcessDefinitionName())
                     .setStartTime(historyEvent.getStartTime())
                     .setTenantId(historyEvent.getTenantId());
-            Instance parentInstance = instanceService.get(new InstanceGetParam().setProcInstId(historyEvent.getRootProcessInstanceId()));
+            Instance parentInstance = instanceService.getByInstId(historyEvent.getRootProcessInstanceId());
             if (parentInstance != null) {
                 instance.setTriggerName(parentInstance.getTriggerName())
                         .setSchedulerUri(parentInstance.getSchedulerUri())
@@ -55,7 +54,7 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
     @Override
     public void end() {
         InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
-        Instance instance = instanceService.get(new InstanceGetParam().setProcInstId(historyEvent.getProcessInstanceId()));
+        Instance instance = instanceService.getByInstId(historyEvent.getProcessInstanceId());
         instance.setStatus(InstanceStatus.SUCCESS.getStatus());
         instance.setEndTime(historyEvent.getEndTime());
         instance.setDuration(instance.getEndTime().getTime() - instance.getStartTime().getTime());

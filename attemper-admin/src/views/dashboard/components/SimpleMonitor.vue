@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { listReq } from '@/api/dispatch/instance'
+import { listReq } from '@/api/instance/instance'
 export default {
   data() {
     return {

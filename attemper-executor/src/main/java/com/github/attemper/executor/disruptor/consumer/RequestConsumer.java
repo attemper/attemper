@@ -2,7 +2,6 @@ package com.github.attemper.executor.disruptor.consumer;
 
 import com.github.attemper.common.enums.InstanceStatus;
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
 import com.github.attemper.common.param.executor.JobInvokingParam;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.Instance;
@@ -17,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.engine.runtime.ProcessInstantiationBuilder;
 
 import java.util.Date;
 import java.util.List;
@@ -47,10 +47,20 @@ public class RequestConsumer implements WorkHandler<JobEvent> {
                 if (param.getVariableMap() != null) {
                     varMap.putAll(param.getVariableMap());
                 }
-                runtimeService.startProcessInstanceById(
-                        processDefinition.getId(),
-                        param.getId(),
-                        varMap);
+                ProcessInstantiationBuilder builder = runtimeService.createProcessInstanceById(processDefinition.getId())
+                        .businessKey(param.getId())
+                        .setVariables(varMap);
+                if (param.getBeforeActIds() != null) {
+                    for (String beforeActId : param.getBeforeActIds()) {
+                        builder.startBeforeActivity(beforeActId);
+                    }
+                }
+                if (param.getAfterActIds() != null) {
+                    for (String afterActId : param.getAfterActIds()) {
+                        builder.startAfterActivity(afterActId);
+                    }
+                }
+                builder.execute();
             } else if (processDefinitions.isEmpty()) {
                 log.error("process not exists:{}|{}|{}", param.getId(), param.getJobName(), param.getTenantId());
                 throw new RTException(2002);
@@ -78,7 +88,7 @@ public class RequestConsumer implements WorkHandler<JobEvent> {
 
     private void updateInstance(JobInvokingParam param, int code, String msg) {
         InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
-        Instance instance = instanceService.get(new InstanceGetParam().setId(param.getId()));
+        Instance instance = instanceService.get(param.getId());
         Date now = new Date();
         instance.setEndTime(now);
         instance.setDuration(now.getTime() - instance.getStartTime().getTime());

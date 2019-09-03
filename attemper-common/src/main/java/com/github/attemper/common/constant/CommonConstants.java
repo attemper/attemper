@@ -35,6 +35,10 @@ public interface CommonConstants {
 
     String value = "value";
 
+    String id = "id";
+
+    String procInstId = "procInstId";
+
     String FALSE = "false";
 
     int DEF_CURRENT_PAGE = 1;

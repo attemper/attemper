@@ -105,7 +105,7 @@
           <div style="padding-top: 6px;">
             <el-button
               type="primary"
-              @click="openParamDialog(scope.row)"
+              @click="openArgDialog(scope.row)"
             >
               {{ $t('dispatch.job.actions.param') }}
             </el-button>
@@ -130,7 +130,7 @@
 
     <el-dialog
       :title="editDialog.title"
-      :visible.sync="editDialog.base.visible || editDialog.param.visible || editDialog.trigger.visible || editDialog.project.visible"
+      :visible.sync="editDialog.base.visible || editDialog.arg.visible || editDialog.trigger.visible || editDialog.project.visible || editDialog.param.visible"
       :center="true"
       :modal="true"
       :close-on-click-modal="false"
@@ -194,7 +194,7 @@
           </el-col>
         </el-row>
       </div>
-      <div v-show="editDialog.param.visible">
+      <div v-show="editDialog.arg.visible">
         <div class="filter-container">
           <el-input v-model="argPage.argName" :placeholder="$t('dispatch.arg.columns.argName')" class="filter-item search-input" @keyup.enter.native="argSearch" />
           <el-select v-model="argPage.argType" :placeholder="$t('dispatch.arg.columns.argType')" clearable collapse-tags class="filter-item search-select">
@@ -238,12 +238,20 @@
       <div v-show="editDialog.project.visible">
         <ProjectTree ref="projectTree" :job-name="job.jobName" @cancel="editDialog.project.visible = false" />
       </div>
+      <div v-show="editDialog.param.visible">
+        <code-editor v-model="jsonData" :read-only="false" extension=".json" />
+        <div style="text-align: center; margin-top: 10px">
+          <el-button type="danger" @click="manual">
+            <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
+          </el-button>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { listReq, /* getReq,*/ removeReq, addReq, updateReq, enableReq, disableReq, publishReq, manualBatchReq, importModelReq, exportModelReq, listArgReq, addArgReq, removeArgReq } from '@/api/dispatch/job'
+import { listReq, /* getReq,*/ removeReq, addReq, updateReq, enableReq, disableReq, publishReq, manualBatchReq, importModelReq, exportModelReq, listArgReq, addArgReq, removeArgReq, getJsonArgReq, manualReq } from '@/api/dispatch/job'
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/dispatch/tool'
@@ -256,6 +264,8 @@ import CalendarOffsetTrigger from './components/job/calendarOffsetTrigger'
 import DailyIntervalTrigger from './components/job/dailyTimeIntervalTrigger'
 import CalendarIntervalTrigger from './components/job/calendarIntervalTrigger'
 import ProjectTree from './components/job/projectTree'
+import CodeEditor from '@/components/CodeEditor'
+
 const DEF_OBJ = {
   jobName: undefined,
   displayName: '',
@@ -273,7 +283,8 @@ export default {
     CronTrigger,
     CalendarOffsetTrigger,
     DailyIntervalTrigger,
-    CalendarIntervalTrigger
+    CalendarIntervalTrigger,
+    CodeEditor
   },
   directives: { waves },
   data() {
@@ -318,13 +329,16 @@ export default {
         base: {
           visible: false
         },
-        param: {
+        arg: {
           visible: false
         },
         trigger: {
           visible: false
         },
         project: {
+          visible: false
+        },
+        param: {
           visible: false
         }
       },
@@ -344,7 +358,8 @@ export default {
       },
       timeZones: [],
       calendarGroups: [],
-      calendarTypes: []
+      calendarTypes: [],
+      jsonData: null
     }
   },
   created() {
@@ -387,9 +402,10 @@ export default {
     },
     close() {
       this.editDialog.base.visible =
-          this.editDialog.param.visible =
+          this.editDialog.arg.visible =
             this.editDialog.trigger.visible =
-              this.editDialog.project.visible = false
+              this.editDialog.project.visible =
+                this.editDialog.param.visible = false
     },
     add() {
       this.editDialog.oper = 'add'
@@ -492,10 +508,10 @@ export default {
         }
       })
     },
-    openParamDialog(row) {
+    openArgDialog(row) {
       this.editDialog.title = this.$t('dispatch.job.actions.param')
       this.selectRow(row)
-      this.editDialog.param.visible = true
+      this.editDialog.arg.visible = true
       this.argSearch()
     },
     argSearch() {
@@ -676,18 +692,50 @@ export default {
       })
     },
     manualBatch() {
-      const jobNames = []
-      for (let i = 0; i < this.selections.length; i++) {
-        const sel = this.selections[i]
-        if (sel.status === 1) {
-          this.$message.warning(this.$t('tip.disabledJobError') + ':' + sel.jobName)
+      if (this.selections.length === 1) {
+        if (this.selections[0].status === 1) {
+          this.$message.warning(this.$t('tip.disabledJobError') + ':' + this.selections[0].jobName)
           return
         }
-        jobNames.push(sel.jobName)
+        this.jsonData = null
+        getJsonArgReq({ jobName: this.selections[0].jobName }).then(res => {
+          if (!res.data.result) {
+            this.manual()
+          } else {
+            this.editDialog.title = this.$t('dispatch.job.actions.param')
+            this.editDialog.param.visible = true
+            this.jsonData = JSON.parse(res.data.result)
+          }
+        })
+      } else {
+        const jobNames = []
+        for (let i = 0; i < this.selections.length; i++) {
+          const sel = this.selections[i]
+          if (sel.status === 1) {
+            this.$message.warning(this.$t('tip.disabledJobError') + ':' + sel.jobName)
+            return
+          }
+          jobNames.push(sel.jobName)
+        }
+        this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
+          .then(() => {
+            manualBatchReq({ jobNames: jobNames }).then(res => {
+              this.$message.success(res.data.msg)
+              setTimeout(() => {
+                this.$router.push({ name: 'total', replace: true })
+              }, 600)
+            })
+          })
       }
-      this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
+    },
+    manual() {
+      this.$confirm(this.$t('tip.confirm'), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
-          manualBatchReq({ jobNames: jobNames }).then(res => {
+          manualReq({
+            jobName: this.selections[0].jobName,
+            jsonData: (!this.jsonData ? null : (typeof this.jsonData === 'string' ? JSON.parse(this.jsonData) : this.jsonData))
+          }).then(res => {
+            this.editDialog.param.visible = false
             this.$message.success(res.data.msg)
             setTimeout(() => {
               this.$router.push({ name: 'total', replace: true })

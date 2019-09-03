@@ -1,10 +1,7 @@
 package com.github.attemper.web.controller.instance;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.instance.InstanceActParam;
-import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
-import com.github.attemper.common.param.dispatch.instance.InstanceIdParam;
-import com.github.attemper.common.param.dispatch.instance.InstanceListParam;
+import com.github.attemper.common.param.dispatch.instance.*;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.instance.InstanceAct;
 import com.github.attemper.common.result.dispatch.instance.InstanceWithChildren;
@@ -62,20 +59,27 @@ public class InstanceController {
 
     @ApiOperation("List all activity nodes of one instance")
     @ApiImplicitParam(value = "InstanceActParam", name = "param", dataType = "InstanceActParam", required = true)
-    @GetMapping(APIPath.InstancePath.LIST_ACT)
+    @GetMapping(APIPath.InstancePath.ACT)
     public CommonResult<List<InstanceAct>> listAct(InstanceActParam param) {
         return CommonResult.putResult(instanceService.listAct(param));
     }
 
-    @ApiOperation("Retry")
+    @ApiOperation("Args of one instance")
     @ApiImplicitParam(value = "InstanceIdParam", name = "param", dataType = "InstanceIdParam", required = true)
+    @GetMapping(APIPath.InstancePath.ARG)
+    public CommonResult<String> getInstanceArgs(InstanceIdParam param) {
+        return CommonResult.putResult(instanceService.getInstanceArgs(param));
+    }
+
+    @ApiOperation("Retry")
+    @ApiImplicitParam(value = "InstanceJsonArgParam", name = "param", dataType = "InstanceJsonArgParam", required = true)
     @PostMapping(value = APIPath.InstancePath.RETRY)
-    public CommonResult<Void> retry(@RequestBody InstanceIdParam param) {
+    public CommonResult<Void> retry(@RequestBody InstanceJsonArgParam param) {
         return CommonResult.putResult(instanceOperatedService.retry(param));
     }
 
     @ApiOperation("Terminate")
-    @ApiImplicitParam(value = "InstanceIdParam", name = "param", dataType = "InstanceIdParam", required = true)
+    @ApiImplicitParam(value = "IdParam", name = "param", dataType = "IdParam", required = true)
     @PostMapping(value = APIPath.InstancePath.TERMINATE)
     public CommonResult<Void> terminate(@RequestBody InstanceIdParam param) {
         return CommonResult.putResult(instanceOperatedService.terminate(param));

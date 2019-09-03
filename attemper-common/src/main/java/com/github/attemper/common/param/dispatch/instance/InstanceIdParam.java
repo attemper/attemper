@@ -1,28 +1,23 @@
 package com.github.attemper.common.param.dispatch.instance;
 
 import com.github.attemper.common.param.CommonParam;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
+@Getter
+@Setter
 @ToString
 public class InstanceIdParam implements CommonParam {
 
-    protected String id;
+    protected String procInstId;
 
     @Override
     public String validate() {
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(procInstId)) {
             return "6200";
         }
         return null;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public InstanceIdParam setId(String id) {
-        this.id = id;
-        return this;
     }
 }

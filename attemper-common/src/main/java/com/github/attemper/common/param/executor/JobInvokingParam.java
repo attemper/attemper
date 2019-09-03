@@ -3,6 +3,7 @@ package com.github.attemper.common.param.executor;
 import com.github.attemper.common.param.CommonParam;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Map;
 
 @ToString
@@ -13,6 +14,10 @@ public class JobInvokingParam implements CommonParam {
     protected String jobName;
 
     protected String triggerName;
+
+    protected List<String> beforeActIds;
+
+    protected List<String> afterActIds;
 
     protected String tenantId;
 
@@ -47,6 +52,24 @@ public class JobInvokingParam implements CommonParam {
 
     public JobInvokingParam setTriggerName(String triggerName) {
         this.triggerName = triggerName;
+        return this;
+    }
+
+    public List<String> getBeforeActIds() {
+        return beforeActIds;
+    }
+
+    public JobInvokingParam setBeforeActIds(List<String> beforeActIds) {
+        this.beforeActIds = beforeActIds;
+        return this;
+    }
+
+    public List<String> getAfterActIds() {
+        return afterActIds;
+    }
+
+    public JobInvokingParam setAfterActIds(List<String> afterActIds) {
+        this.afterActIds = afterActIds;
         return this;
     }
 

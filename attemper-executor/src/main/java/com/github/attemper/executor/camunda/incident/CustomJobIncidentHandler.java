@@ -1,7 +1,6 @@
 package com.github.attemper.executor.camunda.incident;
 
 import com.github.attemper.common.enums.InstanceStatus;
-import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.Instance;
 import com.github.attemper.common.result.dispatch.instance.InstanceAct;
@@ -52,7 +51,7 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
     }
 
     private void updateInstance(RuntimeServiceImpl runtimeService, InstanceService instanceService, ExecutionEntity execution, int code) {
-        Instance instance = instanceService.get(new InstanceGetParam().setProcInstId(execution.getProcessInstanceId()));
+        Instance instance = instanceService.getByInstId(execution.getProcessInstanceId());
         Date endTime = new Date();
         long duration = 0;
         if (instance != null) {

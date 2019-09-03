@@ -5,7 +5,6 @@ import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.IdParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceNamesParam;
-import com.github.attemper.common.param.dispatch.instance.InstanceIdParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.instance.Instance;
 import com.github.attemper.config.base.property.AppProperties;
@@ -37,7 +36,7 @@ public class ExecutorHandler extends CrossSystemHandler {
         if (instance.getProcInstId() == null) {
             return;
         }
-        call(baseUrl, APIPath.ExecutorPath.TERMINATE, new InstanceIdParam().setId(instance.getId()));
+        call(baseUrl, APIPath.ExecutorPath.TERMINATE, new IdParam().setId(instance.getId()));
     }
 
     public void load(String baseUrl, IdParam param) {

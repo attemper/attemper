@@ -146,8 +146,7 @@
 </template>
 
 <script>
-import { listReq, listRetryReq, listChildrenReq, listRetryChildrenReq, retryReq, terminateReq } from '@/api/dispatch/instance'
-import { getJsonArgReq } from '@/api/dispatch/job'
+import { listReq, listRetryReq, listChildrenReq, listRetryChildrenReq, retryReq, terminateReq, getArgsReq } from '@/api/instance/instance'
 import { getTimeStr } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
 import waves from '@/directive/waves'
@@ -211,7 +210,7 @@ export default {
   methods: {
     openParam() {
       this.jsonData = null
-      getJsonArgReq({ jobName: this.instance.jobName }).then(res => {
+      getArgsReq({ procInstId: this.instance.procInstId }).then(res => {
         if (!res.data.result) {
           this.retry()
         } else {
@@ -225,14 +224,12 @@ export default {
       this.$confirm(this.$t('tip.confirmMsg'), this.$t('tip.confirm'), { type: 'info' })
         .then(() => {
           retryReq({
-            id: this.instance.id,
+            procInstId: this.instance.procInstId,
             jsonData: (!this.jsonData ? null : (typeof this.jsonData === 'string' ? JSON.parse(this.jsonData) : this.jsonData))
           })
             .then(res => {
+              this.editDialog.param.visible = false
               this.$message.success(res.data.msg)
-              this.search()
-            })
-            .catch(() => {
               this.search()
             })
         })
@@ -240,7 +237,7 @@ export default {
     terminate() {
       this.$confirm(this.$t('tip.confirmMsg'), this.$t('tip.confirm'), { type: 'info' })
         .then(() => {
-          terminateReq({ id: this.instance.id })
+          terminateReq({ procInstId: this.instance.procInstId })
             .then(res => {
               this.$message.success(res.data.msg)
               this.search()

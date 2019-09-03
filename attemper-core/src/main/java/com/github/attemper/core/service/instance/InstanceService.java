@@ -4,6 +4,7 @@ import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.InstanceStatus;
 import com.github.attemper.common.param.dispatch.instance.InstanceActParam;
 import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
+import com.github.attemper.common.param.dispatch.instance.InstanceIdParam;
 import com.github.attemper.common.param.dispatch.instance.InstanceListParam;
 import com.github.attemper.common.param.sys.tenant.TenantGetParam;
 import com.github.attemper.common.property.StatusProperty;
@@ -12,6 +13,7 @@ import com.github.attemper.common.result.dispatch.instance.InstanceAct;
 import com.github.attemper.common.result.dispatch.instance.InstanceWithChildren;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.sys.tenant.Tenant;
+import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.dao.instance.InstanceMapper;
 import com.github.attemper.core.ext.notice.MessageBean;
 import com.github.attemper.core.ext.notice.NoticeService;
@@ -24,6 +26,9 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.camunda.bpm.engine.HistoryService;
+import org.camunda.bpm.engine.history.HistoricVariableInstance;
+import org.camunda.bpm.engine.history.HistoricVariableInstanceQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -31,6 +36,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,8 +57,19 @@ public class InstanceService extends BaseServiceAdapter {
     @Autowired
     private TenantService tenantService;
 
-    public Instance get(InstanceGetParam param) {
-        return mapper.get(injectTenantIdToMap(param));
+    @Autowired
+    private HistoryService historyService;
+
+    public Instance get(String id) {
+        Map<String, Object> map = new HashMap<>(1);
+        map.put(CommonConstants.id, id);
+        return mapper.get(map);
+    }
+
+    public Instance getByInstId(String procInstId) {
+        Map<String, Object> map = new HashMap<>(1);
+        map.put(CommonConstants.procInstId, procInstId);
+        return mapper.get(map);
     }
 
     public int count(InstanceListParam param, String tenantId) {
@@ -140,6 +157,20 @@ public class InstanceService extends BaseServiceAdapter {
 
     public List<Instance> listRunningOfExecutor(String executorAddress) {
         return mapper.listRunningOfExecutor(executorAddress);
+    }
+
+    public String getInstanceArgs(InstanceIdParam param) {
+        HistoricVariableInstanceQuery varQuery = historyService.createHistoricVariableInstanceQuery()
+                .processInstanceId(param.getProcInstId());
+        List<HistoricVariableInstance> vars = varQuery.list();
+        if (vars.size() == 0) {
+            return null;
+        }
+        Map<String, Object> instArgMap = new HashMap<>(vars.size());
+        for (HistoricVariableInstance var : vars) {
+            instArgMap.put(var.getName(), var.getValue());
+        }
+        return BeanUtil.bean2JsonStr(instArgMap);
     }
 
     @Async

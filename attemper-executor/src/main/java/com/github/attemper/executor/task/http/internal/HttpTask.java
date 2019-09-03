@@ -177,11 +177,8 @@ public abstract class HttpTask extends ParentTask implements JavaDelegate {
     }
 
     protected void saveVariables(DelegateExecution execution, TaskResult taskResult) {
-        if (taskResult.getParamMap() != null) {
+        if (taskResult.getParamMap() != null && taskResult.getParamMap().size() > 0) {
             execution.setVariables(taskResult.getParamMap());
-        }
-        if (taskResult.getDataMap() != null) {
-            execution.setVariablesLocal(taskResult.getDataMap());
         }
     }
 

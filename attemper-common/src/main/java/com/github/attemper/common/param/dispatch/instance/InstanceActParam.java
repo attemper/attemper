@@ -4,6 +4,7 @@ import com.github.attemper.common.param.CommonParam;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
 
 @Getter
 @Setter
@@ -16,6 +17,9 @@ public class InstanceActParam implements CommonParam {
 
     @Override
     public String validate() {
+        if (StringUtils.isBlank(procInstId)) {
+            return "6200";
+        }
         return null;
     }
 }

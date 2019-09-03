@@ -144,7 +144,9 @@ export default {
     fileSizeOutOfBound: '文件大小不能超过',
     currentFileSize: '该文件大小',
     entryVersion: '请输入版本',
-    versionNotBlank: '版本不能为空'
+    versionNotBlank: '版本不能为空',
+    beforeActivity: '在此节点前发起',
+    afterActivity: '在此节点后发起'
   },
   columns: {
     displayName: '中文名',
@@ -420,10 +422,6 @@ export default {
       record: '记录',
       flow: '任务流',
       task: '任务'
-    },
-    tip: {
-      retryFlow: '重试整条任务流',
-      retryFromCurrentTask: '从当前节点开始重试'
     }
   },
   statistics: {

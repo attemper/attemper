@@ -1,7 +1,7 @@
 package com.github.attemper.executor.controller;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.instance.InstanceIdParam;
+import com.github.attemper.common.param.IdParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.executor.service.InstanceUpdatedService;
 import io.swagger.annotations.Api;
@@ -20,9 +20,9 @@ public class InstanceUpdatedController {
     private InstanceUpdatedService service;
 
     @ApiOperation("Terminate")
-    @ApiImplicitParam(value = "InstanceIdParam", name = "param", dataType = "InstanceIdParam", required = true)
+    @ApiImplicitParam(value = "IdParam", name = "param", dataType = "IdParam", required = true)
     @PostMapping(APIPath.ExecutorPath.TERMINATE)
-    public CommonResult<Void> terminate(@RequestBody InstanceIdParam param) {
+    public CommonResult<Void> terminate(@RequestBody IdParam param) {
         return CommonResult.putResult(service.terminate(param));
     }
 

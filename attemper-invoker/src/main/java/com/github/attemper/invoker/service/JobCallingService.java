@@ -59,22 +59,24 @@ public class JobCallingService {
     private InstanceService instanceService;
 
     public void execute(String id, String jobName, String triggerName, String tenantId, Map<String, Object> dataMap) {
-        this.invoke(id, jobName, triggerName, tenantId, null, dataMap);
+        this.invoke(id, jobName, triggerName, tenantId, null, null, null, dataMap);
     }
 
     public void manual(String id, String jobName, String tenantId, Map<String, Object> dataMap) {
-        this.invoke(id, jobName, null, tenantId, null, dataMap);
+        this.invoke(id, jobName, null, tenantId, null, null, null, dataMap);
     }
 
-    public void retry(String id, String jobName, String tenantId, String parentId, Map<String, Object> dataMap) {
-        this.invoke(id, jobName, null, tenantId, parentId, dataMap);
+    public void retry(String id, String jobName, String tenantId, String parentId, List<String> beforeActIds, List<String> afterActIds, Map<String, Object> dataMap) {
+        this.invoke(id, jobName, null, tenantId, parentId, beforeActIds, afterActIds, dataMap);
     }
 
-    public void invoke(String id, String jobName, String triggerName, String tenantId, String parentId, Map<String, Object> dataMap) {
+    public void invoke(String id, String jobName, String triggerName, String tenantId, String parentId, List<String> beforeActIds, List<String> afterActIds, Map<String, Object> dataMap) {
         JobInvokingParam param = new JobInvokingParam()
                 .setId(id)
                 .setJobName(jobName)
                 .setTriggerName(triggerName)
+                .setBeforeActIds(beforeActIds)
+                .setAfterActIds(afterActIds)
                 .setTenantId(tenantId)
                 .setVariableMap(dataMap);
         Job job = jobService.get(jobName, tenantId);

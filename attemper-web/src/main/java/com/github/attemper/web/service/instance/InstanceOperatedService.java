@@ -2,10 +2,11 @@ package com.github.attemper.web.service.instance;
 
 import com.github.attemper.common.enums.InstanceStatus;
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
 import com.github.attemper.common.param.dispatch.instance.InstanceIdParam;
+import com.github.attemper.common.param.dispatch.instance.InstanceJsonArgParam;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.Instance;
+import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.invoker.service.JobCallingService;
 import com.github.attemper.web.ext.app.ExecutorHandler;
@@ -32,8 +33,8 @@ public class InstanceOperatedService {
     @Autowired
     private IdGenerator idGenerator;
 
-    public Void retry(InstanceIdParam param) {
-        Instance instance = getInstance(param);
+    public Void retry(InstanceJsonArgParam param) {
+        Instance instance = getInstance(param.getProcInstId());
         if (!isDone(instance.getStatus())) {
             throw new RTException(6202, instance.getStatus());
         }
@@ -42,12 +43,12 @@ public class InstanceOperatedService {
             instance.setParentId(instance.getId());
             instanceService.updateDone(instance);
         }
-        jobCallingService.retry(idGenerator.getNextId(), instance.getJobName(), instance.getTenantId(), parentId, null);
+        jobCallingService.retry(idGenerator.getNextId(), instance.getJobName(), instance.getTenantId(), parentId, param.getBeforeActIds(), param.getAfterActIds(), BeanUtil.bean2Map(param.getJsonData()));
         return null;
     }
 
     public Void terminate(InstanceIdParam param) {
-        Instance instance = getInstance(param);
+        Instance instance = getInstance(param.getProcInstId());
         if (!isDoing(instance.getStatus())) {
             throw new RTException(6202, instance.getStatus());
         }
@@ -74,8 +75,8 @@ public class InstanceOperatedService {
                 status == InstanceStatus.TERMINATED.getStatus();
     }
 
-    private Instance getInstance(InstanceIdParam param) {
-        Instance instance = instanceService.get(new InstanceGetParam().setId(param.getId()));
+    private Instance getInstance(String procInstId) {
+        Instance instance = instanceService.getByInstId(procInstId);
         if (instance == null) {
             throw new RTException(6201);
         }

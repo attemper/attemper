@@ -57,3 +57,10 @@ export const terminateReq = (data) => {
   })
 }
 
+export const getArgsReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.INSTANCE + '/arg',
+    method: 'get',
+    params: params
+  })
+}
