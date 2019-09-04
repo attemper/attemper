@@ -68,7 +68,7 @@ public class InstanceController {
     @ApiImplicitParam(value = "InstanceIdParam", name = "param", dataType = "InstanceIdParam", required = true)
     @GetMapping(APIPath.InstancePath.ARG)
     public CommonResult<String> getInstanceArgs(InstanceIdParam param) {
-        return CommonResult.putResult(instanceService.getInstanceArgs(param));
+        return CommonResult.putResult(instanceOperatedService.getInstanceArgs(param));
     }
 
     @ApiOperation("Retry")

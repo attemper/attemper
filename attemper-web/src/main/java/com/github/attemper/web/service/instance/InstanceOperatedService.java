@@ -11,10 +11,17 @@ import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.invoker.service.JobCallingService;
 import com.github.attemper.web.ext.app.ExecutorHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.camunda.bpm.engine.HistoryService;
+import org.camunda.bpm.engine.history.HistoricVariableInstance;
+import org.camunda.bpm.engine.history.HistoricVariableInstanceQuery;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -32,6 +39,23 @@ public class InstanceOperatedService {
 
     @Autowired
     private IdGenerator idGenerator;
+
+    @Autowired
+    private HistoryService historyService;
+
+    public String getInstanceArgs(InstanceIdParam param) {
+        HistoricVariableInstanceQuery varQuery = historyService.createHistoricVariableInstanceQuery()
+                .processInstanceId(param.getProcInstId());
+        List<HistoricVariableInstance> vars = varQuery.list();
+        if (vars.size() == 0) {
+            return null;
+        }
+        Map<String, Object> instArgMap = new HashMap<>(vars.size());
+        for (HistoricVariableInstance var : vars) {
+            instArgMap.put(var.getName(), var.getValue());
+        }
+        return BeanUtil.bean2JsonStr(instArgMap);
+    }
 
     public Void retry(InstanceJsonArgParam param) {
         Instance instance = getInstance(param.getProcInstId());
