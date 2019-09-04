@@ -4,6 +4,7 @@ import com.github.attemper.common.constant.APIPath;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.InstanceStatus;
 import com.github.attemper.common.enums.JobStatus;
+import com.github.attemper.common.enums.TenantStatus;
 import com.github.attemper.common.enums.UriType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.instance.InstanceListParam;
@@ -56,6 +57,9 @@ public class JobCallingService {
     private JobService jobService;
 
     @Autowired
+    private TenantService tenantService;
+
+    @Autowired
     private InstanceService instanceService;
 
     public void execute(String id, String jobName, String triggerName, String tenantId, Map<String, Object> dataMap) {
@@ -71,6 +75,27 @@ public class JobCallingService {
     }
 
     public void invoke(String id, String jobName, String triggerName, String tenantId, String parentId, List<String> beforeActIds, List<String> afterActIds, Map<String, Object> dataMap) {
+        Tenant tenant = tenantService.get(new TenantGetParam().setUserName(tenantId));
+        if (tenant == null) {
+            throw new RTException(1500);
+        } else if (tenant.getStatus() != TenantStatus.NORMAL.getStatus()) {
+            if (log.isDebugEnabled()) {
+                log.debug("tenant is not normal:{}", tenantId);
+            }
+            return;
+        }
+        Job job = jobService.get(jobName, tenantId);
+        int code = -1;
+        if (job == null) {
+            code = 6050;
+        } else if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
+            if (log.isDebugEnabled()) {
+                log.debug("job is not enabled:{}-{}", jobName, tenantId);
+            }
+            return;
+        } else if (!validateConcurrent(job)) {
+            code = 3008;
+        }
         JobInvokingParam param = new JobInvokingParam()
                 .setId(id)
                 .setJobName(jobName)
@@ -79,15 +104,6 @@ public class JobCallingService {
                 .setAfterActIds(afterActIds)
                 .setTenantId(tenantId)
                 .setVariableMap(dataMap);
-        Job job = jobService.get(jobName, tenantId);
-        int code = -1;
-        if (job == null) {
-            code = 6050;
-        } else if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
-            return;
-        } else if (!validateConcurrent(job)) {
-            code = 3008;
-        }
         if (code != -1) {
             Instance instance = buildInstance(param, null, parentId, InstanceStatus.FAILURE);
             instance.setEndTime(instance.getStartTime());
@@ -103,7 +119,7 @@ public class JobCallingService {
         try {
             invokeByWebClient(baseUrl, token, param);
         } catch (RTException e) {
-            invokeByWebClient(baseUrl, getToken(tenantId), param);
+            invokeByWebClient(baseUrl, getToken(tenant), param);
         }
     }
 
@@ -181,14 +197,10 @@ public class JobCallingService {
     @Autowired
     private LoginService loginService;
 
-    @Autowired
-    private TenantService tenantService;
-
-    private synchronized String getToken(String tenantId) {
-        Tenant tenant = tenantService.get(new TenantGetParam().setUserName(tenantId));
-        LoginResult loginResult = loginService.loginByEncoded(new LoginParam().setUserName(tenantId).setPassword(tenant.getPassword()));
+    private synchronized String getToken(Tenant tenant) {
+        LoginResult loginResult = loginService.loginByEncoded(new LoginParam().setUserName(tenant.getUserName()).setPassword(tenant.getPassword()));
         String token = loginResult.getToken();
-        SysStore.getTenantTokenMap().put(tenantId, token);
+        SysStore.getTenantTokenMap().put(tenant.getUserName(), token);
         return token;
     }
 

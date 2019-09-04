@@ -54,3 +54,7 @@ eureka:
     availabilityZones:
       default: defaultZone
     preferSameZone: false
+
+camunda:
+  bpm:
+    default-number-of-retries: 1
