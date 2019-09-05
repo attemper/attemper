@@ -65,9 +65,9 @@ public class InstanceController {
     }
 
     @ApiOperation("Args of one instance")
-    @ApiImplicitParam(value = "InstanceIdParam", name = "param", dataType = "InstanceIdParam", required = true)
+    @ApiImplicitParam(value = "InstanceActArgParam", name = "param", dataType = "InstanceActArgParam", required = true)
     @GetMapping(APIPath.InstancePath.ARG)
-    public CommonResult<String> getInstanceArgs(InstanceIdParam param) {
+    public CommonResult<String> getInstanceArgs(InstanceActArgParam param) {
         return CommonResult.putResult(instanceOperatedService.getInstanceArgs(param));
     }
 

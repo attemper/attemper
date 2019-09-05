@@ -2,6 +2,7 @@ package com.github.attemper.web.service.instance;
 
 import com.github.attemper.common.enums.InstanceStatus;
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.common.param.dispatch.instance.InstanceActArgParam;
 import com.github.attemper.common.param.dispatch.instance.InstanceIdParam;
 import com.github.attemper.common.param.dispatch.instance.InstanceJsonArgParam;
 import com.github.attemper.common.property.StatusProperty;
@@ -43,9 +44,10 @@ public class InstanceOperatedService {
     @Autowired
     private HistoryService historyService;
 
-    public String getInstanceArgs(InstanceIdParam param) {
+    public String getInstanceArgs(InstanceActArgParam param) {
         HistoricVariableInstanceQuery varQuery = historyService.createHistoricVariableInstanceQuery()
-                .processInstanceId(param.getProcInstId());
+                .processInstanceId(param.getProcInstId())
+                .activityInstanceIdIn(param.getActInstId());
         List<HistoricVariableInstance> vars = varQuery.list();
         if (vars.size() == 0) {
             return null;

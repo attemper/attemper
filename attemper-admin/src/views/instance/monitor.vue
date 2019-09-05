@@ -210,7 +210,7 @@ export default {
   methods: {
     openParam() {
       this.jsonData = null
-      getArgsReq({ procInstId: this.instance.procInstId }).then(res => {
+      getArgsReq({ procInstId: this.instance.procInstId, actInstId: this.instance.procInstId }).then(res => {
         if (!res.data.result) {
           this.retry()
         } else {
