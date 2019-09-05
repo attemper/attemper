@@ -10,4 +10,4 @@ EXPOSE 5212
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
   && echo 'Asia/Shanghai' > /etc/timezone
 
-ENTRYPOINT java -jar /app.jar $JAVA_OPTS
+ENTRYPOINT java $JAVA_OPTS -jar /app.jar $ENV

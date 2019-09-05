@@ -48,7 +48,6 @@ eureka:
       instanceId: ${spring.application.name}:${spring.application_instance_id:${random.value}}
     preferIpAddress: true
   client:
-    registerWithEureka: true
     fetchRegistry: true
     region: default
     availabilityZones:
@@ -57,4 +56,4 @@ eureka:
 
 camunda:
   bpm:
-    default-number-of-retries: 1
+    default-number-of-retries: 0
