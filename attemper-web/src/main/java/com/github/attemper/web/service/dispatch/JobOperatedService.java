@@ -81,7 +81,7 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     private void setNextFireTime(Job job) {
-        List<Date> allTriggerDates = new ArrayList<>(16);
+        List<Date> allTriggerDates = new ArrayList<>(32);
         TriggerResult triggerResult = triggerService.get(new TriggerGetParam().setJobName(job.getJobName()));
         allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCronTriggers(), injectTenantId()));
         allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCalendarOffsetTriggers(), injectTenantId()));
@@ -89,7 +89,7 @@ public class JobOperatedService extends BaseServiceAdapter {
         allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCalendarIntervalTriggers(), injectTenantId()));
         if (allTriggerDates.size() > 0) {
             Collections.sort(allTriggerDates);
-            job.setNextFireTimes(allTriggerDates);
+            job.setNextFireTimes(allTriggerDates.size() <= 10 ? allTriggerDates : allTriggerDates.subList(0, 10));
         }
     }
 
