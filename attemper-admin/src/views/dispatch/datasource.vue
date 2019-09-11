@@ -33,7 +33,7 @@
     >
       <el-table-column
         type="selection"
-        width="40"
+        width="45"
       />
       <el-table-column :label="$t('dispatch.datasource.columns.dbName')" prop="id" sortable="custom" align="center" min-width="100px">
         <template slot-scope="scope">

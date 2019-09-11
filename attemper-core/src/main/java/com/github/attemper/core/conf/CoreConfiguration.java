@@ -5,6 +5,7 @@ import com.github.attemper.core.dao.application.ProgramMapper;
 import com.github.attemper.core.dao.application.ProjectMapper;
 import com.github.attemper.core.dao.dispatch.*;
 import com.github.attemper.core.dao.instance.InstanceMapper;
+import com.github.attemper.core.dao.statistics.AnalysisMapper;
 import com.github.attemper.core.dao.statistics.CountMapper;
 import com.github.attemper.core.ext.notice.NoticeService;
 import com.github.attemper.core.ext.notice.channel.mail.EmailSender;
@@ -44,6 +45,7 @@ import javax.validation.ValidatorFactory;
         InstanceMapper.class,
         CalendarMapper.class,
         CountMapper.class,
+        AnalysisMapper.class,
         DelayJobMapper.class,
 
         //service

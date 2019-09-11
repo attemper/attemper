@@ -34,15 +34,6 @@ public class CommonResult<T> extends BaseResult<T> {
 
     /**
      * @param code
-     * @param replaceMsg
-     * @return
-     */
-	public static CommonResult putWith(int code, String replaceMsg){
-	    return put(code, replaceMsg);
-    }
-
-    /**
-     * @param code
      * @param extraMsg
      * @return
      */
@@ -59,15 +50,6 @@ public class CommonResult<T> extends BaseResult<T> {
      */
 	public static CommonResult ok() {
 		return put(CommonConstants.OK);
-	}
-
-    /**
-     * replace default ok msg
-     * @param msg
-     * @return
-     */
-	public static CommonResult ok(String msg) {
-	    return putWith(CommonConstants.OK, msg);
 	}
 
     /**

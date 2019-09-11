@@ -211,6 +211,13 @@ public class APIPath {
         public static final String INSTANCE = API_PATH + STATISTICS + SUB_PATH + InstancePath.SUB_PATH;
     }
 
+    public static final class AnalysisPath {
+        private static final String SUB_PATH = "/analysis";
+
+        public static final String PLAN_APP = API_PATH + STATISTICS + SUB_PATH + "/plan/app";
+
+    }
+
     public static final class ToolPath {
         public static final String SUB_PATH = "/tool";
 

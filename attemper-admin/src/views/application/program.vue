@@ -36,7 +36,7 @@
             </el-table-column>
             <el-table-column
               type="selection"
-              width="40"
+              width="45"
             />
             <el-table-column :label="$t('application.program.columns.programName')" align="center" min-width="100px">
               <template slot-scope="scope">
@@ -81,7 +81,7 @@
           >
             <el-table-column
               type="selection"
-              width="40"
+              width="45"
             />
             <el-table-column :label="$t('application.program.columns.packageName')" align="center" min-width="100px">
               <template slot-scope="scope">

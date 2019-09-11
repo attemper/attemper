@@ -41,7 +41,7 @@
       </el-table-column>
       <el-table-column
         type="selection"
-        width="40"
+        width="45"
       />
       <el-table-column :label="$t('dispatch.delay.columns.id')" min-width="100px">
         <template slot-scope="scope">

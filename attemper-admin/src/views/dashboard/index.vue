@@ -6,16 +6,14 @@
 
     <chart-group :cell-number="cellNumber" />
 
-    <el-row>
-      <simple-monitor />
-    </el-row>
+    <scatter-chart-group />
   </div>
 </template>
 
 <script>
 import GithubCorner from '@/components/GithubCorner'
 import PanelGroup from './components/PanelGroup'
-import SimpleMonitor from './components/SimpleMonitor'
+import ScatterChartGroup from './components/ScatterChartGroup'
 import ChartGroup from './components/ChartGroup'
 import { mapGetters } from 'vuex'
 
@@ -25,7 +23,7 @@ export default {
     ChartGroup,
     GithubCorner,
     PanelGroup,
-    SimpleMonitor
+    ScatterChartGroup
   },
   computed: {
     ...mapGetters([

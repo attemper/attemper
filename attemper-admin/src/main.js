@@ -11,6 +11,8 @@ import ECharts from 'vue-echarts/components/ECharts.vue'
 import 'echarts/lib/chart/pie'
 import 'echarts/lib/component/title'
 import 'echarts/lib/component/tooltip'
+import 'echarts/lib/chart/scatter'
+import 'echarts/lib/component/singleAxis'
 
 import App from './App'
 import store from './store'

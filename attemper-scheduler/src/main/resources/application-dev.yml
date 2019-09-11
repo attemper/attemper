@@ -2,11 +2,11 @@ spring:
     datasource:
         hikari:
             first: 
-                jdbc-url: jdbc:mysql://127.0.0.1:3306/attemper?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/attemper?allowMultiQueries=true&characterEncoding=UTF-8
                 username: root
                 password: 123456
             second: 
-                jdbc-url: jdbc:mysql://127.0.0.1:3306/log?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/log?characterEncoding=UTF-8
                 username: root
                 password: 123456
     mail:
@@ -37,6 +37,7 @@ org:
     jobStore:
       isClustered: true
       misfireThreshold: 10000
+      acquireTriggersWithinLock: true
 
 logging:
   level:

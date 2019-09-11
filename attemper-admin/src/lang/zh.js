@@ -431,7 +431,10 @@ export default {
   },
   chart: {
     instance: '实例状态分布',
-    job: '任务状态分布'
+    job: '任务状态分布',
+    total: '执行计划\n\n全量',
+    realTime: '实时',
+    daily: '日终'
   },
   navbar: {
     logOut: '退出登录',

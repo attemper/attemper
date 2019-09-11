@@ -27,7 +27,7 @@
     >
       <el-table-column
         type="selection"
-        width="40"
+        width="45"
       />
       <el-table-column :label="$t('dispatch.arg.columns.argName')" prop="id" sortable="custom" align="center" min-width="100px">
         <template slot-scope="scope">

@@ -64,7 +64,7 @@
     >
       <el-table-column
         type="selection"
-        width="40"
+        width="45"
       />
       <el-table-column :label="$t('dispatch.job.columns.jobName')" show-overflow-tooltip min-width="120px">
         <template slot-scope="scope">

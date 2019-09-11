@@ -70,7 +70,7 @@
           >
             <el-table-column
               type="selection"
-              width="35"
+              width="45"
             />
             <el-table-column :label="$t('columns.startTime')" min-width="100px" align="center">
               <template slot-scope="scope">

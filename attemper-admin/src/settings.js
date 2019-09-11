@@ -56,6 +56,7 @@ module.exports = {
     GIST: '/gist',
     INSTANCE: '/instance',
     COUNT: '/count',
+    ANALYSIS: '/analysis',
     TOOL: '/tool',
     GET: '/get'
   },

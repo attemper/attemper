@@ -36,7 +36,7 @@
             </el-table-column>
             <el-table-column
               type="selection"
-              width="40"
+              width="45"
             />
             <el-table-column :label="$t('application.gist.columns.gistName')" align="center" min-width="100px">
               <template slot-scope="scope">
