@@ -4,6 +4,7 @@ import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.core.ext.notice.channel.Sender;
 import org.reflections.Reflections;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -22,6 +23,9 @@ public class NoticeService implements CommandLineRunner {
         Set<Class<? extends Sender>> subTypeSet = reflections.getSubTypesOf(Sender.class);
         for (Class<? extends Sender> subType : subTypeSet) {
             Sender sender = SpringContextAware.getBean(subType);
+            if (senderMap.containsKey(sender.getIndex())) {
+                throw new DuplicateKeyException("index is duplicated:" + sender.getIndex());
+            }
             senderMap.put(sender.getIndex(), sender);
         }
     }

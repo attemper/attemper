@@ -1,6 +1,7 @@
 package com.github.attemper.executor.task.mail;
 
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.core.ext.notice.MessageBean;
 import com.github.attemper.core.ext.notice.channel.mail.EmailSender;
 import com.github.attemper.executor.task.ParentTask;
@@ -41,9 +42,9 @@ public class CustomMailTask extends ParentTask implements JavaDelegate {
         }
         Object to = execution.getVariable(TO);
         if (to != null && StringUtils.isNotBlank(to.toString())) {
-            messageBean.setTo(to.toString());
+            messageBean.setTo(new Tenant().setEmail(to.toString()));
         } else {
-            messageBean.setTo(propertyMap.get(TO));
+            messageBean.setTo(new Tenant().setEmail(propertyMap.get(TO)));
         }
         Object subject = execution.getVariable(SUBJECT);
         if (subject != null && StringUtils.isNotBlank(subject.toString())) {

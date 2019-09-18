@@ -1,13 +1,12 @@
 package com.github.attemper.web.conf;
 
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.camunda.bpm.spring.boot.starter.configuration.Ordering;
 import org.camunda.bpm.spring.boot.starter.configuration.impl.AbstractCamundaConfiguration;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+@Order(-1)
 @Component
-@Order(Ordering.DEFAULT_ORDER - 1)
 public class CustomProcessEngineConfiguration extends AbstractCamundaConfiguration {
 
     @Override

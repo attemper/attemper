@@ -298,7 +298,7 @@ export default {
       const rootResource = {
         resourceName: 'root',
         parentResourceName: null,
-        displayName: '根节点',
+        displayName: this.$t('sys.tag.tip.root'),
         icon: 'tree'
       }
       this.createResourceTree(asyncRouterMap, rootResource)

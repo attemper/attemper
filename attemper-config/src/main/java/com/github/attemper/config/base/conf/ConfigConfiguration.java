@@ -31,6 +31,7 @@ import java.util.Properties;
 
         GlobalExceptionAdvisor.class,
 
+        LocaleConfig.class,
         Swagger2Config.class,
         LocalServerConfig.class,
 

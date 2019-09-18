@@ -1,6 +1,7 @@
 package com.github.attemper.config.base.conf;
 
-import com.github.attemper.common.exception.RTException;
+import com.github.attemper.config.base.property.AppProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,9 @@ import java.net.UnknownHostException;
 
 @Component
 public class LocalServerConfig implements ApplicationListener<WebServerInitializedEvent> {
+
+    @Autowired
+    private AppProperties appProperties;
 
     private int serverPort;
 
@@ -26,11 +30,11 @@ public class LocalServerConfig implements ApplicationListener<WebServerInitializ
         try {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            throw new RTException(e);
+            throw new RuntimeException(e);
         }
     }
 
     public String getRequestPath() {
-        return new StringBuilder("http://").append(getLocalHost()).append(":").append(getPort()).toString(); // TODO
+        return new StringBuilder(appProperties.getSchema()).append(getLocalHost()).append(":").append(getPort()).toString();
     }
 }

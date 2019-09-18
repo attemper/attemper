@@ -146,7 +146,7 @@ export default {
           { required: true, trigger: 'blur' }
         ],
         attribute: [
-          { required: false, trigger: 'blur', len: 255 }
+          { required: false, trigger: 'blur', range: { max: 255 }}
         ]
       },
       datasource: DEF_OBJ,

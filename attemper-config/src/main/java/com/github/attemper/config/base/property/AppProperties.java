@@ -6,6 +6,11 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
 
+    private String schema = "http://";
+
+    @NestedConfigurationProperty
+    private final LocaleInfo localeInfo = new LocaleInfo();
+
     @NestedConfigurationProperty
     private final WebConfig web = new WebConfig();
 
@@ -17,6 +22,18 @@ public class AppProperties {
 
     @NestedConfigurationProperty
     private final SnowFlake snowFlake = new SnowFlake();
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    public LocaleInfo getLocaleInfo() {
+        return localeInfo;
+    }
 
     public WebConfig getWeb() {
         return web;
@@ -32,6 +49,30 @@ public class AppProperties {
 
     public SnowFlake getSnowFlake() {
         return snowFlake;
+    }
+
+    public static class LocaleInfo {
+
+        private String language = "zh";
+
+        // nation or area
+        private String country = "CN";
+
+        public String getLanguage() {
+            return language;
+        }
+
+        public void setLanguage(String language) {
+            this.language = language;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+
+        public void setCountry(String country) {
+            this.country = country;
+        }
     }
 
     public static class WebConfig {

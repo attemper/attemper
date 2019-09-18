@@ -200,7 +200,7 @@ export default {
           { required: true, trigger: 'blur' }
         ],
         remark: [
-          { required: false, trigger: 'blur', len: 255 }
+          { required: false, trigger: 'blur', range: { max: 255 }}
         ]
       },
       arg: DEF_OBJ,

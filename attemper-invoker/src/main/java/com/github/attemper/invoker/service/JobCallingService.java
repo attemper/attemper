@@ -36,6 +36,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
@@ -106,20 +107,26 @@ public class JobCallingService {
                 .setVariableMap(dataMap);
         if (code != -1) {
             Instance instance = buildInstance(param, null, parentId, InstanceStatus.FAILURE);
-            instance.setEndTime(instance.getStartTime());
-            instance.setDuration(0L);
-            instance.setCode(code);
-            instance.setMsg(StatusProperty.getValue(code));
-            saveInstance(instance);
+            instance.setCode(code).setMsg(StatusProperty.getValue(code))
+                    .setEndTime(instance.getStartTime()).setDuration(0L);
+            addInstance(instance);
             throw new RTException(code);
         }
         String baseUrl = computeUrl(param, parentId);
         String token = SysStore.getTenantTokenMap().get(tenantId);
-        saveInstance(buildInstance(param, baseUrl, parentId, InstanceStatus.RUNNING));
+        Instance instance = addInstance(buildInstance(param, baseUrl, parentId, InstanceStatus.RUNNING));
         try {
             invokeByWebClient(baseUrl, token, param);
-        } catch (RTException e) {
-            invokeByWebClient(baseUrl, getToken(tenant), param);
+        } catch (RTException rte) {
+            if (rte.getCode() == HttpStatus.UNAUTHORIZED.value()) {
+                invokeByWebClient(baseUrl, getToken(tenant), param);
+            } else {
+                instance.setCode(rte.getCode()).setMsg(rte.getMsg())
+                        .setEndTime(instance.getStartTime()).setDuration(0L)
+                        .setStatus(InstanceStatus.FAILURE.getStatus());
+                instanceService.update(instance);
+                throw rte;
+            }
         }
     }
 
@@ -159,7 +166,7 @@ public class JobCallingService {
             instance.setDuration(0L);
             instance.setCode(code);
             instance.setMsg(StatusProperty.getValue(code));
-            saveInstance(instance);
+            addInstance(instance);
             throw new RTException(code);
         }
         int randomIndex = (int) (Math.random() * urls.size());
@@ -176,6 +183,12 @@ public class JobCallingService {
                 .retrieve()
                 .onStatus(s -> s == HttpStatus.UNAUTHORIZED, resp -> Mono.error(new RTException(HttpStatus.UNAUTHORIZED.value(), resp.statusCode().getReasonPhrase())))
                 .bodyToMono(CommonResult.class)
+                .doOnError(WebClientResponseException.class, err -> {
+                    if (err.getMessage() != null && err.getMessage().contains("Connection refused")) {
+                        throw new RTException(3009, err);
+                    }
+                    throw new RTException(err);
+                })
                 .block();
     }
 
@@ -220,7 +233,7 @@ public class JobCallingService {
                 .setTenantId(param.getTenantId());
     }
 
-    private void saveInstance(Instance instance) {
-        instanceService.add(instance);
+    private Instance addInstance(Instance instance) {
+        return instanceService.add(instance);
     }
 }

@@ -28,12 +28,10 @@ spring:
     jackson: 
         date-format: yyyy-MM-dd HH:mm:ss
         time-zone: GMT+8
-        defaultPropertyInclusion: non_null   #非空node才序列化
+        defaultPropertyInclusion: non_null
         deserialization: 
-            FAIL_ON_UNKNOWN_PROPERTIES: false #未定义的key不序列化
-      
+            FAIL_ON_UNKNOWN_PROPERTIES: false
 
-# Mybatis配置
 mybatis:
     mapperLocations: classpath*:mapper/*Mapper.xml
     configuration:

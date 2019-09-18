@@ -118,7 +118,7 @@ public class InstanceService extends BaseServiceAdapter {
         return mapper.listAct(paramMap);
     }
 
-    public void add(Instance instance) {
+    public Instance add(Instance instance) {
         if (instance.getDisplayName() == null) {
             Job job = jobService.get(instance.getJobName(), instance.getTenantId());
             if (job != null) {
@@ -127,24 +127,29 @@ public class InstanceService extends BaseServiceAdapter {
         }
         mapper.add(instance);
         noticeWithInstance(instance);
+        return instance;
     }
 
-    public void update(Instance instance) {
+    public Instance update(Instance instance) {
         mapper.update(instance);
         noticeWithInstance(instance);
+        return instance;
     }
 
-    public void updateDone(Instance instance) {
+    public Instance updateDone(Instance instance) {
         mapper.updateDone(instance);
         noticeWithInstance(instance);
+        return instance;
     }
 
-    public void addAct(InstanceAct instanceAct) {
+    public InstanceAct addAct(InstanceAct instanceAct) {
         mapper.addAct(instanceAct);
+        return instanceAct;
     }
 
-    public void updateAct(InstanceAct instanceAct) {
+    public InstanceAct updateAct(InstanceAct instanceAct) {
         mapper.updateAct(instanceAct);
+        return instanceAct;
     }
 
     public List<Instance> listRunningOfExecutor(String executorAddress) {
@@ -157,7 +162,7 @@ public class InstanceService extends BaseServiceAdapter {
             try {
                 Tenant tenant = tenantService.get(new TenantGetParam().setUserName(instance.getTenantId()));
                 MessageBean messageBean = new MessageBean()
-                        .setTo(tenant.getEmail())
+                        .setTo(tenant)
                         .setSubject(MessageFormat.format(StatusProperty.getValue(900), instance.getJobName(), instance.getDisplayName()))
                         .setContent(instance.getMsg());
                 String sendConfig = tenant.getSendConfig();
@@ -167,6 +172,8 @@ public class InstanceService extends BaseServiceAdapter {
                             Sender sender = noticeService.getSenderMap().get(i);
                             if (sender != null) {
                                 sender.send(messageBean);
+                            } else {
+                                log.error("send is missing:{} of {}", i, sendConfig);
                             }
                         }
                     }

@@ -1,10 +1,14 @@
 package com.github.attemper.core.ext.notice;
 
+import com.github.attemper.common.result.sys.tenant.Tenant;
+import lombok.ToString;
+
+@ToString
 public class MessageBean {
 
     protected String from;
 
-    protected String to;
+    protected Tenant to;
 
     protected String subject;
 
@@ -19,11 +23,11 @@ public class MessageBean {
         return this;
     }
 
-    public String getTo() {
+    public Tenant getTo() {
         return to;
     }
 
-    public MessageBean setTo(String to) {
+    public MessageBean setTo(Tenant to) {
         this.to = to;
         return this;
     }

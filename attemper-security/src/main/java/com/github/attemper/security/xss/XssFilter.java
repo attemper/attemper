@@ -7,10 +7,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-/**
- * XSS过滤
- * @author ldang
- */
 @Configuration
 public class XssFilter implements Filter {
 

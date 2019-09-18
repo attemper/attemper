@@ -62,6 +62,18 @@
       @sort-change="sortChange"
       @cell-click="clickCell"
     >
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="table-expand">
+            <el-form-item :label="$t('monitor.columns.schedulerUri')">
+              <span>{{ props.row.schedulerUri }}</span>
+            </el-form-item>
+            <el-form-item :label="$t('monitor.columns.executorUri')">
+              <span>{{ props.row.executorUri }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
       <el-table-column
         type="selection"
         width="45"

@@ -9,10 +9,6 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 配置数据源
- * @auth ldang
- */
 @Configuration
 public class DataSourceConfig {
 	
