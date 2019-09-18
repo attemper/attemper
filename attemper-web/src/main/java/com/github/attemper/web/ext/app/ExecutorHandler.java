@@ -63,7 +63,7 @@ public class ExecutorHandler extends CrossSystemHandler {
                 .bodyToMono(CommonResult.class)
                 .doOnError(WebClientResponseException.class, err -> {
                     if (err.getMessage() != null && err.getMessage().contains("Connection refused")) {
-                        throw new RTException(3009, err.getMessage());
+                        throw new RTException(3009, err);
                     }
                     throw new RTException(err);
                 })

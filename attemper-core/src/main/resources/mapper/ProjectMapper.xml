@@ -133,7 +133,7 @@
         </where>
     </select>
 
-    <select id="listExecutor" parameterType="map" resultType="string">
+    <select id="listExecutor" parameterType="map" resultType="java.lang.String">
         SELECT pe.EXECUTOR_URI
         FROM ${tablePrefix}project_executor pe
         JOIN ${tablePrefix}project p

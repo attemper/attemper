@@ -24,12 +24,16 @@ public class EmailSender implements Sender {
 
     @Override
     public void send(MessageBean messageBean) {
+        if (StringUtils.isBlank(messageBean.getTo().getEmail())) {
+            log.error("email is blank:{}", messageBean);
+            return;
+        }
         MimeMessage email = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(email, true);
             helper.setFrom(StringUtils.isNotBlank(messageBean.getFrom())
                     ? messageBean.getFrom() : mailProperties.getUsername());
-            helper.setTo(messageBean.getTo().split(","));
+            helper.setTo(messageBean.getTo().getEmail().split(","));
             helper.setSubject(messageBean.getSubject());
             helper.setText(messageBean.getContent(), true);
             mailSender.send(email);

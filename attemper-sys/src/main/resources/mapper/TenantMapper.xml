@@ -19,7 +19,15 @@
 
     <select id="list" parameterType="map" resultType="com.github.attemper.common.result.sys.tenant.Tenant">
         select
-        <include refid="columnsWithoutPassword"/>
+        USER_NAME,
+        DISPLAY_NAME,
+        EMAIL,
+        MOBILE,
+        STATUS,
+        ADMIN,
+        CREATE_TIME,
+        UPDATE_TIME,
+        SEND_CONFIG
         from ${tablePrefix}tenant
         <where>
             <if test="userName != null">
@@ -66,7 +74,6 @@
                 EMAIL,
                 MOBILE,
                 STATUS,
-                ADMIN,
                 CREATE_TIME,
                 UPDATE_TIME,
                 SEND_CONFIG
@@ -79,7 +86,6 @@
                 #{email, jdbcType=VARCHAR},
                 #{mobile, jdbcType=VARCHAR},
                 #{status, jdbcType=INTEGER},
-                #{admin, jdbcType=VARCHAR},
                 #{createTime, jdbcType=TIMESTAMP},
                 #{updateTime, jdbcType=TIMESTAMP},
                 #{sendConfig, jdbcType=VARCHAR}
@@ -96,7 +102,6 @@
                     EMAIL = #{email, jdbcType=VARCHAR},
                     MOBILE = #{mobile, jdbcType=VARCHAR},
                     STATUS = #{status, jdbcType=INTEGER},
-                    ADMIN = #{admin, jdbcType=VARCHAR},
                     UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
                     SEND_CONFIG = #{sendConfig, jdbcType=VARCHAR},
                 </set>
@@ -163,18 +168,6 @@
             )
         </foreach>
     </insert>
-
-    <sql id="columnsWithoutPassword">
-        USER_NAME,
-        DISPLAY_NAME,
-        EMAIL,
-        MOBILE,
-        STATUS,
-        ADMIN,
-        CREATE_TIME,
-        UPDATE_TIME,
-        SEND_CONFIG
-    </sql>
 
     <sql id="condUserName">
         <if test="userName != null">

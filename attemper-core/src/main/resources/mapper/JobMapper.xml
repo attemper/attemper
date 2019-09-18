@@ -244,10 +244,12 @@
 
     <select id="getProject" parameterType="map"
             resultType="com.github.attemper.common.result.app.project.Project">
-        select jp.*
-        from ${tablePrefix}job_project jp
-        join ${tablePrefix}job j
-        on jp.JOB_NAME = j.JOB_NAME and jp.TENANT_ID = j.TENANT_ID
+        select p.*
+        FROM ${tablePrefix}project p
+        JOIN ${tablePrefix}job_project jp
+        USING (PROJECT_NAME, TENANT_ID)
+        JOIN ${tablePrefix}job j
+        USING (JOB_NAME, TENANT_ID)
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>

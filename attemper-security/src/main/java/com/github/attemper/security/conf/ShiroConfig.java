@@ -19,10 +19,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Shiro配置
- * @auth ldang
- */
 @Configuration
 public class ShiroConfig {
 

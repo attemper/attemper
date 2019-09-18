@@ -21,6 +21,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.net.MediaType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.Charsets;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
@@ -111,7 +112,7 @@ public class JobOperatedService extends BaseServiceAdapter {
                     .done();
             job.setContent(Bpmn.convertToString(modelInstance));
         } else {
-            BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(param.getContent().getBytes()));
+            BpmnModelInstance bpmnModelInstance = toBpmnModelInstance(param.getContent());
             Collection<Process> modelElements = bpmnModelInstance.getModelElementsByType(Process.class);
             for (Process process : modelElements) {
                 process.builder().id(param.getJobName()).name(param.getDisplayName());
@@ -388,7 +389,7 @@ public class JobOperatedService extends BaseServiceAdapter {
                 while ((line = bufferedReader.readLine()) != null) {
                     sb.append(line);
                 }
-                BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(new ByteArrayInputStream(sb.toString().getBytes()));
+                BpmnModelInstance bpmnModelInstance = toBpmnModelInstance(sb.toString());
                 Collection<Process> elements = bpmnModelInstance.getModelElementsByType(Process.class);
                 for (Process process : elements) {
                     Job job = jobService.get(new JobNameParam().setJobName(process.getId()));
@@ -444,7 +445,7 @@ public class JobOperatedService extends BaseServiceAdapter {
     private Deployment deploy(Job job) {
         return repositoryService.createDeployment()
                 .addModelInstance(job.getJobName() + ".bpmn20.xml",
-                        Bpmn.readModelFromStream(new ByteArrayInputStream(job.getContent().getBytes())))
+                        toBpmnModelInstance(job.getContent()))
                 .name(job.getDisplayName())
                 .tenantId(job.getTenantId())
                 .deploy();
@@ -462,5 +463,9 @@ public class JobOperatedService extends BaseServiceAdapter {
         paramMap.put(CommonConstants.status, JobStatus.DISABLED.getStatus());
         mapper.updateStatus(paramMap);
         return null;
+    }
+
+    private BpmnModelInstance toBpmnModelInstance(String xmlContent) {
+        return Bpmn.readModelFromStream(new ByteArrayInputStream(xmlContent.getBytes(Charsets.UTF_8)));
     }
 }

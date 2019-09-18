@@ -198,7 +198,8 @@ export default {
       tip: {
         tenant: '分配租户',
         resource: '分配菜单',
-        tenantFilterTip: '租户编号或中文名称'
+        tenantFilterTip: '租户编号或中文名称',
+        root: '根节点'
       },
       actions: {
         tenant: '租户',
@@ -416,7 +417,9 @@ export default {
   monitor: {
     columns: {
       duration: '执行时长',
-      msg: '错误信息'
+      msg: '错误信息',
+      schedulerUri: '调度器地址',
+      executorUri: '执行器地址'
     },
     label: {
       record: '记录',

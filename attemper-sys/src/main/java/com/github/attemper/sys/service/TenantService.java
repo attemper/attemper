@@ -21,9 +21,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author ldang
- */
 @Service
 @Transactional
 public class TenantService extends BaseServiceAdapter {

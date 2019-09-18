@@ -6,7 +6,7 @@ spring:
                 username: root
                 password: 123456
             second: 
-                jdbc-url: jdbc:mysql://127.0.0.1:3306/log?characterEncoding=UTF-8&useSSL=false
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/log?characterEncoding=UTF-8
                 username: root
                 password: 123456
     mail:
