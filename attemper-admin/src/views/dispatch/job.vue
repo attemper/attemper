@@ -515,21 +515,21 @@ export default {
       this.editDialog.trigger.visible = true
       getTriggerReq({ jobName: this.job.jobName }).then(res => {
         const result = res.data.result
-        if (result.cronTriggers && result.cronTriggers.length > 0) {
+        if (result && result.cronTriggers && result.cronTriggers.length > 0) {
           this.$refs.cronTrigger.triggerArray = result.cronTriggers
           this.triggerTab.activeTabName = '0'
         } else {
           this.$refs.cronTrigger.triggerArray = []
           this.$refs.cronTrigger.add()
         }
-        if (result.calendarOffsetTriggers && result.calendarOffsetTriggers.length > 0) {
+        if (result && result.calendarOffsetTriggers && result.calendarOffsetTriggers.length > 0) {
           this.$refs.calendarOffsetTrigger.triggerArray = result.calendarOffsetTriggers
           this.triggerTab.activeTabName = '1'
         } else {
           this.$refs.calendarOffsetTrigger.triggerArray = []
           this.$refs.calendarOffsetTrigger.add()
         }
-        if (result.dailyTimeIntervalTriggers && result.dailyTimeIntervalTriggers.length > 0) {
+        if (result && result.dailyTimeIntervalTriggers && result.dailyTimeIntervalTriggers.length > 0) {
           result.dailyTimeIntervalTriggers.forEach(item => {
             item.daysOfWeekArr = item.daysOfWeek.split(',')
           })
@@ -539,7 +539,7 @@ export default {
           this.$refs.dailyTimeIntervalTrigger.triggerArray = []
           this.$refs.dailyTimeIntervalTrigger.add()
         }
-        if (result.calendarIntervalTriggers && result.calendarIntervalTriggers.length > 0) {
+        if (result && result.calendarIntervalTriggers && result.calendarIntervalTriggers.length > 0) {
           this.$refs.calendarIntervalTrigger.triggerArray = result.calendarIntervalTriggers
           this.triggerTab.activeTabName = '3'
         } else {

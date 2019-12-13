@@ -109,9 +109,6 @@ public class JobOperatedService extends BaseServiceAdapter {
             throw new DuplicateKeyException(param.getJobName());
         }
         job = toJob(param);
-        if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
-            throw new RTException(6055);
-        }
         job.setUpdateTime(System.currentTimeMillis());
         if (StringUtils.isBlank(param.getContent())) {
             BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(job.getJobName())
@@ -162,9 +159,6 @@ public class JobOperatedService extends BaseServiceAdapter {
 
     public Void updateContent(JobContentSaveParam param) {
         Job job = validateAndGet(param.getJobName());
-        if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
-            throw new RTException(6057);
-        }
         ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey(param.getJobName())
                 .tenantIdIn(injectTenantId())
@@ -710,14 +704,6 @@ public class JobOperatedService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         paramMap.put(CommonConstants.status, JobStatus.ENABLED.getStatus());
         mapper.updateStatus(paramMap);
-        String tenantId = injectTenantId();
-        for (String jobName : param.getJobNames()) {
-            try {
-                scheduler.resumeJob(new JobKey(jobName, tenantId));
-            } catch (SchedulerException e) {
-                throw new RTException(3001, e);
-            }
-        }
         return null;
     }
 
@@ -725,14 +711,6 @@ public class JobOperatedService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         paramMap.put(CommonConstants.status, JobStatus.DISABLED.getStatus());
         mapper.updateStatus(paramMap);
-        String tenantId = injectTenantId();
-        for (String jobName : param.getJobNames()) {
-            try {
-                scheduler.pauseJob(new JobKey(jobName, tenantId));
-            } catch (SchedulerException e) {
-                throw new RTException(3001, e);
-            }
-        }
         return null;
     }
 
