@@ -15,7 +15,7 @@ public class AspectUtil {
         if(result != null){
             apiLog.setCode(result.getCode());
             apiLog.setMsg(result.getMsg());
-            apiLog.setResponseTime(result.getResponseTime());
+            apiLog.setHandleTime(result.getHandleTime());
             apiLog.setDuration(result.getDuration());
         }
         SpringContextAware.getBean(ApiLogService.class).save(apiLog);

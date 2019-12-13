@@ -3,25 +3,30 @@ package com.github.attemper.web.service.dispatch;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.JobStatus;
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.common.param.dispatch.arg.ArgNamesParam;
 import com.github.attemper.common.param.dispatch.job.*;
-import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
-import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
+import com.github.attemper.common.param.dispatch.trigger.TriggerWrapper;
+import com.github.attemper.common.param.dispatch.trigger.sub.*;
+import com.github.attemper.common.result.dispatch.arg.Arg;
+import com.github.attemper.common.result.dispatch.condition.Condition;
 import com.github.attemper.common.result.dispatch.job.Job;
+import com.github.attemper.common.result.dispatch.job.JobExportAndImportResult;
 import com.github.attemper.common.result.dispatch.job.JobWithVersionResult;
-import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
 import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.dao.dispatch.JobMapper;
+import com.github.attemper.core.service.dispatch.ArgService;
 import com.github.attemper.core.service.dispatch.JobService;
-import com.github.attemper.core.service.dispatch.TriggerService;
+import com.github.attemper.core.util.FileUtil;
 import com.github.attemper.invoker.service.JobCallingService;
 import com.github.attemper.invoker.util.QuartzUtil;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
+import com.github.attemper.web.ext.trigger.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.base.Charsets;
 import com.google.common.net.MediaType;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.Charsets;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
@@ -31,6 +36,11 @@ import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.commons.utils.IoUtil;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.impl.triggers.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -39,10 +49,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -59,12 +72,6 @@ public class JobOperatedService extends BaseServiceAdapter {
     private JobMapper mapper;
 
     @Autowired
-    private TriggerService triggerService;
-
-    @Autowired
-    private TriggerOperatedService triggerOperatedService;
-
-    @Autowired
     private IdGenerator idGenerator;
 
     @Autowired
@@ -77,20 +84,22 @@ public class JobOperatedService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<Job> list = (Page<Job>) mapper.list(paramMap);
-        list.forEach(job -> setNextFireTime(job));
+        list.forEach(this::setNextFireTime);
         return PageUtil.toResultMap(list);
     }
 
     private void setNextFireTime(Job job) {
         List<Date> allTriggerDates = new ArrayList<>(32);
-        TriggerResult triggerResult = triggerService.get(new TriggerGetParam().setJobName(job.getJobName()));
-        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCronTriggers(), injectTenantId()));
-        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCalendarOffsetTriggers(), injectTenantId()));
-        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getDailyIntervalTriggers(), injectTenantId()));
-        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCalendarIntervalTriggers(), injectTenantId()));
-        if (allTriggerDates.size() > 0) {
-            Collections.sort(allTriggerDates);
-            job.setNextFireTimes(allTriggerDates.size() <= 10 ? allTriggerDates : allTriggerDates.subList(0, 10));
+        TriggerWrapper triggerResult = getTrigger(new JobNameParam().setJobName(job.getJobName()));
+        if (triggerResult != null) {
+            allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCronTriggers(), injectTenantId()));
+            allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCalendarOffsetTriggers(), injectTenantId()));
+            allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getDailyTimeIntervalTriggers(), injectTenantId()));
+            allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getCalendarIntervalTriggers(), injectTenantId()));
+            if (allTriggerDates.size() > 0) {
+                Collections.sort(allTriggerDates);
+                job.setNextFireTimes(allTriggerDates.size() <= 10 ? allTriggerDates : allTriggerDates.subList(0, 10));
+            }
         }
     }
 
@@ -103,12 +112,12 @@ public class JobOperatedService extends BaseServiceAdapter {
         if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
             throw new RTException(6055);
         }
-        job.setUpdateTime(new Date());
+        job.setUpdateTime(System.currentTimeMillis());
         if (StringUtils.isBlank(param.getContent())) {
             BpmnModelInstance modelInstance = Bpmn.createExecutableProcess(job.getJobName())
                     .name(job.getDisplayName())
                     .startEvent()
-                    .id(job.getJobName() + "_start")
+                    .id("start")
                     .done();
             job.setContent(Bpmn.convertToString(modelInstance));
         } else {
@@ -133,7 +142,7 @@ public class JobOperatedService extends BaseServiceAdapter {
             throw new RTException(6080);
         }
         Job updatedJob = toJob(param);
-        updatedJob.setUpdateTime(new Date());
+        updatedJob.setUpdateTime(System.currentTimeMillis());
         mapper.update(updatedJob);
         return updatedJob;
     }
@@ -151,13 +160,11 @@ public class JobOperatedService extends BaseServiceAdapter {
         }
     }
 
-    public JobWithVersionResult updateContent(JobContentSaveParam param) {
+    public Void updateContent(JobContentSaveParam param) {
         Job job = validateAndGet(param.getJobName());
         if (job.getStatus() != JobStatus.ENABLED.getStatus()) {
             throw new RTException(6057);
         }
-        JobWithVersionResult result = new JobWithVersionResult()
-                .setJobName(param.getJobName());
         ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey(param.getJobName())
                 .tenantIdIn(injectTenantId())
@@ -176,23 +183,18 @@ public class JobOperatedService extends BaseServiceAdapter {
                 }
             }
         }
-        job.setUpdateTime(new Date());
+        job.setUpdateTime(System.currentTimeMillis());
         job.setContent(param.getContent());
         mapper.updateContent(job);
-        if (definition == null) {
-            result.setVersion(0);
-        } else {
-            result.setProcDefId(definition.getId()).setVersion(definition.getVersion() + 1);
-        }
-        return result.setUpdateTime(job.getUpdateTime());
+        return null;
     }
 
     public Void remove(JobNamesParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
-        param.getJobNames().forEach(item -> {
-            TriggerSaveParam triggerSaveParam = new TriggerSaveParam(item);
-            triggerOperatedService.update(triggerSaveParam);
-        });
+        for (String jobName : param.getJobNames()) {
+            TriggerWrapper triggerWrapper = new TriggerWrapper(jobName);
+            updateTrigger(triggerWrapper);
+        }
         mapper.delete(paramMap);
         return null;
     }
@@ -205,15 +207,15 @@ public class JobOperatedService extends BaseServiceAdapter {
      */
     public Void publish(JobNamesParam param) {
         List<String> jobNames = param.getJobNames();
-        jobNames.forEach(jobName -> {
+        for (String jobName : jobNames) {
             Job job = validateAndGet(jobName);
             if (StringUtils.isBlank(job.getContent())) {
                 throw new RTException(6053, jobName);
             }
             Deployment deployment = deploy(job);
-            job.setUpdateTime(deployment.getDeploymentTime()).setContent(null);
+            job.setUpdateTime(deployment.getDeploymentTime().getTime()).setContent(null);
             mapper.updateContent(job);
-        });
+        }
         return null;
     }
 
@@ -223,7 +225,8 @@ public class JobOperatedService extends BaseServiceAdapter {
                 .setDisplayName(saveParam.getDisplayName())
                 .setContent(saveParam.getContent())
                 .setStatus(saveParam.getStatus())
-                .setConcurrent(saveParam.isConcurrent())
+                .setConcurrent(saveParam.getConcurrent())
+                .setOnce(saveParam.getOnce())
                 .setRemark(saveParam.getRemark())
                 .setTenantId(injectTenantId());
     }
@@ -263,11 +266,8 @@ public class JobOperatedService extends BaseServiceAdapter {
             content = IoUtil.inputStreamAsString(is);
         }
         if (targetJob != null) {
-            JobSaveParam saveParam = new JobSaveParam()
-                    .setDisplayName(targetJob.getDisplayName())
-                    .setStatus(targetJob.getStatus())
-                    .setConcurrent(targetJob.isConcurrent()).setRemark(targetJob.getRemark());
-            saveParam.setJobName(targetJob.getJobName()).setContent(content);
+            JobSaveParam saveParam = toParam(targetJob);
+            saveParam.setContent(content);
             return update(saveParam);
         }
         targetJobParam.setContent(content);
@@ -280,7 +280,7 @@ public class JobOperatedService extends BaseServiceAdapter {
      * @param param
      * @return
      */
-    public JobWithVersionResult exchange(JobNameWithDefinitionParam param) {
+    public Void exchange(JobNameWithDefinitionParam param) {
         Job oldReversionJob = validateAndGet(param.getJobName());
         if (StringUtils.isBlank(param.getProcDefId())) {
             return null;
@@ -295,8 +295,8 @@ public class JobOperatedService extends BaseServiceAdapter {
         InputStream is = repositoryService.getResourceAsStream(
                 processDefinition.getDeploymentId(), processDefinition.getResourceName());
         JobContentSaveParam saveParam = new JobContentSaveParam()
-                .setJobName(oldReversionJob.getJobName())
                 .setContent(IoUtil.inputStreamAsString(is));
+        saveParam.setJobName(oldReversionJob.getJobName());
         return updateContent(saveParam);
     }
 
@@ -313,7 +313,7 @@ public class JobOperatedService extends BaseServiceAdapter {
         if (StringUtils.isNotBlank(job.getContent())) {
             JobWithVersionResult result = new JobWithVersionResult()
                     .setJobName(job.getJobName())
-                    .setUpdateTime(job.getUpdateTime())
+                    .setUpdateTime(new Date(job.getUpdateTime()))
                     .setVersion(jobWithVersionResults.isEmpty() ? 0 :
                             jobWithVersionResults.get(jobWithVersionResults.size() - 1).getVersion() + 1);
             jobWithVersionResults.add(result);
@@ -358,16 +358,65 @@ public class JobOperatedService extends BaseServiceAdapter {
         return null;
     }
 
-    public void exportModel(HttpServletResponse response, JobNamesParam param) {
-        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionKeysIn(param.getJobNames().toArray(new String[]{}))
-                .tenantIdIn(injectTenantId())
-                .latestVersion()
-                .list();
-        response.setHeader("Content-Disposition", "attachment; filename=models.zip");
+    private static final String JSON_FILE_JOB = "job.json";
+
+    private static final String JSON_FILE_ARG = "arg.json";
+
+    private static final String JSON_FILE_CONDITION = "condition.json";
+
+    /**
+     * export job and(or) trigger and(or) arg and(or) project
+     * @param response
+     * @param param
+     */
+    public void exportModel(HttpServletResponse response, JobExportParam param) {
+        List<JobExportAndImportResult> jobModels = new ArrayList<>();
+        Set<Arg> argModels = new HashSet<>();
+        Set<Condition> conditionModels = new HashSet<>();
+        String tenantId = injectTenantId();
+        for (String jobName : param.getJobNames()) {
+            Job job = jobService.get(jobName, tenantId);
+            job.setUpdateTime(null) // import will init it
+                .setContent(null); // reject temporary design
+            JobExportAndImportResult mainModel = new JobExportAndImportResult();
+            mainModel.setJob(job);
+            List<Arg> args = jobService.getArg(jobName, tenantId);
+            if (args.size() > 0) {
+                mainModel.setArgs(args.stream().map(Arg::getArgName).collect(Collectors.toList()));
+                argModels.addAll(args);
+            }
+            List<Condition> conditions = jobService.getConditions(jobName, tenantId);
+            if (conditions.size() > 0) {
+                mainModel.setConditions(conditions.stream().map(Condition::getConditionName).collect(Collectors.toList()));
+                conditionModels.addAll(conditions);
+            }
+            TriggerWrapper triggerResult = getTrigger(new JobNameParam().setJobName(jobName));
+            if (triggerResult != null) {
+                mainModel.setTrigger(triggerResult);
+            }
+            jobModels.add(mainModel);
+        }
+        response.setHeader("Content-Disposition", "attachment; filename=" + param.getFileName());
         response.setContentType(MediaType.ZIP.toString());
         try (ServletOutputStream outputStream = response.getOutputStream();
              ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);) {
+            if (jobModels.size() > 0) {
+                String jobModelStr = BeanUtil.bean2JsonStr(jobModels);
+                createZipEntry(zipOutputStream, JSON_FILE_JOB, IoUtil.stringAsInputStream(jobModelStr));
+            }
+            if (argModels.size() > 0) {
+                String argModelStr = BeanUtil.bean2JsonStr(argModels);
+                createZipEntry(zipOutputStream, JSON_FILE_ARG, IoUtil.stringAsInputStream(argModelStr));
+            }
+            if (conditionModels.size() > 0) {
+                String conditionModelStr = BeanUtil.bean2JsonStr(conditionModels);
+                createZipEntry(zipOutputStream, JSON_FILE_CONDITION, IoUtil.stringAsInputStream(conditionModelStr));
+            }
+            List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
+                    .processDefinitionKeysIn(param.getJobNames().toArray(new String[]{}))
+                    .tenantIdIn(injectTenantId())
+                    .latestVersion() // export latest version
+                    .list();
             for (ProcessDefinition definition : processDefinitions) {
                 InputStream resourceAsStream = repositoryService.getResourceAsStream(definition.getDeploymentId(), definition.getResourceName());
                 createZipEntry(zipOutputStream, definition.getResourceName(), resourceAsStream);
@@ -377,49 +426,235 @@ public class JobOperatedService extends BaseServiceAdapter {
         }
     }
 
+    @Autowired
+    private ArgService argService;
+
     public Void importModel(MultipartFile file) {
+        String tenantId = injectTenantId();
+        Map<String, String> nameDataMap = new HashMap<>();
         try (InputStream is = file.getInputStream();
-             ZipInputStream zis = new ZipInputStream(is);) {
-            Set<String> jobNames = new HashSet<>();
-            while ((zis.getNextEntry()) != null) {
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(zis));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    sb.append(line);
-                }
-                BpmnModelInstance bpmnModelInstance = toBpmnModelInstance(sb.toString());
-                Collection<Process> elements = bpmnModelInstance.getModelElementsByType(Process.class);
-                for (Process process : elements) {
-                    Job job = jobService.get(new JobNameParam().setJobName(process.getId()));
-                    JobSaveParam jobSaveParam = new JobSaveParam()
-                            .setDisplayName(process.getName()).setConcurrent(false)
-                            .setStatus(JobStatus.ENABLED.getStatus());
-                    jobSaveParam.setJobName(process.getId()).setContent(sb.toString());
-                    if (job == null) {
-                        add(jobSaveParam);
-                    } else {
-                        JobSaveParam saveParam = toParam(job);
-                        saveParam.setContent(sb.toString());
-                        update(saveParam);
-                    }
-                    jobNames.add(process.getId());
-                }
+             ZipInputStream zis = new ZipInputStream(is);){
+            ZipEntry zipEntry;
+            while ((zipEntry = zis.getNextEntry()) != null) {
+                nameDataMap.put(zipEntry.getName(), new String(FileUtil.inputStreamAsByteArray(zis), Charsets.UTF_8));
             }
-            publish(new JobNamesParam().setJobNames(new ArrayList<>(jobNames)));
         } catch (IOException e) {
             throw new RTException(1100, e);
         }
-
+        if (nameDataMap.containsKey(JSON_FILE_ARG)) {
+            String argModelStr = nameDataMap.get(JSON_FILE_ARG);
+            if (StringUtils.isNotBlank(argModelStr)) {
+                List<Map<String, Object>> argModels = BeanUtil.jsonStr2Bean(argModelStr, List.class);
+                if (argModels.size() > 0) {
+                    List<Arg> args = new ArrayList<>(argModels.size());
+                    List<String> argNames = new ArrayList<>(argModels.size());
+                    for (Map<String, Object> map : argModels) {
+                        Arg arg = BeanUtil.map2Bean(Arg.class, map);
+                        argNames.add(arg.getArgName());
+                        arg.setTenantId(tenantId);   // replace tenantId
+                        args.add(arg);
+                    }
+                    // 1.remove args
+                    argService.remove(new ArgNamesParam().setArgNames(argNames));
+                    // 2. insert args
+                    argService.addBatch(args);
+                }
+            }
+        }
+        if (nameDataMap.containsKey(JSON_FILE_CONDITION)) {
+            String conditionModelStr = nameDataMap.get(JSON_FILE_CONDITION);
+            if (StringUtils.isNotBlank(conditionModelStr)) {
+                List<Map<String, Object>> conditionModels = BeanUtil.jsonStr2Bean(conditionModelStr, List.class);
+                if (conditionModels.size() > 0) {
+                    List<Condition> conditions = new ArrayList<>(conditionModels.size());
+                    List<Map<String, Object>> mapList = new ArrayList<>(conditionModels.size());
+                    for (Map<String, Object> map : conditionModels) {
+                        Condition condition = BeanUtil.map2Bean(Condition.class, map);
+                        condition.setTenantId(tenantId);   // replace tenantId
+                        conditions.add(condition);
+                        mapList.add(BeanUtil.bean2Map(condition));
+                    }
+                    // 1.remove conditions
+                    jobService.removeConditions(conditions);
+                    // 2. add conditions
+                    jobService.addConditions(mapList);
+                }
+            }
+        }
+        if (nameDataMap.containsKey(JSON_FILE_JOB)) {
+            String jobModelStr = nameDataMap.get(JSON_FILE_JOB);
+            if (StringUtils.isNotBlank(jobModelStr)) {
+                List<Map<String, Object>> jobModels = BeanUtil.jsonStr2Bean(jobModelStr, List.class);
+                if (jobModels.size() > 0) {
+                    for (Map<String, Object> map : jobModels) {
+                        JobExportAndImportResult exportedModel = BeanUtil.map2Bean(JobExportAndImportResult.class, map);
+                        Job job = exportedModel.getJob();
+                        if (job != null) {
+                            job.setTenantId(tenantId);
+                            Job jobInDb = jobService.get(job.getJobName(), tenantId);
+                            if (jobInDb == null) { // insert
+                                if (nameDataMap.containsKey(job.getJobName() + SUFFIX_BPMN_XML)) { // need publish
+                                    String content = nameDataMap.get(job.getJobName() + SUFFIX_BPMN_XML);
+                                    job.setContent(content);
+                                    Deployment deployment = deploy(job);
+                                    job.setUpdateTime(deployment.getDeploymentTime().getTime()).setContent(null);
+                                } else {
+                                    job.setUpdateTime(System.currentTimeMillis());
+                                }
+                                mapper.add(job);
+                            } else { // update
+                                if (nameDataMap.containsKey(job.getJobName() + SUFFIX_BPMN_XML)) { // need publish
+                                    String content = nameDataMap.get(job.getJobName() + SUFFIX_BPMN_XML);
+                                    job.setContent(content);
+                                    Deployment deployment = deploy(job);
+                                    job.setUpdateTime(deployment.getDeploymentTime().getTime()).setContent(null);
+                                } else {
+                                    job.setUpdateTime(System.currentTimeMillis()).setContent(jobInDb.getContent());
+                                }
+                                mapper.update(job);
+                            }
+                            List<String> argNames = exportedModel.getArgs();
+                            if (argNames != null && argNames.size() > 0) {
+                                saveJobArg(job.getJobName(), argNames);
+                            }
+                            List<String> conditionNames = exportedModel.getConditions();
+                            if (conditionNames != null && conditionNames.size() > 0) {
+                                saveJobCondition(job.getJobName(), conditionNames);
+                            }
+                            TriggerWrapper triggerResult = exportedModel.getTrigger();
+                            if (triggerResult != null) {
+                                triggerResult.setJobName(job.getJobName());
+                                updateTrigger(triggerResult);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return null;
+    }
+
+    /**
+     * you can't change the order of the array.<br>
+     */
+    private static TriggerWithQuartzHandler[] triggerHandlers = new TriggerWithQuartzHandler[]{
+            new CronTriggerWithQuartzHandler(),
+            new CalendarOffsetTriggerWithQuartzHandler(),
+            new DailyTimeIntervalTriggerWithQuartzHandler(),
+            new CalendarIntervalTriggerWithQuartzHandler()
+    };
+
+    @Autowired
+    private Scheduler scheduler;
+
+    public TriggerWrapper getTrigger(JobNameParam param) {
+        List<CronTriggerWrapper> cronTriggerResults = new ArrayList<>();
+        List<CalendarOffsetTriggerWrapper> calendarOffsetTriggerResults = new ArrayList<>();
+        List<DailyTimeIntervalTriggerWrapper> dailyTimeIntervalResults = new ArrayList<>();
+        List<CalendarIntervalTriggerWrapper> calendarIntervalTriggerResults = new ArrayList<>();
+        try {
+            List<? extends Trigger> triggersOfJob = scheduler.getTriggersOfJob(new JobKey(param.getJobName(), injectTenantId()));
+            if (triggersOfJob.size() == 0) {
+                return null;
+            }
+            for (Trigger trigger : triggersOfJob) {
+                if (trigger instanceof CronTriggerImpl) {
+                    cronTriggerResults.add((CronTriggerWrapper) triggerHandlers[0].getTrigger(trigger));
+                } else if (trigger instanceof CalendarOffsetTriggerImpl) {
+                    calendarOffsetTriggerResults.add((CalendarOffsetTriggerWrapper) triggerHandlers[1].getTrigger(trigger));
+                } else if (trigger instanceof DailyTimeIntervalTriggerImpl || trigger instanceof SimpleTriggerImpl) {
+                    dailyTimeIntervalResults.add((DailyTimeIntervalTriggerWrapper) triggerHandlers[2].getTrigger(trigger));
+                } else if (trigger instanceof CalendarIntervalTriggerImpl) {
+                    calendarIntervalTriggerResults.add((CalendarIntervalTriggerWrapper) triggerHandlers[3].getTrigger(trigger));
+                } else {
+                    throw new RTException(trigger.toString());
+                }
+            }
+            TriggerWrapper result = new TriggerWrapper();
+            if (cronTriggerResults.size() > 0) {
+                result.setCronTriggers(cronTriggerResults);
+            }
+            if (calendarOffsetTriggerResults.size() > 0) {
+                result.setCalendarOffsetTriggers(calendarOffsetTriggerResults);
+            }
+            if (dailyTimeIntervalResults.size() > 0) {
+                result.setDailyTimeIntervalTriggers(dailyTimeIntervalResults);
+            }
+            if (calendarIntervalTriggerResults.size() > 0) {
+                result.setCalendarIntervalTriggers(calendarIntervalTriggerResults);
+            }
+            return result;
+        } catch (SchedulerException e) {
+            throw new RTException(3002, e);
+        }
+    }
+
+    public Void updateTrigger(TriggerWrapper param) {
+        try {
+            List<? extends Trigger> triggersOfJob = scheduler.getTriggersOfJob(new JobKey(param.getJobName(), injectTenantId()));
+            if (triggersOfJob.size() > 0) {
+                scheduler.unscheduleJobs(triggersOfJob.stream().map(Trigger::getKey).collect(Collectors.toList()));
+            }
+        } catch (SchedulerException e) {
+            throw new RTException(3004, e);
+        }
+        Map<Integer, List<? extends CommonTriggerWrapper>> paramsOfTriggerMap = new HashMap<>(4);
+        paramsOfTriggerMap.put(0, param.getCronTriggers());
+        paramsOfTriggerMap.put(1, param.getCalendarOffsetTriggers());
+        paramsOfTriggerMap.put(2, param.getDailyTimeIntervalTriggers());
+        paramsOfTriggerMap.put(3, param.getCalendarIntervalTriggers());
+        for (int i = 0; i < triggerHandlers.length; i++) {
+            triggerHandlers[i].schedule(param.getJobName(), injectTenantId(), param.getJobDataMap(), paramsOfTriggerMap.get(i));
+        }
+        return null;
+    }
+
+    public Void validateAndUpdateTrigger(TriggerWrapper param) {
+        if (isNotPublished(param.getJobName())) {
+            throw new RTException(6058, param.getJobName());
+        }
+        return updateTrigger(param);
+    }
+
+    public List<Date> testCron(CronTriggerWrapper param) {
+        Set<Trigger> triggers = QuartzUtil.buildCronTriggers(injectTenantId(), Arrays.asList(param));
+        return QuartzUtil.getNextFireTimes(triggers, param.getCalendarNames());
+    }
+
+    public List<Date> testCalendarOffset(CalendarOffsetTriggerWrapper param) {
+        Set<Trigger> triggers = QuartzUtil.buildCalendarOffsetTriggers(injectTenantId(), Arrays.asList(param));
+        return QuartzUtil.getNextFireTimes(triggers, param.getCalendarNames());
+    }
+
+    public List<Date> testDailyTimeInterval(DailyTimeIntervalTriggerWrapper param) {
+        Set<Trigger> triggers = QuartzUtil.buildDailyIntervalTriggers(injectTenantId(), Arrays.asList(param));
+        return QuartzUtil.getNextFireTimes(triggers, param.getCalendarNames());
+    }
+
+    public List<Date> testCalendarInterval(CalendarIntervalTriggerWrapper param) {
+        Set<Trigger> triggers = QuartzUtil.buildCalendarIntervalTriggers(injectTenantId(), Arrays.asList(param));
+        return QuartzUtil.getNextFireTimes(triggers, param.getCalendarNames());
+    }
+
+    /**
+     * the job was published to camunda or not
+     * @param jobName
+     * @return
+     */
+    private boolean isNotPublished(String jobName) {
+        long count = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKey(jobName)
+                .tenantIdIn(injectTenantId())
+                .count();
+        return count <= 0;
     }
 
     private JobSaveParam toParam(Job job) {
         JobSaveParam param = new JobSaveParam()
                 .setDisplayName(job.getDisplayName()).setStatus(job.getStatus())
-                .setConcurrent(job.isConcurrent()).setRemark(job.getRemark());
-        param.setJobName(job.getJobName()).setContent(job.getContent());
+                .setConcurrent(job.getConcurrent()).setOnce(job.getOnce())
+                .setRemark(job.getRemark());
+        param.setJobName(job.getJobName());
         return param;
     }
 
@@ -442,9 +677,29 @@ public class JobOperatedService extends BaseServiceAdapter {
         return null;
     }
 
+    public void saveJobArg(String jobName, List<String> argNames) {
+        JobArgSaveParam param = new JobArgSaveParam().setArgNames(argNames);
+        param.setJobName(jobName);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        mapper.deleteJobArg(paramMap);
+        if (param.getArgNames() != null && param.getArgNames().size() > 0) {
+            mapper.addJobArg(paramMap);
+        }
+    }
+
+    public void saveJobCondition(String jobName, List<String> conditionNames) {
+        JobConditionSaveParam param = new JobConditionSaveParam().setConditionNames(conditionNames);
+        param.setJobName(jobName);
+        Map<String, Object> paramMap = injectTenantIdToMap(param);
+        mapper.deleteJobCondition(paramMap);
+        if (param.getConditionNames() != null && param.getConditionNames().size() > 0) {
+            mapper.addJobCondition(paramMap);
+        }
+    }
+
     private Deployment deploy(Job job) {
         return repositoryService.createDeployment()
-                .addModelInstance(job.getJobName() + ".bpmn20.xml",
+                .addModelInstance(job.getJobName() + SUFFIX_BPMN_XML,
                         toBpmnModelInstance(job.getContent()))
                 .name(job.getDisplayName())
                 .tenantId(job.getTenantId())
@@ -455,6 +710,14 @@ public class JobOperatedService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         paramMap.put(CommonConstants.status, JobStatus.ENABLED.getStatus());
         mapper.updateStatus(paramMap);
+        String tenantId = injectTenantId();
+        for (String jobName : param.getJobNames()) {
+            try {
+                scheduler.resumeJob(new JobKey(jobName, tenantId));
+            } catch (SchedulerException e) {
+                throw new RTException(3001, e);
+            }
+        }
         return null;
     }
 
@@ -462,10 +725,20 @@ public class JobOperatedService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         paramMap.put(CommonConstants.status, JobStatus.DISABLED.getStatus());
         mapper.updateStatus(paramMap);
+        String tenantId = injectTenantId();
+        for (String jobName : param.getJobNames()) {
+            try {
+                scheduler.pauseJob(new JobKey(jobName, tenantId));
+            } catch (SchedulerException e) {
+                throw new RTException(3001, e);
+            }
+        }
         return null;
     }
 
     private BpmnModelInstance toBpmnModelInstance(String xmlContent) {
         return Bpmn.readModelFromStream(new ByteArrayInputStream(xmlContent.getBytes(Charsets.UTF_8)));
     }
+
+    private static final String SUFFIX_BPMN_XML = ".bpmn20.xml";
 }

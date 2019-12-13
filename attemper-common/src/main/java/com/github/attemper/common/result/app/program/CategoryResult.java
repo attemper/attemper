@@ -11,7 +11,7 @@ public class CategoryResult {
 
     protected String filePath;
 
-    protected boolean dir;
+    protected int dir;
 
     public String getFileName() {
         return fileName;
@@ -40,11 +40,11 @@ public class CategoryResult {
         return this;
     }
 
-    public boolean isDir() {
+    public int getDir() {
         return dir;
     }
 
-    public CategoryResult setDir(boolean dir) {
+    public CategoryResult setDir(int dir) {
         this.dir = dir;
         return this;
     }

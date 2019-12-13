@@ -11,8 +11,8 @@ import com.github.attemper.common.result.app.program.ProgramPackage;
 import com.github.attemper.core.dao.application.ProgramMapper;
 import com.github.attemper.core.service.application.ProgramService;
 import com.github.attemper.core.service.application.ProjectService;
+import com.github.attemper.core.util.FileUtil;
 import com.github.attemper.sys.service.BaseServiceAdapter;
-import com.github.attemper.sys.util.FileUtil;
 import com.github.attemper.web.ext.app.ExecutorHandler;
 import com.google.common.net.MediaType;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +58,7 @@ public class ProgramOperatedService extends BaseServiceAdapter {
             throw new DuplicateKeyException(param.getProgramName());
         }
         program = toProgram(param);
-        program.setCreateTime(new Date());
+        program.setCreateTime(System.currentTimeMillis());
         mapper.add(program);
         return program;
     }
@@ -101,7 +100,7 @@ public class ProgramOperatedService extends BaseServiceAdapter {
                     .setId(idGenerator.getNextId())
                     .setProgramName(programName)
                     .setPackageName(file.getResource().getFilename())
-                    .setUploadTime(new Date())
+                    .setUploadTime(System.currentTimeMillis())
                     .setTenantId(injectTenantId())
                     .setContent(file.getBytes());
         } catch (IOException e) {
@@ -134,7 +133,7 @@ public class ProgramOperatedService extends BaseServiceAdapter {
         for (String url : projectService.toExecutorUrls()) {
             executorHandler.load(url, param);
         }
-        programPackage.setLoadTime(new Date());
+        programPackage.setLoadTime(System.currentTimeMillis());
         programPackage.setUnloadTime(null);
         mapper.updatePackage(programPackage);
         return null;
@@ -151,7 +150,7 @@ public class ProgramOperatedService extends BaseServiceAdapter {
         for (String url : projectService.toExecutorUrls()) {
             executorHandler.unload(url, new IdParam().setId(loadedPackage.getId()));
         }
-        loadedPackage.setUnloadTime(new Date());
+        loadedPackage.setUnloadTime(System.currentTimeMillis());
         mapper.updatePackage(loadedPackage);
         return null;
     }

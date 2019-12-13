@@ -1,7 +1,6 @@
 package com.github.attemper.sys.dao;
 
-import com.github.attemper.common.base.BaseMapper;
-import com.github.attemper.common.result.sys.tag.Tag;
+import com.github.attemper.common.result.sys.role.Role;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -11,7 +10,13 @@ import java.util.Map;
 
 @Mapper
 @Repository
-public interface TenantMapper extends BaseMapper<Tenant> {
+public interface TenantMapper {
+
+    void add(Tenant model);
+
+    void update(Tenant model);
+
+    List<Tenant> list(Map<String, Object> paramMap);
 
     Tenant get(String userName);
 
@@ -21,9 +26,11 @@ public interface TenantMapper extends BaseMapper<Tenant> {
 
     List<String> getResources(Map<String, Object> paramMap);
 
-    List<Tag> getTags(Map<String, Object> paramMap);
+    List<Role> getRoles(Map<String, Object> paramMap);
 
-    void deleteTags(Map<String, Object> paramMap);
+    void deleteRoles(Map<String, Object> paramMap);
 
-    void addTags(Map<String, Object> paramMap);
+    void addRoles(Map<String, Object> paramMap);
+
+    void updatePassword(Map<String, Object> paramMap);
 }

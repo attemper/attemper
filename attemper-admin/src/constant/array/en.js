@@ -1,4 +1,4 @@
-export const statuses = [
+export const tenantStatuses = [
   {
     value: 0,
     label: 'Normal'
@@ -6,6 +6,10 @@ export const statuses = [
   {
     value: 1,
     label: 'Frozen'
+  },
+  {
+    value: 2,
+    label: 'Disabled'
   }
 ]
 
@@ -146,6 +150,13 @@ export const terminatedInstanceStatus = [
   }
 ]
 
+export const unmetInstanceStatus = [
+  {
+    label: 'Unmet',
+    value: 4
+  }
+]
+
 export const doingInstanceStatuses = [
   ...runningInstanceStatus
 ]
@@ -153,14 +164,16 @@ export const doingInstanceStatuses = [
 export const doneInstanceStatuses = [
   ...successInstanceStatus,
   ...failureInstanceStatus,
-  ...terminatedInstanceStatus
+  ...terminatedInstanceStatus,
+  ...unmetInstanceStatus
 ]
 
 export const instanceStatuses = [
   ...runningInstanceStatus,
   ...successInstanceStatus,
   ...failureInstanceStatus,
-  ...terminatedInstanceStatus
+  ...terminatedInstanceStatus,
+  ...unmetInstanceStatus
 ]
 
 export const requestMethods = [
@@ -192,14 +205,91 @@ export const allocateTitles = [
   'included'
 ]
 
-export const calendarTypes = [
+export const baseMisfireInstructions = [
   {
-    label: 'date',
+    label: 'Ignore misfire policy',
+    value: -1
+  },
+  {
+    label: 'Smart policy',
     value: 0
   },
   {
-    label: 'time',
+    label: 'Fire once now',
     value: 1
+  }
+]
+
+export const misfireInstructions = [
+  ...baseMisfireInstructions,
+  {
+    label: 'Do nothing',
+    value: 2
+  }
+]
+
+export const simpleTriggerMisfireInstructions = [
+  ...baseMisfireInstructions,
+  {
+    label: 'Reschedule now with existing repeat count',
+    value: 2
+  },
+  {
+    label: 'Reschedule now with remaining repeat count',
+    value: 3
+  },
+  {
+    label: 'Reschedule next with remaining count',
+    value: 4
+  },
+  {
+    label: 'Reschedule next with existing count',
+    value: 5
+  }
+]
+
+export const jobCharts = [
+  {
+    label: 'Duration',
+    value: 'durationChart'
+  },
+  {
+    label: 'Status',
+    value: 'statusChart'
+  }
+]
+
+export const durationOrders = [
+  {
+    label: 'start time asc',
+    value: 'START_TIME'
+  },
+  {
+    label: 'start time desc',
+    value: 'START_TIME DESC'
+  },
+  {
+    label: 'duration asc',
+    value: 'DURATION'
+  },
+  {
+    label: 'duration desc',
+    value: 'DURATION DESC'
+  }
+]
+
+export const firedSources = [
+  {
+    label: 'Trigger fired',
+    value: 'IS NOT NULL'
+  },
+  {
+    label: 'Manual start',
+    value: 'IS NULL'
+  },
+  {
+    label: 'All',
+    value: ''
   }
 ]
 

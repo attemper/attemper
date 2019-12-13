@@ -5,7 +5,6 @@ import org.apache.shiro.authc.AuthenticationException;
 
 /**
  * jwt expire exception
- * @author ldang
  */
 public class JWTExpiredException extends AuthenticationException {
 

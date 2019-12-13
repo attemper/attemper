@@ -8,7 +8,7 @@
           </div>
           <div class="filter-container">
             <el-input v-model="page.programName" :placeholder="$t('application.program.columns.programName')" class="filter-item search-input" @keyup.enter.native="search" />
-            <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
+            <el-button class="filter-item" type="primary" icon="el-icon-search" @click="search" />
             <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)" />
             <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove" />
           </div>
@@ -29,7 +29,7 @@
               <template slot-scope="props">
                 <el-form label-position="left" inline class="table-expand">
                   <el-form-item :label="$t('columns.createTime')">
-                    <span>{{ props.row.createTime }}</span>
+                    <span>{{ props.row.createTime | parseTime }}</span>
                   </el-form-item>
                 </el-form>
               </template>
@@ -61,7 +61,7 @@
           </div>
           <div class="filter-container">
             <el-input v-model="packagePage.packageName" :placeholder="$t('application.program.columns.packageName')" class="filter-item search-input" @keyup.enter.native="searchPackage" />
-            <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="searchPackage" />
+            <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchPackage" />
             <el-button :disabled="!packageSelections || !packageSelections.length" class="filter-item" type="danger" icon="el-icon-delete" @click="removePackage" />
             <el-upload style="display: inline; margin-left: 10px;" action="" accept=".jar" :on-change="upload" :auto-upload="false" :show-file-list="false">
               <el-button class="filter-item" type="success" icon="el-icon-upload2">{{ $t('actions.upload') }}</el-button>
@@ -90,17 +90,17 @@
             </el-table-column>
             <el-table-column :label="$t('application.program.columns.uploadTime')" align="center" min-width="100px">
               <template slot-scope="scope">
-                <span>{{ scope.row.uploadTime }}</span>
+                <span>{{ scope.row.uploadTime | parseTime }}</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('application.program.columns.loadTime')" align="center" min-width="100px">
               <template slot-scope="scope">
-                <span>{{ scope.row.loadTime }}</span>
+                <span>{{ scope.row.loadTime | parseTime }}</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('application.program.columns.unloadTime')" align="center" min-width="100px">
               <template slot-scope="scope">
-                <span>{{ scope.row.unloadTime }}</span>
+                <span>{{ scope.row.unloadTime | parseTime }}</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('actions.handle')" min-width="150px">
@@ -137,7 +137,6 @@
 
 <script>
 import { listReq, removeReq, addReq, updateReq, listPackageReq, removePackageReq, uploadPackageReq, loadPackageReq, unloadPackageReq, downloadPackageReq } from '@/api/application/program'
-import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import { buildMsg, download } from '@/utils/tools'
 
@@ -148,7 +147,6 @@ const DEF_OBJ = {
 export default {
   name: 'program',
   components: { Pagination },
-  directives: { waves },
   data() {
     return {
       tableKey: 0,

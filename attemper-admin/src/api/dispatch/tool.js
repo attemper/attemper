@@ -8,10 +8,25 @@ export const listTimeZoneReq = () => {
   })
 }
 
+export const listSchedulerServiceReq = () => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.TOOL + '/scheduler',
+    method: 'get'
+  })
+}
+
 export const listExecutorServiceReq = () => {
   return request({
     url: APIPath.DISPATCH + APIPath.TOOL + '/executor',
     method: 'get'
+  })
+}
+
+export const getServerInfoReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.TOOL + '/serverInfo',
+    method: 'get',
+    params: params
   })
 }
 

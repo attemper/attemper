@@ -1,6 +1,7 @@
 package com.github.attemper.web.controller.instance;
 
 import com.github.attemper.common.constant.APIPath;
+import com.github.attemper.common.param.IdsParam;
 import com.github.attemper.common.param.dispatch.instance.*;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.dispatch.instance.InstanceAct;
@@ -65,9 +66,9 @@ public class InstanceController {
     }
 
     @ApiOperation("Args of one instance")
-    @ApiImplicitParam(value = "InstanceActArgParam", name = "param", dataType = "InstanceActArgParam", required = true)
+    @ApiImplicitParam(value = "InstanceIdParam", name = "param", dataType = "InstanceIdParam", required = true)
     @GetMapping(APIPath.InstancePath.ARG)
-    public CommonResult<String> getInstanceArgs(InstanceActArgParam param) {
+    public CommonResult<String> getInstanceArgs(InstanceIdParam param) {
         return CommonResult.putResult(instanceOperatedService.getInstanceArgs(param));
     }
 
@@ -81,7 +82,7 @@ public class InstanceController {
     @ApiOperation("Terminate")
     @ApiImplicitParam(value = "IdParam", name = "param", dataType = "IdParam", required = true)
     @PostMapping(value = APIPath.InstancePath.TERMINATE)
-    public CommonResult<Void> terminate(@RequestBody InstanceIdParam param) {
+    public CommonResult<Void> terminate(@RequestBody IdsParam param) {
         return CommonResult.putResult(instanceOperatedService.terminate(param));
     }
 

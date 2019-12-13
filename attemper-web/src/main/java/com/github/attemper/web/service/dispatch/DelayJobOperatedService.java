@@ -5,15 +5,12 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.delay.DelayJobIdParam;
 import com.github.attemper.common.param.dispatch.delay.DelayJobListParam;
 import com.github.attemper.common.param.dispatch.job.JobNameParam;
-import com.github.attemper.common.param.dispatch.trigger.TriggerGetParam;
-import com.github.attemper.common.param.dispatch.trigger.TriggerSaveParam;
-import com.github.attemper.common.param.dispatch.trigger.sub.DailyTimeIntervalTriggerParam;
+import com.github.attemper.common.param.dispatch.trigger.TriggerWrapper;
+import com.github.attemper.common.param.dispatch.trigger.sub.DailyTimeIntervalTriggerWrapper;
 import com.github.attemper.common.result.dispatch.delay.DelayJob;
 import com.github.attemper.common.result.dispatch.job.Job;
-import com.github.attemper.common.result.dispatch.trigger.TriggerResult;
 import com.github.attemper.core.dao.dispatch.DelayJobMapper;
 import com.github.attemper.core.service.dispatch.JobService;
-import com.github.attemper.core.service.dispatch.TriggerService;
 import com.github.attemper.invoker.util.QuartzUtil;
 import com.github.attemper.java.sdk.common.web.enums.DelayJobStatus;
 import com.github.attemper.java.sdk.common.web.param.delay.DelayJobExtSaveParam;
@@ -44,10 +41,7 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
     private JobService jobService;
 
     @Autowired
-    private TriggerService triggerService;
-
-    @Autowired
-    private TriggerOperatedService triggerOperatedService;
+    private JobOperatedService jobOperatedService;
 
     @Autowired
     private IdGenerator idGenerator;
@@ -62,8 +56,8 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
 
     private void setNextFireTime(DelayJob delayJob) {
         List<Date> allTriggerDates = new ArrayList<>();
-        TriggerResult triggerResult = triggerService.get(new TriggerGetParam().setJobName(delayJob.getId()));
-        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getDailyIntervalTriggers(), injectTenantId()));
+        TriggerWrapper triggerResult = jobOperatedService.getTrigger(new JobNameParam().setJobName(delayJob.getId()));
+        allTriggerDates.addAll(QuartzUtil.getNextFireTimes(triggerResult.getDailyTimeIntervalTriggers(), injectTenantId()));
         if (allTriggerDates.size() > 0) {
             Collections.sort(allTriggerDates);
             delayJob.setNextFireTimes(allTriggerDates);
@@ -71,7 +65,7 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
     }
 
     public DelayJob get(DelayJobIdParam param) {
-        return mapper.get(injectTenantIdToMap(param));
+        return mapper.get(param.getId());
     }
 
     public DelayJobResult add(DelayJobExtSaveParam param) {
@@ -86,16 +80,16 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
         validateJob(param.getJobName());
         DelayJob delayJob = toDelayJob(param);
         mapper.add(delayJob);
-        TriggerSaveParam triggerSaveParam = buildTriggerParam(param);
-        triggerOperatedService.update(triggerSaveParam);
+        TriggerWrapper triggerWrapper = buildTriggerParam(param);
+        jobOperatedService.validateAndUpdateTrigger(triggerWrapper);
         return null;
     }
 
     public Void remove(DelayJobIdsParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         param.getIds().forEach(item -> {
-            TriggerSaveParam triggerSaveParam = new TriggerSaveParam(item);
-            triggerOperatedService.update(triggerSaveParam);
+            TriggerWrapper triggerWrapper = new TriggerWrapper(item);
+            jobOperatedService.updateTrigger(triggerWrapper);
         });
         mapper.delete(paramMap);
         return null;
@@ -105,7 +99,7 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
         return new DelayJob()
                 .setId(param.getId())
                 .setJobName(param.getJobName())
-                .setRequestTime(new Date())
+                .setRequestTime(System.currentTimeMillis())
                 .setStatus(DelayJobStatus.VALID.getStatus())
                 .setTenantId(injectTenantId());
     }
@@ -117,25 +111,25 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
         }
     }
 
-    private TriggerSaveParam buildTriggerParam(DelayJobExtSaveParam param) {
-        TriggerSaveParam triggerSaveParam = new TriggerSaveParam();
-        triggerSaveParam.setJobName(param.getId());
+    private TriggerWrapper buildTriggerParam(DelayJobExtSaveParam param) {
+        TriggerWrapper triggerWrapper = new TriggerWrapper();
+        triggerWrapper.setJobName(param.getId());
         Map<String, Object> map = new HashMap<>();
         map.put(CommonConstants.jobName, param.getJobName());
-        triggerSaveParam.setJobDataMap(map);
+        triggerWrapper.setJobDataMap(map);
 
-        DailyTimeIntervalTriggerParam dailyParam = new DailyTimeIntervalTriggerParam();
+        DailyTimeIntervalTriggerWrapper dailyParam = new DailyTimeIntervalTriggerWrapper();
         dailyParam.setTriggerName(idGenerator.getNextId());
         dailyParam.setStartTime(param.getStartTime());
         dailyParam.setTimeUnit(DateBuilder.IntervalUnit.SECOND.name());
-        dailyParam.setInterval(param.getInterval());
+        dailyParam.setRepeatInterval(param.getInterval());
         dailyParam.setEndTime(param.getEndTime());
         dailyParam.setMisfireInstruction(param.getMisfireInstruction());
         dailyParam.setCalendarNames(param.getCalendarNames());
-        List<DailyTimeIntervalTriggerParam> list = new ArrayList<>();
+        List<DailyTimeIntervalTriggerWrapper> list = new ArrayList<>();
         list.add(dailyParam);
-        triggerSaveParam.setDailyIntervalTriggers(list);
+        triggerWrapper.setDailyTimeIntervalTriggers(list);
 
-        return triggerSaveParam;
+        return triggerWrapper;
     }
 }

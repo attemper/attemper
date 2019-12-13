@@ -1,54 +1,58 @@
 package com.github.attemper.executor.task.ftp.internal;
 
+import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.executor.model.FtpInfo;
+import com.github.attemper.common.util.ReflectUtil;
+import com.github.attemper.core.ext.model.FileParam;
+import com.github.attemper.core.ext.ftp.FtpInfo;
+import com.github.attemper.core.ext.ftp.FtpUtil;
 import com.github.attemper.executor.task.ParentTask;
-import com.github.attemper.executor.util.FtpUtil;
+import com.github.attemper.executor.util.TaskParamUtil;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.commons.utils.IoUtil;
-import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Map;
 
 /**
  * Task to handle FTP Client
  */
-public abstract class FtpTask extends ParentTask implements JavaDelegate {
+public abstract class FtpTask extends ParentTask {
 
     @Override
-    public void execute(DelegateExecution execution) throws Exception {
+    public void executeIntern(DelegateExecution execution) {
         FTPClient ftpClient = injectFtpClient(execution);
-        executeInternal(execution, ftpClient);
+        FileParam fileParam = TaskParamUtil.injectFileParam(execution.getVariables());
+        appendLogText(execution, 10204, fileParam);
+        try {
+            executeInternal(execution, ftpClient, fileParam);
+        } finally {
+            FtpUtil.closeFtpClient(ftpClient);
+        }
     }
 
-    protected abstract void executeInternal(DelegateExecution execution, FTPClient ftpClient);
+    protected abstract void executeInternal(DelegateExecution execution, FTPClient ftpClient, FileParam fileParam);
 
     private FTPClient injectFtpClient(DelegateExecution execution) {
         FTPClient ftpClient;
-        FtpInfo mainFtpInfo = injectFtpInfo(execution.getVariables(), MAIN);
         try {
-            ftpClient = FtpUtil.getFtpClient(mainFtpInfo);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            appendLogText(execution, "Trying to connect to backup ftp ");
-            try {
-                FtpInfo backupFtpInfo = injectFtpInfo(execution.getVariables(), BACKUP);
-                ftpClient = FtpUtil.getFtpClient(backupFtpInfo);
-            } catch (Exception ex) {
-                log.error(ex.getMessage(), ex);
-                if (ex instanceof RTException) {
-                    RTException rte = (RTException) ex;
-                    saveLogKey(execution, rte.getCode());
-                } else {
-                    saveLogKey(execution, HttpStatus.INTERNAL_SERVER_ERROR.value());
-                }
-                throw ex;
+            String mainPrefix = (String) execution.getVariable(CommonConstants.main + _FTP_NAME);
+            if (StringUtils.isBlank(mainPrefix)) {
+                mainPrefix = CommonConstants.main;
             }
+            appendLogText(execution, 10200, mainPrefix);
+            FtpInfo mainFtpInfo = (FtpInfo) ReflectUtil.reflectObj(FtpInfo.class, mainPrefix, execution.getVariables());
+            ftpClient = FtpUtil.getFtpClient(mainFtpInfo);
+            appendLogText(execution, 10201, mainPrefix);
+        } catch (Exception e) {
+            String backupPrefix = (String) execution.getVariable(CommonConstants.backup + _FTP_NAME);
+            if (StringUtils.isBlank(backupPrefix)) {
+                backupPrefix = CommonConstants.backup;
+            }
+            appendLogText(execution, 10202, backupPrefix);
+            FtpInfo backupFtpInfo = (FtpInfo) ReflectUtil.reflectObj(FtpInfo.class, backupPrefix, execution.getVariables());
+            ftpClient = FtpUtil.getFtpClient(backupFtpInfo);
+            appendLogText(execution, 10203, backupPrefix);
         }
         if (ftpClient == null) {
             throw new RTException(2553);
@@ -56,60 +60,14 @@ public abstract class FtpTask extends ParentTask implements JavaDelegate {
         return ftpClient;
     }
 
-    /**
-     * download file to string content
-     * @param ftpClient
-     * @param fileName
-     * @param charsetName default is gb2312
-     * @return
-     */
-    protected String transFileToContent(FTPClient ftpClient, String fileName, String charsetName) {
+    protected void changeWorkingDirectory(FTPClient ftpClient, String pathname) {
         try {
-            InputStream is = ftpClient.retrieveFileStream(fileName);
-            if (is == null) {
-                throw new RTException(2562, fileName);
-            } else {
-                String content = IoUtil.readerAsString(new InputStreamReader(is, charsetName));
-                is.close();
-                ftpClient.completePendingCommand();
-                return content;
-            }
+            ftpClient.changeWorkingDirectory(pathname);
+            FtpUtil.validateReplyCode(ftpClient);
         } catch (IOException e) {
-            log.error(fileName, e);
-            throw new RTException(2561, e);
+            throw new RTException(2564, e);
         }
     }
 
-    private FtpInfo injectFtpInfo(Map<String, Object> variables, String prefix) {
-        String ip = (String) variables.get(prefix + IP);
-        String port = (String) variables.get(prefix + PORT);
-        String username = (String) variables.get(prefix + USER_NAME);
-        String password = (String) variables.get(prefix + PASSWORD);
-        String retryCount = (String) variables.get(prefix + RETRY_COUNT);
-        String timeout = (String) variables.get(prefix + TIMEOUT);
-        return new FtpInfo()
-                .setIp(ip)
-                .setPort(port)
-                .setUsername(username)
-                .setPassword(password)
-                .setRetryCount(retryCount)
-                .setTimeout(timeout);
-    }
-
-    private static final String MAIN = "main_";  //main ftp config
-
-    private static final String BACKUP = "backup_";  //backup ftp config
-
-    private static final String IP = "ip";
-
-    private static final String PORT = "port";
-
-    private static final String USER_NAME = "username";
-
-    private static final String PASSWORD = "password";
-
-    private static final String RETRY_COUNT = "retryCount";
-
-    private static final String TIMEOUT = "timeout";
-
+    private static final String _FTP_NAME = "_ftp_name"; // ftp name suffix
 }

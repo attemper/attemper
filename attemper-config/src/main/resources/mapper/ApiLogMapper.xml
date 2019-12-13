@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.attemper.config.base.dao.ApiLogMapper">
     <insert id="add" parameterType="com.github.attemper.config.base.entity.ApiLog">
-        INSERT INTO api_log (
+        INSERT INTO log_op (
             ID,
             TENANT_ID,
             CLASS_NAME,
@@ -15,7 +15,7 @@
             RESULT,
             CODE,
             MSG,
-            RESPONSE_TIME,
+            HANDLE_TIME,
             DURATION,
             IP
         )
@@ -32,7 +32,7 @@
             #{result, jdbcType=VARCHAR},
             #{code, jdbcType=INTEGER},
             #{msg, jdbcType=VARCHAR},
-            #{responseTime, jdbcType=TIMESTAMP},
+            #{handleTime, jdbcType=INTEGER},
             #{duration, jdbcType=VARCHAR},
             #{ip, jdbcType=VARCHAR}
         )

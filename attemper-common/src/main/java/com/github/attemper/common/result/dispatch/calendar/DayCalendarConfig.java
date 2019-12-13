@@ -12,6 +12,4 @@ public class DayCalendarConfig {
     protected Integer dayNum;
 
     protected String remark;
-
-    protected String tenantId;
 }

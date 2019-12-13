@@ -1,9 +1,9 @@
 package com.github.attemper.core.service.dispatch;
 
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.dispatch.arg.ArgGetParam;
 import com.github.attemper.common.param.dispatch.arg.ArgListParam;
-import com.github.attemper.common.param.dispatch.arg.ArgRemoveParam;
+import com.github.attemper.common.param.dispatch.arg.ArgNameParam;
+import com.github.attemper.common.param.dispatch.arg.ArgNamesParam;
 import com.github.attemper.common.param.dispatch.arg.ArgSaveParam;
 import com.github.attemper.common.param.dispatch.arg.ext.SqlArgParam;
 import com.github.attemper.common.param.dispatch.arg.ext.TradeDateArgParam;
@@ -13,7 +13,6 @@ import com.github.attemper.core.dao.dispatch.ArgMapper;
 import com.github.attemper.core.engine.DateCalculatorFactory;
 import com.github.attemper.core.engine.date.DateHandler;
 import com.github.attemper.core.service.application.GistService;
-import com.github.attemper.core.service.tool.ToolService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
@@ -45,18 +44,15 @@ public class ArgService extends BaseServiceAdapter {
     private DataSourceService dataSourceService;
 
     @Autowired
-    private ToolService toolService;
-
-    @Autowired
     private GistService gistService;
 
-    public Arg get(ArgGetParam param) {
+    public Arg get(ArgNameParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.get(paramMap);
     }
 
     public Arg add(ArgSaveParam param) {
-        Arg arg = get(new ArgGetParam().setArgName(param.getArgName()));
+        Arg arg = get(new ArgNameParam().setArgName(param.getArgName()));
         if (arg != null) {
             throw new DuplicateKeyException(param.getArgName());
         }
@@ -65,8 +61,12 @@ public class ArgService extends BaseServiceAdapter {
         return arg;
     }
 
+    public void addBatch(List<Arg> args) {
+        mapper.addBatch(args);
+    }
+
     public Arg update(ArgSaveParam param) {
-        Arg oldArg = get(new ArgGetParam().setArgName(param.getArgName()));
+        Arg oldArg = get(new ArgNameParam().setArgName(param.getArgName()));
         if (oldArg == null) {
             return add(param);
         }
@@ -82,7 +82,7 @@ public class ArgService extends BaseServiceAdapter {
         return PageUtil.toResultMap(list);
     }
 
-    public Void remove(ArgRemoveParam param) {
+    public Void remove(ArgNamesParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.delete(paramMap);
         return null;

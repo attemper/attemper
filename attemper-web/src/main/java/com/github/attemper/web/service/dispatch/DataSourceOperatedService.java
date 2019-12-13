@@ -1,6 +1,6 @@
 package com.github.attemper.web.service.dispatch;
 
-import com.github.attemper.common.param.dispatch.datasource.DataSourceGetParam;
+import com.github.attemper.common.param.dispatch.datasource.DataSourceNameParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceNamesParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceSaveParam;
 import com.github.attemper.common.result.dispatch.datasource.DataSourceInfo;
@@ -36,7 +36,7 @@ public class DataSourceOperatedService extends BaseServiceAdapter {
     private ProjectService projectService;
 
     public DataSourceInfo add(DataSourceSaveParam param) {
-        DataSourceInfo arg = service.get(new DataSourceGetParam().setDbName(param.getDbName()));
+        DataSourceInfo arg = service.get(new DataSourceNameParam().setDbName(param.getDbName()));
         if (arg != null) {
             throw new DuplicateKeyException(param.getDbName());
         }
@@ -46,7 +46,7 @@ public class DataSourceOperatedService extends BaseServiceAdapter {
     }
 
     public DataSourceInfo update(DataSourceSaveParam param) {
-        DataSourceInfo oldDataSourceInfo = service.get(new DataSourceGetParam().setDbName(param.getDbName()));
+        DataSourceInfo oldDataSourceInfo = service.get(new DataSourceNameParam().setDbName(param.getDbName()));
         if (oldDataSourceInfo == null) {
             return add(param);
         }

@@ -10,18 +10,15 @@ import java.util.regex.Pattern;
 @ToString
 public class TradeDateArgParam implements CommonParam {
 
-    private static Pattern tradeDatePattern;
-
     protected String calendarName;
 
     protected String expression;
 
+    private static Pattern tradeDatePattern = Pattern.compile(CommonConstants.REGEX_TRADE_DATE);;
+
     @Override
     public String validate() {
         if (StringUtils.isNotBlank(expression)) {
-            if (tradeDatePattern == null) {
-                tradeDatePattern = Pattern.compile(CommonConstants.REGEX_TRADE_DATE);
-            }
             if (!tradeDatePattern.matcher(expression).find()) {
                 return "7040";
             }

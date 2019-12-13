@@ -6,10 +6,9 @@
         <el-option v-for="item in argTypes" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <el-input v-model="page.argValue" :placeholder="$t('dispatch.arg.columns.argValue')" class="filter-item search-input" @keyup.enter.native="search" />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="search" />
       <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)" />
       <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove" />
-      <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.export') }}</el-button>-->
     </div>
 
     <el-table
@@ -145,7 +144,6 @@ import { listReq, getReq, removeReq, addReq, updateReq, getSqlResultReq, getTrad
 import * as dataSourceApi from '@/api/dispatch/datasource'
 import * as calendarApi from '@/api/dispatch/calendar'
 import { argTypesReq, tradeDateUnitsReq } from '@/api/dispatch/tool'
-import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import StringInput from './components/arg/StringInput'
 import NumberInput from './components/arg/NumberInput'
@@ -170,7 +168,6 @@ const DEF_OBJ = {
 export default {
   name: 'arg',
   components: { GistInput, TradeDateInput, TimeInput, DateTimeInput, DateInput, MapInput, ListInput, BooleanInput, NumberInput, StringInput, Pagination },
-  directives: { waves },
   data() {
     return {
       tableKey: 0,
@@ -194,7 +191,7 @@ export default {
       },
       formRules: {
         argName: [
-          { required: true, trigger: 'blur' }
+          { required: true, trigger: 'blur', range: { max: 64 }}
         ],
         argValue: [
           { required: true, trigger: 'blur' }
@@ -359,7 +356,7 @@ export default {
     save() {
       this.$refs.form.validate((valid) => {
         if (this.isSql && this.arg.argValue && !this.arg.argValue.toLowerCase().startsWith('select ')) {
-          this.$message.error(this.$t('tip.notSelectSql'))
+          this.$message.error(this.$t('tip.selectSql'))
           valid = false
         }
         if (valid) {

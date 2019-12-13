@@ -1,7 +1,7 @@
 package com.github.attemper.web.controller.dispatch;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.datasource.DataSourceGetParam;
+import com.github.attemper.common.param.dispatch.datasource.DataSourceNameParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceListParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceNamesParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceSaveParam;
@@ -46,7 +46,7 @@ public class DataSourceController {
     @ApiOperation("Get dataSource")
     @ApiImplicitParam(value = "DataSourceGetParam", name = "param", dataType = "DataSourceGetParam", required = true)
     @GetMapping(value = APIPath.DataSourcePath.GET)
-    public CommonResult<DataSourceInfo> get(DataSourceGetParam param) {
+    public CommonResult<DataSourceInfo> get(DataSourceNameParam param) {
         return CommonResult.putResult(dataSourceService.get(param));
     }
 

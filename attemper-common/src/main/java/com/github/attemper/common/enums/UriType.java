@@ -1,8 +1,5 @@
 package com.github.attemper.common.enums;
 
-/**
- * @author ldang
- */
 public enum UriType {
 
     DiscoveryClient(0),

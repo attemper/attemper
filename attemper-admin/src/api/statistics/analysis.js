@@ -7,3 +7,11 @@ export const appPlanReq = () => {
     method: 'get'
   })
 }
+
+export const instanceDurationReq = (params) => {
+  return request({
+    url: APIPath.STATISTICS + APIPath.ANALYSIS + '/instance/duration',
+    method: 'get',
+    params: params
+  })
+}

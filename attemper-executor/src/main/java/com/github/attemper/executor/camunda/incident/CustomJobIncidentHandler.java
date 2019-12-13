@@ -1,7 +1,7 @@
 package com.github.attemper.executor.camunda.incident;
 
 import com.github.attemper.common.enums.InstanceStatus;
-import com.github.attemper.common.property.StatusProperty;
+import com.github.attemper.common.param.dispatch.instance.InstanceActParam;
 import com.github.attemper.common.result.dispatch.instance.Instance;
 import com.github.attemper.common.result.dispatch.instance.InstanceAct;
 import com.github.attemper.config.base.bean.SpringContextAware;
@@ -33,56 +33,55 @@ public class CustomJobIncidentHandler extends DefaultIncidentHandler {
             RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) SpringContextAware.getBean(RuntimeService.class);
             InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
             List<Execution> executions = runtimeService.createExecutionQuery().executionId(context.getExecutionId()).list();
+            if (executions.size() > 0) {
+                updateInstanceAct(instanceService, executions.get(0).getProcessInstanceId(), context.getActivityId());
+            }
             for (Execution execution : executions) {
                 ExecutionEntity executionEntity = (ExecutionEntity) execution;
-                updateInstance(runtimeService, instanceService, executionEntity, 2500);
+                updateInstance(runtimeService, instanceService, executionEntity);
                 // make super fail
                 ExecutionEntity superExecution = executionEntity.getSuperExecution();
                 while (superExecution != null) {
-                    updateInstance(runtimeService, instanceService, superExecution, 2500);
+                    updateInstance(runtimeService, instanceService, superExecution);
                     superExecution = superExecution.getSuperExecution();
                 }
             }
-            updateInstanceAct(instanceService, context.getExecutionId(), context.getActivityId());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
         return super.handleIncident(context, message);
     }
 
-    private void updateInstance(RuntimeServiceImpl runtimeService, InstanceService instanceService, ExecutionEntity execution, int code) {
+    private void updateInstance(RuntimeServiceImpl runtimeService, InstanceService instanceService, ExecutionEntity execution) {
         Instance instance = instanceService.getByInstId(execution.getProcessInstanceId());
-        Date endTime = new Date();
+        long current = System.currentTimeMillis();
         long duration = 0;
         if (instance != null) {
-            duration = endTime.getTime() - instance.getStartTime().getTime();
+            duration = current - instance.getStartTime();
             instance
-                    .setEndTime(endTime)
+                    .setEndTime(current)
                     .setDuration(duration)
-                    .setStatus(InstanceStatus.FAILURE.getStatus())
-                    .setCode(code);
-            String message = execution.getCurrentActivityId() == null ?
-                    execution.getCurrentActivityName() : execution.getCurrentActivityId();
-            if (instance.getMsg() == null) {
-                instance.setMsg(StatusProperty.getValue(code) + ":" + message);
-            } else {
-                instance.setMsg(instance.getMsg() + "," + message);
-            }
+                    .setStatus(InstanceStatus.FAILURE.getStatus());
             instanceService.updateDone(instance);
         }
         runtimeService.getCommandExecutor().execute(new UpdateHistoricInstanceCmd(
                 execution.getProcessInstanceId(),
-                endTime,
+                new Date(current),
                 duration,
                 HistoricProcessInstance.STATE_EXTERNALLY_TERMINATED));
     }
 
     private void updateInstanceAct(InstanceService instanceService, String procInstId, String actId) {
-        InstanceAct instanceAct = new InstanceAct()
-                .setProcInstId(procInstId)
-                .setActId(actId)
-                .setEndTime(new Date())
-                .setStatus(InstanceStatus.FAILURE.getStatus());
-        instanceService.updateAct(instanceAct);
+        List<InstanceAct> instanceActs = instanceService.listAct(new InstanceActParam().setProcInstId(procInstId).setActId(actId));
+        long current = System.currentTimeMillis();
+        if (instanceActs.size() > 0) {
+            InstanceAct instanceAct = new InstanceAct()
+                    .setProcInstId(procInstId)
+                    .setActId(actId)
+                    .setEndTime(current)
+                    .setDuration(current - instanceActs.get(0).getStartTime())
+                    .setStatus(InstanceStatus.FAILURE.getStatus());
+            instanceService.updateAct(instanceAct);
+        }
     }
 }

@@ -29,7 +29,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
+    open: false,
     overlay: {
       warnings: false,
       errors: true
@@ -42,8 +42,7 @@ module.exports = {
           '^/api': '/api'
         }
       }
-    },
-    after: require('./mock/mock-server.js')
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

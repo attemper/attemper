@@ -18,6 +18,11 @@ public enum InstanceStatus {
      */
     TERMINATED(3),
 
+    /**
+     * unreached
+     */
+    UNMET(4),
+
     ;
 
     private int status;

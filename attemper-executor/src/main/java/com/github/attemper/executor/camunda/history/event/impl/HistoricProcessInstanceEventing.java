@@ -27,7 +27,8 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
             instance.setProcInstId(historyEvent.getProcessInstanceId())
                     .setRootProcInstId(historyEvent.getRootProcessInstanceId())
                     .setSuperProcInstId(historyEvent.getSuperProcessInstanceId())
-                    .setProcDefId(historyEvent.getProcessDefinitionId());
+                    .setProcDefId(historyEvent.getProcessDefinitionId())
+                    .setStartTime(historyEvent.getStartTime().getTime());
             instanceService.update(instance);
         } else {
             instance = new Instance()
@@ -39,7 +40,7 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
                     .setStatus(InstanceStatus.RUNNING.getStatus())
                     .setJobName(historyEvent.getProcessDefinitionKey())
                     .setDisplayName(historyEvent.getProcessDefinitionName())
-                    .setStartTime(historyEvent.getStartTime())
+                    .setStartTime(historyEvent.getStartTime().getTime())
                     .setTenantId(historyEvent.getTenantId());
             Instance parentInstance = instanceService.getByInstId(historyEvent.getRootProcessInstanceId());
             if (parentInstance != null) {
@@ -55,9 +56,12 @@ public class HistoricProcessInstanceEventing extends EventingAdapter<HistoricPro
     public void end() {
         InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
         Instance instance = instanceService.getByInstId(historyEvent.getProcessInstanceId());
-        instance.setStatus(InstanceStatus.SUCCESS.getStatus());
-        instance.setEndTime(historyEvent.getEndTime());
-        instance.setDuration(instance.getEndTime().getTime() - instance.getStartTime().getTime());
+        instance
+                .setEndTime(historyEvent.getEndTime().getTime())
+                .setDuration(historyEvent.getEndTime().getTime() - instance.getStartTime())
+                .setStatus(InstanceStatus.SUCCESS.getStatus())
+                .setCode(null)
+                .setMsg(null);
         instanceService.updateDone(instance);
     }
 }

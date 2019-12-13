@@ -1,7 +1,7 @@
 package com.github.attemper.core.service.dispatch;
 
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.dispatch.datasource.DataSourceGetParam;
+import com.github.attemper.common.param.dispatch.datasource.DataSourceNameParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceListParam;
 import com.github.attemper.common.param.dispatch.datasource.DataSourceNamesParam;
 import com.github.attemper.common.result.dispatch.datasource.ConnectionTestResult;
@@ -38,7 +38,7 @@ public class DataSourceService extends BaseServiceAdapter {
     @Autowired
     private DataSourceMapper mapper;
 
-    public DataSourceInfo get(DataSourceGetParam param) {
+    public DataSourceInfo get(DataSourceNameParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.get(paramMap);
     }
@@ -71,7 +71,7 @@ public class DataSourceService extends BaseServiceAdapter {
     public DataSource getDataSource(String dbName, String tenantId) {
         DataSource dataSource = SysStore.getBizDataSource(dbName, tenantId);
         if (dataSource == null) {
-            DataSourceInfo dataSourceInfo = get(new DataSourceGetParam().setDbName(dbName));
+            DataSourceInfo dataSourceInfo = get(new DataSourceNameParam().setDbName(dbName));
             if (dataSourceInfo == null) {
                 throw new RTException(7150, dbName);
             }

@@ -5,22 +5,23 @@
     <parent>
         <groupId>com.github.attemper</groupId>
         <artifactId>attemper</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>${project.parent.artifactId}-executor</artifactId>
+
+    <properties>
+        <groovy.version>2.4.15</groovy.version>
+        <jsr223.nativeshell.version>1.0.0</jsr223.nativeshell.version>
+        <commons.codec.version>1.13</commons.codec.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>${project.parent.artifactId}-security</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>${sdk.artifactId}-common-executor</artifactId>
-            <version>${sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lmax</groupId>
@@ -30,30 +31,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
             <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-aop</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-autoconfigure</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-core</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
@@ -65,34 +42,6 @@
             <artifactId>camunda-bpm-spring-boot-starter</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-autoconfigure</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-jdbc</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-tx</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-orm</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.mybatis</groupId>
                     <artifactId>mybatis</artifactId>
                 </exclusion>
@@ -103,29 +52,19 @@
             <artifactId>camunda-template-engines-freemarker</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-net</groupId>
-            <artifactId>commons-net</artifactId>
-            <version>3.6</version>
-        </dependency>
-        <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
+            <version>${groovy.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.attemper</groupId>
-            <artifactId>jsr223-python</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <!-- forked from https://github.com/youribonnaffe/jsr223-nativeshell -->
         <dependency>
             <groupId>com.github.attemper</groupId>
             <artifactId>jsr223-nativeshell</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${jsr223.nativeshell.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.attemper</groupId>
-            <artifactId>jsr223-perl</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons.codec.version}</version>
         </dependency>
     </dependencies>
 

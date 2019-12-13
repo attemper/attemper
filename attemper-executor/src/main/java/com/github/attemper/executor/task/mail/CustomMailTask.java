@@ -1,34 +1,26 @@
 package com.github.attemper.executor.task.mail;
 
-import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.core.ext.notice.MessageBean;
 import com.github.attemper.core.ext.notice.channel.mail.EmailSender;
 import com.github.attemper.executor.task.ParentTask;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
-public class CustomMailTask extends ParentTask implements JavaDelegate {
+public class CustomMailTask extends ParentTask {
 
     @Autowired
     private EmailSender emailSender;
 
     @Override
-    public void execute(DelegateExecution execution) throws Exception {
-        try {
-            MessageBean messageBean = buildMessageBean(execution);
-            emailSender.send(messageBean);
-        } catch (Exception e) {
-            saveLogKey(execution, HttpStatus.INTERNAL_SERVER_ERROR.value());
-            throw new RTException(e);
-        }
+    public void executeIntern(DelegateExecution execution) {
+        MessageBean messageBean = buildMessageBean(execution);
+        emailSender.send(messageBean);
     }
 
     private MessageBean buildMessageBean(DelegateExecution execution) {

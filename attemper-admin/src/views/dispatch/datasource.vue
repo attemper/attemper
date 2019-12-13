@@ -9,8 +9,8 @@
         </el-option>
       </el-select>
       <el-input v-model="page.jdbcUrl" :placeholder="$t('dispatch.datasource.columns.jdbcUrl')" class="filter-item search-input" @keyup.enter.native="search" />
-      <el-input v-model="page.userName" :placeholder="$t('dispatch.datasource.columns.userName')" class="filter-item search-input" @keyup.enter.native="search" />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
+      <el-input v-model="page.userName" :placeholder="$t('columns.userName')" class="filter-item search-input" @keyup.enter.native="search" />
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="search" />
       <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)" />
       <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove" />
       <el-button style="float: right" :disabled="!selections || !selections.length" class="filter-item table-external-button" type="warning" @click="testConnection">
@@ -50,7 +50,7 @@
           <span>{{ scope.row.jdbcUrl }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('dispatch.datasource.columns.userName')" width="100px">
+      <el-table-column :label="$t('columns.userName')" width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.userName }}</span>
         </template>
@@ -81,11 +81,11 @@
           <el-form-item :label="$t('dispatch.datasource.columns.jdbcUrl')" prop="jdbcUrl">
             <el-input v-model="datasource.jdbcUrl" :placeholder="$t('dispatch.datasource.placeholder.jdbcUrl')" />
           </el-form-item>
-          <el-form-item :label="$t('dispatch.datasource.columns.userName')" prop="userName">
-            <el-input v-model="datasource.userName" :placeholder="$t('dispatch.datasource.placeholder.userName')" />
+          <el-form-item :label="$t('columns.userName')" prop="userName">
+            <el-input v-model="datasource.userName" :placeholder="$t('placeholders.userName')" />
           </el-form-item>
-          <el-form-item :label="$t('dispatch.datasource.columns.password')" prop="password">
-            <el-input v-model="datasource.password" type="password" :placeholder="$t('dispatch.datasource.placeholder.password')" />
+          <el-form-item :label="$t('columns.password')" prop="password">
+            <el-input v-model="datasource.password" type="password" :placeholder="$t('placeholders.password')" />
           </el-form-item>
           <el-form-item :label="$t('dispatch.datasource.columns.attribute')" prop="attribute">
             <el-input v-model="datasource.attribute" type="textarea" :autosize="{ minRows: 1, maxRows: 5}" :placeholder="$t('dispatch.datasource.placeholder.attribute')" />
@@ -101,7 +101,6 @@
 
 <script>
 import { listReq, getReq, removeReq, addReq, updateReq, testConnectionReq } from '@/api/dispatch/datasource'
-import waves from '@/directive/waves'
 import Pagination from '@/components/Pagination'
 import { buildMsg } from '@/utils/tools'
 const DEF_OBJ = {
@@ -115,7 +114,6 @@ const DEF_OBJ = {
 export default {
   name: 'datasource',
   components: { Pagination },
-  directives: { waves },
   data() {
     return {
       tableKey: 0,
@@ -140,7 +138,7 @@ export default {
       },
       formRules: {
         dbName: [
-          { required: true, trigger: 'blur' }
+          { required: true, trigger: 'blur', range: { max: 64 }, pattern: /^[a-zA-Z0-9_-]+$/ }
         ],
         jdbcUrl: [
           { required: true, trigger: 'blur' }

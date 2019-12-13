@@ -5,7 +5,6 @@ import com.github.attemper.common.param.IdParam;
 import com.github.attemper.common.param.app.gist.*;
 import com.github.attemper.common.result.app.gist.Gist;
 import com.github.attemper.common.result.app.gist.GistInfo;
-import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.dao.application.GistMapper;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
@@ -18,7 +17,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,13 +43,13 @@ public class GistService extends BaseServiceAdapter {
         return PageUtil.toResultMap(list);
     }
 
-    public Gist add(GistSaveParam param) {
+    public Gist add(GistNameParam param) {
         Gist entity = get(new GistNameParam().setGistName(param.getGistName()));
         if (entity != null) {
             throw new DuplicateKeyException(param.getGistName());
         }
         entity = paramToResult(param);
-        entity.setCreateTime(new Date());
+        entity.setCreateTime(System.currentTimeMillis());
         mapper.add(entity);
         return entity;
     }
@@ -62,7 +60,7 @@ public class GistService extends BaseServiceAdapter {
         return null;
     }
 
-    private Gist paramToResult(GistSaveParam param) {
+    private Gist paramToResult(GistNameParam param) {
         return new Gist()
                 .setGistName(param.getGistName())
                 .setTenantId(injectTenantId());
@@ -86,7 +84,7 @@ public class GistService extends BaseServiceAdapter {
                 .setId(idGenerator.getNextId())
                 .setGistName(param.getGistName())
                 .setVersion(param.getVersion())
-                .setUpdateTime(new Date())
+                .setUpdateTime(System.currentTimeMillis())
                 .setContent(lastVersionContent)
                 .setTenantId(injectTenantId());
         mapper.addInfo(gistInfo);
@@ -108,7 +106,7 @@ public class GistService extends BaseServiceAdapter {
     }
 
     public Void updateContent(GistInfoContentParam param) {
-        mapper.updateContent(BeanUtil.bean2Map(param));
+        mapper.updateContent(param);
         return null;
     }
 }

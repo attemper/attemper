@@ -4,7 +4,7 @@ import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.result.app.program.ProgramPackage;
 import com.github.attemper.core.service.application.ProgramService;
 import com.github.attemper.executor.util.CustomURLClassLoader;
-import com.github.attemper.sys.util.FileUtil;
+import com.github.attemper.core.util.FileUtil;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

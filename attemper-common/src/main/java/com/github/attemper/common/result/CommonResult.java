@@ -16,8 +16,8 @@ public class CommonResult<T> extends BaseResult<T> {
      * @param msg
      * @return
      */
-    public static CommonResult put(int code, String msg) {
-        CommonResult r = new CommonResult();
+    public static CommonResult<Void> put(int code, String msg) {
+        CommonResult<Void> r = new CommonResult<>();
         r.code = code;
         r.msg = msg;
         return r;
@@ -27,7 +27,7 @@ public class CommonResult<T> extends BaseResult<T> {
      * @param code
      * @return
      */
-	public static CommonResult put(int code) {
+	public static CommonResult<Void> put(int code) {
 		return put(code,
 				StatusProperty.getValue(code));
 	}
@@ -48,7 +48,7 @@ public class CommonResult<T> extends BaseResult<T> {
      * 200
      * @return
      */
-	public static CommonResult ok() {
+	public static CommonResult<Void> ok() {
 		return put(CommonConstants.OK);
 	}
 

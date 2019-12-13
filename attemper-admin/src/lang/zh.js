@@ -2,82 +2,24 @@ export default {
   title: '调度中心',
   route: {
     dashboard: '首页',
-    profile: '简介',
     sys: '系统管理',
     tenant: '租户管理',
-    tag: '角色管理',
+    role: '角色管理',
     calendar: '日历管理',
     dispatch: '调度管理',
-    job: '任务编排',
+    job: '任务管理',
     delay: '延迟任务',
     arg: '参数管理',
     datasource: '数据源管理',
     monitor: '监控管理',
     total: '执行监控',
     retry: '重试监控',
+    scheduler: '调度器监控',
+    executor: '执行器监控',
     application: '应用管理',
     project: '项目管理',
     program: '程序包管理',
-    gist: '代码片段',
-    introduction: '简述',
-    documentation: '文档',
-    guide: '引导页',
-    permission: '权限测试页',
-    rolePermission: '角色权限',
-    pagePermission: '页面权限',
-    directivePermission: '指令权限',
-    icons: '图标',
-    components: '组件',
-    componentIndex: '介绍',
-    markdown: 'Markdown',
-    dndList: '列表拖拽',
-    splitPane: 'Splitpane',
-    avatarUpload: '头像上传',
-    dropzone: 'Dropzone',
-    sticky: 'Sticky',
-    countTo: 'CountTo',
-    componentMixin: '小组件',
-    backToTop: '返回顶部',
-    dragDialog: '拖拽 Dialog',
-    dragSelect: '拖拽 Select',
-    dragKanban: '可拖拽看板',
-    example: '综合实例',
-    nested: '路由嵌套',
-    menu1: '菜单1',
-    'menu1-1': '菜单1-1',
-    'menu1-2': '菜单1-2',
-    'menu1-2-1': '菜单1-2-1',
-    'menu1-2-2': '菜单1-2-2',
-    'menu1-3': '菜单1-3',
-    menu2: '菜单2',
-    Table: 'Table',
-    dynamicTable: '动态Table',
-    dragTable: '拖拽Table',
-    inlineEditTable: 'Table内编辑',
-    complexTable: '综合Table',
-    treeTable: '树形表格',
-    customTreeTable: '自定义树表',
-    tab: 'Tab',
-    form: '表单',
-    createArticle: '创建文章',
-    editArticle: '编辑文章',
-    articleList: '文章列表',
-    errorPages: '错误页面',
-    page401: '401',
-    page404: '404',
-    errorLog: '错误日志',
-    excel: 'Excel',
-    exportExcel: '导出 Excel',
-    selectExcel: '导出 已选择项',
-    mergeHeader: '导出 多级表头',
-    uploadExcel: '上传 Excel',
-    zip: 'Zip',
-    pdf: 'PDF',
-    exportZip: 'Export Zip',
-    theme: '换肤',
-    clipboardDemo: 'Clipboard',
-    i18n: '国际化',
-    externalLink: '外链'
+    gist: '代码片段'
   },
   actions: {
     handle: '操作',
@@ -91,6 +33,7 @@ export default {
     reset: '重置',
     transferIn: '移入',
     transferOut: '移出',
+    import: '导入',
     importModel: '导入模型',
     exportModel: '导出模型',
     exportList: '导出列表',
@@ -116,7 +59,9 @@ export default {
     disable: '禁用',
     upload: '上传',
     load: '部署',
-    unload: '卸载'
+    unload: '卸载',
+    test: '测试',
+    changePassword: '修改密码'
   },
   tip: {
     usernameError: '请输入正确的用户名',
@@ -131,7 +76,7 @@ export default {
     disabledJobError: '禁用的任务不可被发起',
     adminTenantCannotBeRemoved: '超管租户不能删除',
     preview: '预览',
-    notSelectSql: '必须是查询语句(以select开头)',
+    selectSql: '必须是查询语句(以select开头)',
     howToPreview: '请双击预览',
     sqlResultAlertInfo: '总条数{}(注意：最多展示前10条)',
     sqlResultNoDataInfo: '执行成功，没有数据返回',
@@ -140,15 +85,41 @@ export default {
     pingError: '地址ping不通',
     yes: '是',
     no: '否',
-    flowNotStart: '任务流未成功发起，无法查看节点执行详情',
+    flowNotStart: '任务流未发起，无法重试或者查看节点执行日志',
     fileSizeOutOfBound: '文件大小不能超过',
     currentFileSize: '该文件大小',
     entryVersion: '请输入版本',
     versionNotBlank: '版本不能为空',
     beforeActivity: '在此节点前发起',
-    afterActivity: '在此节点后发起'
+    afterActivity: '在此节点后发起',
+    refreshPage: '请等待页面刷新',
+    noneScheduler: '未启动调度器',
+    noneExecutor: '未启动执行器',
+    detail: '详情',
+    fileSeparatorLeft: '文件分隔符请用/，例如/data/biz',
+    ftpPrefix: '如欲使用参数中的mainIp/mainPort等，则配置为main',
+    dbNameInArg: '在数据源管理中维护数据源名称后在此配置',
+    testResult: '测试结果',
+    noLongerTriggered: '该触发器将不再被触发',
+    tenantFrozen: '租户被冻结，将被禁止登录',
+    tenantDisabled: '租户被禁用，任务将跳过执行',
+    oldPassword: '原密码',
+    newPassword: '新密码',
+    doubleNewPassword: '重复新密码',
+    differentOldPassword: '新旧密码不能相同',
+    differentNewPassword: '两次密码不一致',
+    jobNoInstance: '根据查询条件未查询到任何实例',
+    noResources: '无菜单权限，请联系超管分配',
+    today: '今天',
+    yesterday: '昨天',
+    lastWeek: '一周前',
+    lastMonth: '一月前',
+    lastYear: '一年前'
   },
   columns: {
+    userName: '用户名',
+    password: '密码',
+    ip: 'IP',
     displayName: '中文名',
     status: '状态',
     remark: '备注',
@@ -156,44 +127,46 @@ export default {
     updateTime: '更新时间',
     startTime: '开始时间',
     endTime: '结束时间',
-    interval: '周期'
+    repeatInterval: '周期',
+    prefix: '前缀'
   },
   rules: {
+    userName: '用户名不能为空',
+    password: '密码不能为空',
     displayName: '中文名不能为空'
   },
   placeholders: {
+    userName: '请输入用户名',
+    password: '请输入密码',
     displayName: '请输入中文名',
     remark: '请输入备注'
   },
   sys: {
     tenant: {
       columns: {
-        userName: '编号',
-        password: '密码',
         email: '邮箱',
         mobile: '手机号',
         sendConfig: '告警开关'
       },
-      rules: {
-        userName: '租户编号不能为空',
-        password: '密码不能为空'
-      },
       placeholder: {
-        userName: '请输入租户编号',
-        password: '请输入密码',
         email: '请输入邮箱',
         mobile: '请输入手机号'
-      }
-    },
-    tag: {
-      columns: {
-        tagName: '角色名称'
       },
       rules: {
-        tagName: '角色名称不能为空'
+        oldPassword: '原密码不能为空',
+        newPassword: '新密码不能为空',
+        doubleNewPassword: '再次验证的新密码不能为空'
+      }
+    },
+    role: {
+      columns: {
+        roleName: '角色名称'
+      },
+      rules: {
+        roleName: '角色名称不能为空'
       },
       placeholder: {
-        tagName: '请输入角色名称'
+        roleName: '请输入角色名称'
       },
       tip: {
         tenant: '分配租户',
@@ -223,17 +196,21 @@ export default {
         jobName: '任务名称',
         nextFireTime: '下次执行时间',
         concurrent: '是否支持并行',
-        remark: '备注'
+        once: '当日仅执行一次'
       },
       placeholder: {
-        jobName: '请输入任务名称',
-        remark: '请输入备注'
+        jobName: '请输入任务名称'
       },
       actions: {
         design: '设计',
         param: '参数',
         trigger: '触发器',
+        condition: '条件',
         project: '项目'
+      },
+      exportConfig: {
+        full: '全量',
+        increment: '增量'
       }
     },
     flow: {
@@ -256,16 +233,10 @@ export default {
     },
     trigger: {
       tab: {
-        time: {
-          title: '时间',
-          cron: 'CronTab',
-          calendarOffset: '日程偏移',
-          dailyInterval: '每日周期',
-          calendarInterval: '日历周期'
-        },
-        event: {
-          title: '事件'
-        }
+        cron: 'Cron表达式',
+        calendarOffset: '日程偏移',
+        dailyTimeInterval: '每日周期',
+        calendarInterval: '日历周期'
       },
       title: {
         preserveDayLight: '维持夏令时',
@@ -300,6 +271,21 @@ export default {
         jobNotPublished: '任务未被发布，无法使用触发器'
       }
     },
+    condition: {
+      tab: {
+        sql: 'SQL',
+        ftpFile: 'FTP文件',
+        localFile: '本地文件'
+      },
+      title: {
+        conditionName: '条件编号',
+        filePath: '文件路径',
+        fileName: '文件名'
+      },
+      placeholder: {
+        conditionName: '条件编号'
+      }
+    },
     delay: {
       columns: {
         id: '编号',
@@ -330,15 +316,11 @@ export default {
         dbName: '数据源名称',
         driverClassName: '驱动',
         jdbcUrl: '连接信息',
-        userName: '用户名',
-        password: '密码',
         attribute: '其他属性'
       },
       placeholder: {
         dbName: '请输入数据源名称',
         jdbcUrl: '请输入连接信息',
-        userName: '请输入用户名',
-        password: '请输入密码',
         attribute: '请输入其他属性'
       },
       rules: {
@@ -363,8 +345,7 @@ export default {
         projectName: '项目名称',
         contextPath: '项目路径',
         bindExecutor: '绑定执行器',
-        executorUri: '执行器路径',
-        position: '位置'
+        executorUri: '执行器路径'
       },
       rules: {
         projectName: '项目名称不能为空'
@@ -417,17 +398,70 @@ export default {
   monitor: {
     columns: {
       duration: '执行时长',
-      msg: '错误信息',
+      msg: '日志',
       schedulerUri: '调度器地址',
       executorUri: '执行器地址'
     },
     label: {
-      record: '记录',
-      flow: '任务流',
-      task: '任务'
+      job: '任务',
+      record: '执行记录',
+      task: '任务节点'
+    }
+  },
+  serverInfo: {
+    base: {
+      memory: '内存',
+      machine: '主机',
+      service: '服务',
+      resource: '资源',
+      file: '文件系统'
+    },
+    service: {
+      vipAddress: '应用名称',
+      homePageUrl: '应用路径',
+      status: '状态',
+      lastDirtyTimestamp: '最后改动时间',
+      lastUpdatedTimestamp: '最后更新时间'
+    },
+    cpu: {
+      coreNum: '核心数',
+      appRate: '应用使用率',
+      systemRate: '系统使用率',
+      usedRate: '总使用率',
+      idleRate: '空闲率',
+      ioWaitRate: 'IO等待率'
+    },
+    memory: {
+      totalSize: '总量',
+      used: '已使用',
+      available: '剩余'
+    },
+    machine: {
+      system: '操作系统',
+      osName: 'OS名称',
+      osArch: 'OS架构',
+      osVersion: 'OS版本号'
+    },
+    jvm: {
+      vmName: '名称',
+      version: 'Java版本',
+      homePath: '安装目录',
+      startTime: '启动时刻',
+      maxMemorySize: '最大可使用内存',
+      totalMemorySize: '初始总内存',
+      usedMemory: '已使用内存',
+      freeMemory: '剩余内存'
+    },
+    resource: {
+      pid: 'PID',
+      userName: '用户名称',
+      userHome: '用户主目录',
+      userDir: '用户工作目录',
+      tempDir: '临时文件目录'
     }
   },
   statistics: {
+    chart: '图表',
     instance: '实例',
     job: '任务',
     tenant: '租户'
@@ -435,98 +469,18 @@ export default {
   chart: {
     instance: '实例状态分布',
     job: '任务状态分布',
-    total: '执行计划\n\n全量',
-    realTime: '实时',
-    daily: '日终'
+    tenant: '租户状态分布',
+    instanceDuration: '执行时长趋势图'
   },
   navbar: {
-    logOut: '退出登录',
+    logOut: '退出',
     docs: '文档',
     theme: '换肤',
     size: '布局大小'
   },
   login: {
     title: '系统登录',
-    logIn: '登录',
-    username: '账号',
-    password: '密码',
-    any: '随便填',
-    thirdparty: '第三方登录',
-    thirdpartyTips: '本地不能模拟，请结合自己业务进行模拟！！！'
-  },
-  documentation: {
-    documentation: '文档',
-    github: 'Github 地址'
-  },
-  permission: {
-    addRole: '新增角色',
-    editPermission: '编辑权限',
-    roles: '你的权限',
-    switchRoles: '切换权限',
-    tips: '在某些情况下，不适合使用 v-permission。例如：Element-UI 的 Tab 组件或 el-table-column 以及其它动态渲染 dom 的场景。你只能通过手动设置 v-if 来实现。',
-    delete: '删除',
-    confirm: '确定',
-    cancel: '取消'
-  },
-  guide: {
-    description: '引导页对于一些第一次进入项目的人很有用，你可以简单介绍下项目的功能。本 Demo 是基于',
-    button: '打开引导'
-  },
-  components: {
-    documentation: '文档',
-    dropzoneTips: '由于我司业务有特殊需求，而且要传七牛 所以没用第三方，选择了自己封装。代码非常的简单，具体代码你可以在这里看到 @/components/Dropzone',
-    stickyTips: '当页面滚动到预设的位置会吸附在顶部',
-    backToTopTips1: '页面滚动到指定位置会在右下角出现返回顶部按钮',
-    backToTopTips2: '可自定义按钮的样式、show/hide、出现的高度、返回的位置 如需文字提示，可在外部使用Element的el-tooltip元素',
-    imageUploadTips: '由于我在使用时它只有vue@1版本，而且和mockjs不兼容，所以自己改造了一下，如果大家要使用的话，优先还是使用官方版本。'
-  },
-  table: {
-    dynamicTips1: '固定表头, 按照表头顺序排序',
-    dynamicTips2: '不固定表头, 按照点击顺序排序',
-    dragTips1: '默认顺序',
-    dragTips2: '拖拽后顺序',
-    title: '标题',
-    importance: '重要性',
-    type: '类型',
-    remark: '点评',
-    search: '搜索',
-    add: '添加',
-    export: '导出',
-    reviewer: '审核人',
-    id: '序号',
-    date: '时间',
-    author: '作者',
-    readings: '阅读数',
-    status: '状态',
-    actions: '操作',
-    edit: '编辑',
-    publish: '发布',
-    draft: '草稿',
-    delete: '删除',
-    cancel: '取 消',
-    confirm: '确 定'
-  },
-  errorLog: {
-    tips: '请点击右上角bug小图标',
-    description: '现在的管理后台基本都是spa的形式了，它增强了用户体验，但同时也会增加页面出问题的可能性，可能一个小小的疏忽就导致整个页面的死锁。好在 Vue 官网提供了一个方法来捕获处理异常，你可以在其中进行错误处理或者异常上报。',
-    documentation: '文档介绍'
-  },
-  excel: {
-    export: '导出',
-    selectedExport: '导出已选择项',
-    placeholder: '请输入文件名(默认excel-list)'
-  },
-  zip: {
-    export: '导出',
-    placeholder: '请输入文件名(默认file)'
-  },
-  pdf: {
-    tips: '这里使用   window.print() 来实现下载pdf的功能'
-  },
-  theme: {
-    change: '换肤',
-    documentation: '换肤文档',
-    tips: 'Tips: 它区别于 navbar 上的 theme-pick, 是两种不同的换肤方法，各自有不同的应用场景，具体请参考文档。'
+    logIn: '登录'
   },
   tagsView: {
     refresh: '刷新',
@@ -538,7 +492,6 @@ export default {
     title: '系统布局配置',
     theme: '主题色',
     tagsView: '开启 Tags-View',
-    fixedHeader: '固定 Header',
     sidebarLogo: '侧边栏 Logo'
   }
 }

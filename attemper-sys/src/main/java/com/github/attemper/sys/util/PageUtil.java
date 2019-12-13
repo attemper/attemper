@@ -26,7 +26,7 @@ public class PageUtil {
      * @param page
      * @return
      */
-    private static PageResult toPageResult(Page<?> page){
+    public static PageResult toPageResult(Page<?> page){
         return new PageResult()
                 .setCurrentPage(page.getPageNum())
                 .setPageSize(page.getPageSize())

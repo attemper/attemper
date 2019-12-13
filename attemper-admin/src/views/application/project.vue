@@ -58,15 +58,12 @@
               <el-input v-model="project.contextPath" :placeholder="$t('application.project.placeholder.contextPath')" />
             </el-form-item>
             <el-form-item :label="$t('application.project.label.bindExecutor')">
-              <el-switch v-model="project.bindExecutor" active-color="#13ce66" inactive-color="#ff4949" />
+              <el-switch v-model="project.bindExecutor" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0" />
             </el-form-item>
-            <el-form-item v-show="project.bindExecutor" :label="$t('application.project.label.executorUri')">
+            <el-form-item v-show="project.bindExecutor > 0" :label="$t('application.project.label.executorUri')">
               <el-select v-model="executorUris" style="width: 100%;" multiple>
                 <el-option v-for="item in executors" :key="item.uri" :value="item.uri" :label="item.uri" />
               </el-select>
-            </el-form-item>
-            <el-form-item :label="$t('application.project.label.position')">
-              <el-input-number v-model="project.position" :precision="0" :min="0" :step="1" controls-position="right" />
             </el-form-item>
           </el-form>
           <el-row>
@@ -96,9 +93,9 @@
                 <span>{{ scope.row.uri }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="type" prop="type" align="center" min-width="80px">
+            <el-table-column label="type" prop="uriType" align="center" min-width="80px">
               <template slot-scope="scope">
-                <el-tag :type="scope.row.type | typeFilter">{{ formatType(scope.row.type) }}</el-tag>
+                <el-tag :type="scope.row.uriType | typeFilter">{{ formatType(scope.row.uriType) }}</el-tag>
               </template>
             </el-table-column>
             <el-table-column :label="$t('actions.handle')" align="center" class-name="small-padding">
@@ -113,7 +110,7 @@
                 <el-input v-model="projectInfo.uri" placeholder="uri" />
               </el-col>
               <el-col :span="6" :offset="1">
-                <el-select v-model="projectInfo.type" style="width: 100%;">
+                <el-select v-model="projectInfo.uriType" style="width: 100%;">
                   <el-option v-for="item in uriTypes" :key="item.label" :value="item.value" :label="item.label" />
                 </el-select>
               </el-col>
@@ -135,18 +132,18 @@ import { listExecutorServiceReq, pingReq } from '@/api/dispatch/tool'
 
 const DEF_INSTANCE = {
   uri: null,
-  type: 0
+  uriType: 0
 }
 export default {
   name: 'project',
   filters: {
-    typeFilter(type) {
+    typeFilter(uriType) {
       const typeMap = {
         0: 'primary',
         1: 'success',
         2: 'info'
       }
-      return typeMap[type]
+      return typeMap[uriType]
     }
   },
   data() {
@@ -156,10 +153,10 @@ export default {
       visible: false,
       formRules: {
         projectName: [
-          { required: true, trigger: 'blur' }
+          { required: true, trigger: 'blur', range: { max: 255 }, pattern: /^[a-zA-Z0-9_-]+$/ }
         ],
         displayName: [
-          { required: true, trigger: 'blur' }
+          { required: true, trigger: 'blur', range: { max: 255 }}
         ]
       },
       uriTypes: [],
@@ -231,13 +228,11 @@ export default {
       })
     },
     append(data) {
-      const position = Math.floor(Math.random() * 1000)
       const newChild = {
         parentProjectName: data.projectName,
-        projectName: data.projectName + '-' + position,
-        displayName: data.projectName + '-' + position,
-        position: position,
-        bindExecutor: false,
+        projectName: data.projectName,
+        displayName: data.projectName,
+        bindExecutor: 0,
         transition: true
       }
       if (!data.children) {

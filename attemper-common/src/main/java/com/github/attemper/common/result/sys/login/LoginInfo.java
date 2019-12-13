@@ -1,14 +1,11 @@
 package com.github.attemper.common.result.sys.login;
 
-import com.github.attemper.common.result.sys.tag.Tag;
+import com.github.attemper.common.result.sys.role.Role;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import lombok.*;
 
 import java.util.List;
 
-/**
- * @author ldang
- */
 @ToString
 public class LoginInfo {
 
@@ -16,7 +13,7 @@ public class LoginInfo {
     protected Tenant tenant;
 
     /** role*/
-    protected List<Tag> tags;
+    protected List<Role> roles;
 
     /** resource */
     protected List<String> resources;
@@ -30,12 +27,12 @@ public class LoginInfo {
         return this;
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public LoginInfo setTags(List<Tag> tags) {
-        this.tags = tags;
+    public LoginInfo setRoles(List<Role> roles) {
+        this.roles = roles;
         return this;
     }
 

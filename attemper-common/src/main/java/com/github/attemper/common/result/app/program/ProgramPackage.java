@@ -2,8 +2,6 @@ package com.github.attemper.common.result.app.program;
 
 import lombok.ToString;
 
-import java.util.Date;
-
 @ToString
 public class ProgramPackage {
 
@@ -13,11 +11,11 @@ public class ProgramPackage {
 
     protected String packageName;
 
-    protected Date uploadTime;
+    protected Long uploadTime;
 
-    protected Date loadTime;
+    protected Long loadTime;
 
-    protected Date unloadTime;
+    protected Long unloadTime;
 
     protected byte[] content;
 
@@ -50,29 +48,29 @@ public class ProgramPackage {
         return this;
     }
 
-    public Date getUploadTime() {
+    public Long getUploadTime() {
         return uploadTime;
     }
 
-    public ProgramPackage setUploadTime(Date uploadTime) {
+    public ProgramPackage setUploadTime(Long uploadTime) {
         this.uploadTime = uploadTime;
         return this;
     }
 
-    public Date getLoadTime() {
+    public Long getLoadTime() {
         return loadTime;
     }
 
-    public ProgramPackage setLoadTime(Date loadTime) {
+    public ProgramPackage setLoadTime(Long loadTime) {
         this.loadTime = loadTime;
         return this;
     }
 
-    public Date getUnloadTime() {
+    public Long getUnloadTime() {
         return unloadTime;
     }
 
-    public ProgramPackage setUnloadTime(Date unloadTime) {
+    public ProgramPackage setUnloadTime(Long unloadTime) {
         this.unloadTime = unloadTime;
         return this;
     }

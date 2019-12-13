@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
-@Configuration
 @ConfigurationProperties(prefix = "spring.datasource.hikari")
 public class DataSourceProperties {
 

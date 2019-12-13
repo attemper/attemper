@@ -2,8 +2,6 @@ package com.github.attemper.common.result.app.program;
 
 import lombok.ToString;
 
-import java.util.Date;
-
 @ToString
 public class Program {
 
@@ -11,7 +9,7 @@ public class Program {
 
     protected int injectOrder;
 
-    protected Date createTime;
+    protected long createTime;
 
     protected String tenantId;
 
@@ -33,11 +31,11 @@ public class Program {
         return this;
     }
 
-    public Date getCreateTime() {
+    public long getCreateTime() {
         return createTime;
     }
 
-    public Program setCreateTime(Date createTime) {
+    public Program setCreateTime(long createTime) {
         this.createTime = createTime;
         return this;
     }

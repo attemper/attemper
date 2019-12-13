@@ -1,4 +1,5 @@
 import { asyncRouterMap, /* devRouterMap,*/ constantRouterMap } from '@/router'
+import langSelect from '../../lang/index'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -46,8 +47,11 @@ const mutations = {
 }
 const actions = {
   generateRoutes({ commit }) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       // const roleNames = JSON.parse(sessionStorage.roleNames)
+      if (!sessionStorage.resourceNames || sessionStorage.resourceNames.length === 0) {
+        reject(langSelect.t('tip.noResources'))
+      }
       const resourceNames = JSON.parse(sessionStorage.resourceNames)
       const accessedRouter = filterAsyncRoutes(asyncRouterMap, resourceNames)
       /* exclude all dev menus from super admin

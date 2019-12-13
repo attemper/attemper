@@ -13,7 +13,7 @@
         (
             #{programName, jdbcType=VARCHAR},
             #{injectOrder, jdbcType=INTEGER},
-            #{createTime, jdbcType=TIMESTAMP},
+            #{createTime, jdbcType=INTEGER},
             #{tenantId, jdbcType=VARCHAR}
         )
     </insert>
@@ -32,7 +32,7 @@
             #{id, jdbcType=VARCHAR},
             #{programName, jdbcType=VARCHAR},
             #{packageName, jdbcType=VARCHAR},
-            #{uploadTime, jdbcType=TIMESTAMP},
+            #{uploadTime, jdbcType=INTEGER},
             #{content, jdbcType=BLOB},
             #{tenantId, jdbcType=VARCHAR}
         )
@@ -54,12 +54,10 @@
         UPDATE
         ${tablePrefix}program_package
         <set>
-            LOAD_TIME = #{loadTime, jdbcType=TIMESTAMP},
-            UNLOAD_TIME = #{unloadTime, jdbcType=TIMESTAMP},
+            LOAD_TIME = #{loadTime, jdbcType=INTEGER},
+            UNLOAD_TIME = #{unloadTime, jdbcType=INTEGER},
         </set>
-        <where>
-            <include refid="condId"/>
-        </where>
+        WHERE ID = #{id, jdbcType=VARCHAR}
     </update>
 
     <select id="get" parameterType="map"
@@ -76,9 +74,7 @@
             resultType="com.github.attemper.common.result.app.program.ProgramPackage">
         SELECT *
         FROM ${tablePrefix}program_package
-        <where>
-            <include refid="condId_1"/>
-        </where>
+        WHERE ID = #{1, jdbcType=VARCHAR}
     </select>
 
     <select id="listLoadedPackage" parameterType="map"
@@ -87,10 +83,10 @@
         SELECT pp.*, p.INJECT_ORDER
         FROM ${tablePrefix}program_package pp
         JOIN ${tablePrefix}program p
-        USING (PROGRAM_NAME, TENANT_ID)
+        ON pp.PROGRAM_NAME = p.PROGRAM_NAME AND pp.TENANT_ID = p.TENANT_ID
         ) t
         <where>
-            and load_time is not null and unload_time is null
+            AND load_time is not null AND unload_time is null
             <include refid="condProgramName"/>
             <include refid="condTenantId"/>
         </where>
@@ -103,16 +99,16 @@
         FROM ${tablePrefix}program
         <where>
             <if test="programName != null">
-                and lower(PROGRAM_NAME) like concat('%', lower(#{programName, jdbcType=VARCHAR}), '%')
+                AND LOWER(PROGRAM_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{programName, jdbcType=VARCHAR})), '%')
             </if>
             <include refid="condTenantId"/>
         </where>
         <choose>
             <when test="sort == null">
-                order by INJECT_ORDER ${direction}
+                order by INJECT_ORDER
             </when>
             <otherwise>
-                order by ${sort} ${direction}
+                order by ${sort}
             </otherwise>
         </choose>
     </select>
@@ -129,7 +125,7 @@
         FROM ${tablePrefix}program_package
         <where>
             <if test="packageName != null">
-                and lower(PACKAGE_NAME) like concat('%', lower(#{packageName, jdbcType=VARCHAR}), '%')
+                AND LOWER(PACKAGE_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{packageName, jdbcType=VARCHAR})), '%')
             </if>
             <include refid="condProgramName"/>
             <include refid="condTenantId"/>
@@ -139,7 +135,7 @@
                 order by ID DESC
             </when>
             <otherwise>
-                order by ${sort} ${direction}
+                order by ${sort}
             </otherwise>
         </choose>
     </select>
@@ -187,21 +183,13 @@
 
     <sql id="condProgramName">
         <if test="programName != null">
-            and PROGRAM_NAME = #{programName, jdbcType=VARCHAR}
+            AND PROGRAM_NAME = #{programName, jdbcType=VARCHAR}
         </if>
     </sql>
 
     <sql id="condTenantId">
         <if test="tenantId != null">
-            and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </if>
-    </sql>
-
-    <sql id="condId">
-        and ID = #{id, jdbcType=VARCHAR}
-    </sql>
-
-    <sql id="condId_1">
-        and ID = #{1, jdbcType=VARCHAR}
     </sql>
 </mapper>

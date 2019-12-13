@@ -1,54 +1,46 @@
 package com.github.attemper.web.ext.trigger;
 
-
+import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
-import com.github.attemper.common.param.dispatch.trigger.sub.CommonTriggerParam;
-import com.github.attemper.common.result.dispatch.trigger.sub.CommonTriggerResult;
+import com.github.attemper.common.param.dispatch.trigger.sub.CommonTriggerWrapper;
 import com.github.attemper.config.base.bean.SpringContextAware;
-import com.github.attemper.core.ext.trigger.TriggerHandlerInDatabase;
 import com.github.attemper.invoker.util.QuartzUtil;
-import com.github.attemper.sys.holder.TenantHolder;
-import org.quartz.*;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.impl.triggers.AbstractTrigger;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extends CommonTriggerResult> extends TriggerHandlerInDatabase {
+public interface TriggerWithQuartzHandler<T extends CommonTriggerWrapper> {
 
-    default void deleteAndUnschedule(Map<String, Object> jobNameWithTenantIdMap) {
-        List<V> resultOfTriggers = getTriggers(jobNameWithTenantIdMap);
-        deleteTriggers(jobNameWithTenantIdMap);
-        if (resultOfTriggers.size() > 0) {
-            unscheduleTriggers(TenantHolder.get().getUserName(), resultOfTriggers.stream().map(V::getTriggerName).collect(Collectors.toList()));
-        }
+    T getSpecifyTrigger(Trigger trigger);
+
+    Set<Trigger> buildTriggers(String tenantId, List<T> paramOfTriggers);
+
+    default T getTrigger(Trigger trigger) {
+        T t = getSpecifyTrigger(trigger);
+        setCommonProperty(t, trigger);
+        return t;
     }
 
-    void deleteTriggers(Map<String, Object> jobNameWithTenantIdMap);
-
-    default void unscheduleTriggers(String tenantId, List oldTriggerNames) {
-        if (oldTriggerNames.size() > 0) {
-            oldTriggerNames.forEach(item -> {
-                try {
-                    SpringContextAware.getBean(Scheduler.class).unscheduleJob(new TriggerKey(String.valueOf(item), tenantId));
-                } catch (SchedulerException e) {
-                    throw new RTException(3002, e);
-                }
-            });
-        }
+    default void setCommonProperty(CommonTriggerWrapper commonTriggerWrapper, Trigger trigger) {
+        AbstractTrigger<Trigger> abstractTrigger = (AbstractTrigger) trigger;
+        commonTriggerWrapper.setTriggerName(abstractTrigger.getName());
+        commonTriggerWrapper.setStartTime(abstractTrigger.getStartTime() != null ? abstractTrigger.getStartTime().getTime() : null);
+        commonTriggerWrapper.setEndTime(abstractTrigger.getEndTime() != null ? abstractTrigger.getEndTime().getTime() : null);
+        commonTriggerWrapper.setMisfireInstruction(abstractTrigger.getMisfireInstruction());
+        commonTriggerWrapper.setCalendarNames(abstractTrigger.getCalendarName() == null ? null : Arrays.asList(abstractTrigger.getCalendarName().split(CommonConstants.COLON)));
     }
-
-    default void saveAndSchedule(String jobName, Map<String, Object> jobDataMap, List<K> paramOfTriggers) {
-        if (paramOfTriggers != null && paramOfTriggers.size() > 0) {
-            saveTriggers(jobName, paramOfTriggers);
-            schedule(jobName, TenantHolder.get().getUserName(), jobDataMap, paramOfTriggers);
-        }
-    }
-
-    void saveTriggers(String jobName, List<K> paramOfTriggers);
 
     default void schedule(String jobName, String tenantId, Map<String, Object> jobDataMap, List paramOfTriggers) {
+        if (paramOfTriggers == null || paramOfTriggers.size() == 0) {
+            return;
+        }
         Set<Trigger> quartzTriggers = buildTriggers(tenantId, paramOfTriggers);
         JobDetail jobDetail = QuartzUtil.newJobDetail(jobName, tenantId, jobDataMap);
         try {
@@ -57,6 +49,4 @@ public interface TriggerWithQuartzHandler<K extends CommonTriggerParam, V extend
             throw new RTException(3003, e);
         }
     }
-
-    Set<Trigger> buildTriggers(String tenantId, List<K> paramOfTriggers);
 }

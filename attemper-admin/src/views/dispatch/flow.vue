@@ -21,7 +21,7 @@
       >
         <el-option v-for="item in jobWithVersions" :key="item.version" :label="createVersionLabel(item)" :value="item.version">
           <span style="float: left; font-size: 13px">{{ createVersionLabel(item) }}</span>
-          <span style="float: right; color: #8492a6; margin-left: 20px;">{{ item.updateTime }}</span>
+          <span style="float: right; color: #8492a6; margin-left: 20px;">{{ item.updateTime | parseTime }}</span>
         </el-option>
       </el-select>
       <span style="margin-left: 40px;">

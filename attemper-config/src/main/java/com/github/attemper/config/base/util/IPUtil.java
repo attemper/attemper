@@ -5,9 +5,6 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * @author ldang
- */
 @Slf4j
 public class IPUtil {
 

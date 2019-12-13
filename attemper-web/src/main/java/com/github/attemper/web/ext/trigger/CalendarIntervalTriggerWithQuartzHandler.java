@@ -1,44 +1,27 @@
 package com.github.attemper.web.ext.trigger;
 
-import com.github.attemper.common.constant.CommonConstants;
-import com.github.attemper.common.param.dispatch.trigger.sub.CalendarIntervalTriggerParam;
-import com.github.attemper.common.result.dispatch.trigger.sub.CalendarIntervalTriggerResult;
-import com.github.attemper.config.base.bean.SpringContextAware;
-import com.github.attemper.config.base.util.BeanUtil;
-import com.github.attemper.core.dao.dispatch.TriggerMapper;
-import com.github.attemper.core.ext.trigger.CalendarIntervalTriggerHandler;
+import com.github.attemper.common.param.dispatch.trigger.sub.CalendarIntervalTriggerWrapper;
 import com.github.attemper.invoker.util.QuartzUtil;
-import com.github.attemper.sys.holder.TenantHolder;
-import org.apache.commons.lang.StringUtils;
 import org.quartz.Trigger;
-import org.quartz.impl.jdbcjobstore.Constants;
+import org.quartz.impl.triggers.CalendarIntervalTriggerImpl;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.TimeZone;
 
-public class CalendarIntervalTriggerWithQuartzHandler extends CalendarIntervalTriggerHandler implements TriggerWithQuartzHandler<CalendarIntervalTriggerParam, CalendarIntervalTriggerResult> {
-
-    @Override
-    public void deleteTriggers(Map<String, Object> jobNameWithTenantIdMap) {
-        SpringContextAware.getBean(TriggerMapper.class).deleteCalendarIntervalTriggers(jobNameWithTenantIdMap);
-    }
+public class CalendarIntervalTriggerWithQuartzHandler implements TriggerWithQuartzHandler<CalendarIntervalTriggerWrapper> {
 
     @Override
-    public void saveTriggers(String jobName, List<CalendarIntervalTriggerParam> paramOfTriggers) {
-        if (paramOfTriggers == null || paramOfTriggers.isEmpty()) {
-            return;
-        }
-        List<Map<String, Object>> mapList = new ArrayList<>(paramOfTriggers.size());
-        paramOfTriggers.forEach(item -> {
-            item.setTriggerType(Constants.TTYPE_CAL_INT);
-            if (StringUtils.isBlank(item.getTimeZoneId()) || TimeZone.getTimeZone(item.getTimeZoneId()) == null) {
-                item.setTimeZoneId(TimeZone.getDefault().getID());
-            }
-            Map<String, Object> map = BeanUtil.bean2Map(item);
-            map.put(CommonConstants.jobName, jobName);
-            map.put(CommonConstants.tenantId, TenantHolder.get().getUserName());
-            mapList.add(map);
-        });
-        SpringContextAware.getBean(TriggerMapper.class).saveCalendarIntervalTriggers(mapList);
+    public CalendarIntervalTriggerWrapper getSpecifyTrigger(Trigger trigger) {
+        CalendarIntervalTriggerImpl calendarIntervalTrigger = (CalendarIntervalTriggerImpl) trigger;
+        CalendarIntervalTriggerWrapper triggerResult = new CalendarIntervalTriggerWrapper()
+                .setRepeatCount(calendarIntervalTrigger.getRepeatCount())
+                .setTimeUnit(calendarIntervalTrigger.getRepeatIntervalUnit().name())
+                .setRepeatInterval(calendarIntervalTrigger.getRepeatInterval())
+                .setTimeZoneId(calendarIntervalTrigger.getTimeZone() != null ? calendarIntervalTrigger.getTimeZone().getID() : TimeZone.getDefault().getID())
+                .setPreserveDayLight(calendarIntervalTrigger.isPreserveHourOfDayAcrossDaylightSavings() ? 1 : 0)
+                .setSkipDayIfNoHour(calendarIntervalTrigger.isSkipDayIfHourDoesNotExist() ? 1 : 0);
+        return triggerResult;
     }
 
     @Override

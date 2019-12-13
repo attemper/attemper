@@ -16,9 +16,11 @@ public class Job {
 
     protected int status;
 
-    protected boolean concurrent;
+    protected int concurrent;
 
-    protected Date updateTime;
+    protected int once;
+
+    protected Long updateTime;
 
     protected List<Date> nextFireTimes;
 
@@ -62,20 +64,29 @@ public class Job {
         return this;
     }
 
-    public boolean isConcurrent() {
+    public int getConcurrent() {
         return concurrent;
     }
 
-    public Job setConcurrent(boolean concurrent) {
+    public Job setConcurrent(int concurrent) {
         this.concurrent = concurrent;
         return this;
     }
 
-    public Date getUpdateTime() {
+    public int getOnce() {
+        return once;
+    }
+
+    public Job setOnce(int once) {
+        this.once = once;
+        return this;
+    }
+
+    public Long getUpdateTime() {
         return updateTime;
     }
 
-    public Job setUpdateTime(Date updateTime) {
+    public Job setUpdateTime(Long updateTime) {
         this.updateTime = updateTime;
         return this;
     }

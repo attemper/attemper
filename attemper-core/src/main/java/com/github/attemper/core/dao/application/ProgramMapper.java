@@ -1,6 +1,5 @@
 package com.github.attemper.core.dao.application;
 
-import com.github.attemper.common.base.BaseMapper;
 import com.github.attemper.common.result.app.program.Program;
 import com.github.attemper.common.result.app.program.ProgramPackage;
 import org.apache.ibatis.annotations.Mapper;
@@ -11,7 +10,17 @@ import java.util.Map;
 
 @Mapper
 @Repository
-public interface ProgramMapper extends BaseMapper<Program> {
+public interface ProgramMapper {
+
+    void add(Program model);
+
+    void update(Program model);
+
+    Program get(Map<String, Object> paramMap);
+
+    List<Program> list(Map<String, Object> paramMap);
+
+    void delete(Map<String, Object> paramMap);
 
     List<ProgramPackage> listPackage(Map<String, Object> paramMap);
 

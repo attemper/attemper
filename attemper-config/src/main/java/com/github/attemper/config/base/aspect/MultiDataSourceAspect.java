@@ -14,9 +14,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 
 /**
- * 多数据源，切面处理类
- * 
- * @auth ldang
+ * multi datasource exchange aspect
  */
 @Aspect
 @Component

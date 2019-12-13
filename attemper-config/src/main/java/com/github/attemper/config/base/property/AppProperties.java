@@ -1,5 +1,6 @@
 package com.github.attemper.config.base.property;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -7,6 +8,8 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public class AppProperties {
 
     private String schema = "http://";
+
+    private int jucScheduledPoolSize = 10;
 
     @NestedConfigurationProperty
     private final LocaleInfo localeInfo = new LocaleInfo();
@@ -29,6 +32,14 @@ public class AppProperties {
 
     public void setSchema(String schema) {
         this.schema = schema;
+    }
+
+    public int getJucScheduledPoolSize() {
+        return jucScheduledPoolSize;
+    }
+
+    public void setJucScheduledPoolSize(int jucScheduledPoolSize) {
+        this.jucScheduledPoolSize = jucScheduledPoolSize;
     }
 
     public LocaleInfo getLocaleInfo() {
@@ -104,7 +115,7 @@ public class AppProperties {
         }
 
         public String getContextPath() {
-            return contextPath;
+            return StringUtils.trimToEmpty(contextPath);
         }
 
         public void setContextPath(String contextPath) {
@@ -134,7 +145,7 @@ public class AppProperties {
         }
         
         public String getContextPath() {
-            return contextPath;
+            return StringUtils.trimToEmpty(contextPath);
         }
 
         public void setContextPath(String contextPath) {

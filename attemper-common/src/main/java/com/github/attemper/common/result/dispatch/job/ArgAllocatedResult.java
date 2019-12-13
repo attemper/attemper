@@ -13,6 +13,6 @@ public class ArgAllocatedResult {
 
     protected String argValue;
 
-    protected Boolean allocated;
+    protected int allocated;
 
 }

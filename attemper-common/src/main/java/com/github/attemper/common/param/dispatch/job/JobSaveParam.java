@@ -11,7 +11,9 @@ public class JobSaveParam extends JobContentSaveParam {
 
     protected Integer status;
 
-    protected boolean concurrent;
+    protected int concurrent;
+
+    protected int once;
 
     protected String remark;
 
@@ -43,12 +45,21 @@ public class JobSaveParam extends JobContentSaveParam {
         return this;
     }
 
-    public boolean isConcurrent() {
+    public int getConcurrent() {
         return concurrent;
     }
 
-    public JobSaveParam setConcurrent(boolean concurrent) {
+    public JobSaveParam setConcurrent(int concurrent) {
         this.concurrent = concurrent;
+        return this;
+    }
+
+    public int getOnce() {
+        return once;
+    }
+
+    public JobSaveParam setOnce(int once) {
+        this.once = once;
         return this;
     }
 

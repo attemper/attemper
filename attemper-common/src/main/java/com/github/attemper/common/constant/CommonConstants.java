@@ -41,6 +41,28 @@ public interface CommonConstants {
 
     String FALSE = "false";
 
+    String type = "type";
+
+    String content = "content";
+
+    String lowerStartTime = "lowerStartTime";
+
+    String upperStartTime = "upperStartTime";
+
+    String COLON = ":";
+
+    String COMMA = ",";
+
+    String EMPTY = "";
+
+    String BR = "<br>";
+
+    String main = "main";
+
+    String backup = "backup";
+
+    String select = "select";
+
     int DEF_CURRENT_PAGE = 1;
 
     int DEF_PAGE_SIZE = 10;

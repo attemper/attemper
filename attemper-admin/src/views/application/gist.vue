@@ -8,7 +8,7 @@
           </div>
           <div class="filter-container">
             <el-input v-model="page.gistName" :placeholder="$t('application.gist.columns.gistName')" class="filter-item search-input" @keyup.enter.native="search" />
-            <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
+            <el-button class="filter-item" type="primary" icon="el-icon-search" @click="search" />
             <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="add" />
             <el-button :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove" />
           </div>
@@ -29,7 +29,7 @@
               <template slot-scope="props">
                 <el-form label-position="left" inline class="table-expand">
                   <el-form-item :label="$t('columns.createTime')">
-                    <span>{{ props.row.createTime }}</span>
+                    <span>{{ props.row.createTime | parseTime }}</span>
                   </el-form-item>
                 </el-form>
               </template>
@@ -56,7 +56,7 @@
             <el-select v-model="currentId" @change="getContent">
               <el-option v-for="item in gistList" :key="item.id" :label="item.version" :value="item.id">
                 <span style="float: left; font-size: 13px">{{ item.version }}</span>
-                <span style="float: right; color: #8492a6; margin-left: 20px;">{{ item.updateTime }}</span>
+                <span style="float: right; color: #8492a6; margin-left: 20px;">{{ item.updateTime | parseTime }}</span>
               </el-option>
             </el-select>
             <el-button v-if="currentId" style="margin-left: 5px;" type="danger" icon="el-icon-delete" @click="removeInfo" />
@@ -72,7 +72,6 @@
 
 <script>
 import { listReq, removeReq, addReq, addInfoReq, listInfoReq, removeInfoReq, getContentReq, updateContentReq } from '@/api/application/gist'
-import waves from '@/directive/waves'
 import CodeEditor from '@/components/CodeEditor'
 import Pagination from '@/components/Pagination'
 import { buildMsg } from '@/utils/tools'
@@ -83,7 +82,6 @@ const DEF_OBJ = {
 export default {
   name: 'gist',
   components: { CodeEditor, Pagination },
-  directives: { waves },
   data() {
     return {
       tableKey: 0,

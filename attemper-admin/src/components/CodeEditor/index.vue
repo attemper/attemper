@@ -44,7 +44,16 @@ import 'codemirror/mode/sql/sql'
 import 'codemirror/mode/xml/xml'
 import 'codemirror/mode/vue/vue'
 //
-import 'codemirror/addon/edit/matchbrackets'
+import 'codemirror/addon/edit/matchbrackets.js'
+import 'codemirror/addon/selection/active-line.js'
+import 'codemirror/addon/fold/foldcode.js'
+import 'codemirror/addon/search/search.js'
+import 'codemirror/addon/search/searchcursor.js'
+import 'codemirror/addon/search/jump-to-line.js'
+import 'codemirror/addon/dialog/dialog.js'
+import 'codemirror/addon/dialog/dialog.css'
+import 'codemirror/addon/display/fullscreen.js'
+import 'codemirror/addon/display/fullscreen.css'
 
 const DEF_THEME_NAME = 'idea'
 const THEME_KEY = 'theme'
@@ -94,11 +103,15 @@ export default {
         this.editor = CodeMirror.fromTextArea(this.$refs.textarea, {
           lineNumbers: true,
           mode: mode ? mode.value : 'text/javascript',
-          gutters: ['CodeMirror-lint-markers'],
+          smartIndent: true,
+          indentWidthTabs: true,
+          gutters: ['CodeMirror-lint-markers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers'],
+          foldGutter: true,
           readOnly: this.readOnly,
           lint: true,
           extraKeys: { 'Ctrl': 'autocomplete' },
-          matchBrackets: true
+          matchBrackets: true,
+          autoCloseBrackets: true
         })
         this.importTheme(this.theme)
         this.editor.setValue(this.extension === '.json' ? JSON.stringify(this.value, null, 2) : this.value)

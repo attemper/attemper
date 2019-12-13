@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.attemper.web.dao.statistics.AnalysisMapper">
+
+    <select id="getNextFireTimeWithJobName" parameterType="map"
+            resultType="com.github.attemper.common.result.statistics.analysis.AppPlan">
+        SELECT * FROM (
+        SELECT job_name, min(next_fire_time) as next_fire_time
+        FROM ${qrtzTablePrefix}triggers t
+        <where>
+          AND next_fire_time IS NOT NULL AND next_fire_time &gt; 0
+          <include refid="condTriggerGroup"/>
+        </where>
+        GROUP BY job_name
+        ) t_min
+        ORDER BY next_fire_time
+    </select>
+
+    <select id="getInstanceDuration" parameterType="map"
+            resultType="com.github.attemper.common.result.dispatch.instance.Instance">
+        SELECT j.START_TIME, j.END_TIME, j.DURATION
+        FROM ${tablePrefix}instance j
+        <where>
+            <if test="lowerStartTime != null">
+                AND j.START_TIME &gt;= #{lowerStartTime, jdbcType=INTEGER}
+            </if>
+            <if test="upperStartTime != null">
+                AND j.START_TIME &lt;= #{upperStartTime, jdbcType=INTEGER}
+            </if>
+            <if test="lowerDuration != null">
+                AND j.DURATION &gt;= #{lowerDuration, jdbcType=INTEGER}
+            </if>
+            <if test="upperDuration != null">
+                AND j.DURATION &lt;= #{upperDuration, jdbcType=INTEGER}
+            </if>
+            <if test="firedSource != null">
+                AND j.TRIGGER_NAME ${firedSource}
+            </if>
+            <include refid="condJobName"/>
+            <include refid="condTenantId"/>
+        </where>
+        ORDER BY ${sort}
+    </select>
+
+    <sql id="condJobName">
+        <if test="jobName != null">
+            AND j.JOB_NAME = #{jobName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId">
+        <if test="tenantId != null">
+            AND j.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTriggerGroup">
+        <if test="tenantId != null">
+            AND t.TRIGGER_GROUP = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+</mapper>

@@ -6,12 +6,12 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <span class="right-menu-item" style="font-size: 17px;">{{ currentTimeStr }}</span>
+        <execution-plan class="right-menu-item" />
         <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <ScreenFull class="right-menu-item hover-effect" />
 
         <el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
@@ -21,19 +21,17 @@
 
       </template>
 
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+      <el-dropdown class="avatar-container right-menu-item hover-effect">
         <div class="avatar-wrapper">
-          <div class="user-avatar">{{ userName.length > 10 ? userName.substring(0, 8) + '...' : userName }}</div>
-          <i class="el-icon-caret-bottom" />
+          <avatar style="margin-top: 8px;" :size="25" :username="userName" />
         </div>
         <el-dropdown-menu slot="dropdown">
+          <!--
           <router-link to="/profile/index">
             <el-dropdown-item>{{ $t('route.profile') }}</el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>GitHub</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
+          -->
+          <a target="_blank" :href="docHost">
             <el-dropdown-item>{{ $t('navbar.docs') }}</el-dropdown-item>
           </a>
           <el-dropdown-item divided>
@@ -47,52 +45,36 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Avatar from 'vue-avatar'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
-import Screenfull from '@/components/Screenfull'
+import ScreenFull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import Search from '@/components/HeaderSearch'
-import { parseTime } from '@/utils'
-import { currentTimeReq } from '@/api/dispatch/tool'
+import ExecutionPlan from './ExecutionPlan'
 
 export default {
   components: {
+    Avatar,
     Breadcrumb,
     Hamburger,
     ErrorLog,
-    Screenfull,
+    ScreenFull,
     SizeSelect,
     LangSelect,
-    Search
-  },
-  data() {
-    return {
-      timer: null,
-      now: null,
-      currentTimeStr: null
-    }
+    Search,
+    ExecutionPlan
   },
   computed: {
     ...mapGetters([
       'sidebar',
       'userName',
       'device'
-    ])
-  },
-  created() {
-    currentTimeReq().then(res => {
-      this.now = new Date(res.data.result)
-      this.timer = setInterval(() => {
-        this.now = new Date(this.now.getTime() + 1000)
-        this.currentTimeStr = parseTime(this.now)
-      }, 1000)
-    })
-  },
-  beforeDestroy() {
-    if (this.timer) {
-      clearInterval(this.timer)
+    ]),
+    docHost() {
+      return location.protocol + '//' + location.hostname
     }
   },
   methods: {
@@ -110,14 +92,14 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 40px;
   overflow: hidden;
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
-    line-height: 46px;
+    line-height: 40px;
     height: 100%;
     float: left;
     cursor: pointer;
@@ -141,7 +123,7 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    line-height: 50px;
+    line-height: 40px;
 
     &:focus {
       outline: none;
@@ -166,25 +148,10 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 5px;
 
       .avatar-wrapper {
         position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 70px;
-          height: 40px;
-          border-radius: 10px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
-        }
       }
     }
   }

@@ -19,7 +19,10 @@
       </el-select>
     </el-form-item>
     <el-form-item :label="$t('dispatch.job.columns.concurrent')">
-      <el-switch v-model="job.concurrent" />
+      <el-switch v-model="job.concurrent" :active-value="1" :inactive-value="0" />
+    </el-form-item>
+    <el-form-item :label="$t('dispatch.job.columns.once')">
+      <el-switch v-model="job.once" :active-value="1" :inactive-value="0" />
     </el-form-item>
     <el-form-item :label="$t('columns.remark')">
       <el-input
@@ -48,8 +51,8 @@ export default {
   data() {
     return {
       rules: {
-        jobName: [{ required: true, trigger: 'blur' }],
-        displayName: [{ required: true, trigger: 'blur' }]
+        jobName: [{ required: true, trigger: 'blur', range: { max: 64 }, pattern: /^[a-zA-Z0-9_-]+$/ }],
+        displayName: [{ required: true, trigger: 'blur', range: { max: 255 }}]
       },
       jobStatuses: []
     }

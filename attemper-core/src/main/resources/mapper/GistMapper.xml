@@ -11,7 +11,7 @@
         VALUES
         (
             #{gistName, jdbcType=VARCHAR},
-            #{createTime, jdbcType=TIMESTAMP},
+            #{createTime, jdbcType=INTEGER},
             #{tenantId, jdbcType=VARCHAR}
         )
     </insert>
@@ -31,20 +31,18 @@
                 #{gistName, jdbcType=VARCHAR},
                 #{version, jdbcType=VARCHAR},
                 #{content, jdbcType=VARCHAR},
-                #{updateTime, jdbcType=TIMESTAMP},
+                #{updateTime, jdbcType=INTEGER},
                 #{tenantId, jdbcType=VARCHAR}
             )
     </insert>
 
-    <update id="updateContent" parameterType="map">
+    <update id="updateContent" parameterType="com.github.attemper.common.param.app.gist.GistInfoContentParam">
         UPDATE
         ${tablePrefix}gist_info
         <set>
             CONTENT = #{content, jdbcType=VARCHAR},
         </set>
-        <where>
-            <include refid="condId"/>
-        </where>
+        WHERE ID = #{id, jdbcType=VARCHAR}
     </update>
 
     <select id="get" parameterType="map"
@@ -68,7 +66,8 @@
 
     <select id="getLatestContent" parameterType="map"
             resultType="string">
-        SELECT CONTENT FROM ${tablePrefix}gist JOIN ${tablePrefix}gist_info USING (GIST_NAME, TENANT_ID)
+        SELECT CONTENT FROM ${tablePrefix}gist g JOIN ${tablePrefix}gist_info gi
+        ON g.GIST_NAME = gi.GIST_NAME AND g.TENANT_ID = gi.TENANT_ID
         <where>
             <include refid="condGistName"/>
             <include refid="condTenantId"/>
@@ -82,7 +81,7 @@
         FROM ${tablePrefix}gist
         <where>
             <if test="gistName != null">
-                and lower(GIST_NAME) like concat('%', lower(#{gistName, jdbcType=VARCHAR}), '%')
+                AND LOWER(GIST_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{gistName, jdbcType=VARCHAR})), '%')
             </if>
             <include refid="condTenantId"/>
         </where>
@@ -91,7 +90,7 @@
                 order by GIST_NAME
             </when>
             <otherwise>
-                order by ${sort} ${direction}
+                order by ${sort}
             </otherwise>
         </choose>
     </select>
@@ -131,21 +130,17 @@
 
     <sql id="condGistName">
         <if test="gistName != null">
-            and GIST_NAME = #{gistName, jdbcType=VARCHAR}
+            AND GIST_NAME = #{gistName, jdbcType=VARCHAR}
         </if>
     </sql>
 
     <sql id="condTenantId">
         <if test="tenantId != null">
-            and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </if>
     </sql>
 
-    <sql id="condId">
-        and ID = #{id, jdbcType=VARCHAR}
-    </sql>
-
     <sql id="condId_1">
-        and ID = #{1, jdbcType=VARCHAR}
+        AND ID = #{1, jdbcType=VARCHAR}
     </sql>
 </mapper>

@@ -1,5 +1,6 @@
 package com.github.attemper.executor.camunda.history.event.impl;
 
+import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.InstanceStatus;
 import com.github.attemper.common.result.dispatch.instance.InstanceAct;
 import com.github.attemper.config.base.bean.SpringContextAware;
@@ -18,18 +19,19 @@ public class HistoricActivityInstanceEventing extends EventingAdapter<HistoricAc
     @Override
     public void start() {
         InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
-        InstanceAct instanceAct = toInstanceAct(historyEvent);
-        instanceAct.setStatus(InstanceStatus.RUNNING.getStatus());
-        instanceAct.setStartTime(historyEvent.getStartTime());
+        InstanceAct instanceAct = toInstanceAct(historyEvent)
+                .setStatus(InstanceStatus.RUNNING.getStatus())
+                .setStartTime(historyEvent.getStartTime().getTime())
+                .setLogText(CommonConstants.EMPTY);
         instanceService.addAct(instanceAct);
     }
 
     @Override
     public void end() {
         InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
-        InstanceAct instanceAct = new InstanceAct().setId(CamundaUtil.extractIdFromActInstanceId(historyEvent.getActivityInstanceId()));
-        instanceAct.setStatus(InstanceStatus.SUCCESS.getStatus());
-        instanceAct.setEndTime(historyEvent.getEndTime());
+        InstanceAct instanceAct = new InstanceAct().setId(CamundaUtil.extractIdFromActInstanceId(historyEvent.getActivityInstanceId()))
+                .setStatus(InstanceStatus.SUCCESS.getStatus())
+                .setEndTime(historyEvent.getEndTime().getTime());
         if (historyEvent.getEndTime() != null && historyEvent.getStartTime() != null) {
             instanceAct.setDuration(historyEvent.getEndTime().getTime() - historyEvent.getStartTime().getTime());
         }
@@ -41,7 +43,6 @@ public class HistoricActivityInstanceEventing extends EventingAdapter<HistoricAc
                 .setId(CamundaUtil.extractIdFromActInstanceId(historyEvent.getId()))
                 .setActInstId(historyEvent.getActivityInstanceId())
                 .setParentActInstId(historyEvent.getParentActivityInstanceId())
-                .setExecutionId(historyEvent.getExecutionId())
                 .setProcInstId(historyEvent.getProcessInstanceId())
                 .setRootProcInstId(historyEvent.getRootProcessInstanceId())
                 .setActId(historyEvent.getActivityId())

@@ -4,7 +4,7 @@ import com.github.attemper.core.conf.CoreConfiguration;
 import com.github.attemper.security.controller.LoginController;
 import com.github.attemper.security.service.LoginService;
 import com.github.attemper.security.xss.XssFilter;
-import com.github.attemper.sys.ext.service.JWTService;
+import com.github.attemper.sys.ext.jwt.JWTService;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

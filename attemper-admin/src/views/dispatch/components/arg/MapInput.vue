@@ -14,6 +14,9 @@
         <number-input v-else-if="genericType === 2" v-model="item.val" :min="-2147483648" :max="2147483647" :step="1" :precision="0" />
         <number-input v-else-if="genericType === 3" v-model="item.val" :min="4.9000000e-324" :max="1.797693e+308" :step="1" :precision="5" />
         <number-input v-else-if="genericType === 4" v-model="item.val" :min="-9223372036854774808" :max="9223372036854774807" :step="1" :precision="0" />
+        <date-input v-else-if="genericType === 10" v-model="item.val" />
+        <time-input v-else-if="genericType === 11" v-model="item.val" />
+        <date-time-input v-else-if="genericType === 12" v-model="item.val" />
         <string-input v-else v-model="item.val" :placeholder="$t('dispatch.arg.placeholder.argValue')" />
       </el-col>
     </el-row>
@@ -25,10 +28,14 @@ import { isBlank } from '@/utils/tools'
 import StringInput from './StringInput'
 import NumberInput from './NumberInput'
 import BooleanInput from './BooleanInput'
+import DateInput from './DateInput'
+import DateTimeInput from './DateTimeInput'
+import TimeInput from './TimeInput'
+
 const DEF_OBJ = { key: '', val: '' }
 export default {
   name: 'MapInput',
-  components: { BooleanInput, NumberInput, StringInput },
+  components: { BooleanInput, NumberInput, StringInput, DateInput, DateTimeInput, TimeInput },
   props: {
     value: {
       type: String,

@@ -32,6 +32,14 @@ public class BeanUtil {
         }
     }
 
+    public static <T> T jsonStr2Bean (String jsonStr, Class<T> t) {
+        try {
+            return injectObjectMapper().readValue(jsonStr, t);
+        } catch (IOException e) {
+            throw new RTException(1400, e);
+        }
+    }
+
     public static String bean2JsonStr(Object obj) {
         try {
             return injectObjectMapper().writeValueAsString(obj);

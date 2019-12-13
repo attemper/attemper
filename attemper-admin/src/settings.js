@@ -34,6 +34,11 @@ module.exports = {
   errorLog: 'production',
 
   /**
+   * Date format
+   */
+  dateFormatPattern: 'yyyy-MM-dd HH:mm:ss',
+
+  /**
    * API path
    */
   APIPath: {
@@ -43,10 +48,11 @@ module.exports = {
     STATISTICS: 'statistics',
     LOGIN: '/login',
     TENANT: '/tenant',
-    TAG: '/tag',
+    ROLE: '/role',
     RESOURCE: '/resource',
     JOB: '/job',
     TRIGGER: '/trigger',
+    CONDITION: '/condition',
     DELAY: '/delay',
     ARG: '/arg',
     DATASOURCE: '/datasource',

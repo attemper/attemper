@@ -7,7 +7,6 @@ import lombok.ToString;
 
 /**
  * page sort param
- * @author ldang
  */
 @Getter
 @Setter
@@ -28,7 +27,6 @@ public class PageSortParam implements CommonParam {
      * sort field
      */
     protected String sort;
-
 
     public String validate() {
         if(this.pageSize > CommonConstants.MAX_PAGE_SIZE){

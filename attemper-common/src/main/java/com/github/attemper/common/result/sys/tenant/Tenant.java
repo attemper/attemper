@@ -1,8 +1,6 @@
 package com.github.attemper.common.result.sys.tenant;
 
-import lombok.*;
-
-import java.util.Date;
+import lombok.ToString;
 
 @ToString
 public class Tenant{
@@ -17,13 +15,9 @@ public class Tenant{
 
 	protected String mobile;
 
-	protected Integer status;
+	protected int status;
 
-	protected Boolean admin;
-
-	protected Date createTime;
-
-	protected Date updateTime;
+	protected int superAdmin;
 
 	protected String sendConfig;
 
@@ -72,39 +66,21 @@ public class Tenant{
 		return this;
 	}
 
-	public Integer getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public Tenant setStatus(Integer status) {
+	public Tenant setStatus(int status) {
 		this.status = status;
 		return this;
 	}
 
-	public Boolean getAdmin() {
-		return admin;
+	public int getSuperAdmin() {
+		return superAdmin;
 	}
 
-	public Tenant setAdmin(Boolean admin) {
-		this.admin = admin;
-		return this;
-	}
-
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public Tenant setCreateTime(Date createTime) {
-		this.createTime = createTime;
-		return this;
-	}
-
-	public Date getUpdateTime() {
-		return updateTime;
-	}
-
-	public Tenant setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
+	public Tenant setSuperAdmin(int superAdmin) {
+		this.superAdmin = superAdmin;
 		return this;
 	}
 

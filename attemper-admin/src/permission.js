@@ -80,11 +80,19 @@ router.beforeEach(async(to, from, next) => {
           store.dispatch('permission/generateRoutes').then((allRoutes) => { // 根据菜单资源权限生成可访问的路由表
             router.addRoutes(allRoutes) // 动态添加可访问路由表
             turnTo(to, resourceNames, next)
+          }).catch(error => {
+            Message.error(error)
+            // remove token and go to login page to re-login
+            store.dispatch('user/resetToken').then()
+            closeAllTabs()
+            // next(`/login?redirect=${to.path}`)
+            next(`/login`)
+            NProgress.done()
           })
-        }).catch((error) => {
+        }).catch(error => {
+          Message.error(error)
           // remove token and go to login page to re-login
           store.dispatch('user/resetToken').then()
-          Message.error(error || 'Has Error')
           closeAllTabs()
           // next(`/login?redirect=${to.path}`)
           next(`/login`)

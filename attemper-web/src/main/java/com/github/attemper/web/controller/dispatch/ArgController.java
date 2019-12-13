@@ -1,9 +1,9 @@
 package com.github.attemper.web.controller.dispatch;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.arg.ArgGetParam;
+import com.github.attemper.common.param.dispatch.arg.ArgNameParam;
 import com.github.attemper.common.param.dispatch.arg.ArgListParam;
-import com.github.attemper.common.param.dispatch.arg.ArgRemoveParam;
+import com.github.attemper.common.param.dispatch.arg.ArgNamesParam;
 import com.github.attemper.common.param.dispatch.arg.ArgSaveParam;
 import com.github.attemper.common.param.dispatch.arg.ext.SqlArgParam;
 import com.github.attemper.common.param.dispatch.arg.ext.TradeDateArgParam;
@@ -43,7 +43,7 @@ public class ArgController {
     @ApiOperation("Get arg")
     @ApiImplicitParam(value = "ArgGetParam", name = "param", dataType = "ArgGetParam", required = true)
     @GetMapping(value = APIPath.ArgPath.GET)
-    public CommonResult<Arg> get(ArgGetParam param) {
+    public CommonResult<Arg> get(ArgNameParam param) {
         return CommonResult.putResult(service.get(param));
     }
 
@@ -57,7 +57,7 @@ public class ArgController {
     @ApiOperation("Remove args")
     @ApiImplicitParam(value = "ArgRemoveParam", name = "param", dataType = "ArgRemoveParam", required = true)
     @DeleteMapping(value = APIPath.ArgPath.$)
-    public CommonResult<Void> remove(@RequestBody ArgRemoveParam param) {
+    public CommonResult<Void> remove(@RequestBody ArgNamesParam param) {
         return CommonResult.putResult(service.remove(param));
     }
 

@@ -18,10 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author ldang
- */
 @Service
 @Transactional
 public class ProjectService extends BaseServiceAdapter {
@@ -31,17 +27,6 @@ public class ProjectService extends BaseServiceAdapter {
 
     public List<Project> getAll() {
         Map<String, Object> paramMap = injectTenantIdToMap(null);
-        return getAll(paramMap);
-    }
-
-    /**
-     * get all projects by tenantId
-     *
-     * @param tenantId
-     * @return
-     */
-    public List<Project> getAll(String tenantId) {
-        Map<String, Object> paramMap = injectTenantIdToMap(null, tenantId);
         return getAll(paramMap);
     }
 
@@ -64,16 +49,22 @@ public class ProjectService extends BaseServiceAdapter {
         return findRootProject(projects);
     }
 
+    private Project get(ProjectNameParam param) {
+        return mapper.get(injectTenantIdToMap(param));
+    }
+
     public Project save(ProjectSaveParam param) {
         Project project = toProject(param);
-        Date now = new Date();
-        project.setCreateTime(now);
-        project.setUpdateTime(now);
-        mapper.save(injectTenantIdToMap(project));
+        if (get(new ProjectNameParam().setProjectName(param.getProjectName())) == null) {
+            mapper.add(project);
+        } else {
+            project = toProject(param);
+            mapper.update(project);
+        }
         return project;
     }
 
-    public Void remove(ProjectRemoveParam param) {
+    public Void remove(ProjectNamesParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.delete(paramMap);
         return null;
@@ -81,17 +72,12 @@ public class ProjectService extends BaseServiceAdapter {
 
     private void computeTreeList(List<Project> sourceList, List<Project> targetList, Project cellProject) {
 	    Iterator<Project> it = sourceList.iterator();
-	    boolean find = false;
 	    while(it.hasNext()){
 	        Project current = it.next();
 	        if(StringUtils.equals(current.getParentProjectName(), cellProject.getProjectName())){
                 targetList.add(current);
-                find = true;
                 computeTreeList(sourceList, targetList, current);
             }
-        }
-        if(!find){
-	        return;
         }
     }
 
@@ -100,9 +86,8 @@ public class ProjectService extends BaseServiceAdapter {
                 sourceList.stream().filter(project -> project.getParentProjectName() == null).collect(Collectors.toList());
         if (projects.size() == 0) {
             ProjectSaveParam root = new ProjectSaveParam()
-                    .setProjectName("root")
-                    .setDisplayName(TenantHolder.get().getDisplayName())
-                    .setPosition(1);
+                    .setDisplayName(TenantHolder.get().getDisplayName());
+            root.setProjectName("root");
             Project project = save(root);
             projects.add(project);
         } else if (projects.size() > 1) {
@@ -117,15 +102,23 @@ public class ProjectService extends BaseServiceAdapter {
                 .setParentProjectName(param.getParentProjectName())
                 .setDisplayName(param.getDisplayName())
                 .setContextPath(param.getContextPath())
-                .setBindExecutor(param.isBindExecutor())
-                .setPosition(param.getPosition());
+                .setBindExecutor(param.getBindExecutor())
+                .setTenantId(injectTenantId());
     }
 
-
-    public Void saveInfo(ProjectInfoSaveParam param) {
+    public ProjectInfo saveInfo(ProjectInfoSaveParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
-        mapper.saveInfo(paramMap);
-        return null;
+        ProjectInfo projectInfo = new ProjectInfo()
+                .setProjectName(param.getProjectName())
+                .setUriType(param.getUriType())
+                .setUri(param.getUri())
+                .setTenantId(injectTenantId());
+        if (mapper.getInfo(paramMap) == null) {
+            mapper.addInfo(projectInfo);
+        } else {
+            mapper.updateInfo(projectInfo);
+        }
+        return projectInfo;
     }
 
     public Void removeInfo(ProjectInfoRemoveParam param) {
@@ -134,13 +127,13 @@ public class ProjectService extends BaseServiceAdapter {
         return null;
     }
 
-    public List<ProjectInfo> listInfo(ProjectGetParam param) {
+    public List<ProjectInfo> listInfo(ProjectNameParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return listInfo(paramMap);
     }
 
     public List<ProjectInfo> listInfo(String projectName, String tenantId) {
-        Map<String, Object> paramMap = injectTenantIdToMap(new ProjectGetParam().setProjectName(projectName), tenantId);
+        Map<String, Object> paramMap = injectTenantIdToMap(new ProjectNameParam().setProjectName(projectName), tenantId);
         return listInfo(paramMap);
     }
 
@@ -148,13 +141,13 @@ public class ProjectService extends BaseServiceAdapter {
         return mapper.listInfo(paramMap);
     }
 
-    public List<String> listExecutor(ProjectGetParam param) {
+    public List<String> listExecutor(ProjectNameParam param) {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         return mapper.listExecutor(paramMap);
     }
 
     public List<String> listExecutor(String projectName, String tenantId) {
-        Map<String, Object> paramMap = injectTenantIdToMap(new ProjectGetParam().setProjectName(projectName), tenantId);
+        Map<String, Object> paramMap = injectTenantIdToMap(new ProjectNameParam().setProjectName(projectName), tenantId);
         return mapper.listExecutor(paramMap);
     }
 

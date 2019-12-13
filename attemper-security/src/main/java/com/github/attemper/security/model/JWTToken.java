@@ -2,9 +2,6 @@ package com.github.attemper.security.model;
 
 import org.apache.shiro.authc.AuthenticationToken;
 
-/**
- * @author ldang
- */
 public class JWTToken implements AuthenticationToken {
 
     private String token;

@@ -10,7 +10,7 @@ import com.github.attemper.common.result.app.program.Program;
 import com.github.attemper.common.result.app.program.ProgramPackage;
 import com.github.attemper.core.dao.application.ProgramMapper;
 import com.github.attemper.sys.service.BaseServiceAdapter;
-import com.github.attemper.sys.util.FileUtil;
+import com.github.attemper.core.util.FileUtil;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -71,7 +71,7 @@ public class ProgramService extends BaseServiceAdapter {
         list.add(new CategoryResult()
                 .setFileName(jarFolderFile.getName())
                 .setFilePath(jarFolderFile.getAbsolutePath())
-                .setDir(true));
+                .setDir(1));
         recurseCategory(list, jarFolderFile);
         return list;
     }
@@ -105,7 +105,7 @@ public class ProgramService extends BaseServiceAdapter {
                     .setParentFileName(parentFolder.getName());
             list.add(category);
             if (subFile.isDirectory()) {
-                category.setDir(true);
+                category.setDir(1);
                 recurseCategory(list, subFile);
             }
         }

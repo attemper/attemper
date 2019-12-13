@@ -2,14 +2,13 @@ package com.github.attemper.executor.disruptor.consumer;
 
 import com.github.attemper.common.enums.InstanceStatus;
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.common.param.dispatch.instance.InstanceActParam;
 import com.github.attemper.common.param.executor.JobInvokingParam;
-import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.Instance;
+import com.github.attemper.common.result.dispatch.instance.InstanceAct;
 import com.github.attemper.config.base.bean.SpringContextAware;
-import com.github.attemper.core.service.dispatch.JobService;
 import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.executor.disruptor.event.JobEvent;
-import com.github.attemper.java.sdk.common.util.ExceptionUtil;
 import com.lmax.disruptor.WorkHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -18,9 +17,7 @@ import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstantiationBuilder;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * consumer of request
@@ -32,7 +29,6 @@ public class RequestConsumer implements WorkHandler<JobEvent> {
     public void onEvent(JobEvent event) throws Exception {
         RepositoryService repositoryService = SpringContextAware.getBean(RepositoryService.class);
         RuntimeService runtimeService = SpringContextAware.getBean(RuntimeService.class);
-        JobService jobService = SpringContextAware.getBean(JobService.class);
         JobInvokingParam param = event.getParam();
         try {
             List<ProcessDefinition> processDefinitions = repositoryService
@@ -43,13 +39,9 @@ public class RequestConsumer implements WorkHandler<JobEvent> {
                     .list();
             if (processDefinitions.size() == 1) {
                 ProcessDefinition processDefinition = processDefinitions.get(0);
-                Map<String, Object> varMap = jobService.transArgToMap(param.getJobName(), param.getTenantId());
-                if (param.getVariableMap() != null) {
-                    varMap.putAll(param.getVariableMap());
-                }
                 ProcessInstantiationBuilder builder = runtimeService.createProcessInstanceById(processDefinition.getId())
                         .businessKey(param.getId())
-                        .setVariables(varMap);
+                        .setVariables(param.getVariableMap());
                 if (param.getBeforeActIds() != null) {
                     for (String beforeActId : param.getBeforeActIds()) {
                         builder.startBeforeActivity(beforeActId);
@@ -69,10 +61,9 @@ public class RequestConsumer implements WorkHandler<JobEvent> {
                 throw new RTException(2003);
             }
         } catch (Exception e) {
+            RTException rte;
             if (e instanceof RTException) {
-                RTException rte = (RTException) e;
-                updateInstance(param, rte.getCode(), rte.getMsg());
-                throw rte;
+                rte = (RTException) e;
             } else {
                 int code;
                 if (StringUtils.isNotBlank(param.getTriggerName())) {
@@ -80,21 +71,35 @@ public class RequestConsumer implements WorkHandler<JobEvent> {
                 } else {
                     code = 2001;
                 }
-                updateInstance(param, code, StatusProperty.getValue(code) + ":" + ExceptionUtil.getStackTrace(e));
-                throw new RTException(code, e);
+                rte = new RTException(code, e);
             }
-        }
-    }
 
-    private void updateInstance(JobInvokingParam param, int code, String msg) {
-        InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
-        Instance instance = instanceService.get(param.getId());
-        Date now = new Date();
-        instance.setEndTime(now);
-        instance.setDuration(now.getTime() - instance.getStartTime().getTime());
-        instance.setStatus(InstanceStatus.FAILURE.getStatus());
-        instance.setCode(code);
-        instance.setMsg(msg);
-        instanceService.updateDone(instance);
+            InstanceService instanceService = SpringContextAware.getBean(InstanceService.class);
+            Instance instance = instanceService.get(param.getId());
+            long current = System.currentTimeMillis();
+            instance.setEndTime(current).setDuration(current - instance.getStartTime())
+                    .setStatus(InstanceStatus.FAILURE.getStatus());
+            boolean hasRunning = false;
+            if (instance.getProcInstId() != null) {
+                List<InstanceAct> instanceActs = instanceService.listAct(new InstanceActParam().setProcInstId(instance.getProcInstId()));
+                for (InstanceAct instanceAct : instanceActs) {
+                    if (InstanceStatus.RUNNING.getStatus() == instanceAct.getStatus()) {
+                        // handle running act
+                        hasRunning = true;
+                        instanceAct
+                                .setEndTime(current)
+                                .setDuration(current - instanceAct.getStartTime())
+                                .setStatus(InstanceStatus.FAILURE.getStatus())
+                                .setLogText(e.getMessage()); // will append
+                        instanceService.updateAct(instanceAct);
+                    }
+                }
+            }
+            if (!hasRunning) {
+                instance.setCode(rte.getCode()).setMsg(rte.getMsg());
+            }
+            instanceService.updateDone(instance);
+            throw rte;
+        }
     }
 }

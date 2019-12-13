@@ -5,18 +5,17 @@ import com.github.attemper.common.enums.InstanceStatus;
 import com.github.attemper.common.param.dispatch.instance.InstanceActParam;
 import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
 import com.github.attemper.common.param.dispatch.instance.InstanceListParam;
-import com.github.attemper.common.param.sys.tenant.TenantGetParam;
+import com.github.attemper.common.param.sys.tenant.TenantNameParam;
 import com.github.attemper.common.property.StatusProperty;
 import com.github.attemper.common.result.dispatch.instance.Instance;
 import com.github.attemper.common.result.dispatch.instance.InstanceAct;
 import com.github.attemper.common.result.dispatch.instance.InstanceWithChildren;
-import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import com.github.attemper.core.dao.instance.InstanceMapper;
 import com.github.attemper.core.ext.notice.MessageBean;
 import com.github.attemper.core.ext.notice.NoticeService;
 import com.github.attemper.core.ext.notice.channel.Sender;
-import com.github.attemper.core.service.dispatch.JobService;
+import com.github.attemper.java.sdk.common.util.DateUtil;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.service.TenantService;
 import com.github.attemper.sys.util.PageUtil;
@@ -25,15 +24,16 @@ import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -44,24 +44,24 @@ public class InstanceService extends BaseServiceAdapter {
     private InstanceMapper mapper;
 
     @Autowired
-    private JobService jobService;
-
-    @Autowired
     private NoticeService noticeService;
 
     @Autowired
     private TenantService tenantService;
 
+    @Autowired
+    private ScheduledExecutorService scheduledExecutorService;
+
     public Instance get(String id) {
-        Map<String, Object> map = new HashMap<>(1);
-        map.put(CommonConstants.id, id);
-        return mapper.get(map);
+        return mapper.getById(id);
+    }
+
+    public List<Instance> getByIds(List<String> ids) {
+        return mapper.getByIds(ids);
     }
 
     public Instance getByInstId(String procInstId) {
-        Map<String, Object> map = new HashMap<>(1);
-        map.put(CommonConstants.procInstId, procInstId);
-        return mapper.get(map);
+        return mapper.getByInstId(procInstId);
     }
 
     public int count(InstanceListParam param, String tenantId) {
@@ -119,68 +119,149 @@ public class InstanceService extends BaseServiceAdapter {
     }
 
     public Instance add(Instance instance) {
-        if (instance.getDisplayName() == null) {
-            Job job = jobService.get(instance.getJobName(), instance.getTenantId());
-            if (job != null) {
-                instance.setDisplayName(job.getDisplayName());
-            }
-        }
-        mapper.add(instance);
+        mapper.addExecution(instance);
+        mapper.addInstance(instance);
         noticeWithInstance(instance);
         return instance;
     }
 
-    public Instance update(Instance instance) {
-        mapper.update(instance);
+    public void update(Instance instance) {
+        mapper.updateExecution(instance);
+        mapper.updateInstance(instance);
         noticeWithInstance(instance);
-        return instance;
     }
 
-    public Instance updateDone(Instance instance) {
+    public void updateDone(Instance instance) {
         mapper.updateDone(instance);
+        mapper.deleteExecution(instance);
         noticeWithInstance(instance);
-        return instance;
     }
 
-    public InstanceAct addAct(InstanceAct instanceAct) {
+    public void addAct(InstanceAct instanceAct) {
         mapper.addAct(instanceAct);
-        return instanceAct;
     }
 
-    public InstanceAct updateAct(InstanceAct instanceAct) {
+    public void updateAct(InstanceAct instanceAct) {
         mapper.updateAct(instanceAct);
-        return instanceAct;
     }
 
     public List<Instance> listRunningOfExecutor(String executorAddress) {
         return mapper.listRunningOfExecutor(executorAddress);
     }
 
-    @Async
+    public int countInstance(Map<String, Object> paramMap) {
+        return mapper.countInstance(paramMap);
+    }
+
     public void noticeWithInstance(Instance instance) {
         if (InstanceStatus.FAILURE.getStatus() == instance.getStatus()) {
-            try {
-                Tenant tenant = tenantService.get(new TenantGetParam().setUserName(instance.getTenantId()));
-                MessageBean messageBean = new MessageBean()
-                        .setTo(tenant)
-                        .setSubject(MessageFormat.format(StatusProperty.getValue(900), instance.getJobName(), instance.getDisplayName()))
-                        .setContent(instance.getMsg());
-                String sendConfig = tenant.getSendConfig();
-                if (StringUtils.isNotBlank(sendConfig)) {
-                    for (int i = 0; i < sendConfig.length(); i++) {
-                        if (sendConfig.charAt(i) != '0') {
-                            Sender sender = noticeService.getSenderMap().get(i);
-                            if (sender != null) {
-                                sender.send(messageBean);
-                            } else {
-                                log.error("send is missing:{} of {}", i, sendConfig);
-                            }
-                        }
+            String noticeTime = DateUtil.format(new Date(), DateUtil.DATE_FORMAT_YYYYMMDDHHMMSS);
+            scheduledExecutorService.schedule(() -> {
+                try {
+                    sendNotice(instance, noticeTime);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }, 5 + (int) (Math.random() * 3), TimeUnit.SECONDS);
+        }
+    }
+
+    private void sendNotice(Instance instance, String noticeTime) {
+        Tenant tenant = tenantService.get(new TenantNameParam().setUserName(instance.getTenantId()));
+        MessageBean messageBean = buildMessageBean(
+                instance,
+                tenant,
+                noticeTime);
+        String sendConfig = tenant.getSendConfig();
+        if (StringUtils.isNotBlank(sendConfig)) {
+            for (int i = 0; i < sendConfig.length(); i++) {
+                if (sendConfig.charAt(i) != '0') {
+                    Sender sender = noticeService.getSenderMap().get(i);
+                    if (sender != null) {
+                        sender.send(messageBean);
+                    } else {
+                        log.error("send is missing:{} of {}", i, sendConfig);
                     }
                 }
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
             }
         }
+    }
+
+    private MessageBean buildMessageBean(Instance instance, Tenant tenant, String now) {
+        StringBuilder actIdSB = new StringBuilder();
+        StringBuilder actNameSB = new StringBuilder();
+        StringBuilder bizUriSB = new StringBuilder();
+        StringBuilder logKeySB = new StringBuilder();
+        StringBuilder errorMsgSB = new StringBuilder();
+        String alarmPosition = CommonConstants.EMPTY;
+        if (StringUtils.isNotBlank(instance.getProcInstId())) {
+            List<InstanceAct> instanceActs = listAct(new InstanceActParam().setProcInstId(instance.getProcInstId()));
+            for (InstanceAct instanceAct : instanceActs) {
+                if (instanceAct.getStatus() == InstanceStatus.FAILURE.getStatus()
+                        && (StringUtils.isNotBlank(instanceAct.getLogKey())
+                        || StringUtils.isNotBlank(instanceAct.getLogText()))) {
+                    actIdSB.append(StringUtils.trimToEmpty(instanceAct.getActId())).append(CommonConstants.COMMA);
+                    if (instanceAct.getActName() != null) {
+                        actNameSB.append(instanceAct.getActName()).append(CommonConstants.COMMA);
+                    }
+                    if (instanceAct.getBizUri() != null) {
+                        bizUriSB.append(instanceAct.getBizUri()).append(CommonConstants.COMMA);
+                    }
+                    if (instanceAct.getLogKey() != null) {
+                        logKeySB.append(instanceAct.getLogKey()).append(CommonConstants.COMMA);
+                    }
+                    if (StringUtils.isBlank(instanceAct.getLogText())) {
+                        errorMsgSB.append(instanceAct.getIncidentMsg()).append(CommonConstants.BR);
+                    } else {
+                        errorMsgSB
+                                .append(instanceAct.getLogText()).append(CommonConstants.BR)
+                                .append(instanceAct.getIncidentMsg()).append(CommonConstants.BR);
+                    }
+                }
+            }
+            if (actIdSB.length() >= 1) {
+                actIdSB.deleteCharAt(actIdSB.length() - 1);
+            }
+            if (actNameSB.length() >= 1) {
+                actNameSB.deleteCharAt(actNameSB.length() - 1);
+            }
+            if (bizUriSB.length() >= 1) {
+                bizUriSB.deleteCharAt(bizUriSB.length() - 1);
+                if (bizUriSB.length() >= 1) {
+                    alarmPosition = StatusProperty.getValue(903);
+                } else {
+                    alarmPosition = StatusProperty.getValue(904);
+                }
+            }
+            if (logKeySB.length() >= 1) {
+                logKeySB.deleteCharAt(logKeySB.length() - 1);
+            }
+        } else {
+            alarmPosition = StatusProperty.getValue(902);
+            logKeySB.append(instance.getCode());
+            errorMsgSB.append(instance.getMsg());
+        }
+        String subject = MessageFormat.format(StatusProperty.getValue(900),
+                instance.getJobName(),
+                instance.getDisplayName());
+        String content = MessageFormat.format(StatusProperty.getValue(901),
+                now,
+                tenant.getUserName(),
+                tenant.getDisplayName(),
+                instance.getJobName(),
+                instance.getDisplayName(),
+                actIdSB,
+                actNameSB,
+                instance.getSchedulerUri(),
+                StringUtils.trimToEmpty(instance.getExecutorUri()),
+                bizUriSB,
+                alarmPosition,
+                logKeySB,
+                errorMsgSB
+                );
+        return new MessageBean()
+                .setTo(tenant)
+                .setSubject(subject)
+                .setContent(content);
     }
 }
