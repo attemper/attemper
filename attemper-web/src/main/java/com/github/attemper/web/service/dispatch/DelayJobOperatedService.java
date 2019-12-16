@@ -122,7 +122,7 @@ public class DelayJobOperatedService extends BaseServiceAdapter {
         dailyParam.setTriggerName(idGenerator.getNextId());
         dailyParam.setStartTime(param.getStartTime());
         dailyParam.setTimeUnit(DateBuilder.IntervalUnit.SECOND.name());
-        dailyParam.setRepeatInterval(param.getInterval());
+        dailyParam.setRepeatInterval(param.getRepeatInterval());
         dailyParam.setEndTime(param.getEndTime());
         dailyParam.setMisfireInstruction(param.getMisfireInstruction());
         dailyParam.setCalendarNames(param.getCalendarNames());
