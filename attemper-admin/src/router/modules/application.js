@@ -7,7 +7,7 @@ const applicationRouter = {
   path: '/application',
   component: Layout,
   redirect: '/application/index',
-  alwaysShow: true, // will always show the root menu
+  alwaysShow: true,
   meta: {
     title: 'application',
     icon: 'application'
@@ -24,33 +24,12 @@ const applicationRouter = {
       }
     },
     {
-      path: 'program',
-      component: () => import('@/views/application/program'),
-      name: 'program',
-      meta: {
-        title: 'program',
-        icon: 'program',
-        noCache: false
-      }
-    },
-    {
       path: 'gist',
       component: () => import('@/views/application/gist'),
       name: 'gist',
       meta: {
         title: 'gist',
         icon: 'gist',
-        noCache: false
-      }
-    },
-    {
-      path: 'package/:key',
-      component: () => import('@/views/application/package'),
-      name: 'package',
-      hidden: true,
-      meta: {
-        title: route => `${route.params.key}`,
-        notMenu: true,
         noCache: false
       }
     }

@@ -50,8 +50,8 @@
         SELECT *
         FROM ${tablePrefix}gist
         <where>
-            <include refid="condGistName"/>
-            <include refid="condTenantId"/>
+            <include refid="condGistName_"/>
+            <include refid="condTenantId_"/>
         </where>
     </select>
 
@@ -83,7 +83,7 @@
             <if test="gistName != null">
                 AND LOWER(GIST_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{gistName, jdbcType=VARCHAR})), '%')
             </if>
-            <include refid="condTenantId"/>
+            <include refid="condTenantId_"/>
         </where>
         <choose>
             <when test="sort == null">
@@ -104,8 +104,8 @@
         TENANT_ID
         FROM ${tablePrefix}gist_info
         <where>
-            <include refid="condGistName"/>
-            <include refid="condTenantId"/>
+            <include refid="condGistName_"/>
+            <include refid="condTenantId_"/>
         </where>
         ORDER BY ID DESC
     </select>
@@ -117,7 +117,7 @@
             <foreach item="gistName" collection="gistNames" open="(" separator="," close=")">
                 #{gistName, jdbcType=VARCHAR}
             </foreach>
-            <include refid="condTenantId"/>
+            <include refid="condTenantId_"/>
         </where>
     </delete>
 
@@ -130,11 +130,23 @@
 
     <sql id="condGistName">
         <if test="gistName != null">
+            AND g.GIST_NAME = #{gistName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condGistName_">
+        <if test="gistName != null">
             AND GIST_NAME = #{gistName, jdbcType=VARCHAR}
         </if>
     </sql>
 
     <sql id="condTenantId">
+        <if test="tenantId != null">
+            AND g.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId_">
         <if test="tenantId != null">
             AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </if>

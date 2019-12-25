@@ -21,9 +21,6 @@ public class LocalFileConditionParam extends ConditionCommonParam {
 
     @Override
     public String validate() {
-        if (StringUtils.isBlank(filePath)) {
-            return "6420";
-        }
         if (StringUtils.isBlank(fileName)) {
             return "6421";
         }

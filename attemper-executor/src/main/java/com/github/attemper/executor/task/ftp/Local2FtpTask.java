@@ -2,7 +2,7 @@ package com.github.attemper.executor.task.ftp;
 
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.core.ext.model.FileParam;
-import com.github.attemper.core.ext.ftp.FtpUtil;
+import com.github.attemper.core.util.FtpUtil;
 import com.github.attemper.core.util.FileUtil;
 import com.github.attemper.executor.task.ftp.internal.FtpTask;
 import org.apache.commons.net.ftp.FTPClient;

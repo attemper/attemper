@@ -7,7 +7,7 @@ import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.executor.camunda.history.event.impl.HistoricActivityInstanceEventing;
 import com.github.attemper.executor.camunda.history.event.impl.HistoricProcessInstanceEventing;
 import com.github.attemper.executor.util.CamundaUtil;
-import jsr223.nativeshell.NativeShellRunner;
+import jsr223.shell.ShellHandler;
 import org.camunda.bpm.engine.ActivityTypes;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.impl.core.model.PropertyKey;
@@ -29,7 +29,7 @@ public class SpringEventBusListener {
         if (executionDelegate.getActivityInstanceId() != null && executionDelegate instanceof ExecutionEntity) {
             ExecutionEntity executionEntity = (ExecutionEntity) executionDelegate;
             if (ActivityTypes.TASK_SCRIPT.equals(executionEntity.getActivity().getProperties().get(PROPERTY_KEY))) {
-                String key = NativeShellRunner.UNIQUE_SEQUENCE_NO + executionDelegate.getActivityInstanceId();
+                String key = ShellHandler.UNIQUE_SEQUENCE_NO + executionDelegate.getActivityInstanceId();
                 if (HistoryEventTypes.ACTIVITY_INSTANCE_START.getEventName().equals(executionDelegate.getEventName())) {
                     executionDelegate.setVariable(key, CommonConstants.EMPTY);
                 } else if (HistoryEventTypes.ACTIVITY_INSTANCE_END.getEventName().equals(executionDelegate.getEventName())) {

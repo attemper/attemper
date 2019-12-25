@@ -198,8 +198,17 @@ export default {
   'Connector': '连接器',
   'Custom Fields': '个性化属性',
   'Java Class': 'Java类',
-  'Script Format': '脚本语言',
+  'Script Format': '脚本引擎',
   'Script': '脚本',
+  'Condition Type': '条件类型',
+  'Expression': '表达式',
+  'Variables': '变量',
+  'In Mapping': '输入参数映射',
+  'Out Mapping': '输出参数映射',
+  'Source': '来源',
+  'Source Expression': '源表达式',
+  'Target': '目标',
+  'Text': '字符串',
   // 提示
   'Must provide a value': '不能为空',
   'This maps to the process definition key.': '映射为任务名称',
@@ -227,7 +236,8 @@ export default {
   'Remote Path': '文件目录',
   'File Name': '文件名',
   'Suffix': '文件后缀名',
-  'Main Ftp Name': 'Ftp主地址',
-  'Backup Ftp Name': 'Ftp备地址',
-  'Result Type': '结果类型'
+  'Ftp Prefix': 'Ftp参数前缀',
+  'Result Type': '结果类型',
+  'Language': '编程语言',
+  'Charset': '字符集'
 }

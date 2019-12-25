@@ -664,11 +664,14 @@ export default {
       return item
     },
     selectRow(row) {
+      if (row && this.selections.length === 1 && this.selections[0].jobName === row.jobName) {
+        return
+      }
       this.$refs.tables.clearSelection()
       if (row && (this.editDialog.oper === 'update' || row.jobName)) {
         this.$refs.tables.toggleRowSelection(row, true)
       }
-      this.reset() // get the newest or reset to origin
+      this.reset()
     },
     handleSelectionChange(val) {
       this.selections = val

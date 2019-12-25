@@ -1,22 +1,14 @@
 package com.github.attemper.core.util;
 
-import com.github.attemper.common.constant.GlobalConstants;
 import com.github.attemper.common.exception.RTException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 
-import java.io.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class FileUtil {
-
-    public static void byteArray2File(byte[] bytes, File targetFile) throws IOException {
-        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(targetFile))){
-            bos.write(bytes);
-        }
-    }
 
     public static byte[] inputStreamAsByteArray(InputStream is) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -29,28 +21,6 @@ public class FileUtil {
             return os.toByteArray();
         } catch (IOException e) {
             throw new RTException(1100, e);
-        }
-    }
-
-    public static void unZip(File inputFile, File outputFolder) throws IOException{
-        if (!outputFolder.exists()) {
-            outputFolder.mkdirs();
-        }
-        try (ZipFile zipFile = new ZipFile(inputFile);
-             ZipInputStream zipInput = new ZipInputStream(new FileInputStream(inputFile));){
-            ZipEntry entry;
-            while ((entry = zipInput.getNextEntry()) != null) {
-                if (!entry.isDirectory()) {
-                    String fileName = optimizePath(outputFolder.getAbsolutePath()) + '/' + optimizePath(entry.getName());
-                    if (!new File(fileName).exists()) {
-                        File folder = new File(fileName.substring(0, fileName.lastIndexOf('/')));
-                        if (!folder.exists()) {
-                            folder.mkdirs();
-                        }
-                        IOUtils.copy(zipFile.getInputStream(entry), new FileOutputStream(fileName));
-                    }
-                }
-            }
         }
     }
 
@@ -89,16 +59,6 @@ public class FileUtil {
             subDirectory += "/";
         }
         return parentDirectory + subDirectory;
-    }
-
-    /**
-     * /user/.../attemper/{id}
-     *
-     * @param id
-     * @return
-     */
-    public static String joinUserFolder(String id) {
-        return getUserHome() + GlobalConstants.defaultContextPath + '/' + id;
     }
 
     /**

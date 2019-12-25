@@ -13,7 +13,7 @@
 
     <properties>
         <groovy.version>2.4.15</groovy.version>
-        <jsr223.nativeshell.version>1.0.0</jsr223.nativeshell.version>
+        <jsr223.shell.version>1.0.0</jsr223.shell.version>
         <commons.codec.version>1.13</commons.codec.version>
     </properties>
 
@@ -58,8 +58,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.attemper</groupId>
-            <artifactId>jsr223-nativeshell</artifactId>
-            <version>${jsr223.nativeshell.version}</version>
+            <artifactId>jsr223-shell</artifactId>
+            <version>${jsr223.shell.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>

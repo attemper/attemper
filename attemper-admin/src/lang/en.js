@@ -97,7 +97,7 @@ export default {
     noneExecutor: 'None executor',
     detail: 'Detail',
     fileSeparatorLeft: 'Please using / as file separator, such as /data/biz',
-    ftpPrefix: 'Such as if you want to use mainIp/mainPort..., entry main here',
+    ftpPrefix: 'Such as if you want to use mainFtpIp..., entry main here(for default is ftpIp...)',
     dbNameInArg: 'Entry the datasource name which is in datasource',
     testResult: 'Test Result',
     noLongerTriggered: 'The trigger can not be triggered in the future',

@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq, testConnectionReq } from '@/api/dispatch/datasource'
+import { listReq, removeReq, addReq, updateReq, testConnectionReq } from '@/api/dispatch/datasource'
 import Pagination from '@/components/Pagination'
 import { buildMsg } from '@/utils/tools'
 const DEF_OBJ = {
@@ -167,7 +167,6 @@ export default {
       listReq(this.page).then(response => {
         this.list = response.data.result.list
         Object.assign(this.page, response.data.result.page)
-        // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
         }, 200)
@@ -237,9 +236,7 @@ export default {
       if (!this.selections || !this.selections.length || !this.selections[0].dbName) {
         this.datasource = Object.assign({}, DEF_OBJ)
       } else {
-        getReq({ dbName: this.selections[0].dbName }).then(res => {
-          this.datasource = res.data.result
-        })
+        this.datasource = Object.assign({}, this.selections[0])
       }
     },
     update(row) {
@@ -287,6 +284,9 @@ export default {
         })
     },
     selectRow(row) {
+      if (row && this.selections.length === 1 && this.selections[0].dbName === row.dbName) {
+        return
+      }
       this.$refs.tables.clearSelection()
       if (row && row.dbName) {
         this.$refs.tables.toggleRowSelection(row, true)

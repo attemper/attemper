@@ -98,6 +98,9 @@ public class SqlTask extends ParentTask implements Databasing {
      * @return
      */
     private int execute(DelegateExecution execution, ResultTypeSqlParam param, String startStr) {
+        if (StringUtils.isBlank(param.getDbName())) {
+            throw new RTException(8000, param.getSql());
+        }
         JdbcTemplate jdbcTemplate = injectJdbcTemplate(param.getDbName(), execution.getTenantId());
         int resultValue = jdbcTemplate.update(param.getSql());
         appendLogText(execution, 10300, startStr, resultValue);

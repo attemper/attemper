@@ -1,5 +1,6 @@
 package com.github.attemper.core.ext.el;
 
+import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.impl.javax.el.ExpressionFactory;
 import org.camunda.bpm.engine.impl.javax.el.ValueExpression;
 import org.camunda.bpm.engine.impl.juel.ExpressionFactoryImpl;
@@ -20,7 +21,7 @@ public class ELUtil {
      * @return
      */
     public static String parseExpression(String expression, Map<String, Object> variableMap) {
-        if (variableMap == null || variableMap.isEmpty()) {
+        if (StringUtils.isBlank(expression) || variableMap == null || variableMap.isEmpty()) {
             return expression;
         }
         ExpressionFactory factory = new ExpressionFactoryImpl();

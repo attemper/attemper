@@ -40,7 +40,7 @@
       </el-table-column>
       <el-table-column :label="$t('dispatch.arg.columns.argValue')" min-width="150px">
         <template slot-scope="scope">
-          <el-link type="success" @click="update(scope.row)">{{ scope.row.argValue }}</el-link>
+          <el-link type="success" @click="update(scope.row)">{{ !scope.row.argValue || scope.row.argValue.trim().length === 0 ? '...' : scope.row.argValue }}</el-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.remark')" min-width="150px">
@@ -89,7 +89,7 @@
             <date-time-input v-else-if="arg.argType === 12" v-model="arg.argValue" />
             <list-input v-else-if="arg.argType === 30" ref="listInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
             <map-input v-else-if="arg.argType === 31" ref="mapInput" v-model="arg.argValue" :generic-type="arg.genericType" @change="change" />
-            <gist-input v-else-if="arg.argType === 41" ref="gistInput" v-model="arg.argValue" @change="change" />
+            <gist-input v-else-if="arg.argType === 41" ref="gistInput" v-model="arg.argValue" :gist-names="gistNames" @change="change" />
             <trade-date-input v-else-if="arg.argType === 50" ref="tradeDateInput" v-model="arg.argValue" :trade-date-units="tradeDateUnits" @change="change" />
             <string-input v-else v-model="arg.argValue" :placeholder="$t('dispatch.arg.placeholder.argValue')" />
           </el-form-item>
@@ -140,9 +140,10 @@
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq, getSqlResultReq, getTradeDateReq } from '@/api/dispatch/arg'
+import { listReq, removeReq, addReq, updateReq, getSqlResultReq, getTradeDateReq } from '@/api/dispatch/arg'
 import * as dataSourceApi from '@/api/dispatch/datasource'
 import * as calendarApi from '@/api/dispatch/calendar'
+import * as gistApi from '@/api/application/gist'
 import { argTypesReq, tradeDateUnitsReq } from '@/api/dispatch/tool'
 import Pagination from '@/components/Pagination'
 import StringInput from './components/arg/StringInput'
@@ -203,15 +204,13 @@ export default {
       arg: DEF_OBJ,
       argTypes: [],
       genericTypes: [],
-      rawTypes: [],
-      sqlTypes: [],
-      tradeDateTypes: [],
       calendarTypes: [],
       selections: [],
       dbName: null,
       calendarName: null,
       dataSources: [],
       calendars: [],
+      gistNames: [],
       sqlResult: {
         columns: [],
         list: []
@@ -226,13 +225,16 @@ export default {
   },
   computed: {
     isRaw() {
-      return this.rawTypes.find(cell => cell.value === this.arg.argType)
+      return this.arg.argType >= 30 && this.arg.argType < 40
     },
     isSql() {
-      return this.sqlTypes.find(cell => cell.value === this.arg.argType)
+      return this.arg.argType === 40
     },
     isTradeDate() {
-      return this.tradeDateTypes.find(cell => cell.value === this.arg.argType)
+      return this.arg.argType === 50
+    },
+    isGist() {
+      return this.arg.argType === 41
     }
   },
   created() {
@@ -251,7 +253,6 @@ export default {
       listReq(this.page).then(response => {
         this.list = response.data.result.list
         Object.assign(this.page, response.data.result.page)
-        // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
         }, 200)
@@ -271,49 +272,23 @@ export default {
       }
       this.search()
     },
-    clickCell(row, column, cell, event) {
-      this.selectRow(row)
-    },
     reset() {
       if (!this.selections || !this.selections.length || !this.selections[0].argName) {
         this.arg = Object.assign({}, DEF_OBJ)
       } else {
-        getReq({ argName: this.selections[0].argName }).then(res => {
-          this.arg = Object.assign({}, res.data.result)
-          if (this.$refs.booleanInput) {
-            this.$refs.booleanInput.initValue(this.arg.argValue)
-          }
-          if (this.$refs.listInput) {
-            this.$refs.listInput.initValue(this.arg.argValue)
-          }
-          if (this.$refs.mapInput) {
-            this.$refs.mapInput.initValue(this.arg.argValue)
-          }
-          if (this.$refs.tradeDateInput) {
-            this.$refs.tradeDateInput.initUnit(this.arg.argValue)
-            this.$refs.tradeDateInput.initNum(this.arg.argValue)
-          }
-          if (this.$refs.gistInput) {
-            this.$refs.gistInput.initValue(this.arg.argValue)
-          }
-          if (this.isSql) {
-            this.getDatabases()
-          }
-          if (this.isTradeDate) {
-            this.getCalendars()
-          }
-        })
+        this.arg = Object.assign({}, this.selections[0])
       }
     },
     update(row) {
+      this.selectRow(row)
       if (row == null) {
         this.editDialog.oper = 'add'
         this.editDialog.title = this.$t('actions.add')
       } else {
         this.editDialog.oper = 'update'
         this.editDialog.title = this.$t('actions.update')
+        this.setData()
       }
-      this.selectRow(row)
       this.editDialog.base.visible = true
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
@@ -321,6 +296,33 @@ export default {
       this.preview = {
         type: 'info',
         result: this.$t('tip.howToPreview')
+      }
+    },
+    setData() {
+      if (this.$refs.booleanInput) {
+        this.$refs.booleanInput.initValue(this.arg.argValue)
+      }
+      if (this.$refs.listInput) {
+        this.$refs.listInput.initValue(this.arg.argValue)
+      }
+      if (this.$refs.mapInput) {
+        this.$refs.mapInput.initValue(this.arg.argValue)
+      }
+      if (this.isGist) {
+        this.getGists()
+        this.$nextTick(() => {
+          this.$refs.gistInput.initValue(this.arg.argValue)
+        })
+      }
+      if (this.isSql) {
+        this.getDatabases()
+      }
+      if (this.isTradeDate) {
+        this.$nextTick(() => {
+          this.$refs.tradeDateInput.initUnit(this.arg.argValue)
+          this.$refs.tradeDateInput.initNum(this.arg.argValue)
+        })
+        this.getCalendars()
       }
     },
     testSql() {
@@ -394,14 +396,20 @@ export default {
         })
     },
     selectRow(row) {
+      if (row && this.selections.length === 1 && this.selections[0].argName === row.argName) {
+        return
+      }
       this.$refs.tables.clearSelection()
       if (row && row.argName) {
         this.$refs.tables.toggleRowSelection(row, true)
       }
-      this.reset() // get the newest or reset to origin
+      this.reset()
     },
     handleSelectionChange(val) {
       this.selections = val
+    },
+    clickCell(row, column, cell, event) {
+      this.selectRow(row)
     },
     close() {
       this.editDialog.base.visible = false
@@ -420,6 +428,8 @@ export default {
         this.getDatabases()
       } else if (this.isTradeDate) {
         this.getCalendars()
+      } else if (this.isGist) {
+        this.getGists()
       }
     },
     getDatabases() {
@@ -432,6 +442,11 @@ export default {
       calendarApi.listReq().then(res => {
         this.calendars = res.data.result
         this.calendarName = this.arg.attribute
+      })
+    },
+    getGists() {
+      gistApi.listReq({ pageSize: -1 }).then(res => {
+        this.gistNames = res.data.result.list.map(item => item.gistName)
       })
     },
     change(val) {
@@ -450,9 +465,6 @@ export default {
       argTypesReq().then(res => {
         this.argTypes = res.data.result
         this.genericTypes = this.argTypes.filter(item => item.value < 30)
-        this.rawTypes = this.argTypes.filter(item => item.value >= 30 && item.value < 40)
-        this.sqlTypes = this.argTypes.filter(item => item.value === 40)
-        this.tradeDateTypes = this.argTypes.filter(item => item.value === 50)
       })
     },
     initTradeDateUnits() {

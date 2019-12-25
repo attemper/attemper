@@ -7,96 +7,102 @@ import org.apache.commons.lang.StringUtils;
 @Slf4j
 public class FtpInfo {
 
-    private String ip;
+    private String ftpIp;
 
-    private int port = 21;
+    private int ftpPort = 21;
 
-    private String username;
+    private String ftpUsername;
 
-    private String password;
+    private String ftpPassword;
 
-    private int retryCount = 3;
+    private int ftpRetryCount = 3;
 
-    private int timeout = 5;
+    private int ftpTimeout = 5;
 
-    public String getIp() {
-        return ip;
+    public String getFtpIp() {
+        return ftpIp;
     }
 
-    public FtpInfo setIp(String ip) {
-        if (StringUtils.isBlank(ip)) {
+    public FtpInfo setFtpIp(String ftpIp) {
+        if (StringUtils.isBlank(ftpIp)) {
             throw new RTException(1520);
         }
-        this.ip = ip;
+        this.ftpIp = ftpIp;
         return this;
     }
 
-    public int getPort() {
-        return port;
+    public int getFtpPort() {
+        return ftpPort;
     }
 
-    public FtpInfo setPort(String portStr) {
-        try {
-            if (StringUtils.isNotBlank(portStr)) {
-                this.port = Integer.parseInt(portStr);
-            }
-        } catch (NumberFormatException e) {
-            log.error(portStr, e);
+    public FtpInfo setFtpPort(String portStr) {
+        if (StringUtils.isNotBlank(portStr)) {
+            this.ftpPort = Integer.parseInt(portStr);
         }
         return this;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFtpUsername() {
+        return ftpUsername;
     }
 
-    public FtpInfo setUsername(String username) {
-        this.username = username;
+    public FtpInfo setFtpUsername(String ftpUsername) {
+        this.ftpUsername = ftpUsername;
         return this;
     }
 
-    public String getPassword() {
-        return password;
+    public String getFtpPassword() {
+        return ftpPassword;
     }
 
-    public FtpInfo setPassword(String password) {
-        this.password = password;
+    public FtpInfo setFtpPassword(String ftpPassword) {
+        this.ftpPassword = ftpPassword;
         return this;
     }
 
-    public int getRetryCount() {
-        return retryCount;
+    public int getFtpRetryCount() {
+        return ftpRetryCount;
     }
 
-    public FtpInfo setRetryCount(String retryCountStr) {
-        try {
-            if (StringUtils.isNotBlank(retryCountStr)) {
-                this.retryCount = Integer.parseInt(retryCountStr);
-                if (this.retryCount < 0) {
-                    this.retryCount = 0;
-                }
+    public FtpInfo setFtpRetryCount(String retryCountStr) {
+        if (StringUtils.isNotBlank(retryCountStr)) {
+            this.ftpRetryCount = Integer.parseInt(retryCountStr);
+            if (this.ftpRetryCount < 0) {
+                this.ftpRetryCount = 0;
             }
-        } catch (NumberFormatException e) {
-            log.error(retryCountStr, e);
         }
         return this;
     }
 
-    public int getTimeout() {
-        return timeout;
+    public int getFtpTimeout() {
+        return ftpTimeout;
     }
 
-    public FtpInfo setTimeout(String timeoutStr) {
-        try {
-            if (StringUtils.isNotBlank(timeoutStr)) {
-                this.timeout = Integer.parseInt(timeoutStr);
-                if (this.timeout <= 0) {
-                    this.timeout = 5;
-                }
+    public FtpInfo setFtpTimeout(String timeoutStr) {
+        if (StringUtils.isNotBlank(timeoutStr)) {
+            this.ftpTimeout = Integer.parseInt(timeoutStr);
+            if (this.ftpTimeout <= 0) {
+                this.ftpTimeout = 5;
             }
-        } catch (NumberFormatException e) {
-            log.error(timeoutStr, e);
         }
         return this;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (getFtpIp() != null) {
+            sb.append("ip(" + getFtpIp() + ") ");
+        }
+        sb.append("port(" + getFtpPort() + ") ");
+        if (getFtpUsername() != null) {
+            sb.append("username(" + getFtpUsername() + ") ");
+        }
+        if (getFtpPassword() != null) {
+            sb.append("password(" + getFtpPassword() + ") ");
+        }
+        sb.append("retryCount(" + getFtpRetryCount() + ") ");
+        sb.append("timeout(" + getFtpTimeout() + ") ");
+        return sb.toString();
     }
 }

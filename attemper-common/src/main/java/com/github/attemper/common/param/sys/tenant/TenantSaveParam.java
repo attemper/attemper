@@ -1,6 +1,5 @@
 package com.github.attemper.common.param.sys.tenant;
 
-import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.TenantStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +25,7 @@ public class TenantSaveParam extends TenantNameParam {
 
     protected String sendConfig;
 
-    private static Pattern emailPattern = Pattern.compile(CommonConstants.REGEX_EMAIL);
+    private static Pattern emailPattern = Pattern.compile("[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?");
 
     public String validate() {
         if (StringUtils.isBlank(password)) {

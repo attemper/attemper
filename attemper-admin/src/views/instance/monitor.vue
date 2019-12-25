@@ -338,11 +338,14 @@ export default {
       return item
     },
     selectRow(row) {
+      if (row && this.selections.length === 1 && this.selections[0].id === row.id) {
+        return
+      }
       this.$refs.tables.clearSelection()
       if (row && row.id) {
         this.$refs.tables.toggleRowSelection(row, true)
       }
-      this.reset() // get the newest or reset to origin
+      this.reset()
     },
     reset() {
       this.instance = Object.assign({}, this.selections[0])

@@ -8,28 +8,24 @@ spring:
         driverClassName: com.mysql.jdbc.Driver
         hikari:
             first:
-                jdbc-url: jdbc:mysql://127.0.0.1:3306/attemper?allowMultiQueries=true&characterEncoding=UTF-8&useSSL=false
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/attemper?allowMultiQueries=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
                 username: root
-                password: Dl944848
-                connection-test-query: select 1 from dual  # mysql/oracle
-                # connection-test-query: select 1  # sqlserver/postgresql
+                password: Hn180301
+                connection-test-query: select 1  # mysql/sqlserver/postgresql
+                # connection-test-query: select 1 from dual  # oracle
                 minimum-idle: 5
                 maximum-pool-size: 30
                 pool-name: first
-                connection-timeout: 30000
-                idle-timeout: 600000
                 max-lifetime: 1800000
             second:
-                jdbc-url: jdbc:mysql://127.0.0.1:3306/log?allowMultiQueries=true&characterEncoding=UTF-8&useSSL=false
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/log?allowMultiQueries=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
                 username: root
-                password: Dl944848
-                connection-test-query: select 1 from dual  # mysql/oracle
-                # connection-test-query: select 1  # sqlserver/postgresql
+                password: Hn180301
+                connection-test-query: select 1  # mysql/sqlserver/postgresql
+                # connection-test-query: select 1 from dual  # oracle
                 minimum-idle: 5
                 maximum-pool-size: 30
                 pool-name: second
-                connection-timeout: 30000
-                idle-timeout: 600000
                 max-lifetime: 1800000
     jackson:
         date-format: yyyy-MM-dd HH:mm:ss

@@ -152,30 +152,6 @@ public class APIPath {
 
     }
 
-    public static final class ProgramPath {
-        public static final String SUB_PATH = "/program";
-
-        public static final String $ = API_PATH + APP + SUB_PATH;
-
-        public static final String GET = $ + _GET;
-
-        public static final String PACKAGE = $ + "/package";
-
-        public static final String PACKAGE_CATEGORY = PACKAGE + "/category";
-
-        public static final String UPLOAD_PACKAGE = PACKAGE + "/upload";
-
-        public static final String DOWNLOAD_PACKAGE = PACKAGE + "/download";
-
-        public static final String LOAD_PACKAGE = PACKAGE + "/load";
-
-        public static final String UNLOAD_PACKAGE = PACKAGE + "/unload";
-
-        public static final String VIEW_FILE = PACKAGE + "/file/view";
-
-        public static final String DOWNLOAD_FILE = PACKAGE + "/file/download";
-    }
-
     public static final class GistPath {
         public static final String SUB_PATH = "/gist";
 

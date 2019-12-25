@@ -21,7 +21,7 @@
       },
       {
         "label": "Bean Name",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:property",
           "name": "beanName"
@@ -29,7 +29,7 @@
       },
       {
         "label": "Method Name",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:property",
           "name": "methodName"
@@ -54,7 +54,7 @@
       },
       {
         "label": "Sub URL",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:property",
           "name": "subUrl"
@@ -120,7 +120,7 @@
       },
       {
         "label": "Bean Name",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:property",
           "name": "beanName"
@@ -128,7 +128,7 @@
       },
       {
         "label": "Method Name",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:property",
           "name": "methodName"
@@ -153,7 +153,7 @@
       },
       {
         "label": "Sub URL",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:property",
           "name": "subUrl"
@@ -219,7 +219,7 @@
       },
       {
         "label": "Remote Path",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "remotePath"
@@ -227,7 +227,7 @@
       },
       {
         "label": "File Name",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "fileName"
@@ -281,26 +281,18 @@
       },
       {
         "label": "Local Directory",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "localDirectory"
         }
       },
       {
-        "label": "Main Ftp Name",
+        "label": "Ftp Prefix",
         "type": "String",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "main_ftp_name"
-        }
-      },
-      {
-        "label": "Backup Ftp Name",
-        "type": "String",
-        "binding": {
-          "type": "camunda:inputParameter",
-          "name": "bakcup_ftp_name"
+          "name": "ftp_prefix"
         }
       }
     ],
@@ -336,7 +328,7 @@
       },
       {
         "label": "Remote Path",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "remotePath"
@@ -344,7 +336,7 @@
       },
       {
         "label": "File Name",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "fileName"
@@ -402,26 +394,18 @@
       },
       {
         "label": "Local Directory",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "localDirectory"
         }
       },
       {
-        "label": "Main Ftp Name",
+        "label": "Ftp Prefix",
         "type": "String",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "main_ftp_name"
-        }
-      },
-      {
-        "label": "Backup Ftp Name",
-        "type": "String",
-        "binding": {
-          "type": "camunda:inputParameter",
-          "name": "bakcup_ftp_name"
+          "name": "ftp_prefix"
         }
       }
     ],
@@ -457,7 +441,7 @@
       },
       {
         "label": "Sql",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "sql"
@@ -516,13 +500,12 @@
       },
       {
         "label": "From",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "custom_mail_from"
+          "name": "customMailFrom"
         },
         "constraints": {
-          "notEmpty": true,
           "pattern": {
             "value": "^[A-z0-9._%+-]+@[A-z0-9.-]+\\.[A-z]{2,}$",
             "message": "Must be a valid email."
@@ -531,21 +514,25 @@
       },
       {
         "label": "To",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "custom_mail_to"
+          "name": "customMailTo"
         },
         "constraints": {
+          "pattern": {
+            "value": "^[A-z0-9._%+-]+@[A-z0-9.-]+\\.[A-z]{2,}$",
+            "message": "Must be a valid email."
+          },
           "notEmpty": true
         }
       },
       {
         "label": "Subject",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "custom_mail_subject"
+          "name": "customMailSubject"
         },
         "constraints": {
           "notEmpty": true
@@ -557,7 +544,7 @@
         "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "custom_mail_content",
+          "name": "customMailContent",
           "scriptFormat": "freemarker"
         },
         "constraints": {
@@ -584,7 +571,7 @@
     "properties": [
       {
         "label": "Called Element",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "property",
           "name": "calledElement"
@@ -595,7 +582,7 @@
       },
       {
         "label": "Tenant Id",
-        "type": "String",
+        "type": "Text",
         "value": "${execution.tenantId}",
         "binding": {
           "type": "property",
@@ -637,8 +624,8 @@
     ]
   },
   {
-    "name": "Bash Shell(Text)",
-    "id": "Bash Shell Text Script Task",
+    "name": "Shell(File Path)",
+    "id": "Shell File Path Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -647,7 +634,7 @@
         "label": "Script Format",
         "type": "String",
         "editable": false,
-        "value": "bash",
+        "value": "shell",
         "binding": {
           "type": "property",
           "name": "scriptFormat"
@@ -674,8 +661,8 @@
     }
   },
   {
-    "name": "CMD Shell(Text)",
-    "id": "CMD Shell Text Script Task",
+    "name": "Groovy(File Path)",
+    "id": "Groovy File Path Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -684,7 +671,7 @@
         "label": "Script Format",
         "type": "String",
         "editable": false,
-        "value": "cmd",
+        "value": "groovy",
         "binding": {
           "type": "property",
           "name": "scriptFormat"
@@ -702,6 +689,131 @@
         },
         "constraints": {
           "notEmpty": true
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false
+    }
+  },
+  {
+    "name": "Shell(Text)",
+    "id": "Shell Text Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "shell",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Language",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Cmd(Bat)",
+            "value": ".bat"
+          },
+          {
+            "name": "Go",
+            "value": ".go"
+          },
+          {
+            "name": "Groovy",
+            "value": ".groovy"
+          },
+          {
+            "name": "Perl",
+            "value": ".pl"
+          },
+          {
+            "name": "Php",
+            "value": ".php"
+          },
+          {
+            "name": "Python",
+            "value": ".py"
+          },
+          {
+            "name": "Ruby",
+            "value": ".rb"
+          },
+          {
+            "name": "Shell(Bash)",
+            "value": ".sh"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "shell_language"
+        }
+      },
+      {
+        "label": "Charset",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "UTF-8",
+            "value": "UTF-8"
+          },
+          {
+            "name": "ISO-8859-1",
+            "value": "ISO-8859-1"
+          },
+          {
+            "name": "GBK",
+            "value": "GBK"
+          },
+          {
+            "name": "GB2312",
+            "value": "GB2312"
+          },
+          {
+            "name": "GB18030",
+            "value": "GB18030"
+          },
+          {
+            "name": "US-ASCII",
+            "value": "US-ASCII"
+          },
+          {
+            "name": "UTF-16",
+            "value": "UTF-16"
+          },
+          {
+            "name": "UTF-16BE",
+            "value": "UTF-16BE"
+          },
+          {
+            "name": "UTF-16LE",
+            "value": "UTF-16LE"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "shell_charset_command"
         }
       }
     ],
@@ -748,8 +860,8 @@
     }
   },
   {
-    "name": "Bash Shell(Expression)",
-    "id": "Bash Shell Expression Script Task",
+    "name": "Shell(Expression)",
+    "id": "Shell Expression Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -758,7 +870,7 @@
         "label": "Script Format",
         "type": "String",
         "editable": false,
-        "value": "bash",
+        "value": "shell",
         "binding": {
           "type": "property",
           "name": "scriptFormat"
@@ -778,43 +890,93 @@
         "constraints": {
           "notEmpty": true
         }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false
-    }
-  },
-  {
-    "name": "CMD Shell(Expression)",
-    "id": "CMD Shell Expression Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
+      },
       {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "cmd",
+        "label": "Language",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Cmd(Bat)",
+            "value": ".bat"
+          },
+          {
+            "name": "Go",
+            "value": ".go"
+          },
+          {
+            "name": "Groovy",
+            "value": ".groovy"
+          },
+          {
+            "name": "Perl",
+            "value": ".pl"
+          },
+          {
+            "name": "Php",
+            "value": ".php"
+          },
+          {
+            "name": "Python",
+            "value": ".py"
+          },
+          {
+            "name": "Ruby",
+            "value": ".rb"
+          },
+          {
+            "name": "Shell(Bash)",
+            "value": ".sh"
+          }
+        ],
         "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
+          "type": "camunda:inputParameter",
+          "name": "shell_language"
         }
       },
       {
-        "label": "Expression",
-        "type": "Text",
-        "value": "${}",
+        "label": "Charset",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "UTF-8",
+            "value": "UTF-8"
+          },
+          {
+            "name": "ISO-8859-1",
+            "value": "ISO-8859-1"
+          },
+          {
+            "name": "GBK",
+            "value": "GBK"
+          },
+          {
+            "name": "GB2312",
+            "value": "GB2312"
+          },
+          {
+            "name": "GB18030",
+            "value": "GB18030"
+          },
+          {
+            "name": "US-ASCII",
+            "value": "US-ASCII"
+          },
+          {
+            "name": "UTF-16",
+            "value": "UTF-16"
+          },
+          {
+            "name": "UTF-16BE",
+            "value": "UTF-16BE"
+          },
+          {
+            "name": "UTF-16LE",
+            "value": "UTF-16LE"
+          }
+        ],
         "binding": {
-          "type": "property",
-          "name": "script"
-        },
-        "constraints": {
-          "notEmpty": true
+          "type": "camunda:inputParameter",
+          "name": "shell_charset_command"
         }
       }
     ],
@@ -853,108 +1015,6 @@
         },
         "constraints": {
           "notEmpty": true
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false
-    }
-  },
-  {
-    "name": "Bash Shell(File Path)",
-    "id": "Bash Shell File Path Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "bash",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "File Path",
-        "type": "String",
-        "binding": {
-          "type": "property",
-          "name": "camunda:resource"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false
-    }
-  },
-  {
-    "name": "CMD Shell(File Path)",
-    "id": "CMD Shell File Path Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "cmd",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "File Path",
-        "type": "String",
-        "binding": {
-          "type": "property",
-          "name": "camunda:resource"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false
-    }
-  },
-  {
-    "name": "Groovy(File Path)",
-    "id": "Groovy File Path Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "groovy",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "File Path",
-        "type": "String",
-        "binding": {
-          "type": "property",
-          "name": "camunda:resource"
         }
       }
     ],

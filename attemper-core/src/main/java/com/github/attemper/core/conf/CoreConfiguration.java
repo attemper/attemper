@@ -2,7 +2,6 @@ package com.github.attemper.core.conf;
 
 import com.github.attemper.core.controller.ServerInfoController;
 import com.github.attemper.core.dao.application.GistMapper;
-import com.github.attemper.core.dao.application.ProgramMapper;
 import com.github.attemper.core.dao.application.ProjectMapper;
 import com.github.attemper.core.dao.dispatch.*;
 import com.github.attemper.core.dao.instance.InstanceMapper;
@@ -10,7 +9,6 @@ import com.github.attemper.core.ext.condition.ConditionStrategyService;
 import com.github.attemper.core.ext.notice.NoticeService;
 import com.github.attemper.core.ext.notice.channel.mail.EmailSender;
 import com.github.attemper.core.service.application.GistService;
-import com.github.attemper.core.service.application.ProgramService;
 import com.github.attemper.core.service.application.ProjectService;
 import com.github.attemper.core.service.dispatch.*;
 import com.github.attemper.core.service.instance.InstanceService;
@@ -38,7 +36,6 @@ import javax.validation.ValidatorFactory;
         ArgMapper.class,
         DataSourceMapper.class,
         ProjectMapper.class,
-        ProgramMapper.class,
         GistMapper.class,
         InstanceMapper.class,
         CalendarMapper.class,
@@ -49,7 +46,6 @@ import javax.validation.ValidatorFactory;
         ArgService.class,
         DataSourceService.class,
         ProjectService.class,
-        ProgramService.class,
         GistService.class,
         ToolService.class,
         InstanceService.class,

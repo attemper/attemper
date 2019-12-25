@@ -1,6 +1,5 @@
 package com.github.attemper.common.param.dispatch.arg.ext;
 
-import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.param.CommonParam;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
@@ -14,7 +13,7 @@ public class TradeDateArgParam implements CommonParam {
 
     protected String expression;
 
-    private static Pattern tradeDatePattern = Pattern.compile(CommonConstants.REGEX_TRADE_DATE);;
+    private static Pattern tradeDatePattern = Pattern.compile("^([TWMSHY]{1})((([+-])([0123456789]*))?)(( ((([+-])([0123456789]*))?))?)$");;
 
     @Override
     public String validate() {

@@ -1,6 +1,5 @@
 package com.github.attemper.core.ext.condition;
 
-import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.enums.ConditionType;
 import com.github.attemper.common.result.dispatch.condition.Condition;
 import com.github.attemper.common.result.dispatch.condition.sub.FtpFileConditionResult;
@@ -8,7 +7,7 @@ import com.github.attemper.common.util.ReflectUtil;
 import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.ext.el.ELUtil;
 import com.github.attemper.core.ext.ftp.FtpInfo;
-import com.github.attemper.core.ext.ftp.FtpUtil;
+import com.github.attemper.core.util.FtpUtil;
 import com.github.attemper.core.util.FileUtil;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -25,9 +24,6 @@ public class FtpFileConditionStrategy implements ConditionStrategy<FtpFileCondit
             return false;
         }
         String prefix = ftpFileCondition.getPrefix();
-        if (prefix == null) {
-            prefix = CommonConstants.main;
-        }
         FtpInfo ftpInfo = (FtpInfo) ReflectUtil.reflectObj(FtpInfo.class, prefix, variableMap);
         FTPClient ftpClient = FtpUtil.getFtpClient(ftpInfo);
         try {

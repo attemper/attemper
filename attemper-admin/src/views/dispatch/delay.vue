@@ -10,7 +10,6 @@
           placement="bottom"
           trigger="hover"
         >
-          <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button>
           <el-button slot="reference" class="filter-item table-external-button" type="warning">{{ $t('actions.highOperation') }}</el-button>
         </el-popover>
         <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manual">
@@ -270,6 +269,9 @@ export default {
         })
     },
     selectRow(row) {
+      if (row && this.selections.length === 1 && this.selections[0].id === row.id) {
+        return
+      }
       this.$refs.tables.clearSelection()
       if (row && (this.editDialog.oper === 'update' || row.id)) {
         this.$refs.tables.toggleRowSelection(row, true)
@@ -281,25 +283,6 @@ export default {
     },
     clickCell(row, column, cell, event) {
       this.selectRow(row)
-    },
-    handleDownload() {
-      /*
-      this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const translatedHeader = [
-            this.$t('dispatch.job.columns.jobName'),
-            this.$t('columns.displayName'),
-            this.$t('columns.status'),
-            this.$t('dispatch.job.columns.version')
-          ]
-          const data = this.list
-          excel.export_json_to_excel({
-            header: translatedHeader,
-            data,
-            filename: 'job_' + getTimeStr()
-          })
-          this.downloadLoading = false
-        })*/
     },
     loadConst() {
         import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {

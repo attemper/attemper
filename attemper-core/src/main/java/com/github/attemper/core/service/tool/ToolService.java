@@ -44,7 +44,7 @@ public class ToolService extends BaseServiceAdapter {
         return TimeZone.getAvailableIDs();
     }
 
-    public Boolean ping(String uri, Integer type) {
+    public Boolean ping(String uri, Integer uriType) {
         if (uri == null) {
             log.error("uri is null");
             return false;
@@ -54,7 +54,7 @@ public class ToolService extends BaseServiceAdapter {
                 log.debug(uri);
             }
             uri = uri.replace("https://", "").replace("http://", "");
-            if (type == UriType.DiscoveryClient.getType()) {
+            if (uriType == UriType.DiscoveryClient.getType()) {
                 if (log.isDebugEnabled()) {
                     log.debug("discovery client");
                 }
@@ -67,14 +67,14 @@ public class ToolService extends BaseServiceAdapter {
                         return false;
                     }
                 }
-            } else if (type == UriType.IpWithPort.getType()) {
+            } else if (uriType == UriType.IpWithPort.getType()) {
                 if (log.isDebugEnabled()) {
                     log.debug("ip:port");
                 }
                 String[] arr = uri.split(":");
                 SocketAddress socketAddr = new InetSocketAddress(arr[0], Integer.parseInt(arr[1]));
                 new Socket().connect(socketAddr, 10000);
-            } else if (type == UriType.DomainName.getType()) {
+            } else if (uriType == UriType.DomainName.getType()) {
                 if (log.isDebugEnabled()) {
                     log.debug("domain");
                 }

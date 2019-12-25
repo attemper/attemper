@@ -1,6 +1,7 @@
-package com.github.attemper.core.ext.ftp;
+package com.github.attemper.core.util;
 
 import com.github.attemper.common.exception.RTException;
+import com.github.attemper.core.ext.ftp.FtpInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.*;
 
@@ -20,16 +21,16 @@ public class FtpUtil {
     public static FTPClient getFtpClient(FtpInfo ftpInfo) {
         FTPClient ftpClient = new FTPClient();
         ftpClient.configure(config);
-        ftpClient.setConnectTimeout(ftpInfo.getTimeout() * 1000);
-        int retryCount = ftpInfo.getRetryCount();
+        ftpClient.setConnectTimeout(ftpInfo.getFtpTimeout() * 1000);
+        int retryCount = ftpInfo.getFtpRetryCount();
         while (retryCount >= 0) {
             boolean skip = false;
             try {
-                ftpClient.connect(ftpInfo.getIp(), ftpInfo.getPort());
+                ftpClient.connect(ftpInfo.getFtpIp(), ftpInfo.getFtpPort());
             } catch (IOException e) {
                 if (retryCount == 0) {
                     closeFtpClient(ftpClient);
-                    throw new RTException(2550, ftpInfo.getIp() + ":" + ftpInfo.getPort());
+                    throw new RTException(2550, ftpInfo.getFtpIp() + ":" + ftpInfo.getFtpPort());
                 } else {
                     log.error(e.getMessage(), e);
                     skip = true;
@@ -37,10 +38,10 @@ public class FtpUtil {
             }
             if (!skip) {
                 try {
-                    boolean logged = ftpClient.login(ftpInfo.getUsername(), ftpInfo.getPassword());
+                    boolean logged = ftpClient.login(ftpInfo.getFtpUsername(), ftpInfo.getFtpPassword());
                     if (!logged && retryCount == 0) {
                         closeFtpClient(ftpClient);
-                        throw new RTException(2551, ftpInfo.getUsername() + '/' + ftpInfo.getPassword());
+                        throw new RTException(2551, ftpInfo.getFtpUsername() + '/' + ftpInfo.getFtpPassword());
                     }
                     if (logged) {
                         int replyCode = ftpClient.getReplyCode();
@@ -55,7 +56,7 @@ public class FtpUtil {
                 } catch (IOException e) {
                     if (retryCount == 0) {
                         closeFtpClient(ftpClient);
-                        throw new RTException(2551, ftpInfo.getUsername() + '/' + ftpInfo.getPassword());
+                        throw new RTException(2551, ftpInfo.getFtpUsername() + '/' + ftpInfo.getFtpPassword());
                     } else {
                         log.error(e.getMessage(), e);
                     }

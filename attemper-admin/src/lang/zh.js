@@ -97,7 +97,7 @@ export default {
     noneExecutor: '未启动执行器',
     detail: '详情',
     fileSeparatorLeft: '文件分隔符请用/，例如/data/biz',
-    ftpPrefix: '如欲使用参数中的mainIp/mainPort等，则配置为main',
+    ftpPrefix: '如欲使用参数中的mainFtpIp等，则配置为main（默认使用ftpIp等）',
     dbNameInArg: '在数据源管理中维护数据源名称后在此配置',
     testResult: '测试结果',
     noLongerTriggered: '该触发器将不再被触发',

@@ -165,6 +165,9 @@ export default {
       this.selections = val
     },
     selectRow(row) {
+      if (row && this.selections.length === 1 && this.selections[0].gistName === row.gistName) {
+        return
+      }
       this.$refs.tables.clearSelection()
       if (row && row.gistName) {
         this.$refs.tables.toggleRowSelection(row, true)

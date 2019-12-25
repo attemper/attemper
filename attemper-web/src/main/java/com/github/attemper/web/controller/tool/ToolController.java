@@ -48,8 +48,8 @@ public class ToolController {
 
     @ApiOperation("Ping the Internet address")
     @GetMapping(APIPath.ToolPath.PING)
-    public CommonResult<Boolean> ping(String uri, Integer type) {
-        return CommonResult.putResult(service.ping(uri, type));
+    public CommonResult<Boolean> ping(String uri, Integer uriType) {
+        return CommonResult.putResult(service.ping(uri, uriType));
     }
 
     @ApiOperation("Get server time")
