@@ -6,12 +6,6 @@
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="search" />
       <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" icon="el-icon-delete" @click="remove" />
       <div style="float: right">
-        <el-popover
-          placement="bottom"
-          trigger="hover"
-        >
-          <el-button slot="reference" class="filter-item table-external-button" type="warning">{{ $t('actions.highOperation') }}</el-button>
-        </el-popover>
         <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manual">
           <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
         </el-button>
@@ -29,15 +23,6 @@
       @selection-change="handleSelectionChange"
       @cell-click="clickCell"
     >
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form label-position="left" inline class="table-expand">
-            <el-form-item :label="$t('dispatch.delay.columns.requestTime')">
-              <span>{{ props.row.requestTime | parseTime }}</span>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
       <el-table-column
         type="selection"
         width="45"
@@ -60,6 +45,11 @@
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
         <template slot-scope="scope">
           <span>{{ scope.row.displayName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('dispatch.delay.columns.requestTime')" width="160px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.requestTime | parseTime }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.job.columns.nextFireTime')" width="160px">
@@ -108,14 +98,14 @@
       :before-close="close"
     >
       <div v-show="editDialog.trigger.visible">
-        <el-tabs v-model="triggerTab.timeTrigger.activeTabName" tab-position="left">
+        <el-tabs v-model="triggerTab.activeTabName" tab-position="left">
           <el-tab-pane :label="$t('dispatch.trigger.tab.dailyTimeInterval')" name="2">
             <DailyTimeIntervalTrigger
               ref="dailyTimeIntervalTrigger"
               :milli-second-time-units="milliSecondTimeUnits"
               :in-day-time-units="inDayTimeUnits"
               :days-of-week="daysOfWeek"
-              :calendar-groups="calendarGroups"
+              :calendars="calendars"
             />
           </el-tab-pane>
         </el-tabs>
@@ -133,7 +123,8 @@
 </template>
 
 <script>
-import { listReq, removeReq, manualReq, getTriggerReq, updateTriggerReq } from '@/api/dispatch/delay'
+import { getTriggerReq, updateTriggerReq } from '@/api/dispatch/job'
+import { listReq, removeReq, manualReq } from '@/api/dispatch/delay'
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as toolApi from '@/api/dispatch/tool'
 import { buildMsg } from '@/utils/tools'
@@ -173,22 +164,20 @@ export default {
       downloadLoading: false,
       selections: [],
       triggerTab: {
-        timeTrigger: {
-          activeTabName: '0'
-        }
+        activeTabName: '0'
       },
       trigger: {
         dailyTimeIntervalTriggers: []
       },
       timeZones: [],
-      calendarGroups: [],
-      calendarTypes: []
+      calendars: []
     }
   },
   created() {
     this.loadConst()
-    this.search()
+    this.initCalendars()
     this.initTimeZones()
+    this.search()
   },
   methods: {
     search() {
@@ -219,18 +208,17 @@ export default {
     },
     openTriggerDialog(row) {
       this.editDialog.title = this.$t('dispatch.job.actions.trigger')
-      this.triggerTab.timeTrigger.activeTabName = '2'
+      this.triggerTab.activeTabName = '2'
       this.selectRow(row)
       this.editDialog.trigger.visible = true
-      this.initCalendarGroups()
       getTriggerReq({ jobName: this.deplay.id }).then(res => {
         const result = res.data.result
-        if (result.dailyTimeIntervalTriggers && result.dailyTimeIntervalTriggers.length > 0) {
+        if (result && result.dailyTimeIntervalTriggers && result.dailyTimeIntervalTriggers.length > 0) {
           result.dailyTimeIntervalTriggers.forEach(item => {
-            item.daysOfWeekArr = item.daysOfWeek && item.daysOfWeek.length ? item.daysOfWeek.split(',') : []
+            item.daysOfWeekArr = item.daysOfWeek.split(',')
           })
           this.$refs.dailyTimeIntervalTrigger.triggerArray = result.dailyTimeIntervalTriggers
-          this.triggerTab.timeTrigger.activeTabName = '2'
+          this.triggerTab.activeTabName = '2'
         } else {
           this.$refs.dailyTimeIntervalTrigger.triggerArray = []
           this.$refs.dailyTimeIntervalTrigger.add()
@@ -291,7 +279,6 @@ export default {
           this.dayTimeUnit = array.dayTimeUnit
           this.overDayTimeUnits = array.overDayTimeUnits
           this.daysOfWeek = array.daysOfWeek
-          this.calendarTypes = array.calendarTypes
         })
     },
     linkJob() {
@@ -328,16 +315,9 @@ export default {
         return
       }
     },
-    initCalendarGroups() {
-      this.calendarGroups = []
+    initCalendars() {
       calendarApi.listReq().then(res => {
-        this.calendarTypes.forEach(type => {
-          const options = res.data.result.filter(item => item.type === type.value)
-          this.calendarGroups.push({
-            label: type.label,
-            options: options && options.length > 0 ? options : []
-          })
-        })
+        this.calendars = res.data.result
       })
     }
   }

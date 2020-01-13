@@ -225,7 +225,7 @@ public class JobOperatedService extends BaseServiceAdapter {
                 .setTenantId(injectTenantId());
     }
 
-    private Job validateAndGet(String jobName) {
+    public Job validateAndGet(String jobName) {
         JobNameParam jobNameParam = new JobNameParam().setJobName(jobName);
         Job job = jobService.get(jobNameParam);
         if (job == null) {
@@ -604,9 +604,7 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     public Void validateAndUpdateTrigger(TriggerWrapper param) {
-        if (isNotPublished(param.getJobName())) {
-            throw new RTException(6058, param.getJobName());
-        }
+        validatePublished(param.getJobName());
         return updateTrigger(param);
     }
 
@@ -635,12 +633,14 @@ public class JobOperatedService extends BaseServiceAdapter {
      * @param jobName
      * @return
      */
-    private boolean isNotPublished(String jobName) {
+    public void validatePublished(String jobName) {
         long count = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey(jobName)
                 .tenantIdIn(injectTenantId())
                 .count();
-        return count <= 0;
+        if (count <= 0){
+            throw new RTException(6058, jobName);
+        }
     }
 
     private JobSaveParam toParam(Job job) {

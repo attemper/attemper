@@ -38,17 +38,39 @@
 		<sdk.artifactId>attemper-java-sdk</sdk.artifactId>
 
 		<commons.logging.version>1.2</commons.logging.version>
+		<commons.codec.version>1.13</commons.codec.version>
 		<shiro.version>1.4.2</shiro.version>
 		<lombok.version>1.16.18</lombok.version>
 		<junit.version>4.12</junit.version>
 		<jna.version>5.5.0</jna.version>
 
-		<!-- plugin version -->
-		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<lombok.maven.plugin.version>1.16.18.0</lombok.maven.plugin.version>
 		<!-- docker -->
 		<dockerfile.maven.plugin.version>1.4.13</dockerfile.maven.plugin.version>
+
+		<!-- plugin version -->
+		<maven.compiler.plugin.version>2.1</maven.compiler.plugin.version>
+		<maven.release.plugin.version>2.5.3</maven.release.plugin.version>
 	</properties>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
 	<dependencyManagement>
 		<dependencies>
@@ -150,9 +172,24 @@
 	<build>
 		<plugins>
 			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.plugin.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven.jar.plugin.version}</version>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>${maven.release.plugin.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.projectlombok</groupId>

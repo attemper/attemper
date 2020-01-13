@@ -323,7 +323,6 @@ export default {
         currentPage: 1,
         pageSize: 10,
         total: 0,
-        jobName: undefined,
         displayName: undefined,
         status: [],
         sort: 'JOB_NAME'
@@ -409,10 +408,9 @@ export default {
     search() {
       this.listLoading = true
       this.initPageStatus()
-      listReq(this.page).then(response => {
+      listReq(Object.assign({ jobName: this.$route.params.key }, this.page)).then(response => {
         this.list = response.data.result.list
         Object.assign(this.page, response.data.result.page)
-        // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
         }, 200)
