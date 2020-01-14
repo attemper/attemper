@@ -30,10 +30,10 @@
 
 ## 模块
 
-[调度中心-前端](./attemper-admin)
-[调度中心-后端](./attemper-web)
-[调度中心-后端](./attemper-web)
-[调度中心-后端](./attemper-web)
+[调度中心-前端](./attemper-admin)  
+[调度中心-后端](./attemper-web)  
+[执行器](./attemper-executor)  
+[调度器](./attemper-scheduler)  
 
 ## 文档
 
