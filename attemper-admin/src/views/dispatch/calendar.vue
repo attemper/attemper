@@ -16,7 +16,7 @@
       </el-aside>
       <el-main>
         <v-calendar
-          :min-date="new Date(2019, 0, 1)"
+          :min-date="new Date(2020, 0, 1)"
           :attributes="attrs"
           :from-date="new Date(new Date().getFullYear(), 0, 1)"
           :columns="layout.columns"
