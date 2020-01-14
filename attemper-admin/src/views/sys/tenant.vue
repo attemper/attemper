@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="page.userName" :placeholder="$t('sys.tenant.columns.userName')" class="filter-item search-input" @keyup.enter.native="search" />
+      <el-input v-model="page.userName" :placeholder="$t('columns.userName')" class="filter-item search-input" @keyup.enter.native="search" />
       <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" class="filter-item search-input" @keyup.enter.native="search" />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="search" />
       <el-button v-access="'tenant-add'" class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus" @click="update(null)" />
       <el-button v-access="'tenant-remove'" :disabled="!selections || !selections.length" class="filter-item" style="margin-left: 10px;" type="danger" icon="el-icon-delete" @click="remove" />
     </div>
@@ -18,13 +18,14 @@
       highlight-current-row
       style="width: 100%;"
       @selection-change="handleSelectionChange"
+      @cell-click="clickCell"
       @sort-change="sortChange"
     >
       <el-table-column
         type="selection"
         width="45"
       />
-      <el-table-column :label="$t('sys.tenant.columns.userName')" prop="userName" sortable="custom" align="center" min-width="100px">
+      <el-table-column :label="$t('columns.userName')" prop="userName" sortable="custom" align="center" min-width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.userName }}</span>
         </template>
@@ -66,8 +67,8 @@
       </el-table-column>
       <el-table-column v-if="canUpdate" :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button type="warning" @click="changePassword(scope.row)">{{ $t('actions.changePassword') }}</el-button>
           <el-button type="primary" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
-          <!--<el-button type="success" @click="openTagDialog(scope.row)">{{ $t('sys.tenant.actions.tag') }}</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -76,7 +77,7 @@
 
     <el-dialog
       :title="editDialog.title"
-      :visible.sync="editDialog.base.visible"
+      :visible.sync="editDialog.base.visible || editDialog.password.visible"
       :center="true"
       :modal="true"
       :close-on-click-modal="false"
@@ -85,19 +86,20 @@
     >
       <div v-show="editDialog.base.visible">
         <el-form ref="form" :rules="formRules" :model="tenant" label-position="right" label-width="150px" class="form-layout">
-          <el-form-item :label="$t('sys.tenant.columns.userName')" prop="userName">
-            <el-input v-model="tenant.userName" :placeholder="$t('sys.tenant.placeholder.userName')" />
+          <el-form-item v-show="editDialog.oper === 'add'" :label="$t('columns.userName')" prop="userName">
+            <el-input v-model="tenant.userName" :placeholder="$t('placeholders.userName')" />
           </el-form-item>
           <el-form-item :label="$t('columns.displayName')" prop="displayName">
             <el-input v-model="tenant.displayName" :placeholder="$t('placeholders.displayName')" />
           </el-form-item>
-          <el-form-item :label="$t('sys.tenant.columns.password')" prop="password">
-            <el-input v-model="tenant.password" :placeholder="$t('sys.tenant.placeholder.password')" type="password" />
+          <el-form-item :label="$t('columns.password')" prop="password">
+            <el-input v-model="tenant.password" :placeholder="$t('placeholders.password')" :type="passwordType"><svg-icon slot="suffix" :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" @click="passwordType = (passwordType === 'password' ? '' : 'password')" /></el-input>
           </el-form-item>
           <el-form-item :label="$t('columns.status')">
             <el-select v-model="tenant.status" style="width: 100%;">
-              <el-option v-for="item in statuses" :key="item.label" :value="item.value" :label="item.label" />
+              <el-option v-for="item in tenantStatuses" :key="item.label" :value="item.value" :label="item.label" />
             </el-select>
+            <el-alert v-if="tenant.status !== 0" style="padding: 0;" :type="tenant.status === 1 ? 'warning' : 'error'" :title="tenant.status === 1 ? $t('tip.tenantFrozen') : $t('tip.tenantDisabled')" />
           </el-form-item>
           <el-form-item :label="$t('sys.tenant.columns.email')" prop="email">
             <el-input v-model="tenant.email" :placeholder="$t('sys.tenant.placeholder.email')" />
@@ -116,17 +118,34 @@
           </el-form-item>
         </el-form>
       </div>
+      <div v-show="editDialog.password.visible">
+        <el-form ref="passwordForm" :rules="passwordFormRules" :model="passwordModel" label-position="left" label-width="130px" class="form-layout">
+          <el-form-item :label="$t('tip.oldPassword')" prop="oldPassword">
+            <el-input v-model="passwordModel.oldPassword" :type="passwordType"><svg-icon slot="suffix" :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" @click="passwordType = (passwordType === 'password' ? '' : 'password')" /></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('tip.newPassword')" prop="newPassword">
+            <el-input v-model="passwordModel.newPassword" :type="passwordType"><svg-icon slot="suffix" :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" @click="passwordType = (passwordType === 'password' ? '' : 'password')" /></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('tip.doubleNewPassword')" prop="doubleNewPassword">
+            <el-input v-model="passwordModel.doubleNewPassword" :type="passwordType"><svg-icon slot="suffix" :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" @click="passwordType = (passwordType === 'password' ? '' : 'password')" /></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="info" @click="editDialog.password.visible = false">{{ $t('actions.cancel') }}</el-button>
+            <el-button type="success" @click="savePassword">{{ $t('actions.save') }}</el-button>
+          </el-form-item>
+          <el-alert v-if="passwordModel.newPassword && passwordModel.newPassword === passwordModel.oldPassword" type="error" :title="$t('tip.differentOldPassword')" />
+          <el-alert v-if="passwordModel.newPassword !== passwordModel.doubleNewPassword" type="error" :title="$t('tip.differentNewPassword')" />
+        </el-form>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { listReq, getReq, removeReq, addReq, updateReq } from '@/api/sys/tenant'
-import waves from '@/directive/waves'
-import { buildMsg } from '@/utils/tools'
+import { listReq, getReq, removeReq, addReq, updateReq, updatePasswordReq } from '@/api/sys/tenant'
+import { buildMsg, canAccess } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
 import access from '@/directive/access/index.js'
-import { canAccess } from '@/utils/tools'
 
 const DEF_OBJ = {
   userName: null,
@@ -137,10 +156,17 @@ const DEF_OBJ = {
   status: 0,
   sendConfig: '0'
 }
+
+const DEF_CHANGE_PASSWORD_OBJ = {
+  oldPassword: '',
+  newPassword: '',
+  doubleNewPassword: ''
+}
+
 export default {
   name: 'tenant',
   components: { Pagination },
-  directives: { waves, access },
+  directives: { access },
   filters: {
     statusFilter(item) {
       const map = {
@@ -170,23 +196,36 @@ export default {
         base: {
           visible: false
         },
-        tag: {
+        password: {
           visible: false
         }
       },
       formRules: {
         userName: [
-          { required: true, trigger: 'blur' }
+          { required: true, trigger: 'blur', range: { max: 64 }, pattern: /^[a-zA-Z0-9_-]+$/ }
         ],
         displayName: [
-          { required: true, trigger: 'blur' }
+          { required: true, trigger: 'blur', range: { max: 255 }}
         ],
         password: [
           { required: true, trigger: 'blur' }
         ]
       },
       tenant: DEF_OBJ,
-      statuses: [],
+      passwordModel: DEF_CHANGE_PASSWORD_OBJ,
+      passwordFormRules: {
+        oldPassword: [
+          { required: true, trigger: 'blur', range: { max: 64 }}
+        ],
+        newPassword: [
+          { required: true, trigger: 'blur', range: { max: 64 }}
+        ],
+        doubleNewPassword: [
+          { required: true, trigger: 'blur', range: { max: 64 }}
+        ]
+      },
+      passwordType: 'password',
+      tenantStatuses: [],
       sendConfigs: [],
       downloadLoading: false,
       selections: [],
@@ -201,9 +240,12 @@ export default {
   },
   methods: {
     setFormRules() {
-      this.formRules.userName[0].message = this.$t('sys.tenant.rules.userName')
+      this.formRules.userName[0].message = this.$t('rules.userName')
       this.formRules.displayName[0].message = this.$t('rules.displayName')
-      this.formRules.password[0].message = this.$t('sys.tenant.rules.password')
+      this.formRules.password[0].message = this.$t('rules.password')
+      this.passwordFormRules.oldPassword[0].message = this.$t('sys.tenant.rules.oldPassword')
+      this.passwordFormRules.newPassword[0].message = this.$t('sys.tenant.rules.newPassword')
+      this.passwordFormRules.doubleNewPassword[0].message = this.$t('sys.tenant.rules.doubleNewPassword')
     },
     search() {
       this.listLoading = true
@@ -290,7 +332,7 @@ export default {
         this.$message.warning(this.$t('tip.selectData'))
         return
       }
-      const adminTenant = this.selections.find(item => item.admin)
+      const adminTenant = this.selections.find(item => item.superAdmin > 0)
       if (adminTenant) {
         this.$message.warning(this.$t('tip.adminTenantCannotBeRemoved') + ':' + adminTenant.userName)
         return
@@ -303,6 +345,21 @@ export default {
           })
         })
     },
+    changePassword(row) {
+      this.editDialog.password.visible = true
+      this.passwordModel = Object.assign({ userName: row.userName }, DEF_CHANGE_PASSWORD_OBJ)
+    },
+    savePassword() {
+      updatePasswordReq(this.passwordModel).then(res => {
+        this.$message.success(res.data.msg)
+        setTimeout(() => { this.logout() }, 500)
+      })
+    },
+    async logout() {
+      await this.$store.dispatch('user/logout')
+      /* this.$router.push(`/login?redirect=${this.$route.fullPath}`)*/
+      this.$router.push(`/login`)
+    },
     selectRow(row) {
       this.$refs.tables.clearSelection()
       if (row && row.userName) {
@@ -313,9 +370,12 @@ export default {
     handleSelectionChange(val) {
       this.selections = val
     },
+    clickCell(row, column, cell, event) {
+      this.selectRow(row)
+    },
     formatStatus(item) {
-      for (let i = 0; i < this.statuses.length; i++) {
-        const option = this.statuses[i]
+      for (let i = 0; i < this.tenantStatuses.length; i++) {
+        const option = this.tenantStatuses[i]
         if (option.value === item) {
           return option.label
         }
@@ -324,11 +384,11 @@ export default {
     },
     close() {
       this.editDialog.base.visible =
-        this.editDialog.tag.visible = false
+        this.editDialog.password.visible = false
     },
     loadConst() {
       import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.statuses = array.statuses
+        this.tenantStatuses = array.tenantStatuses
         this.sendConfigs = array.sendConfigs
       })
     }

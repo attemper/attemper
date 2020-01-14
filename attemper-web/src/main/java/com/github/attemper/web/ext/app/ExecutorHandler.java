@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 /**
@@ -29,14 +28,8 @@ public class ExecutorHandler extends CrossSystemHandler {
     @Autowired
     private AppProperties appProperties;
 
-    @Autowired
-    private WebClient webClient;
-
-    public void terminate(String baseUrl, Instance instance) {
-        if (instance.getProcInstId() == null) {
-            return;
-        }
-        call(baseUrl, APIPath.ExecutorPath.TERMINATE, new IdParam().setId(instance.getId()));
+    public void terminate(Instance instance) {
+        call(instance.getExecutorUri(), APIPath.ExecutorPath.TERMINATE, new IdParam().setId(instance.getId()));
     }
 
     public void load(String baseUrl, IdParam param) {
@@ -52,17 +45,19 @@ public class ExecutorHandler extends CrossSystemHandler {
     }
 
     private void call(String baseUrl, String apiSubPath, Object param) {
-        CommonResult result = webClient
+        CommonResult result = WebClient.builder().build()
                 .method(HttpMethod.POST)
                 .uri(buildFullPath(baseUrl, apiSubPath))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(CommonConstants.token, ServletUtil.getHeader(CommonConstants.token))
-                .syncBody(param)
+                .bodyValue(param)
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, resp -> Mono.error(new RTException(resp.rawStatusCode(), resp.statusCode().getReasonPhrase())))
                 .bodyToMono(CommonResult.class)
-                .doOnError(WebClientResponseException.class, err -> {
-                    if (err.getMessage() != null && err.getMessage().contains("Connection refused")) {
+                .doOnError(Exception.class, err -> {
+                    if (err instanceof RTException) {
+                        throw (RTException) err;
+                    } else if (err.getMessage().contains("Connection refused")) {
                         throw new RTException(3009, err);
                     }
                     throw new RTException(err);

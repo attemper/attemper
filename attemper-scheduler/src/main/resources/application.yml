@@ -4,33 +4,39 @@ server:
 spring:
     application: 
         name: attemper-scheduler
-    profiles:
-        active: dev
     datasource:
         driverClassName: com.mysql.jdbc.Driver
         hikari:
             first:
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/attemper?allowMultiQueries=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+                username: root
+                password: Hn180301
+                connection-test-query: select 1  # mysql/sqlserver/postgresql
+                # connection-test-query: select 1 from dual  # oracle
                 minimum-idle: 5
-                maximum-pool-size: 100
+                maximum-pool-size: 30
                 pool-name: first
-                connection-timeout: 30000
-                idle-timeout: 600000
                 max-lifetime: 1800000
-                connection-test-query: select 1
             second:
+                jdbc-url: jdbc:mysql://127.0.0.1:3306/log?allowMultiQueries=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+                username: root
+                password: Hn180301
+                connection-test-query: select 1  # mysql/sqlserver/postgresql
+                # connection-test-query: select 1 from dual  # oracle
                 minimum-idle: 5
-                maximum-pool-size: 100
+                maximum-pool-size: 30
                 pool-name: second
-                connection-timeout: 30000
-                idle-timeout: 600000
                 max-lifetime: 1800000
-                connection-test-query: select 1
-    jackson: 
+    jackson:
         date-format: yyyy-MM-dd HH:mm:ss
         time-zone: GMT+8
         defaultPropertyInclusion: non_null
         deserialization: 
             FAIL_ON_UNKNOWN_PROPERTIES: false
+    mail:
+        host: xxx
+        username: xxx
+        password: xxx
 
 mybatis:
     mapperLocations: classpath*:mapper/*Mapper.xml
@@ -51,3 +57,28 @@ eureka:
     availabilityZones:
       default: defaultZone
     preferSameZone: false
+    enabled: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    com.github.attemper: debug
+
+org:
+  quartz:
+    jobStore:
+      isClustered: true
+      misfireThreshold: 10000
+      acquireTriggersWithinLock: true
+
+app:
+  web:
+    enable-scheduling: true
+  scheduler:
+    delayedInSecond: 5
+  executor:
+    name: attemper-executor
+  snow-flake:
+    data-center-id: 0
+    machine-id: 10

@@ -14,18 +14,6 @@ export const databases = [
   {
     label: 'PostgreSql',
     value: 'org.postgresql.Driver'
-  },
-  {
-    label: 'DB2',
-    value: 'com.ibm.db2.jdbc.app.DB2Driver'
-  },
-  {
-    label: 'Sybase',
-    value: 'com.sybase.jdbc.SybDriver'
-  },
-  {
-    label: 'Access',
-    value: 'sun.jdbc.odbc.JdbcOdbcDriver'
   }
 ]
 

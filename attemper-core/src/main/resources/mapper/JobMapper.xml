@@ -11,6 +11,7 @@
             CONTENT,
             STATUS,
             CONCURRENT,
+            ONCE,
             UPDATE_TIME,
             REMARK,
             TENANT_ID
@@ -22,41 +23,42 @@
             #{content, jdbcType=VARCHAR},
             #{status, jdbcType=INTEGER},
             #{concurrent, jdbcType=INTEGER},
-            #{updateTime, jdbcType=TIMESTAMP},
+            #{once, jdbcType=INTEGER},
+            #{updateTime, jdbcType=INTEGER},
             #{remark, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
         )
     </insert>
 
     <update id="update" parameterType="com.github.attemper.common.result.dispatch.job.Job">
-        UPDATE ${tablePrefix}job j
+        UPDATE ${tablePrefix}job
         <set>
             STATUS = #{status, jdbcType=INTEGER},
             CONCURRENT = #{concurrent, jdbcType=INTEGER},
-            UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+            ONCE = #{once, jdbcType=INTEGER},
+            UPDATE_TIME = #{updateTime, jdbcType=INTEGER},
             REMARK = #{remark, jdbcType=VARCHAR},
         </set>
         <where>
-            <include refid="condJobName"/>
-            <include refid="condTenantId"/>
+            <include refid="condJobName_"/>
+            <include refid="condTenantId_"/>
         </where>
     </update>
 
     <update id="updateContent" parameterType="com.github.attemper.common.result.dispatch.job.Job">
-        UPDATE ${tablePrefix}job j
+        UPDATE ${tablePrefix}job
         <set>
-            UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+            UPDATE_TIME = #{updateTime, jdbcType=INTEGER},
             CONTENT = #{content, jdbcType=VARCHAR},
         </set>
         <where>
-            <include refid="condJobName"/>
-            <include refid="condTenantId"/>
+            <include refid="condJobName_"/>
+            <include refid="condTenantId_"/>
         </where>
     </update>
 
     <select id="get" parameterType="map" resultType="com.github.attemper.common.result.dispatch.job.Job">
-        SELECT j.JOB_NAME, j.DISPLAY_NAME, j.CONTENT, j.CONCURRENT,
-        j.STATUS, j.UPDATE_TIME,j.REMARK, j.TENANT_ID
+        SELECT JOB_NAME, DISPLAY_NAME, CONTENT, CONCURRENT, ONCE, STATUS, UPDATE_TIME,REMARK, TENANT_ID
         FROM ${tablePrefix}job j
         <where>
             <include refid="condJobName"/>
@@ -65,18 +67,17 @@
     </select>
 
     <select id="list" parameterType="map" resultType="com.github.attemper.common.result.dispatch.job.Job">
-        SELECT j.JOB_NAME, j.DISPLAY_NAME, j.CONCURRENT,
-        j.STATUS, j.UPDATE_TIME,j.REMARK, j.TENANT_ID
+        SELECT JOB_NAME, DISPLAY_NAME, CONCURRENT, ONCE, STATUS, UPDATE_TIME,REMARK, TENANT_ID
         FROM ${tablePrefix}job j
         <where>
             <if test="jobName != null">
-                and lower(JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
+                AND LOWER(JOB_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{jobName, jdbcType=VARCHAR})), '%')
             </if>
             <if test="displayName != null">
-                and lower(DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
+                AND LOWER(DISPLAY_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{displayName, jdbcType=VARCHAR})), '%')
             </if>
             <if test="status != null &amp;&amp;status.size() &gt; 0">
-                and STATUS in
+                AND STATUS IN
                 <foreach item="item" collection="status" open="(" separator="," close=")">
                     #{item, jdbcType=INTEGER}
                 </foreach>
@@ -103,6 +104,7 @@
         a.DISPLAY_NAME,
         a.STATUS,
         a.CONCURRENT,
+        a.ONCE,
         a.REMARK,
         a.TENANT_ID,
         b.ID_ AS PROC_DEF_ID,
@@ -123,42 +125,27 @@
     </select>
 
     <delete id="delete" parameterType="map">
-        DELETE FROM j USING ${tablePrefix}job j
+        DELETE FROM ${tablePrefix}job
         <where>
-            JOB_NAME in
+            JOB_NAME IN
             <foreach item="jobName" collection="jobNames" open="(" separator="," close=")">
-                #{jobName}
+                #{jobName, jdbcType=VARCHAR}
             </foreach>
-            <include refid="condTenantId"/>
+            <include refid="condTenantId_"/>
         </where>
-        <!--
-        ;
-        DELETE FROM a,b,c USING
-        act_re_procdef a
-        JOIN act_ge_bytearray c
-        ON a.DEPLOYMENT_ID_ = c.DEPLOYMENT_ID_ AND a.RESOURCE_NAME_ = c.NAME_
-        JOIN act_re_deployment b
-        ON a.DEPLOYMENT_ID_ = b.ID_
-        <where>
-            a.KEY_ in
-            <foreach item="jobName" collection="jobNames" open="(" separator="," close=")">
-                #{jobName}
-            </foreach>
-            AND a.TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
-        </where>-->
     </delete>
 
     <update id="updateStatus" parameterType="map">
-        UPDATE ${tablePrefix}job j
+        UPDATE ${tablePrefix}job
         <set>
-            j.STATUS = #{status, jdbcType=INTEGER},
+            STATUS = #{status, jdbcType=INTEGER},
         </set>
         <where>
-            JOB_NAME in
+            JOB_NAME IN
             <foreach item="jobName" collection="jobNames" open="(" separator="," close=")">
-                #{jobName}
+                #{jobName, jdbcType=VARCHAR}
             </foreach>
-            <include refid="condTenantId"/>
+            <include refid="condTenantId_"/>
         </where>
     </update>
 
@@ -171,7 +158,7 @@
         AND ARG_NAME IN
         (
         SELECT ar.ARG_NAME
-        FROM ${tablePrefix}arg ar JOIN ${tablePrefix}job_arg j USING(ARG_NAME, TENANT_ID)
+        FROM ${tablePrefix}arg ar JOIN ${tablePrefix}job_arg j ON ar.ARG_NAME = j.ARG_NAME AND ar.TENANT_ID = j.TENANT_ID
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
@@ -183,7 +170,7 @@
         AND ARG_NAME NOT IN
         (
         SELECT ar.ARG_NAME
-        FROM ${tablePrefix}arg ar JOIN ${tablePrefix}job_arg j USING(ARG_NAME, TENANT_ID)
+        FROM ${tablePrefix}arg ar JOIN ${tablePrefix}job_arg j ON ar.ARG_NAME = j.ARG_NAME AND ar.TENANT_ID = j.TENANT_ID
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
@@ -192,25 +179,25 @@
         ) a
         <where>
             <if test="argName != null">
-                and lower(ARG_NAME) like concat('%', lower(#{argName, jdbcType=VARCHAR}), '%')
+                AND LOWER(ARG_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{argName, jdbcType=VARCHAR})), '%')
             </if>
             <if test="argType != null">
-                and ARG_TYPE = #{argType, jdbcType = INTEGER}
+                AND ARG_TYPE = #{argType, jdbcType = INTEGER}
             </if>
             <if test="argValue != null">
-                and lower(ARG_VALUE) like concat('%', lower(#{argValue, jdbcType = VARCHAR}), '%')
+                AND LOWER(ARG_VALUE) LIKE CONCAT(CONCAT('%', LOWER(#{argValue, jdbcType = VARCHAR})), '%')
             </if>
         </where>
     </select>
 
-    <select id="getAllArg" parameterType="map"
+    <select id="getArg" parameterType="map"
             resultType="com.github.attemper.common.result.dispatch.arg.Arg">
         SELECT
         a.*
         FROM
         ${tablePrefix}arg a
-        JOIN ${tablePrefix}job_arg ja USING (ARG_NAME, TENANT_ID)
-        JOIN ${tablePrefix}job j USING (JOB_NAME, TENANT_ID)
+        JOIN ${tablePrefix}job_arg ja ON a.ARG_NAME = ja.ARG_NAME AND a.TENANT_ID = ja.TENANT_ID
+        JOIN ${tablePrefix}job j ON j.JOB_NAME = ja.JOB_NAME AND j.TENANT_ID = ja.TENANT_ID
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
@@ -232,13 +219,62 @@
     </insert>
 
     <delete id="deleteArg" parameterType="map">
-        DELETE FROM j USING ${tablePrefix}job_arg j
+        DELETE FROM ${tablePrefix}job_arg
         <where>
-            <include refid="condJobName"/>
+            <include refid="condJobName_"/>
             <if test="argName != null">
-                and ARG_NAME = #{argName, jdbcType=VARCHAR}
+                AND ARG_NAME = #{argName, jdbcType=VARCHAR}
             </if>
-            <include refid="condTenantId"/>
+            <include refid="condTenantId_"/>
+        </where>
+    </delete>
+
+    <insert id="addJobArg" parameterType="java.util.Map">
+        INSERT INTO ${tablePrefix}job_arg (
+        JOB_NAME,
+        ARG_NAME,
+        TENANT_ID
+        )
+        VALUES
+        <foreach item="argName" collection="argNames" separator=",">
+            (
+            #{jobName, jdbcType=VARCHAR},
+            #{argName, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="addJobArg" databaseId="oracle" parameterType="java.util.Map">
+        INSERT INTO ${tablePrefix}job_arg (
+        JOB_NAME,
+        ARG_NAME,
+        TENANT_ID
+        )
+        SELECT
+        * FROM
+        (
+        <foreach item="argName" collection="argNames" separator="union">
+            SELECT
+            #{jobName, jdbcType=VARCHAR},
+            #{argName, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+            FROM dual
+        </foreach>
+        )
+    </insert>
+
+    <delete id="deleteJobArg" parameterType="java.util.Map">
+        DELETE FROM ${tablePrefix}job_arg
+        <where>
+            <include refid="condJobName_"/>
+            <if test="argName != null">
+                AND ARG_NAME in
+                <foreach item="argName" collection="argNames" open="(" separator="," close=")">
+                    #{argName, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <include refid="condTenantId_"/>
         </where>
     </delete>
 
@@ -247,47 +283,208 @@
         select p.*
         FROM ${tablePrefix}project p
         JOIN ${tablePrefix}job_project jp
-        USING (PROJECT_NAME, TENANT_ID)
+        ON p.PROJECT_NAME = jp.PROJECT_NAME AND p.TENANT_ID = jp.TENANT_ID
         JOIN ${tablePrefix}job j
-        USING (JOB_NAME, TENANT_ID)
+        ON j.JOB_NAME = jp.JOB_NAME AND j.TENANT_ID = jp.TENANT_ID
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
         </where>
     </select>
 
-    <update id="saveProject" parameterType="map">
-        delete from j using ${tablePrefix}job_project j
+    <delete id="deleteProject" parameterType="map">
+        DELETE FROM ${tablePrefix}job_project
+        <where>
+            <include refid="condJobName_"/>
+            <include refid="condTenantId_"/>
+        </where>
+    </delete>
+
+    <insert id="addProject" parameterType="map">
+        INSERT INTO ${tablePrefix}job_project
+        (
+        JOB_NAME,
+        PROJECT_NAME,
+        TENANT_ID
+        )
+        values
+        (
+        #{jobName, jdbcType=VARCHAR},
+        #{projectName, jdbcType=VARCHAR},
+        #{tenantId, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <select id="getConditions" parameterType="java.util.Map"
+            resultType="com.github.attemper.common.result.dispatch.condition.Condition">
+        SELECT c.* FROM ${tablePrefix}condition c
+        JOIN ${tablePrefix}job_condition jc ON c.CONDITION_NAME = jc.CONDITION_NAME AND c.TENANT_ID = jc.TENANT_ID
+        JOIN ${tablePrefix}job j ON j.JOB_NAME = jc.JOB_NAME AND j.TENANT_ID = jc.TENANT_ID
         <where>
             <include refid="condJobName"/>
             <include refid="condTenantId"/>
         </where>
-        ;
-        <if test="projectName != null">
-            insert into ${tablePrefix}job_project
+    </select>
+
+    <insert id="addConditions" parameterType="java.util.List">
+        INSERT INTO ${tablePrefix}condition (
+        CONDITION_NAME,
+        CONDITION_TYPE,
+        CONTENT,
+        TENANT_ID
+        )
+        VALUES
+        <foreach item="item" collection="list" separator=",">
             (
-            JOB_NAME,
-            PROJECT_NAME,
-            TENANT_ID
+            #{item.conditionName, jdbcType=VARCHAR},
+            #{item.conditionType, jdbcType=INTEGER},
+            #{item.content, jdbcType=VARCHAR},
+            #{item.tenantId, jdbcType=VARCHAR}
             )
-            values
+        </foreach>
+    </insert>
+
+    <insert id="addConditions" databaseId="oracle" parameterType="java.util.List">
+        INSERT INTO ${tablePrefix}condition (
+        CONDITION_NAME,
+        CONDITION_TYPE,
+        CONTENT,
+        TENANT_ID
+        )
+        SELECT
+            * FROM
+        (
+            <foreach item="item" collection="list" separator="union">
+                SELECT
+                    #{item.conditionName, jdbcType=VARCHAR},
+                    #{item.conditionType, jdbcType=INTEGER},
+                    #{item.content, jdbcType=VARCHAR},
+                    #{item.tenantId, jdbcType=VARCHAR}
+                FROM dual
+            </foreach>
+        )
+    </insert>
+
+    <insert id="addJobCondition" parameterType="java.util.Map">
+        INSERT INTO ${tablePrefix}job_condition (
+        JOB_NAME,
+        CONDITION_NAME,
+        TENANT_ID
+        )
+        VALUES
+        <foreach item="conditionName" collection="conditionNames" separator=",">
             (
             #{jobName, jdbcType=VARCHAR},
-            #{projectName, jdbcType=VARCHAR},
+            #{conditionName, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
             )
-        </if>
-    </update>
+        </foreach>
+    </insert>
+
+    <insert id="addJobCondition" databaseId="oracle" parameterType="java.util.Map">
+        INSERT INTO ${tablePrefix}job_condition (
+        JOB_NAME,
+        CONDITION_NAME,
+        TENANT_ID
+        )
+        SELECT
+        * FROM
+        (
+        <foreach item="conditionName" collection="conditionNames" separator="union">
+            SELECT
+            #{jobName, jdbcType=VARCHAR},
+            #{conditionName, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+            FROM dual
+        </foreach>
+        )
+    </insert>
+
+    <insert id="addJobConditions" parameterType="java.util.List">
+        INSERT INTO ${tablePrefix}job_condition (
+        JOB_NAME,
+        CONDITION_NAME,
+        TENANT_ID
+        )
+        VALUES
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.jobName, jdbcType=VARCHAR},
+            #{item.conditionName, jdbcType=VARCHAR},
+            #{item.tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="addJobConditions" databaseId="oracle" parameterType="java.util.List">
+        INSERT INTO ${tablePrefix}job_condition (
+        JOB_NAME,
+        CONDITION_NAME,
+        TENANT_ID
+        )
+        SELECT
+        * FROM
+        (
+            <foreach item="item" collection="list" separator="union">
+                SELECT
+                    #{item.jobName, jdbcType=VARCHAR},
+                    #{item.conditionName, jdbcType=VARCHAR},
+                    #{item.tenantId, jdbcType=VARCHAR}
+                FROM dual
+            </foreach>
+        )
+    </insert>
+
+    <delete id="deleteJobCondition" parameterType="java.util.Map">
+        DELETE FROM ${tablePrefix}job_condition
+        <where>
+            <include refid="condJobName_" />
+            <include refid="condTenantId_" />
+        </where>
+    </delete>
+
+    <delete id="deleteCondition" parameterType="java.util.Map">
+        DELETE FROM ${tablePrefix}condition
+        <where>
+            CONDITION_NAME IN
+            <foreach item="conditionName" collection="conditionNames" open="(" separator="," close=")">
+                #{conditionName, jdbcType=VARCHAR}
+            </foreach>
+            <include refid="condTenantId_" />
+        </where>
+    </delete>
 
     <sql id="condJobName">
         <if test="jobName != null">
-            and j.JOB_NAME = #{jobName, jdbcType=VARCHAR}
+          AND j.JOB_NAME = #{jobName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condJobName_">
+        <if test="jobName != null">
+            AND JOB_NAME = #{jobName, jdbcType=VARCHAR}
         </if>
     </sql>
 
     <sql id="condTenantId">
         <if test="tenantId != null">
-            and j.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+          AND j.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTenantId_">
+        AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+    </sql>
+
+    <sql id="condTriggerName">
+        <if test="triggerName != null">
+          AND t.TRIGGER_NAME = #{triggerName, jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="condTriggerName_">
+        <if test="triggerName != null">
+            AND TRIGGER_NAME = #{triggerName, jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>

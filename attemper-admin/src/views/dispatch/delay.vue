@@ -3,16 +3,9 @@
     <div class="filter-container">
       <el-input v-model="page.jobName" :placeholder="$t('dispatch.job.columns.jobName')" class="filter-item search-input" @keyup.enter.native="search" />
       <el-input v-model="page.displayName" :placeholder="$t('columns.displayName')" class="filter-item search-input" @keyup.enter.native="search" />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="search" />
       <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" icon="el-icon-delete" @click="remove" />
       <div style="float: right">
-        <el-popover
-          placement="bottom"
-          trigger="hover"
-        >
-          <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button>
-          <el-button slot="reference" class="filter-item table-external-button" type="warning">{{ $t('actions.highOperation') }}</el-button>
-        </el-popover>
         <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="primary" @click="manual">
           <svg-icon icon-class="hand" />{{ $t('actions.manual') }}
         </el-button>
@@ -30,15 +23,6 @@
       @selection-change="handleSelectionChange"
       @cell-click="clickCell"
     >
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form label-position="left" inline class="table-expand">
-            <el-form-item :label="$t('dispatch.delay.columns.requestTime')">
-              <span>{{ props.row.requestTime }}</span>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
       <el-table-column
         type="selection"
         width="45"
@@ -61,6 +45,11 @@
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
         <template slot-scope="scope">
           <span>{{ scope.row.displayName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('dispatch.delay.columns.requestTime')" width="160px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.requestTime | parseTime }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.job.columns.nextFireTime')" width="160px">
@@ -109,14 +98,14 @@
       :before-close="close"
     >
       <div v-show="editDialog.trigger.visible">
-        <el-tabs v-model="triggerTab.timeTrigger.activeTabName" tab-position="left">
-          <el-tab-pane :label="$t('dispatch.trigger.tab.time.dailyInterval')" name="2">
-            <DailyIntervalTrigger
-              ref="dailyIntervalTrigger"
+        <el-tabs v-model="triggerTab.activeTabName" tab-position="left">
+          <el-tab-pane :label="$t('dispatch.trigger.tab.dailyTimeInterval')" name="2">
+            <DailyTimeIntervalTrigger
+              ref="dailyTimeIntervalTrigger"
               :milli-second-time-units="milliSecondTimeUnits"
               :in-day-time-units="inDayTimeUnits"
               :days-of-week="daysOfWeek"
-              :calendar-groups="calendarGroups"
+              :calendars="calendars"
             />
           </el-tab-pane>
         </el-tabs>
@@ -134,21 +123,19 @@
 </template>
 
 <script>
-import { listReq, /* getReq,*/ removeReq, manualReq } from '@/api/dispatch/delay'
+import { getTriggerReq, updateTriggerReq } from '@/api/dispatch/job'
+import { listReq, removeReq, manualReq } from '@/api/dispatch/delay'
 import * as calendarApi from '@/api/dispatch/calendar'
-import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/dispatch/tool'
-import waves from '@/directive/waves'
 import { buildMsg } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
-import DailyIntervalTrigger from './components/job/dailyTimeIntervalTrigger'
+import DailyTimeIntervalTrigger from './components/job/trigger/dailyTimeIntervalTrigger'
 export default {
   name: 'delay',
   components: {
     Pagination,
-    DailyIntervalTrigger
+    DailyTimeIntervalTrigger
   },
-  directives: { waves },
   data() {
     return {
       list: null,
@@ -177,22 +164,20 @@ export default {
       downloadLoading: false,
       selections: [],
       triggerTab: {
-        timeTrigger: {
-          activeTabName: '0'
-        }
+        activeTabName: '0'
       },
       trigger: {
-        dailyIntervalTriggers: []
+        dailyTimeIntervalTriggers: []
       },
       timeZones: [],
-      calendarGroups: [],
-      calendarTypes: []
+      calendars: []
     }
   },
   created() {
     this.loadConst()
-    this.search()
+    this.initCalendars()
     this.initTimeZones()
+    this.search()
   },
   methods: {
     search() {
@@ -223,29 +208,28 @@ export default {
     },
     openTriggerDialog(row) {
       this.editDialog.title = this.$t('dispatch.job.actions.trigger')
-      this.triggerTab.timeTrigger.activeTabName = '2'
+      this.triggerTab.activeTabName = '2'
       this.selectRow(row)
       this.editDialog.trigger.visible = true
-      this.initCalendarGroups()
-      triggerApi.getReq({ jobName: this.deplay.id }).then(res => {
+      getTriggerReq({ jobName: this.deplay.id }).then(res => {
         const result = res.data.result
-        if (result.dailyIntervalTriggers && result.dailyIntervalTriggers.length > 0) {
-          result.dailyIntervalTriggers.forEach(item => {
-            item.daysOfWeekArr = item.daysOfWeek && item.daysOfWeek.length ? item.daysOfWeek.split(',') : []
+        if (result && result.dailyTimeIntervalTriggers && result.dailyTimeIntervalTriggers.length > 0) {
+          result.dailyTimeIntervalTriggers.forEach(item => {
+            item.daysOfWeekArr = item.daysOfWeek.split(',')
           })
-          this.$refs.dailyIntervalTrigger.triggerArray = result.dailyIntervalTriggers
-          this.triggerTab.timeTrigger.activeTabName = '2'
+          this.$refs.dailyTimeIntervalTrigger.triggerArray = result.dailyTimeIntervalTriggers
+          this.triggerTab.activeTabName = '2'
         } else {
-          this.$refs.dailyIntervalTrigger.triggerArray = []
-          this.$refs.dailyIntervalTrigger.add()
+          this.$refs.dailyTimeIntervalTrigger.triggerArray = []
+          this.$refs.dailyTimeIntervalTrigger.add()
         }
       })
     },
     saveTrigger() {
       const trigger = { jobName: this.deplay.id }
-      const result2 = this.$refs.dailyIntervalTrigger.validateThenSet(trigger)
+      const result2 = this.$refs.dailyTimeIntervalTrigger.validateThenSet(trigger)
       if (result2) {
-        triggerApi.updateReq(trigger).then(res => {
+        updateTriggerReq(trigger).then(res => {
           this.$message.success(res.data.msg)
           this.editDialog.trigger.visible = false
           setTimeout(() => {
@@ -273,6 +257,9 @@ export default {
         })
     },
     selectRow(row) {
+      if (row && this.selections.length === 1 && this.selections[0].id === row.id) {
+        return
+      }
       this.$refs.tables.clearSelection()
       if (row && (this.editDialog.oper === 'update' || row.id)) {
         this.$refs.tables.toggleRowSelection(row, true)
@@ -285,25 +272,6 @@ export default {
     clickCell(row, column, cell, event) {
       this.selectRow(row)
     },
-    handleDownload() {
-      /*
-      this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const translatedHeader = [
-            this.$t('dispatch.job.columns.jobName'),
-            this.$t('columns.displayName'),
-            this.$t('columns.status'),
-            this.$t('dispatch.job.columns.version')
-          ]
-          const data = this.list
-          excel.export_json_to_excel({
-            header: translatedHeader,
-            data,
-            filename: 'job_' + getTimeStr()
-          })
-          this.downloadLoading = false
-        })*/
-    },
     loadConst() {
         import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
           this.milliSecondTimeUnits = array.milliSecondTimeUnits
@@ -311,7 +279,6 @@ export default {
           this.dayTimeUnit = array.dayTimeUnit
           this.overDayTimeUnits = array.overDayTimeUnits
           this.daysOfWeek = array.daysOfWeek
-          this.calendarTypes = array.calendarTypes
         })
     },
     linkJob() {
@@ -348,16 +315,9 @@ export default {
         return
       }
     },
-    initCalendarGroups() {
-      this.calendarGroups = []
+    initCalendars() {
       calendarApi.listReq().then(res => {
-        this.calendarTypes.forEach(type => {
-          const options = res.data.result.filter(item => item.type === type.value)
-          this.calendarGroups.push({
-            label: type.label,
-            options: options && options.length > 0 ? options : []
-          })
-        })
+        this.calendars = res.data.result
       })
     }
   }

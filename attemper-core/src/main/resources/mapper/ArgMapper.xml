@@ -21,7 +21,58 @@
             #{attribute, jdbcType=VARCHAR},
             #{remark, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
-        );
+        )
+    </insert>
+
+    <insert id="addBatch" parameterType="java.util.List">
+        INSERT INTO ${tablePrefix}arg (
+        ARG_NAME,
+        ARG_TYPE,
+        ARG_VALUE,
+        GENERIC_TYPE,
+        ATTRIBUTE,
+        REMARK,
+        TENANT_ID
+        )
+        VALUES
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.argName, jdbcType=VARCHAR},
+            #{item.argType, jdbcType=INTEGER},
+            #{item.argValue, jdbcType=VARCHAR},
+            #{item.genericType, jdbcType=INTEGER},
+            #{item.attribute, jdbcType=VARCHAR},
+            #{item.remark, jdbcType=VARCHAR},
+            #{item.tenantId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="addBatch" databaseId="oracle" parameterType="java.util.List">
+        INSERT INTO ${tablePrefix}condition (
+        ARG_NAME,
+        ARG_TYPE,
+        ARG_VALUE,
+        GENERIC_TYPE,
+        ATTRIBUTE,
+        REMARK,
+        TENANT_ID
+        )
+        SELECT
+        * FROM
+        (
+        <foreach item="item" collection="list" separator="union">
+            SELECT
+            #{item.argName, jdbcType=VARCHAR},
+            #{item.argType, jdbcType=INTEGER},
+            #{item.argValue, jdbcType=VARCHAR},
+            #{item.genericType, jdbcType=INTEGER},
+            #{item.attribute, jdbcType=VARCHAR},
+            #{item.remark, jdbcType=VARCHAR},
+            #{item.tenantId, jdbcType=VARCHAR}
+            FROM dual
+        </foreach>
+        )
     </insert>
 
     <update id="update" parameterType="com.github.attemper.common.result.dispatch.arg.Arg">
@@ -35,8 +86,8 @@
             ATTRIBUTE = #{attribute, jdbcType=VARCHAR},
         </set>
         <where>
-            <include refid="condArgName"/>
-            <include refid="condTenantId"/>
+            <include refid="condArgName_"/>
+            <include refid="condTenantId_"/>
         </where>
     </update>
 
@@ -44,8 +95,8 @@
         SELECT *
         FROM ${tablePrefix}arg
         <where>
-            <include refid="condArgName"/>
-            <include refid="condTenantId"/>
+            <include refid="condArgName_"/>
+            <include refid="condTenantId_"/>
         </where>
     </select>
 
@@ -54,49 +105,49 @@
         FROM ${tablePrefix}arg
         <where>
             <if test="argName != null">
-                and lower(ARG_NAME) like concat('%', lower(#{argName, jdbcType=VARCHAR}), '%')
+                AND LOWER(ARG_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{argName, jdbcType=VARCHAR})), '%')
             </if>
             <if test="argType != null">
-                and ARG_TYPE = #{argType, jdbcType = INTEGER}
+                AND ARG_TYPE = #{argType, jdbcType = INTEGER}
             </if>
             <if test="argValue != null">
-                and lower(ARG_VALUE) like concat('%', lower(#{argValue, jdbcType = VARCHAR}), '%')
+                AND LOWER(ARG_VALUE) LIKE CONCAT(CONCAT('%', LOWER(#{argValue, jdbcType = VARCHAR})), '%')
             </if>
             <if test="remark != null">
-                and lower(REMARK) like concat('%', lower(#{remark, jdbcType = VARCHAR}), '%')
+                AND LOWER(REMARK) LIKE CONCAT(CONCAT('%', LOWER(#{remark, jdbcType = VARCHAR})), '%')
             </if>
-            <include refid="condTenantId"/>
+            <include refid="condTenantId_"/>
         </where>
         <choose>
             <when test="sort == null">
-                order by ARG_NAME ${direction}
+                order by ARG_NAME
             </when>
             <otherwise>
-                order by ${sort} ${direction}
+                order by ${sort}
             </otherwise>
         </choose>
     </select>
 
     <delete id="delete" parameterType="map">
-        delete from ${tablePrefix}arg
+        DELETE FROM ${tablePrefix}arg
         <where>
-            ARG_NAME in
+            ARG_NAME IN
             <foreach item="argName" collection="argNames" open="(" separator="," close=")">
-                #{argName}
+                #{argName, jdbcType = VARCHAR}
             </foreach>
-            <include refid="condTenantId"/>
+            <include refid="condTenantId_"/>
         </where>
     </delete>
 
-    <sql id="condArgName">
+    <sql id="condArgName_">
         <if test="argName != null">
-            and ARG_NAME = #{argName, jdbcType=VARCHAR}
+            AND ARG_NAME = #{argName, jdbcType=VARCHAR}
         </if>
     </sql>
 
-    <sql id="condTenantId">
+    <sql id="condTenantId_">
         <if test="tenantId != null">
-            and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </if>
     </sql>
 

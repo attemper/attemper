@@ -1,9 +1,12 @@
 <template>
   <div class="layout">
     <div ref="canvas" class="canvas-monitor" />
+    <div v-show="showRefresh" class="refresh">
+      <el-button type="primary" icon="el-icon-refresh" @click="refresh" />
+    </div>
     <div class="external">
       <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-        <el-tab-pane :label="$t('monitor.label.flow')" name="flow">
+        <el-tab-pane :label="$t('monitor.label.job')" name="flow">
           <el-timeline>
             <el-timeline-item
               v-for="item in actNodes"
@@ -13,10 +16,12 @@
               placement="top"
             >
               <el-card>
-                <span><b>{{ item.startTime + '  -  ' + (item.endTime || '...') }}</b></span>&nbsp;&nbsp;
-                <span v-show="item.duration && item.duration > 0">{{ item.duration | parseDuration }}</span>
-                <p v-show="item.logKey && item.logKey.length > 0">{{ item.logKey }}</p>
-                <p v-show="item.logText && item.logText.length>0">{{ item.logText }}</p>
+                <span><b>{{ item.startTime | parseTime }} - {{ item.endTime | parseTime }}</b></span>&nbsp;&nbsp;
+                <span v-show="item.duration">{{ item.duration | parseDuration }}</span>
+                <div style="overflow-x: scroll;">
+                  <p v-show="item.logText && item.logText.length>0" v-html="item.logText" />
+                  <p v-show="item.incidentMsg && item.incidentMsg.length>0" v-html="item.incidentMsg" />
+                </div>
               </el-card>
             </el-timeline-item>
           </el-timeline>
@@ -42,16 +47,16 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item :label="$t('columns.startTime')" style="margin-bottom: 5px;">
-                  <date-time-generator @update="page.lowerStartTime = $event" @change="search" />
+                  <date-time-generator v-model="page.lowerStartTime" @update="page.lowerStartTime = $event" @change="search" />
                 </el-form-item>
                 <el-form-item>
-                  <date-time-generator @update="page.upperStartTime = $event" @change="search" />
+                  <date-time-generator v-model="page.upperStartTime" @update="page.upperStartTime = $event" @change="search" />
                 </el-form-item>
                 <el-form-item :label="$t('columns.endTime')" style="margin-bottom: 5px;">
-                  <date-time-generator @update="page.lowerEndTime = $event" @change="search" />
+                  <date-time-generator v-model="page.lowerEndTime" @update="page.lowerEndTime = $event" @change="search" />
                 </el-form-item>
                 <el-form-item>
-                  <date-time-generator @update="page.upperEndTime = $event" @change="search" />
+                  <date-time-generator v-model="page.upperEndTime" @update="page.upperEndTime = $event" @change="search" />
                 </el-form-item>
               </el-form>
               <el-button v-if="showAll" slot="reference" class="filter-item" style="float: right;" type="primary" @click="visible = !visible">{{ $t('actions.highSearch') }}</el-button>
@@ -74,12 +79,12 @@
             />
             <el-table-column :label="$t('columns.startTime')" min-width="100px" align="center">
               <template slot-scope="scope">
-                <div>{{ scope.row.startTime }}</div>
+                <div>{{ scope.row.startTime | parseTime }}</div>
               </template>
             </el-table-column>
             <el-table-column :label="$t('columns.endTime')" min-width="100px" align="center">
               <template slot-scope="scope">
-                <span>{{ scope.row.endTime }}</span>
+                <span>{{ scope.row.endTime | parseTime }}</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('monitor.columns.duration')" min-width="80px" align="center">
@@ -111,10 +116,12 @@
               placement="top"
             >
               <el-card>
-                <span><b>{{ item.startTime + '  -  ' + (item.endTime || '...') }}</b></span>&nbsp;&nbsp;
-                <span v-show="item.duration && item.duration > 0">{{ item.duration | parseDuration }}</span>
-                <p v-show="item.logKey && item.logKey.length > 0">{{ item.logKey }}</p>
-                <p v-show="item.logText && item.logText.length>0">{{ item.logText }}</p>
+                <span><b>{{ item.startTime | parseTime }} - {{ item.endTime | parseTime }}</b></span>&nbsp;&nbsp;
+                <span v-show="item.duration">{{ item.duration | parseDuration }}</span>
+                <div style="overflow-x: scroll;">
+                  <p v-show="item.logText && item.logText.length>0" v-html="item.logText" />
+                  <p v-show="item.incidentMsg && item.incidentMsg.length>0" v-html="item.incidentMsg" />
+                </div>
               </el-card>
             </el-timeline-item>
           </el-timeline>
@@ -211,8 +218,15 @@ export default {
       }
     }
   },
+  computed: {
+    showRefresh() {
+      return this.actNodes.length > 0 && this.actNodes.find(item => { return item.status === 0 }) !== undefined
+    }
+  },
   created() {
     this.loadConst()
+  },
+  activated() {
     this.initData()
     this.fetchJob()
     this.search()
@@ -221,13 +235,9 @@ export default {
     openParam() {
       this.jsonData = null
       getArgsReq({ procInstId: this.procInstId }).then(res => {
-        if (!res.data.result) {
-          this.retry()
-        } else {
-          this.editDialog.title = this.$t('dispatch.job.actions.param')
-          this.editDialog.param.visible = true
-          this.jsonData = JSON.parse(res.data.result)
-        }
+        this.editDialog.title = this.$t('dispatch.job.actions.param')
+        this.editDialog.param.visible = true
+        this.jsonData = JSON.parse(res.data.result)
       })
     },
     retry(direction) {
@@ -252,22 +262,6 @@ export default {
             })
         })
     },
-    /* terminate() {
-      this.handleRequest(terminateReq)
-    },
-    handleRequest(request) {
-      this.$confirm(this.$t('tip.confirmMsg'), this.$t('tip.confirm'), { type: 'info' })
-        .then(() => {
-          request({ id: this.instance.id })
-            .then(res => {
-              this.$message.success(res.data.msg)
-              this.search()
-            })
-            .catch(() => {
-              this.search()
-            })
-        })
-    },*/
     initData() {
       this.page.procInstId = this.procInstId = this.$route.params.procInstId
       this.page.jobName = this.$route.params.key
@@ -370,6 +364,9 @@ export default {
         }, 200)
       })
     },
+    refresh() {
+      this.fetchJob()
+    },
     toggleList() {
       this.showAll = !this.showAll
       if (this.showAll) { // show all
@@ -381,7 +378,11 @@ export default {
       this.search()
     },
     fetchJob() {
-      getContentReq(this.job).then(res => {
+      const params = {
+        jobName: this.job.jobName,
+        procDefId: this.job.procDefId
+      }
+      getContentReq(params).then(res => {
         this.job.content = res.data.result
         if (!this.bpmnViewer) {
           this.bindBpmn()

@@ -3,8 +3,8 @@ package com.github.attemper.web.controller.dispatch;
 import com.github.attemper.common.param.dispatch.delay.DelayJobListParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.java.sdk.common.web.constant.WebAPIPath;
-import com.github.attemper.java.sdk.common.web.param.delay.DelayJobExtSaveParam;
 import com.github.attemper.java.sdk.common.web.param.delay.DelayJobIdsParam;
+import com.github.attemper.java.sdk.common.web.param.delay.DelayJobParam;
 import com.github.attemper.java.sdk.common.web.result.delay.DelayJobResult;
 import com.github.attemper.web.service.dispatch.DelayJobOperatedService;
 import io.swagger.annotations.Api;
@@ -30,14 +30,14 @@ public class DelayJobController {
     }
 
     @ApiOperation("Add job")
-    @ApiImplicitParam(value = "DelayJobExtSaveParam", name = "param", dataType = "DelayJobExtSaveParam", required = true)
-    @PostMapping(WebAPIPath.DelayJobPath.EXT)
-    public CommonResult<DelayJobResult> add(@RequestBody DelayJobExtSaveParam param) {
+    @ApiImplicitParam(value = "DelayJobParam", name = "param", dataType = "DelayJobParam", required = true)
+    @PostMapping(WebAPIPath.DelayJobPath.$)
+    public CommonResult<DelayJobResult> add(@RequestBody DelayJobParam param) {
         return CommonResult.putResult(service.add(param));
     }
 
     @ApiOperation("Delete delay jobs")
-    @ApiImplicitParam(value = "JobNamesParam", name = "param", dataType = "JobNamesParam", required = true)
+    @ApiImplicitParam(value = "DelayJobIdsParam", name = "param", dataType = "DelayJobIdsParam", required = true)
     @DeleteMapping(WebAPIPath.DelayJobPath.$)
     public CommonResult<Void> remove(@RequestBody DelayJobIdsParam param) {
         return CommonResult.putResult(service.remove(param));

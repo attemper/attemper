@@ -1,4 +1,4 @@
-export const statuses = [
+export const tenantStatuses = [
   {
     value: 0,
     label: '正常'
@@ -6,6 +6,10 @@ export const statuses = [
   {
     value: 1,
     label: '冻结'
+  },
+  {
+    value: 2,
+    label: '禁用'
   }
 ]
 
@@ -146,6 +150,13 @@ export const terminatedInstanceStatus = [
   }
 ]
 
+export const unmetInstanceStatus = [
+  {
+    label: '跳过',
+    value: 4
+  }
+]
+
 export const doingInstanceStatuses = [
   ...runningInstanceStatus
 ]
@@ -153,14 +164,16 @@ export const doingInstanceStatuses = [
 export const doneInstanceStatuses = [
   ...successInstanceStatus,
   ...failureInstanceStatus,
-  ...terminatedInstanceStatus
+  ...terminatedInstanceStatus,
+  ...unmetInstanceStatus
 ]
 
 export const instanceStatuses = [
   ...runningInstanceStatus,
   ...successInstanceStatus,
   ...failureInstanceStatus,
-  ...terminatedInstanceStatus
+  ...terminatedInstanceStatus,
+  ...unmetInstanceStatus
 ]
 
 export const requestMethods = [
@@ -190,25 +203,6 @@ export const transferTitles = [
 export const allocateTitles = [
   '待分配',
   '已分配'
-]
-
-export const dateCalendarTypes = [
-  {
-    label: '日期维度',
-    value: 0
-  }
-]
-
-export const timeCalendarTypes = [
-  {
-    label: '时间维度',
-    value: 1
-  }
-]
-
-export const calendarTypes = [
-  ...dateCalendarTypes,
-  ...timeCalendarTypes
 ]
 
 export const baseMisfireInstructions = [
@@ -251,6 +245,51 @@ export const simpleTriggerMisfireInstructions = [
   {
     label: '下次触发(以当前重复次数)',
     value: 5
+  }
+]
+
+export const jobCharts = [
+  {
+    label: '执行时长',
+    value: 'durationChart'
+  },
+  {
+    label: '执行状态',
+    value: 'statusChart'
+  }
+]
+
+export const durationOrders = [
+  {
+    label: '按开始时间升序',
+    value: 'START_TIME'
+  },
+  {
+    label: '按开始时间降序',
+    value: 'START_TIME DESC'
+  },
+  {
+    label: '按执行时长升序',
+    value: 'DURATION'
+  },
+  {
+    label: '按执行时长降序',
+    value: 'DURATION DESC'
+  }
+]
+
+export const firedSources = [
+  {
+    label: '触发器触发',
+    value: 'IS NOT NULL'
+  },
+  {
+    label: '手动执行',
+    value: 'IS NULL'
+  },
+  {
+    label: '全部',
+    value: ''
   }
 ]
 

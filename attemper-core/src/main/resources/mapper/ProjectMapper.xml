@@ -3,130 +3,118 @@
 <mapper namespace="com.github.attemper.core.dao.application.ProjectMapper">
 
     <select id="getAll" parameterType="map" resultType="com.github.attemper.common.result.app.project.Project">
-        select * from ${tablePrefix}project p
+        SELECT * FROM ${tablePrefix}project
         <where>
-            <include refid="condTenantId"/>
+            <include refid="condTenantId_"/>
         </where>
     </select>
 
-    <insert id="save" parameterType="map">
-        <selectKey keyProperty="count" resultType="int" order="BEFORE">
-            select count(*)
-            from ${tablePrefix}project p
-            <where>
-                <include refid="condProjectName"/>
-                <include refid="condTenantId"/>
-            </where>
-        </selectKey>
-        <choose>
-            <when test="count == 0">
-                INSERT INTO ${tablePrefix}project (
-                PROJECT_NAME,
-                PARENT_PROJECT_NAME,
-                DISPLAY_NAME,
-                CONTEXT_PATH,
-                BIND_EXECUTOR,
-                POSITION,
-                CREATE_TIME,
-                UPDATE_TIME,
-                TENANT_ID
-                )
-                VALUES
-                (
-                #{projectName, jdbcType=VARCHAR},
-                #{parentProjectName, jdbcType=VARCHAR},
-                #{displayName, jdbcType=VARCHAR},
-                #{contextPath, jdbcType=VARCHAR},
-                #{bindExecutor, jdbcType=INTEGER},
-                #{position, jdbcType=INTEGER},
-                #{createTime, jdbcType=TIMESTAMP},
-                #{updateTime, jdbcType=TIMESTAMP},
-                #{tenantId, jdbcType=VARCHAR}
-                )
-            </when>
-            <otherwise>
-                UPDATE
-                ${tablePrefix}project p
-                SET
-                PARENT_PROJECT_NAME = #{parentProjectName, jdbcType=VARCHAR},
-                DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
-                CONTEXT_PATH = #{contextPath, jdbcType=VARCHAR},
-                BIND_EXECUTOR = #{bindExecutor, jdbcType=INTEGER},
-                POSITION = #{position, jdbcType=INTEGER},
-                UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP}
-                <where>
-                    <include refid="condProjectName"/>
-                    <include refid="condTenantId"/>
-                </where>
-            </otherwise>
-        </choose>
+    <select id="get" parameterType="map" resultType="com.github.attemper.common.result.app.project.Project">
+        SELECT * FROM ${tablePrefix}project
+        <where>
+            <include refid="condProjectName_" />
+            <include refid="condTenantId_" />
+        </where>
+    </select>
+
+    <insert id="add" parameterType="com.github.attemper.common.result.app.project.Project">
+        INSERT INTO ${tablePrefix}project (
+            PROJECT_NAME,
+            PARENT_PROJECT_NAME,
+            DISPLAY_NAME,
+            CONTEXT_PATH,
+            BIND_EXECUTOR,
+            TENANT_ID
+            )
+        VALUES
+            (
+            #{projectName, jdbcType=VARCHAR},
+            #{parentProjectName, jdbcType=VARCHAR},
+            #{displayName, jdbcType=VARCHAR},
+            #{contextPath, jdbcType=VARCHAR},
+            #{bindExecutor, jdbcType=INTEGER},
+            #{tenantId, jdbcType=VARCHAR}
+            )
     </insert>
 
-    <delete id="delete" parameterType="map">
-        delete from p USING ${tablePrefix}project p
+    <update id="update" parameterType="com.github.attemper.common.result.app.project.Project">
+        UPDATE
+        ${tablePrefix}project
+        <set>
+            PARENT_PROJECT_NAME = #{parentProjectName, jdbcType=VARCHAR},
+            DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
+            CONTEXT_PATH = #{contextPath, jdbcType=VARCHAR},
+            BIND_EXECUTOR = #{bindExecutor, jdbcType=INTEGER},
+        </set>
         <where>
-            PROJECT_NAME in
+            <include refid="condProjectName_"/>
+            <include refid="condTenantId_"/>
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="map">
+        DELETE FROM ${tablePrefix}project
+        <where>
+            PROJECT_NAME IN
             <foreach item="projectName" collection="projectNames" open="(" separator="," close=")">
-                #{projectName}
+                #{projectName, jdbcType=VARCHAR}
             </foreach>
-            <include refid="condTenantId"/>
+            <include refid="condTenantId_"/>
         </where>
     </delete>
 
-    <insert id="saveInfo" parameterType="map">
-        <selectKey keyProperty="count" resultType="int" order="BEFORE">
-            select count(*)
-            from ${tablePrefix}project_info p
-            <where>
-                <include refid="condProjectName"/>
-                <include refid="condTenantId"/>
-                AND URI = #{uri, jdbcType=VARCHAR}
-            </where>
-        </selectKey>
-        <choose>
-            <when test="count == 0">
-                INSERT INTO ${tablePrefix}project_info (
-                PROJECT_NAME,
-                URI,
-                TYPE,
-                TENANT_ID
-                )
-                VALUES
-                (
-                #{projectName, jdbcType=VARCHAR},
-                #{uri, jdbcType=VARCHAR},
-                #{type, jdbcType=INTEGER},
-                #{tenantId, jdbcType=VARCHAR}
-                )
-            </when>
-            <otherwise>
-                UPDATE
-                ${tablePrefix}project_info p
-                SET
-                TYPE = #{type, jdbcType=INTEGER}
-                <where>
-                    <include refid="condProjectName"/>
-                    <include refid="condTenantId"/>
-                    AND URI = #{uri, jdbcType=VARCHAR}
-                </where>
-            </otherwise>
-        </choose>
+    <select id="getInfo" parameterType="map"
+            resultType="com.github.attemper.common.result.app.project.ProjectInfo">
+        SELECT * FROM ${tablePrefix}project_info
+        <where>
+            <include refid="condProjectName_"/>
+            <include refid="condTenantId_"/>
+            AND URI = #{uri, jdbcType=VARCHAR}
+        </where>
+    </select>
+
+    <insert id="addInfo" parameterType="com.github.attemper.common.result.app.project.ProjectInfo">
+        INSERT INTO ${tablePrefix}project_info (
+            PROJECT_NAME,
+            URI,
+            URI_TYPE,
+            TENANT_ID
+            )
+        VALUES
+            (
+            #{projectName, jdbcType=VARCHAR},
+            #{uri, jdbcType=VARCHAR},
+            #{uriType, jdbcType=INTEGER},
+            #{tenantId, jdbcType=VARCHAR}
+            )
     </insert>
 
-    <delete id="deleteInfo">
-        delete from p USING ${tablePrefix}project_info p
+    <update id="updateInfo" parameterType="com.github.attemper.common.result.app.project.ProjectInfo">
+        UPDATE
+        ${tablePrefix}project_info
+        SET
+        URI_TYPE = #{uriType, jdbcType=INTEGER}
         <where>
-            <include refid="condProjectName"/>
-            <include refid="condTenantId"/>
+            <include refid="condProjectName_"/>
+            <include refid="condTenantId_"/>
+            AND URI = #{uri, jdbcType=VARCHAR}
+        </where>
+    </update>
+
+    <delete id="deleteInfo">
+        DELETE FROM ${tablePrefix}project_info
+        <where>
+            <include refid="condProjectName_"/>
+            <include refid="condTenantId_"/>
             AND URI = #{uri, jdbcType=VARCHAR}
         </where>
     </delete>
 
     <select id="listInfo" parameterType="map"
             resultType="com.github.attemper.common.result.app.project.ProjectInfo">
-        select p.*, pi.uri, pi.type
-        from ${tablePrefix}project_info pi join ${tablePrefix}project p
-        using (project_name, tenant_id)
+        SELECT p.*, pi.URI, pi.URI_TYPE
+        FROM ${tablePrefix}project_info pi join ${tablePrefix}project p
+        ON pi.PROJECT_NAME = p.PROJECT_NAME AND pi.TENANT_ID = p.TENANT_ID
         <where>
             <include refid="condProjectName"/>
             <include refid="condTenantId"/>
@@ -137,7 +125,7 @@
         SELECT pe.EXECUTOR_URI
         FROM ${tablePrefix}project_executor pe
         JOIN ${tablePrefix}project p
-        USING (PROJECT_NAME, TENANT_ID)
+        ON pe.PROJECT_NAME = p.PROJECT_NAME AND pe.TENANT_ID = p.TENANT_ID
         <where>
             <include refid="condProjectName"/>
             <include refid="condTenantId"/>
@@ -145,10 +133,10 @@
     </select>
 
     <delete id="deleteExecutors" parameterType="map">
-        DELETE FROM p USING ${tablePrefix}project_executor p
+        DELETE FROM ${tablePrefix}project_executor
         <where>
-            <include refid="condProjectName"/>
-            <include refid="condTenantId"/>
+            <include refid="condProjectName_"/>
+            <include refid="condTenantId_"/>
         </where>
     </delete>
 
@@ -170,14 +158,18 @@
     </insert>
 
     <sql id="condProjectName">
-        <if test="projectName != null">
-            and p.PROJECT_NAME = #{projectName, jdbcType=VARCHAR}
-        </if>
+        AND p.PROJECT_NAME = #{projectName, jdbcType=VARCHAR}
+    </sql>
+
+    <sql id="condProjectName_">
+        AND PROJECT_NAME = #{projectName, jdbcType=VARCHAR}
     </sql>
 
     <sql id="condTenantId">
-        <if test="tenantId != null">
-            and p.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
-        </if>
+        AND p.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+    </sql>
+
+    <sql id="condTenantId_">
+        AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
     </sql>
 </mapper>

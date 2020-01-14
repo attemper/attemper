@@ -2,9 +2,6 @@ package com.github.attemper.common.constant;
 
 import com.github.attemper.java.sdk.common.constant.SdkAPIPath;
 
-/**
- * @author ldang
- */
 public class APIPath {
 
     public static final String API_PATH = SdkAPIPath.API_PATH;
@@ -16,8 +13,6 @@ public class APIPath {
     private static final String APP = "/app";
 
     private static final String STATISTICS = "/statistics";
-
-    private static final String SCHEDULER = "/scheduler";
 
     private static final String EXECUTOR = "/executor";
 
@@ -37,11 +32,13 @@ public class APIPath {
 
         public static final String GET = $ + _GET;
 
-        public static final String TAG = $ + TagPath.SUB_PATH;
+        public static final String ROLE = $ + RolePath.SUB_PATH;
+
+        public static final String PASSWORD = $ + "/password";
     }
 
-    public static final class TagPath {
-        public static final String SUB_PATH = "/tag";
+    public static final class RolePath {
+        public static final String SUB_PATH = "/role";
 
         public static final String $ = API_PATH + SYS + SUB_PATH;
 
@@ -89,16 +86,24 @@ public class APIPath {
         public static final String ARG = $ + ArgPath.SUB_PATH;
 
         public static final String JSON_ARG = $ + ArgPath.SUB_PATH + "/json";
-    }
 
-    public static final class TriggerPath {
-        public static final String SUB_PATH = "/trigger";
+        public static final String CONDITION = $ + "/condition";
 
-        public static final String UPDATE = API_PATH + DISPATCH + SUB_PATH;
+        public static final String GET_CONDITION = CONDITION + "/get";
 
-        public static final String GET = API_PATH + DISPATCH + SUB_PATH + _GET;
+        public static final String TRIGGER = $ + "/trigger";
 
-        public static final String GET_CALENDAR = API_PATH + DISPATCH + SUB_PATH + CalendarPath.SUB_PATH + _GET;
+        public static final String GET_TRIGGER = TRIGGER + _GET;
+
+        private static final String TEST_TRIGGER = TRIGGER + "/test";
+
+        public static final String TEST_CRON = TEST_TRIGGER + "/cron";
+
+        public static final String TEST_CALENDAR_OFFSET = TEST_TRIGGER + "/calendarOffset";
+
+        public static final String TEST_DAILY_TIME_INTERVAL = TEST_TRIGGER + "/dailyTimeInterval";
+
+        public static final String TEST_CALENDAR_INTERVAL = TEST_TRIGGER + "/calendarInterval";
     }
 
     public static final class ArgPath {
@@ -131,7 +136,7 @@ public class APIPath {
 
         public static final String DAY = $ + "/day";
 
-        public static final String TIME = $ + "/time";
+        public static final String IMPORT = DAY + "/import";
     }
 
     public static final class ProjectPath {
@@ -145,30 +150,6 @@ public class APIPath {
 
         public static final String EXECUTOR = API_PATH + APP + SUB_PATH + "/executor";
 
-    }
-
-    public static final class ProgramPath {
-        public static final String SUB_PATH = "/program";
-
-        public static final String $ = API_PATH + APP + SUB_PATH;
-
-        public static final String GET = $ + _GET;
-
-        public static final String PACKAGE = $ + "/package";
-
-        public static final String PACKAGE_CATEGORY = PACKAGE + "/category";
-
-        public static final String UPLOAD_PACKAGE = PACKAGE + "/upload";
-
-        public static final String DOWNLOAD_PACKAGE = PACKAGE + "/download";
-
-        public static final String LOAD_PACKAGE = PACKAGE + "/load";
-
-        public static final String UNLOAD_PACKAGE = PACKAGE + "/unload";
-
-        public static final String VIEW_FILE = PACKAGE + "/file/view";
-
-        public static final String DOWNLOAD_FILE = PACKAGE + "/file/download";
     }
 
     public static final class GistPath {
@@ -216,14 +197,20 @@ public class APIPath {
 
         public static final String PLAN_APP = API_PATH + STATISTICS + SUB_PATH + "/plan/app";
 
+        public static final String INSTANCE_DURATION = API_PATH + STATISTICS + SUB_PATH + "/instance/duration";
+
     }
 
     public static final class ToolPath {
-        public static final String SUB_PATH = "/tool";
+        private static final String SUB_PATH = "/tool";
 
         public static final String GET_TIME_ZONE = API_PATH + DISPATCH + SUB_PATH + "/timeZone";
 
+        public static final String LIST_SCHEDULER_SERVICE = API_PATH + DISPATCH + SUB_PATH + "/scheduler";
+
         public static final String LIST_EXECUTOR_SERVICE = API_PATH + DISPATCH + SUB_PATH + "/executor";
+
+        public static final String GET_SERVER_INFO = API_PATH + DISPATCH + SUB_PATH + "/serverInfo";
 
         public static final String PING = API_PATH + DISPATCH + SUB_PATH + "/ping";
 
@@ -233,13 +220,6 @@ public class APIPath {
 
         public static final String TRADE_DATE_UNITS = API_PATH + DISPATCH + SUB_PATH + "/tradeDateUnits";
 
-    }
-
-    public static final class SchedulerPath {
-
-        public static final String TRIGGER = API_PATH + SCHEDULER + TriggerPath.SUB_PATH;
-
-        public static final String CALENDAR = API_PATH + SCHEDULER + CalendarPath.SUB_PATH;
     }
 
     public static final class ExecutorPath {
@@ -253,5 +233,12 @@ public class APIPath {
         public static final String UNLOAD_PACKAGE = API_PATH + EXECUTOR + "/package/unload";
 
         public static final String REMOVE_DATA_SOURCE = API_PATH + EXECUTOR + "/datasource/remove";
+    }
+
+    public static final class CommonPath {
+
+        private static final String SUB_PATH = "/common";
+
+        public static final String SERVER_INFO = API_PATH  + SUB_PATH + "/serverInfo";
     }
 }

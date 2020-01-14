@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.attemper.sys.dao.RoleMapper">
+
+    <select id="get" parameterType="com.github.attemper.common.param.sys.role.RoleNameParam"
+            resultType="com.github.attemper.common.result.sys.role.Role">
+        SELECT * FROM ${tablePrefix}role t
+        <where>
+            <include refid="condRoleName"/>
+        </where>
+    </select>
+
+    <insert id="add" parameterType="com.github.attemper.common.result.sys.role.Role">
+        INSERT INTO ${tablePrefix}role (
+        ROLE_NAME,
+        DISPLAY_NAME,
+        REMARK
+        )
+        VALUES
+        (
+        #{roleName, jdbcType=VARCHAR},
+        #{displayName, jdbcType=VARCHAR},
+        #{remark, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.github.attemper.common.result.sys.role.Role">
+        UPDATE ${tablePrefix}role
+        SET
+        <if test="displayName != null">
+            DISPLAY_NAME = #{displayName, jdbcType=VARCHAR},
+        </if>
+        REMARK = #{remark, jdbcType=VARCHAR}
+        <where>
+            <include refid="condRoleName_"/>
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="java.util.List">
+        DELETE FROM ${tablePrefix}role
+        WHERE ROLE_NAME IN
+        <foreach item="roleName" collection="list" open="(" separator="," close=")">
+            #{roleName, jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
+    <select id="list" parameterType="com.github.attemper.common.param.sys.role.RoleListParam"
+            resultType="com.github.attemper.common.result.sys.role.Role">
+        SELECT * FROM ${tablePrefix}role
+        <where>
+            <if test="roleName != null">
+                AND LOWER(ROLE_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{roleName, jdbcType=VARCHAR})), '%')
+            </if>
+            <if test="displayName != null">
+                AND LOWER(DISPLAY_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{displayName, jdbcType=VARCHAR})), '%')
+            </if>
+        </where>
+        <choose>
+            <when test="sort == null">
+                ORDER BY ROLE_NAME
+            </when>
+            <otherwise>
+                ORDER BY ${sort}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="getTenants" parameterType="com.github.attemper.common.param.sys.role.RoleNameParam"
+            resultType="com.github.attemper.common.result.sys.tenant.Tenant">
+        SELECT te.*
+        FROM ${tablePrefix}tenant te
+        JOIN ${tablePrefix}role_tenant tt
+        ON te.USER_NAME = tt.USER_NAME
+        JOIN ${tablePrefix}role t
+        ON tt.ROLE_NAME = t.ROLE_NAME
+        <where>
+            <include refid="condRoleName"/>
+        </where>
+        ORDER BY te.USER_NAME
+    </select>
+
+    <delete id="deleteTenants" parameterType="com.github.attemper.common.param.sys.role.RoleTenantSaveParam">
+        DELETE FROM ${tablePrefix}role_tenant
+        <where>
+          <include refid="condRoleName_" />
+        </where>
+    </delete>
+
+    <insert id="addTenants" parameterType="com.github.attemper.common.param.sys.role.RoleTenantSaveParam">
+        INSERT INTO ${tablePrefix}role_tenant
+        (
+        ROLE_NAME,
+        USER_NAME
+        )
+        values
+        <foreach item="userName" collection="userNames" separator=",">
+            (
+            #{roleName, jdbcType=VARCHAR},
+            #{userName, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="addTenants" databaseId="oracle" parameterType="com.github.attemper.common.param.sys.role.RoleTenantSaveParam">
+        INSERT INTO ${tablePrefix}role_tenant
+        (
+        ROLE_NAME,
+        USER_NAME
+        )
+        SELECT * FROM
+        (
+            <foreach item="userName" collection="userNames" separator="union">
+                SELECT
+                #{roleName, jdbcType=VARCHAR},
+                #{userName, jdbcType=VARCHAR}
+                FROM dual
+            </foreach>
+        )
+    </insert>
+
+    <select id="getResources" parameterType="com.github.attemper.common.param.sys.role.RoleNameParam"
+            resultType="java.lang.String">
+        SELECT tr.RESOURCE_NAME
+        FROM ${tablePrefix}role_resource tr
+        JOIN ${tablePrefix}role t
+        ON t.ROLE_NAME = tr.ROLE_NAME
+        <where>
+            <include refid="condRoleName"/>
+        </where>
+        ORDER BY tr.RESOURCE_NAME
+    </select>
+
+    <delete id="deleteResources"
+            parameterType="com.github.attemper.common.param.sys.role.RoleResourceSaveParam">
+        DELETE FROM ${tablePrefix}role_resource
+        <where>
+            <include refid="condRoleName_" />
+        </where>
+    </delete>
+
+    <insert id="addResources"
+            parameterType="com.github.attemper.common.param.sys.role.RoleResourceSaveParam">
+        INSERT INTO ${tablePrefix}role_resource
+        (
+        ROLE_NAME,
+        RESOURCE_NAME
+        )
+        values
+        <foreach item="resourceName" collection="resourceNames" separator=",">
+            (
+            #{roleName, jdbcType=VARCHAR},
+            #{resourceName, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="addResources" databaseId="oracle"
+            parameterType="com.github.attemper.common.param.sys.role.RoleResourceSaveParam">
+        INSERT INTO ${tablePrefix}role_resource
+        (
+        ROLE_NAME,
+        RESOURCE_NAME
+        )
+        SELECT ROLE_NAME, RESOURCE_NAME FROM
+        (
+        <foreach item="resourceName" collection="resourceNames" separator="union all">
+            ( SELECT
+            #{roleName, jdbcType=VARCHAR} ROLE_NAME,
+            #{resourceName, jdbcType=VARCHAR} RESOURCE_NAME
+            FROM dual
+            )
+        </foreach>
+        )
+    </insert>
+
+    <sql id="condRoleName">
+        AND t.ROLE_NAME = #{roleName, jdbcType = VARCHAR}
+    </sql>
+
+    <sql id="condRoleName_">
+        AND ROLE_NAME = #{roleName, jdbcType = VARCHAR}
+    </sql>
+</mapper>

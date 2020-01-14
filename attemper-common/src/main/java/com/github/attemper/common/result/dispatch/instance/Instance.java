@@ -2,8 +2,6 @@ package com.github.attemper.common.result.dispatch.instance;
 
 import lombok.ToString;
 
-import java.util.Date;
-
 @ToString
 public class Instance {
 
@@ -23,13 +21,13 @@ public class Instance {
 
     protected String procDefId;
 
-    protected Date startTime;
+    protected Long startTime;
 
-    protected Date endTime;
+    protected Long endTime;
 
     protected Long duration;
 
-    protected int status;
+    protected Integer status;
 
     protected Integer code;
 
@@ -127,20 +125,20 @@ public class Instance {
         return this;
     }
 
-    public Date getStartTime() {
+    public Long getStartTime() {
         return startTime;
     }
 
-    public Instance setStartTime(Date startTime) {
+    public Instance setStartTime(Long startTime) {
         this.startTime = startTime;
         return this;
     }
 
-    public Date getEndTime() {
+    public Long getEndTime() {
         return endTime;
     }
 
-    public Instance setEndTime(Date endTime) {
+    public Instance setEndTime(Long endTime) {
         this.endTime = endTime;
         return this;
     }
@@ -154,11 +152,11 @@ public class Instance {
         return this;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public Instance setStatus(int status) {
+    public Instance setStatus(Integer status) {
         this.status = status;
         return this;
     }

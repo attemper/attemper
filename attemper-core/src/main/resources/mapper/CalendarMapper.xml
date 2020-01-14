@@ -3,14 +3,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.attemper.core.dao.dispatch.CalendarMapper">
 
-    <insert id="saveDay" parameterType="map">
+    <update id="saveDay" parameterType="map">
         <selectKey keyProperty="count" resultType="int" order="BEFORE">
-            select count(*)
-            from ${tablePrefix}calendar_day cd
+            SELECT COUNT(*)
+            FROM ${tablePrefix}calendar_day cd
             <where>
                 <include refid="condCalendarName"/>
                 <include refid="condDayName"/>
-                <include refid="condTenantId"/>
             </where>
         </selectKey>
         <choose>
@@ -29,84 +28,88 @@
             </when>
             <otherwise>
                 UPDATE
-                ${tablePrefix}calendar_day cd
+                ${tablePrefix}calendar_day
                 SET
                 REMARK = #{remark, jdbcType=VARCHAR}
-                <where>
-                    <include refid="condCalendarName"/>
-                    <include refid="condDayName"/>
-                    <include refid="condTenantId"/>
-                </where>
+                WHERE
+                    CALENDAR_NAME = #{calendarName, jdbcType=VARCHAR}
+                    AND DAY_NUM = #{dayNum, jdbcType=INTEGER}
             </otherwise>
         </choose>
+    </update>
+
+    <delete id="deleteDays" parameterType="map">
+        DELETE FROM ${tablePrefix}calendar_day
+        <where>
+            CALENDAR_NAME = #{calendarName, jdbcType=VARCHAR}
+            AND DAY_NUM IN
+            <foreach item="item" collection="dayNums" open="(" separator="," close=")">
+                #{item, jdbcType=INTEGER}
+            </foreach>
+        </where>
+    </delete>
+
+    <insert id="addDays" parameterType="list">
+        INSERT INTO ${tablePrefix}calendar_day (
+            CALENDAR_NAME,
+            DAY_NUM,
+            REMARK
+        )
+        VALUES
+        <foreach item="item" collection="list" separator=",">
+            (
+                #{item.calendarName, jdbcType=VARCHAR},
+                #{item.dayNum, jdbcType=INTEGER},
+                #{item.remark, jdbcType=VARCHAR}
+            )
+        </foreach>
     </insert>
 
-    <select id="list" parameterType="map" resultType="com.github.attemper.common.result.dispatch.calendar.CalendarInfo">
+    <select id="list" resultType="com.github.attemper.common.result.dispatch.calendar.CalendarInfo">
         SELECT *
         FROM ${tablePrefix}calendar
-        <where>
-            <if test="type != null">
-                AND TYPE = #{type, jdbcType=INTEGER}
-            </if>
-            <include refid="condTenantId"/>
-        </where>
-        order by POSITION
+        ORDER BY CALENDAR_NAME
     </select>
 
-    <select id="get" parameterType="map" resultType="com.github.attemper.common.result.dispatch.calendar.CalendarInfo">
+    <select id="get" parameterType="com.github.attemper.common.param.dispatch.calendar.CalendarNameParam"
+            resultType="com.github.attemper.common.result.dispatch.calendar.CalendarInfo">
         SELECT *
-        FROM ${tablePrefix}calendar
+        FROM ${tablePrefix}calendar c
         <where>
             <include refid="condCalendarName"/>
-            <include refid="condTenantId"/>
         </where>
     </select>
 
-    <select id="listDay" parameterType="map"
+    <select id="listDay" parameterType="com.github.attemper.common.param.dispatch.calendar.DayCalendarListParam"
             resultType="com.github.attemper.common.result.dispatch.calendar.DayCalendarConfig">
         SELECT cd.DAY_NUM, cd.REMARK
         FROM ${tablePrefix}calendar c
         JOIN ${tablePrefix}calendar_day cd
-        USING(CALENDAR_NAME, TENANT_ID)
+        ON c.CALENDAR_NAME = cd.CALENDAR_NAME
         <where>
             <if test="lowerDayNum != null">
-                <![CDATA[
-                  AND DAY_NUM >= #{lowerDayNum, jdbcType=INTEGER}
-                ]]>
+              AND DAY_NUM &gt;= #{lowerDayNum, jdbcType=INTEGER}
             </if>
             <if test="upperDayNum != null">
-                <![CDATA[
-                  AND DAY_NUM <= #{upperDayNum, jdbcType=INTEGER}
-                ]]>
+              AND DAY_NUM &lt;= #{upperDayNum, jdbcType=INTEGER}
             </if>
             <include refid="condCalendarName"/>
-            <include refid="condTenantId"/>
         </where>
         ORDER BY DAY_NUM
     </select>
 
-    <delete id="deleteDay" parameterType="map">
-        DELETE FROM cd USING ${tablePrefix}calendar_day cd
-        <where>
-            <include refid="condCalendarName"/>
-            <include refid="condDayName"/>
-        </where>
+    <delete id="deleteDay" parameterType="com.github.attemper.common.param.dispatch.calendar.DayCalendarRemoveParam">
+        DELETE FROM ${tablePrefix}calendar_day
+        WHERE DAY_NUM = #{dayNum, jdbcType=INTEGER}
+        AND CALENDAR_NAME = #{calendarName, jdbcType=VARCHAR}
     </delete>
 
     <sql id="condDayName">
-        <if test="dayNum != null">
-            and DAY_NUM = #{dayNum, jdbcType=INTEGER}
-        </if>
+        AND cd.DAY_NUM = #{dayNum, jdbcType=INTEGER}
     </sql>
 
     <sql id="condCalendarName">
-        <if test="calendarName != null">
-            and CALENDAR_NAME = #{calendarName, jdbcType=VARCHAR}
-        </if>
-    </sql>
-
-    <sql id="condTenantId">
-        and (TENANT_ID = '' or TENANT_ID = #{tenantId, jdbcType=VARCHAR})
+        AND c.CALENDAR_NAME = #{calendarName, jdbcType=VARCHAR}
     </sql>
 
 </mapper>

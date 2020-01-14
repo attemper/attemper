@@ -1,9 +1,16 @@
 package com.github.attemper.web.controller.dispatch;
 
 import com.github.attemper.common.constant.APIPath;
+import com.github.attemper.common.param.dispatch.condition.ConditionSaveParam;
 import com.github.attemper.common.param.dispatch.job.*;
+import com.github.attemper.common.param.dispatch.trigger.TriggerWrapper;
+import com.github.attemper.common.param.dispatch.trigger.sub.CalendarIntervalTriggerWrapper;
+import com.github.attemper.common.param.dispatch.trigger.sub.CalendarOffsetTriggerWrapper;
+import com.github.attemper.common.param.dispatch.trigger.sub.CronTriggerWrapper;
+import com.github.attemper.common.param.dispatch.trigger.sub.DailyTimeIntervalTriggerWrapper;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.app.project.Project;
+import com.github.attemper.common.result.dispatch.condition.ConditionResult;
 import com.github.attemper.common.result.dispatch.job.Job;
 import com.github.attemper.common.result.dispatch.job.JobWithVersionResult;
 import com.github.attemper.core.service.dispatch.JobService;
@@ -16,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +61,7 @@ public class JobController {
 	@ApiOperation("Update job content")
 	@ApiImplicitParam(value = "JobContentSaveParam", name = "param", dataType = "JobContentSaveParam", required = true)
 	@PutMapping(APIPath.JobPath.CONTENT)
-	public CommonResult<JobWithVersionResult> updateContent(@RequestBody JobContentSaveParam param) {
+	public CommonResult<Void> updateContent(@RequestBody JobContentSaveParam param) {
 		return CommonResult.putResult(jobOperatedService.updateContent(param));
 	}
 
@@ -116,7 +124,7 @@ public class JobController {
 	@ApiOperation("Exchange current reversion to the latest reversion")
 	@ApiImplicitParam(value = "JobNameParam", name = "param", dataType = "JobNameParam", required = true)
 	@PutMapping(APIPath.JobPath.EXCHANGE)
-    public CommonResult<JobWithVersionResult> exchange(@RequestBody JobNameWithDefinitionParam param) {
+    public CommonResult<Void> exchange(@RequestBody JobNameWithDefinitionParam param) {
 		return CommonResult.putResult(jobOperatedService.exchange(param));
 	}
 
@@ -135,9 +143,9 @@ public class JobController {
 	}
 
 	@ApiOperation("Export model")
-	@ApiImplicitParam(value = "JobNamesParam", name = "param", dataType = "JobNamesParam", required = true)
+	@ApiImplicitParam(value = "JobExportParam", name = "param", dataType = "JobExportParam", required = true)
 	@GetMapping(APIPath.JobPath.EXPORT_MODEL)
-	public void exportModel(HttpServletResponse response, JobNamesParam param) {
+	public void exportModel(HttpServletResponse response, JobExportParam param) {
 		jobOperatedService.exportModel(response, param);
 	}
 
@@ -146,6 +154,48 @@ public class JobController {
 	@PostMapping(APIPath.JobPath.IMPORT_MODEL)
 	public CommonResult<Void> importModel(MultipartFile file) {
 		return CommonResult.putResult(jobOperatedService.importModel(file));
+	}
+
+	@ApiOperation("Get trigger info by job")
+	@ApiImplicitParam(value = "JobNameParam", name = "param", dataType = "JobNameParam", required = true)
+	@GetMapping(APIPath.JobPath.GET_TRIGGER)
+	public CommonResult<TriggerWrapper> getTrigger(JobNameParam param) {
+		return CommonResult.putResult(jobOperatedService.getTrigger(param));
+	}
+
+	@ApiOperation("Update trigger of job")
+	@ApiImplicitParam(value = "TriggerSaveParam", name = "param", dataType = "TriggerSaveParam", required = true)
+	@PutMapping(APIPath.JobPath.TRIGGER)
+	public CommonResult<Void> update(@RequestBody TriggerWrapper param) {
+		return CommonResult.putResult(jobOperatedService.validateAndUpdateTrigger(param));
+	}
+
+	@ApiOperation("Test cron trigger")
+	@ApiImplicitParam(value = "CronTriggerParam", name = "param", dataType = "CronTriggerParam", required = true)
+	@PostMapping(APIPath.JobPath.TEST_CRON)
+	public CommonResult<List<Date>> testCron(@RequestBody CronTriggerWrapper param) {
+		return CommonResult.putResult(jobOperatedService.testCron(param));
+	}
+
+	@ApiOperation("Test calendar offset trigger")
+	@ApiImplicitParam(value = "CalendarOffsetTriggerParam", name = "param", dataType = "CalendarOffsetTriggerParam", required = true)
+	@PostMapping(APIPath.JobPath.TEST_CALENDAR_OFFSET)
+	public CommonResult<List<Date>> testCalendarOffset(@RequestBody CalendarOffsetTriggerWrapper param) {
+		return CommonResult.putResult(jobOperatedService.testCalendarOffset(param));
+	}
+
+	@ApiOperation("Test daily time interval trigger")
+	@ApiImplicitParam(value = "DailyTimeIntervalTriggerParam", name = "param", dataType = "DailyTimeIntervalTriggerParam", required = true)
+	@PostMapping(APIPath.JobPath.TEST_DAILY_TIME_INTERVAL)
+	public CommonResult<List<Date>> testDailyTimeInterval(@RequestBody DailyTimeIntervalTriggerWrapper param) {
+		return CommonResult.putResult(jobOperatedService.testDailyTimeInterval(param));
+	}
+
+	@ApiOperation("Test calendar interval trigger")
+	@ApiImplicitParam(value = "CalendarIntervalTriggerParam", name = "param", dataType = "CalendarIntervalTriggerParam", required = true)
+	@PostMapping(APIPath.JobPath.TEST_CALENDAR_INTERVAL)
+	public CommonResult<List<Date>> testCalendarInterval(@RequestBody CalendarIntervalTriggerWrapper param) {
+		return CommonResult.putResult(jobOperatedService.testCalendarInterval(param));
 	}
 
 	@ApiOperation("List args of job")
@@ -190,4 +240,17 @@ public class JobController {
 		return CommonResult.putResult(jobService.saveProject(param));
 	}
 
+	@ApiOperation("Get conditions by job")
+	@ApiImplicitParam(value = "JobNameParam", name = "param", dataType = "JobNameParam", required = true)
+	@GetMapping(APIPath.JobPath.GET_CONDITION)
+	public CommonResult<ConditionResult> getCondition(JobNameParam param) {
+		return CommonResult.putResult(jobService.getCondition(param));
+	}
+
+	@ApiOperation("Update condition")
+	@ApiImplicitParam(value = "ConditionSaveParam", name = "param", dataType = "ConditionSaveParam", required = true)
+	@PutMapping(APIPath.JobPath.CONDITION)
+	public CommonResult<Void> update(@RequestBody ConditionSaveParam param) {
+		return CommonResult.putResult(jobService.updateCondition(param));
+	}
 }

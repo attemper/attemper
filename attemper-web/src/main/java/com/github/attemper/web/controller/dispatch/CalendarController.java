@@ -1,7 +1,6 @@
 package com.github.attemper.web.controller.dispatch;
 
 import com.github.attemper.common.constant.APIPath;
-import com.github.attemper.common.param.dispatch.calendar.CalendarListParam;
 import com.github.attemper.common.param.dispatch.calendar.DayCalendarListParam;
 import com.github.attemper.common.param.dispatch.calendar.DayCalendarRemoveParam;
 import com.github.attemper.common.param.dispatch.calendar.DayCalendarSaveParam;
@@ -15,6 +14,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,10 +29,9 @@ public class CalendarController {
     private CalendarOperatedService calendarOperatedService;
 
     @ApiOperation("List calendars")
-    @ApiImplicitParam(value = "CalendarListParam", name = "param", dataType = "CalendarListParam", required = true)
     @GetMapping(APIPath.CalendarPath.$)
-    public CommonResult<List<CalendarInfo>> list(CalendarListParam param) {
-        return CommonResult.putResult(service.list(param));
+    public CommonResult<List<CalendarInfo>> list() {
+        return CommonResult.putResult(service.list());
     }
 
     @ApiOperation("Get days of calendar")
@@ -55,4 +54,12 @@ public class CalendarController {
     public CommonResult<Void> removeDay(@RequestBody DayCalendarRemoveParam param) {
         return CommonResult.putResult(calendarOperatedService.removeDay(param));
     }
+
+    @ApiOperation("Import date")
+    @ApiImplicitParam(value = "MultipartFile", name = "file", dataType = "MultipartFile", required = true)
+    @PostMapping(APIPath.CalendarPath.IMPORT)
+    public CommonResult<Void> importDate(String calendarName, MultipartFile file) {
+        return CommonResult.putResult(calendarOperatedService.importDate(calendarName, file));
+    }
+
 }

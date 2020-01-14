@@ -1,6 +1,7 @@
 package com.github.attemper.common.result.dispatch.arg;
 
-import lombok.*;
+import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
 
 @ToString
 public class Arg {
@@ -80,5 +81,17 @@ public class Arg {
     public Arg setTenantId(String tenantId) {
         this.tenantId = tenantId;
         return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return (this.argName + "|" + this.tenantId).hashCode() * 37;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Arg model = (Arg) obj;
+        return StringUtils.equals(this.argName, model.getArgName())
+                && StringUtils.equals(this.tenantId, model.getTenantId());
     }
 }

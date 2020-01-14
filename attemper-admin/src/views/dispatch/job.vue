@@ -9,7 +9,7 @@
       <!--<el-select v-model="page.sort" style="width: 140px" class="filter-item" @change="search">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>-->
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search" />
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="search" />
       <el-button class="filter-item table-external-button" type="success" icon="el-icon-plus" @click="add" />
       <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="danger" icon="el-icon-delete" @click="remove" />
       <el-button :disabled="!selections || !selections.length" class="filter-item table-external-button" type="warning" @click="manualBatch">
@@ -23,9 +23,12 @@
           <el-button class="high-operation" :disabled="!selections || !selections.length" type="primary" icon="el-icon-download" @click="exportModel">{{ $t('actions.exportModel') }}</el-button><br>
           <el-button class="high-operation" :disabled="!selections || !selections.length" type="success" icon="el-icon-circle-check" @click="enable">{{ $t('actions.enable') }}</el-button>
           <el-button class="high-operation" :disabled="!selections || !selections.length" type="danger" icon="el-icon-circle-close" @click="disable">{{ $t('actions.disable') }}</el-button><br>
-          <el-button :loading="downloadLoading" class="high-operation" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button><br>
-          <el-button :disabled="!selections || !selections.length" class="high-operation" type="primary" @click="publish">
-            <svg-icon icon-class="publish" /> {{ $t('table.publish') }}
+          <el-button class="high-operation" :disabled="!page || !page.total || page.total <= 0" :loading="downloadLoading" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('actions.exportList') }}</el-button><br>
+          <el-button class="high-operation" :disabled="!selections || !selections.length" type="primary" @click="publish">
+            <svg-icon icon-class="publish" /> {{ $t('actions.publish') }}
+          </el-button><br>
+          <el-button class="high-operation" :disabled="!selections || selections.length !== 1" type="primary" @click="showChart">
+            {{ $t('statistics.chart') }}
           </el-button>
           <el-button slot="reference" class="filter-item table-external-button" type="warning">{{ $t('actions.highOperation') }}</el-button>
         </el-popover>
@@ -49,15 +52,13 @@
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
             <el-form-item :label="$t('dispatch.job.columns.concurrent')">
-              <el-tag :type="props.row.concurrent ? 'success' : 'info'">{{ props.row.concurrent ? $t('tip.yes') : $t('tip.no') }}</el-tag>
+              <el-tag :type="props.row.concurrent > 0 ? 'success' : 'info'">{{ props.row.concurrent ? $t('tip.yes') : $t('tip.no') }}</el-tag>
+            </el-form-item>
+            <el-form-item :label="$t('dispatch.job.columns.once')">
+              <el-tag :type="props.row.once > 0 ? 'success' : 'info'">{{ props.row.once ? $t('tip.yes') : $t('tip.no') }}</el-tag>
             </el-form-item>
             <el-form-item :label="$t('columns.updateTime')">
-              <span>{{ props.row.updateTime }}</span>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="info" @click="openProjectDialog(props.row)">
-                {{ $t('dispatch.job.actions.project') }}
-              </el-button>
+              <span>{{ props.row.updateTime | parseTime }}</span>
             </el-form-item>
           </el-form>
         </template>
@@ -78,10 +79,10 @@
       </el-table-column>
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
         <template slot-scope="scope">
-          <el-link @click="update(scope.row)">{{ scope.row.displayName || '---' }}</el-link>
+          <el-link type="primary" @click="update(scope.row)">{{ scope.row.displayName || '---' }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('columns.status')" align="center" class-name="status-col" width="100">
+      <el-table-column :label="$t('columns.status')" align="center" class-name="status-col" width="80">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | renderJobStatus">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
@@ -100,14 +101,26 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('actions.handle')" align="center" min-width="240" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <div style="padding-top: 6px;">
+            <el-button
+              type="info"
+              @click="openProjectDialog(scope.row)"
+            >
+              {{ $t('dispatch.job.actions.project') }}
+            </el-button>
             <el-button
               type="primary"
               @click="openArgDialog(scope.row)"
             >
               {{ $t('dispatch.job.actions.param') }}
+            </el-button>
+            <el-button
+              type="warning"
+              @click="openConditionDialog(scope.row)"
+            >
+              {{ $t('dispatch.job.actions.condition') }}
             </el-button>
             <el-button
               type="success"
@@ -121,7 +134,7 @@
     </el-table>
 
     <pagination
-      v-show="page.total>0"
+      v-show="page.total > 0"
       :total="page.total"
       :page.sync="page.currentPage"
       :limit.sync="page.pageSize"
@@ -130,67 +143,72 @@
 
     <el-dialog
       :title="editDialog.title"
-      :visible.sync="editDialog.base.visible || editDialog.arg.visible || editDialog.trigger.visible || editDialog.project.visible || editDialog.param.visible"
+      :visible.sync="editDialog.base.visible || editDialog.arg.visible || editDialog.trigger.visible || editDialog.condition.visible || editDialog.project.visible || editDialog.param.visible || editDialog.chart.visible"
       :center="true"
       :modal="true"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :before-close="close"
+      :fullscreen="editDialog.chart.visible"
     >
       <div v-show="editDialog.base.visible">
         <job-info-form ref="jobInfoForm" :job="job" @save="save" />
       </div>
       <div v-show="editDialog.trigger.visible">
-        <!--
-        <el-tabs type="border-card">
-          <el-tab-pane>
-            <span slot="label">
-              <svg-icon icon-class="time" /> {{ $t('dispatch.trigger.tab.time.title') }}
-            </span>
-            -->
-        <el-tabs v-model="triggerTab.timeTrigger.activeTabName" tab-position="left">
-          <el-tab-pane :label="$t('dispatch.trigger.tab.time.cron')" name="0">
-            <CronTrigger ref="cronTrigger" :time-zones="timeZones" :calendar-groups="calendarGroups" />
+        <el-tabs v-model="triggerTab.activeTabName" type="border-card">
+          <el-tab-pane :label="$t('dispatch.trigger.tab.cron')" name="0">
+            <CronTrigger ref="cronTrigger" :time-zones="timeZones" :calendars="calendars" />
           </el-tab-pane>
-          <el-tab-pane :label="$t('dispatch.trigger.tab.time.calendarOffset')" name="1">
-            <CalendarOffsetTrigger ref="calendarOffsetTrigger" :over-day-time-units="overDayTimeUnits" :calendar-groups="calendarGroups" />
+          <el-tab-pane :label="$t('dispatch.trigger.tab.calendarOffset')" name="1">
+            <CalendarOffsetTrigger ref="calendarOffsetTrigger" :over-day-time-units="overDayTimeUnits" :calendars="calendars" />
           </el-tab-pane>
-          <el-tab-pane :label="$t('dispatch.trigger.tab.time.dailyInterval')" name="2">
-            <DailyIntervalTrigger
-              ref="dailyIntervalTrigger"
+          <el-tab-pane :label="$t('dispatch.trigger.tab.dailyTimeInterval')" name="2">
+            <DailyTimeIntervalTrigger
+              ref="dailyTimeIntervalTrigger"
               :milli-second-time-units="milliSecondTimeUnits"
               :in-day-time-units="inDayTimeUnits"
               :days-of-week="daysOfWeek"
-              :calendar-groups="calendarGroups"
+              :calendars="calendars"
             />
           </el-tab-pane>
-          <el-tab-pane :label="$t('dispatch.trigger.tab.time.calendarInterval')" name="3">
+          <el-tab-pane :label="$t('dispatch.trigger.tab.calendarInterval')" name="3">
             <CalendarIntervalTrigger
               ref="calendarIntervalTrigger"
               :day-time-unit="dayTimeUnit"
               :in-day-time-units="inDayTimeUnits"
               :over-day-time-units="overDayTimeUnits"
               :time-zones="timeZones"
-              :calendar-groups="calendarGroups"
+              :calendars="calendars"
             />
           </el-tab-pane>
         </el-tabs>
-        <!--
-        </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label">
-            <svg-icon icon-class="event" /> {{ $t('dispatch.trigger.tab.event.title') }}
-          </span>
-          event
-        </el-tab-pane>
-      </el-tabs>
-      -->
-        <el-row style="margin-top: 20px;">
+        <el-row style="margin-top: 15px;">
           <el-col :span="4" :offset="8">
             <el-button type="info" @click="editDialog.trigger.visible = false">{{ $t('actions.cancel') }}</el-button>
           </el-col>
           <el-col :span="4" :offset="1">
             <el-button type="success" @click="saveTrigger">{{ $t('actions.use') }}</el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <div v-show="editDialog.condition.visible">
+        <el-tabs v-model="conditionTab.activeTabName" tab-position="left">
+          <el-tab-pane :label="$t('dispatch.condition.tab.sql')" name="0">
+            <SqlCondition ref="sqlCondition" />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('dispatch.condition.tab.ftpFile')" name="10">
+            <FtpFileCondition ref="ftpFileCondition" />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('dispatch.condition.tab.localFile')" name="11">
+            <LocalFileCondition ref="localFileCondition" />
+          </el-tab-pane>
+        </el-tabs>
+        <el-row style="margin-top: 15px;">
+          <el-col :span="4" :offset="8">
+            <el-button type="info" @click="editDialog.condition.visible = false">{{ $t('actions.cancel') }}</el-button>
+          </el-col>
+          <el-col :span="4" :offset="1">
+            <el-button type="success" @click="saveCondition">{{ $t('actions.save') }}</el-button>
           </el-col>
         </el-row>
       </div>
@@ -201,7 +219,7 @@
             <el-option v-for="item in argTypes" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
           <el-input v-model="argPage.argValue" :placeholder="$t('dispatch.arg.columns.argValue')" class="filter-item search-input" @keyup.enter.native="argSearch" />
-          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="argSearch" />
+          <el-button class="filter-item" type="primary" icon="el-icon-search" @click="argSearch" />
         </div>
 
         <el-table
@@ -229,7 +247,7 @@
           </el-table-column>
           <el-table-column :label="$t('actions.handle')" align="center" min-width="120" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button :type="scope.row.allocated ? 'danger' : 'primary'" :icon="scope.row.allocated ? 'el-icon-minus' : 'el-icon-plus'" @click="operateArg(scope.row)" />
+              <el-button :type="scope.row.allocated > 0 ? 'danger' : 'primary'" :icon="scope.row.allocated > 0 ? 'el-icon-minus' : 'el-icon-plus'" @click="operateArg(scope.row)" />
             </template>
           </el-table-column>
         </el-table>
@@ -246,31 +264,37 @@
           </el-button>
         </div>
       </div>
+      <div v-show="editDialog.chart.visible">
+        <ChartArea ref="chartArea" :job-charts="jobCharts" :job-name="job.jobName" />
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { listReq, /* getReq,*/ removeReq, addReq, updateReq, enableReq, disableReq, publishReq, manualBatchReq, importModelReq, exportModelReq, listArgReq, addArgReq, removeArgReq, getJsonArgReq, manualReq } from '@/api/dispatch/job'
+import { listReq, /* getReq,*/ removeReq, addReq, updateReq, enableReq, disableReq, publishReq, manualBatchReq, importModelReq, exportModelReq, getTriggerReq, updateTriggerReq, listArgReq, addArgReq, removeArgReq, getJsonArgReq, manualReq, getConditionReq, updateConditionReq } from '@/api/dispatch/job'
 import * as calendarApi from '@/api/dispatch/calendar'
-import * as triggerApi from '@/api/dispatch/trigger'
 import * as toolApi from '@/api/dispatch/tool'
-import waves from '@/directive/waves'
 import { buildMsg, getTimeStr, download } from '@/utils/tools'
 import Pagination from '@/components/Pagination'
 import JobInfoForm from './components/job/jobInfoForm'
-import CronTrigger from './components/job/cronTrigger'
-import CalendarOffsetTrigger from './components/job/calendarOffsetTrigger'
-import DailyIntervalTrigger from './components/job/dailyTimeIntervalTrigger'
-import CalendarIntervalTrigger from './components/job/calendarIntervalTrigger'
+import CronTrigger from './components/job/trigger/cronTrigger'
+import CalendarOffsetTrigger from './components/job/trigger/calendarOffsetTrigger'
+import DailyTimeIntervalTrigger from './components/job/trigger/dailyTimeIntervalTrigger'
+import CalendarIntervalTrigger from './components/job/trigger/calendarIntervalTrigger'
+import FtpFileCondition from './components/job/condition/ftpFileCondition'
+import LocalFileCondition from './components/job/condition/localFileCondition'
+import SqlCondition from './components/job/condition/sqlCondition'
 import ProjectTree from './components/job/projectTree'
 import CodeEditor from '@/components/CodeEditor'
+import ChartArea from './components/job/chart/chartArea'
 
 const DEF_OBJ = {
   jobName: undefined,
   displayName: '',
   status: 0,
-  concurrent: true,
+  concurrent: 0,
+  once: 0,
   remark: '',
   content: ''
 }
@@ -282,11 +306,14 @@ export default {
     JobInfoForm,
     CronTrigger,
     CalendarOffsetTrigger,
-    DailyIntervalTrigger,
+    DailyTimeIntervalTrigger,
     CalendarIntervalTrigger,
-    CodeEditor
+    FtpFileCondition,
+    LocalFileCondition,
+    SqlCondition,
+    CodeEditor,
+    ChartArea
   },
-  directives: { waves },
   data() {
     return {
       tableKey: 0,
@@ -296,7 +323,6 @@ export default {
         currentPage: 1,
         pageSize: 10,
         total: 0,
-        jobName: undefined,
         displayName: undefined,
         status: [],
         sort: 'JOB_NAME'
@@ -335,45 +361,56 @@ export default {
         trigger: {
           visible: false
         },
+        condition: {
+          visible: false
+        },
         project: {
           visible: false
         },
         param: {
           visible: false
+        },
+        chart: {
+          visible: false
         }
       },
       downloadLoading: false,
       selections: [],
-      // calendars: [],
+      calendars: [],
       triggerTab: {
-        timeTrigger: {
-          activeTabName: '0'
-        }
+        activeTabName: '0'
+      },
+      conditionTab: {
+        activeTabName: '0'
       },
       trigger: {
         cronTriggers: [],
         calendarOffsetTriggers: [],
-        dailyIntervalTriggers: [],
+        dailyTimeIntervalTriggers: [],
         calendarIntervalTriggers: []
       },
+      condition: {
+        sqlConditions: [],
+        ftpFileConditions: [],
+        localFileConditions: []
+      },
       timeZones: [],
-      calendarGroups: [],
-      calendarTypes: [],
-      jsonData: null
+      jsonData: null,
+      jobCharts: null
     }
   },
   created() {
     this.loadConst()
+    this.initCalendars()
     this.initTimeZones()
   },
   methods: {
     search() {
       this.listLoading = true
       this.initPageStatus()
-      listReq(this.page).then(response => {
+      listReq(Object.assign({ jobName: this.$route.params.key }, this.page)).then(response => {
         this.list = response.data.result.list
         Object.assign(this.page, response.data.result.page)
-        // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
         }, 200)
@@ -404,8 +441,10 @@ export default {
       this.editDialog.base.visible =
           this.editDialog.arg.visible =
             this.editDialog.trigger.visible =
+              this.editDialog.condition.visible =
               this.editDialog.project.visible =
-                this.editDialog.param.visible = false
+                this.editDialog.param.visible =
+                  this.editDialog.chart.visible = false
     },
     add() {
       this.editDialog.oper = 'add'
@@ -469,42 +508,71 @@ export default {
     },
     openTriggerDialog(row) {
       this.editDialog.title = this.$t('dispatch.job.actions.trigger')
-      this.triggerTab.timeTrigger.activeTabName = '0'
+      this.triggerTab.activeTabName = '0'
       this.selectRow(row)
       this.editDialog.trigger.visible = true
-      this.initCalendarGroups()
-      triggerApi.getReq({ jobName: this.job.jobName }).then(res => {
+      getTriggerReq({ jobName: this.job.jobName }).then(res => {
         const result = res.data.result
-        if (result.cronTriggers && result.cronTriggers.length > 0) {
+        if (result && result.cronTriggers && result.cronTriggers.length > 0) {
           this.$refs.cronTrigger.triggerArray = result.cronTriggers
-          this.triggerTab.timeTrigger.activeTabName = '0'
+          this.triggerTab.activeTabName = '0'
         } else {
           this.$refs.cronTrigger.triggerArray = []
           this.$refs.cronTrigger.add()
         }
-        if (result.calendarOffsetTriggers && result.calendarOffsetTriggers.length > 0) {
+        if (result && result.calendarOffsetTriggers && result.calendarOffsetTriggers.length > 0) {
           this.$refs.calendarOffsetTrigger.triggerArray = result.calendarOffsetTriggers
-          this.triggerTab.timeTrigger.activeTabName = '1'
+          this.triggerTab.activeTabName = '1'
         } else {
           this.$refs.calendarOffsetTrigger.triggerArray = []
           this.$refs.calendarOffsetTrigger.add()
         }
-        if (result.dailyIntervalTriggers && result.dailyIntervalTriggers.length > 0) {
-          result.dailyIntervalTriggers.forEach(item => {
+        if (result && result.dailyTimeIntervalTriggers && result.dailyTimeIntervalTriggers.length > 0) {
+          result.dailyTimeIntervalTriggers.forEach(item => {
             item.daysOfWeekArr = item.daysOfWeek.split(',')
           })
-          this.$refs.dailyIntervalTrigger.triggerArray = result.dailyIntervalTriggers
-          this.triggerTab.timeTrigger.activeTabName = '2'
+          this.$refs.dailyTimeIntervalTrigger.triggerArray = result.dailyTimeIntervalTriggers
+          this.triggerTab.activeTabName = '2'
         } else {
-          this.$refs.dailyIntervalTrigger.triggerArray = []
-          this.$refs.dailyIntervalTrigger.add()
+          this.$refs.dailyTimeIntervalTrigger.triggerArray = []
+          this.$refs.dailyTimeIntervalTrigger.add()
         }
-        if (result.calendarIntervalTriggers && result.calendarIntervalTriggers.length > 0) {
+        if (result && result.calendarIntervalTriggers && result.calendarIntervalTriggers.length > 0) {
           this.$refs.calendarIntervalTrigger.triggerArray = result.calendarIntervalTriggers
-          this.triggerTab.timeTrigger.activeTabName = '3'
+          this.triggerTab.activeTabName = '3'
         } else {
           this.$refs.calendarIntervalTrigger.triggerArray = []
           this.$refs.calendarIntervalTrigger.add()
+        }
+      })
+    },
+    openConditionDialog(row) {
+      this.editDialog.title = this.$t('dispatch.job.actions.condition')
+      this.conditionTab.activeTabName = '0'
+      this.selectRow(row)
+      this.editDialog.condition.visible = true
+      getConditionReq({ jobName: this.job.jobName }).then(res => {
+        const result = res.data.result
+        if (result.sqlConditions && result.sqlConditions.length > 0) {
+          this.$refs.sqlCondition.conditionArray = result.sqlConditions
+          this.conditionTab.activeTabName = '0'
+        } else {
+          this.$refs.sqlCondition.conditionArray = []
+          this.$refs.sqlCondition.add()
+        }
+        if (result.ftpFileConditions && result.ftpFileConditions.length > 0) {
+          this.$refs.ftpFileCondition.conditionArray = result.ftpFileConditions
+          this.conditionTab.activeTabName = '10'
+        } else {
+          this.$refs.ftpFileCondition.conditionArray = []
+          this.$refs.ftpFileCondition.add()
+        }
+        if (result.localFileConditions && result.localFileConditions.length > 0) {
+          this.$refs.localFileCondition.conditionArray = result.localFileConditions
+          this.conditionTab.activeTabName = '11'
+        } else {
+          this.$refs.localFileCondition.conditionArray = []
+          this.$refs.localFileCondition.add()
         }
       })
     },
@@ -520,14 +588,13 @@ export default {
       listArgReq(this.argPage).then(response => {
         this.argList = response.data.result.list
         Object.assign(this.argPage, response.data.result.page)
-        // Just to simulate the time of the request
         setTimeout(() => {
           this.argListLoading = false
         }, 200)
       })
     },
     operateArg(row) {
-      const req = (row.allocated ? removeArgReq : addArgReq)
+      const req = (row.allocated === 0 ? addArgReq : removeArgReq)
       const data = {
         jobName: this.job.jobName,
         argName: row.argName
@@ -536,9 +603,6 @@ export default {
         this.$message.success(res.data.msg)
         this.argSearch()
       })
-    },
-    cancelFollow(row) {
-      this.argSearch()
     },
     openProjectDialog(row) {
       this.editDialog.title = this.$t('dispatch.job.actions.project')
@@ -554,15 +618,27 @@ export default {
       const trigger = { jobName: this.job.jobName }
       const result0 = this.$refs.cronTrigger.validateThenSet(trigger)
       const result1 = this.$refs.calendarOffsetTrigger.validateThenSet(trigger)
-      const result2 = this.$refs.dailyIntervalTrigger.validateThenSet(trigger)
+      const result2 = this.$refs.dailyTimeIntervalTrigger.validateThenSet(trigger)
       const result3 = this.$refs.calendarIntervalTrigger.validateThenSet(trigger)
       if (result0 && result1 && result2 && result3) {
-        triggerApi.updateReq(trigger).then(res => {
+        updateTriggerReq(trigger).then(res => {
           this.$message.success(res.data.msg)
           this.editDialog.trigger.visible = false
           setTimeout(() => {
             this.search()
           }, 200)
+        })
+      }
+    },
+    saveCondition() {
+      const condition = { jobName: this.job.jobName }
+      const result0 = this.$refs.sqlCondition.validateThenSet(condition)
+      const result10 = this.$refs.ftpFileCondition.validateThenSet(condition)
+      const result11 = this.$refs.localFileCondition.validateThenSet(condition)
+      if (result0 && result10 && result11) {
+        updateConditionReq(condition).then(res => {
+          this.$message.success(res.data.msg)
+          this.editDialog.condition.visible = false
         })
       }
     },
@@ -586,11 +662,14 @@ export default {
       return item
     },
     selectRow(row) {
+      if (row && this.selections.length === 1 && this.selections[0].jobName === row.jobName) {
+        return
+      }
       this.$refs.tables.clearSelection()
       if (row && (this.editDialog.oper === 'update' || row.jobName)) {
         this.$refs.tables.toggleRowSelection(row, true)
       }
-      this.reset() // get the newest or reset to origin
+      this.reset()
     },
     handleSelectionChange(val) {
       this.selections = val
@@ -613,8 +692,9 @@ export default {
       const jobNames = this.ofKeys()
       this.$confirm(buildMsg(this, jobNames), this.$t('tip.confirmMsg'), { type: 'warning' })
         .then(() => {
-          exportModelReq({ jobNames: jobNames }).then((res) => {
-            download(res.data, 'models.zip')
+          const fileName = 'model_' + getTimeStr() + '.zip'
+          exportModelReq({ jobNames: jobNames, fileName: fileName }).then((res) => {
+            download(res.data, fileName)
           })
         })
     },
@@ -627,7 +707,7 @@ export default {
           this.$t('columns.status')
         ]
         const columnNames = ['jobName', 'displayName', 'status']
-        const data = this.formatJson(columnNames, this.list)
+        const data = this.formatJson(columnNames, this.selections.length ? this.selections : this.list)
         excel.export_json_to_excel({
           header: translatedHeader,
           data,
@@ -653,7 +733,7 @@ export default {
         this.dayTimeUnit = array.dayTimeUnit
         this.overDayTimeUnits = array.overDayTimeUnits
         this.daysOfWeek = array.daysOfWeek
-        this.calendarTypes = array.calendarTypes
+        this.jobCharts = array.jobCharts
         this.search()
       })
       this.initArgTypes()
@@ -743,16 +823,19 @@ export default {
           })
         })
     },
-    initCalendarGroups() {
-      this.calendarGroups = []
+    showChart() {
+      this.editDialog.title = this.$t('statistics.chart') + '-' + this.job.displayName + '(' + this.job.jobName + ')'
+      this.editDialog.chart.visible = true
+      this.$nextTick(() => {
+        if (this.$refs.chartArea) {
+          this.$refs.chartArea.chartValue = this.jobCharts[0].value
+          this.$refs.chartArea.reRender()
+        }
+      })
+    },
+    initCalendars() {
       calendarApi.listReq().then(res => {
-        this.calendarTypes.forEach(type => {
-          const options = res.data.result.filter(item => item.type === type.value)
-          this.calendarGroups.push({
-            label: type.label,
-            options: options && options.length > 0 ? options : []
-          })
-        })
+        this.calendars = res.data.result
       })
     },
     initPageStatus() {

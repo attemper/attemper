@@ -12,7 +12,7 @@ const getters = {
   errorLogs: state => state.errorLog.logs,
   userName: state => state.user.userName,
   displayName: state => state.user.displayName,
-  admin: state => state.user.admin,
+  superAdmin: state => state.user.superAdmin,
   resourceNames: state => state.user.resourceNames
 }
 export default getters

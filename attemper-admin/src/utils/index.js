@@ -9,8 +9,8 @@
  * @returns {string}
  */
 export function parseTime(time, cFormat) {
-  if (arguments.length === 0) {
-    return null
+  if (!time) {
+    return ''
   }
   const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
   let date
@@ -351,21 +351,21 @@ export function removeClass(ele, cls) {
 
 export function parseDuration(duration) {
   if (duration === undefined || duration === null || duration === 0) {
-    return ''
+    return '0'
   }
   if (duration < 1000) {
     return duration + 'ms'
   }
   const seconds = parseInt(duration / 1000)
   if (seconds < 60) {
-    return seconds + 's ' + parseDuration(duration - seconds * 1000)
+    return seconds + 's' + ((duration - seconds * 1000) > 0 ? ' ' + parseDuration(duration - seconds * 1000) : '')
   }
   const minutes = parseInt(seconds / 60)
   if (minutes < 60) {
-    return minutes + 'm ' + parseDuration(duration - minutes * 60 * 1000)
+    return minutes + 'm' + ((duration - minutes * 60 * 1000) > 0 ? ' ' + parseDuration(duration - minutes * 60 * 1000) : '')
   }
   const hours = parseInt(minutes / 60)
-  return hours + 'h ' + parseDuration(duration - hours * 60 * 60 * 1000)
+  return hours + 'h' + ((duration - hours * 60 * 60 * 1000) > 0 ? ' ' + parseDuration(duration - hours * 60 * 60 * 1000) : '')
 }
 
 export function renderInstanceStatus(item) {

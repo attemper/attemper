@@ -19,15 +19,17 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
-@EnableConfigurationProperties(
+@EnableConfigurationProperties({
+        DataSourceProperties.class,
         AppProperties.class
-)
+})
 @Configuration
 @ComponentScan(basePackageClasses = {
-        MultiDataSourceAspect.class,
-        DataSourceProperties.class,
         DataSourceConfig.class,
+        MultiDataSourceAspect.class,
 
         GlobalExceptionAdvisor.class,
 
@@ -56,10 +58,13 @@ public class ConfigConfiguration {
     public DatabaseIdProvider getDatabaseIdProvider() {
         DatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();
         Properties properties = new Properties();
-        properties.setProperty("MySQL", "mysql");
         properties.setProperty("Oracle", "oracle");
-        properties.setProperty("DB2", "db2");
         databaseIdProvider.setProperties(properties);
         return databaseIdProvider;
+    }
+
+    @Bean
+    public ScheduledExecutorService scheduledExecutorService() {
+        return Executors.newScheduledThreadPool(appProperties.getJucScheduledPoolSize());
     }
 }

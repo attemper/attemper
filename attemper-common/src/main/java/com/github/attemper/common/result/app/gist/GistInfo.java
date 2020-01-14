@@ -2,8 +2,6 @@ package com.github.attemper.common.result.app.gist;
 
 import lombok.ToString;
 
-import java.util.Date;
-
 @ToString
 public class GistInfo {
 
@@ -13,7 +11,7 @@ public class GistInfo {
 
     protected String version;
 
-    protected Date updateTime;
+    protected long updateTime;
 
     protected String content;
 
@@ -46,11 +44,11 @@ public class GistInfo {
         return this;
     }
 
-    public Date getUpdateTime() {
+    public long getUpdateTime() {
         return updateTime;
     }
 
-    public GistInfo setUpdateTime(Date updateTime) {
+    public GistInfo setUpdateTime(long updateTime) {
         this.updateTime = updateTime;
         return this;
     }

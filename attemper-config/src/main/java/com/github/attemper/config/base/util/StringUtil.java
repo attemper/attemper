@@ -1,15 +1,7 @@
 package com.github.attemper.config.base.util;
 
-/**
- * @author ldang
- */
 public class StringUtil {
 
-    /**
-     * 数组转json字符串
-     * @param arr
-     * @return
-     */
     public static String formatToJsonStr(Object[] arr){
         if(arr == null || arr.length == 0){
             return "";

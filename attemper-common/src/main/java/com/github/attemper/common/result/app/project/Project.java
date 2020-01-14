@@ -2,11 +2,8 @@ package com.github.attemper.common.result.app.project;
 
 import lombok.ToString;
 
-import java.util.Date;
-
 /**
  * The project may be many to one of tenant
- * @author ldang
  */
 @ToString
 public class Project {
@@ -19,13 +16,7 @@ public class Project {
 
 	protected String contextPath;
 
-	protected boolean bindExecutor;
-
-    protected Integer position;
-
-	protected Date createTime;
-
-	protected Date updateTime;
+	protected int bindExecutor;
 
 	protected String tenantId;
 
@@ -65,39 +56,12 @@ public class Project {
 		return this;
 	}
 
-	public boolean isBindExecutor() {
+	public int getBindExecutor() {
 		return bindExecutor;
 	}
 
-	public Project setBindExecutor(boolean bindExecutor) {
+	public Project setBindExecutor(int bindExecutor) {
 		this.bindExecutor = bindExecutor;
-		return this;
-	}
-
-	public Integer getPosition() {
-		return position;
-	}
-
-	public Project setPosition(Integer position) {
-		this.position = position;
-		return this;
-	}
-
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public Project setCreateTime(Date createTime) {
-		this.createTime = createTime;
-		return this;
-	}
-
-	public Date getUpdateTime() {
-		return updateTime;
-	}
-
-	public Project setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
 		return this;
 	}
 

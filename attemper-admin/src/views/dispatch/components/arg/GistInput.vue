@@ -7,33 +7,28 @@
 </template>
 <script>
 
-import { listReq } from '@/api/application/gist'
 export default {
   name: 'GistInput',
   props: {
     value: {
       type: String,
       default: ''
+    },
+    gistNames: {
+      type: Array,
+      default: null
     }
   },
   data() {
     return {
-      val: this.initValue(this.value),
-      gistNames: []
+      val: this.initValue(this.value)
     }
   },
   methods: {
     initValue(value) {
-      this.initGistNames()
-      if (value && value.length >= 1 && this.gistNames.find(item => { return item === value }) !== undefined) {
+      if (value && value.length >= 1) {
         this.val = value
       }
-    },
-    initGistNames() {
-      this.gistNames = []
-      listReq({ pageSize: -1 }).then(res => {
-        this.gistNames = res.data.result.list.map(item => item.gistName)
-      })
     },
     change(val) {
       this.$emit('change', this.val)

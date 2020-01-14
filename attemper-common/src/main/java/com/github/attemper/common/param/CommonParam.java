@@ -4,7 +4,6 @@ import com.github.attemper.java.sdk.common.param.BaseParam;
 
 /**
  * common methods implemented by every param
- * @author ldang
  */
 public interface CommonParam extends BaseParam {
 

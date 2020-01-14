@@ -2,12 +2,12 @@ package com.github.attemper.sys.conf;
 
 import com.github.attemper.config.base.conf.ConfigConfiguration;
 import com.github.attemper.sys.aspect.ControllerAspect;
-import com.github.attemper.sys.controller.TagController;
+import com.github.attemper.sys.controller.RoleController;
 import com.github.attemper.sys.controller.TenantController;
-import com.github.attemper.sys.dao.TagMapper;
+import com.github.attemper.sys.dao.RoleMapper;
 import com.github.attemper.sys.dao.TenantMapper;
 import com.github.attemper.sys.exception.SysExceptionAdvisor;
-import com.github.attemper.sys.service.TagService;
+import com.github.attemper.sys.service.RoleService;
 import com.github.attemper.sys.service.TenantService;
 import com.github.attemper.sys.store.SysStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +28,15 @@ import javax.annotation.PostConstruct;
 
         //mapper
         TenantMapper.class,
-        TagMapper.class,
+        RoleMapper.class,
 
         //service
         TenantService.class,
-        TagService.class,
+        RoleService.class,
 
         //controller
         TenantController.class,
-        TagController.class,
+        RoleController.class,
 })
 public class SysConfiguration {
 

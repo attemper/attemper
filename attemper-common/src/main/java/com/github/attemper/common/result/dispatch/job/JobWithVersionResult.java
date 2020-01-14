@@ -13,7 +13,9 @@ public class JobWithVersionResult {
 
     protected int status;
 
-    protected boolean concurrent;
+    protected int concurrent;
+
+    protected int once;
 
     protected Date updateTime;
 
@@ -59,12 +61,21 @@ public class JobWithVersionResult {
         return this;
     }
 
-    public boolean isConcurrent() {
+    public int getConcurrent() {
         return concurrent;
     }
 
-    public JobWithVersionResult setConcurrent(boolean concurrent) {
+    public JobWithVersionResult setConcurrent(int concurrent) {
         this.concurrent = concurrent;
+        return this;
+    }
+
+    public int getOnce() {
+        return once;
+    }
+
+    public JobWithVersionResult setOnce(int once) {
+        this.once = once;
         return this;
     }
 

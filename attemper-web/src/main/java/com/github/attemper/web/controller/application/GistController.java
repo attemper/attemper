@@ -24,9 +24,9 @@ public class GistController {
     private GistService service;
 
     @ApiOperation("Add gist")
-    @ApiImplicitParam(value = "GistSaveParam", name = "param", dataType = "GistSaveParam", required = true)
+    @ApiImplicitParam(value = "GistNameParam", name = "param", dataType = "GistNameParam", required = true)
     @PostMapping(value = APIPath.GistPath.$)
-    public CommonResult<Gist> add(@RequestBody GistSaveParam param) {
+    public CommonResult<Gist> add(@RequestBody GistNameParam param) {
         return CommonResult.putResult(service.add(param));
     }
 

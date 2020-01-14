@@ -2,7 +2,6 @@ package com.github.attemper.common.param.dispatch.instance;
 
 import com.github.attemper.common.param.PageSortParam;
 import lombok.ToString;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
@@ -17,27 +16,19 @@ public class InstanceListParam extends PageSortParam {
 
     protected List<Integer> status;
 
-    protected String lowerStartTime;
+    protected Long lowerStartTime;
 
-    protected String upperStartTime;
+    protected Long upperStartTime;
 
-    protected String lowerEndTime;
+    protected Long lowerEndTime;
 
-    protected String upperEndTime;
+    protected Long upperEndTime;
 
     protected Long lowerDuration;
 
     protected Long upperDuration;
 
     protected boolean listChildren;
-
-    @Override
-    public void preHandle() {
-        lowerStartTime = StringUtils.trimToNull(lowerStartTime);
-        upperStartTime = StringUtils.trimToNull(upperStartTime);
-        lowerEndTime = StringUtils.trimToNull(lowerEndTime);
-        upperEndTime = StringUtils.trimToNull(upperEndTime);
-    }
 
     public String getProcInstId() {
         return procInstId;
@@ -75,38 +66,38 @@ public class InstanceListParam extends PageSortParam {
         return this;
     }
 
-    public String getLowerStartTime() {
+    public Long getLowerStartTime() {
         return lowerStartTime;
     }
 
-    public InstanceListParam setLowerStartTime(String lowerStartTime) {
+    public InstanceListParam setLowerStartTime(Long lowerStartTime) {
         this.lowerStartTime = lowerStartTime;
         return this;
     }
 
-    public String getUpperStartTime() {
+    public Long getUpperStartTime() {
         return upperStartTime;
     }
 
-    public InstanceListParam setUpperStartTime(String upperStartTime) {
+    public InstanceListParam setUpperStartTime(Long upperStartTime) {
         this.upperStartTime = upperStartTime;
         return this;
     }
 
-    public String getLowerEndTime() {
+    public Long getLowerEndTime() {
         return lowerEndTime;
     }
 
-    public InstanceListParam setLowerEndTime(String lowerEndTime) {
+    public InstanceListParam setLowerEndTime(Long lowerEndTime) {
         this.lowerEndTime = lowerEndTime;
         return this;
     }
 
-    public String getUpperEndTime() {
+    public Long getUpperEndTime() {
         return upperEndTime;
     }
 
-    public InstanceListParam setUpperEndTime(String upperEndTime) {
+    public InstanceListParam setUpperEndTime(Long upperEndTime) {
         this.upperEndTime = upperEndTime;
         return this;
     }

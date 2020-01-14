@@ -1,68 +1,5 @@
 [
   {
-    "name": "Sql",
-    "id": "SqlTask",
-    "appliesTo": [
-      "bpmn:ServiceTask"
-    ],
-    "properties": [
-      {
-        "label": "Executor Component",
-        "type": "String",
-        "editable": false,
-        "value": "${sqlTask}",
-        "binding": {
-          "type": "property",
-          "name": "camunda:delegateExpression"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Sql",
-        "description": "Sql expression",
-        "type": "String",
-        "binding": {
-          "type": "camunda:inputParameter",
-          "name": "sql"
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "editable": false,
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "editable": false,
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false,
-      "fields": false,
-      "field-name": false,
-      "field-type": false,
-      "field-value": false
-    }
-  },
-  {
     "name": "Http(Sync)",
     "id": "SyncHttpTask",
     "appliesTo": [
@@ -83,18 +20,8 @@
         }
       },
       {
-        "label": "Sub URL",
-        "description": "Sub url of a http api",
-        "type": "String",
-        "binding": {
-          "type": "camunda:property",
-          "name": "subUrl"
-        }
-      },
-      {
         "label": "Bean Name",
-        "description": "Bean name of a spring component",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:property",
           "name": "beanName"
@@ -102,15 +29,14 @@
       },
       {
         "label": "Method Name",
-        "description": "Method name of the bean above",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:property",
           "name": "methodName"
         }
       },
       {
-        "label": "Timeout(s)",
+        "label": "Timeout",
         "type": "String",
         "value": "3600",
         "binding": {
@@ -127,23 +53,38 @@
         }
       },
       {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "editable": false,
-        "value": true,
+        "label": "Sub URL",
+        "type": "Text",
         "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
+          "type": "camunda:property",
+          "name": "subUrl"
         }
       },
       {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "editable": false,
-        "value": true,
+        "label": "Request Method",
+        "type": "Dropdown",
+        "value": "POST",
+        "choices": [
+          {
+            "name": "POST",
+            "value": "POST"
+          },
+          {
+            "name": "GET",
+            "value": "GET"
+          },
+          {
+            "name": "PUT",
+            "value": "PUT"
+          },
+          {
+            "name": "DELETE",
+            "value": "DELETE"
+          }
+        ],
         "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
+          "type": "camunda:property",
+          "name": "requestMethod"
         }
       }
     ],
@@ -151,9 +92,6 @@
       "_all": true,
       "delegate": false,
       "implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false,
       "fields": false,
       "field-name": false,
       "field-type": false,
@@ -181,18 +119,8 @@
         }
       },
       {
-        "label": "Sub URL",
-        "description": "sub url of a http api",
-        "type": "String",
-        "binding": {
-          "type": "camunda:property",
-          "name": "subUrl"
-        }
-      },
-      {
         "label": "Bean Name",
-        "description": "Bean name of a spring component",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:property",
           "name": "beanName"
@@ -200,15 +128,14 @@
       },
       {
         "label": "Method Name",
-        "description": "Method name of the bean above",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:property",
           "name": "methodName"
         }
       },
       {
-        "label": "Timeout(s)",
+        "label": "Timeout",
         "type": "String",
         "value": "3600",
         "binding": {
@@ -225,23 +152,38 @@
         }
       },
       {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "editable": false,
-        "value": true,
+        "label": "Sub URL",
+        "type": "Text",
         "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
+          "type": "camunda:property",
+          "name": "subUrl"
         }
       },
       {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "editable": false,
-        "value": true,
+        "label": "Request Method",
+        "type": "Dropdown",
+        "value": "POST",
+        "choices": [
+          {
+            "name": "POST",
+            "value": "POST"
+          },
+          {
+            "name": "GET",
+            "value": "GET"
+          },
+          {
+            "name": "PUT",
+            "value": "PUT"
+          },
+          {
+            "name": "DELETE",
+            "value": "DELETE"
+          }
+        ],
         "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
+          "type": "camunda:property",
+          "name": "requestMethod"
         }
       }
     ],
@@ -249,9 +191,286 @@
       "_all": true,
       "delegate": false,
       "implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
+    }
+  },
+  {
+    "name": "Ftp2Local",
+    "id": "Ftp2LocalTask",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Executor Component",
+        "type": "String",
+        "editable": false,
+        "value": "${ftp2LocalTask}",
+        "binding": {
+          "type": "property",
+          "name": "camunda:delegateExpression"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Remote Path",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "remotePath"
+        }
+      },
+      {
+        "label": "File Name",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "fileName"
+        }
+      },
+      {
+        "label": "Suffix",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": ".txt",
+            "value": ".txt"
+          },
+          {
+            "name": ".zip",
+            "value": ".zip"
+          },
+          {
+            "name": ".csv",
+            "value": ".csv"
+          },
+          {
+            "name": ".xml",
+            "value": ".xml"
+          },
+          {
+            "name": ".dbf",
+            "value": ".dbf"
+          },
+          {
+            "name": ".xls",
+            "value": ".xls"
+          },
+          {
+            "name": ".pdf",
+            "value": ".pdf"
+          },
+          {
+            "name": ".doc",
+            "value": ".doc"
+          },
+          {
+            "name": ".docx",
+            "value": ".docx"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "suffix"
+        }
+      },
+      {
+        "label": "Local Directory",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "localDirectory"
+        }
+      },
+      {
+        "label": "Ftp Prefix",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "ftp_prefix"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "delegate": false,
+      "implementation": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
+    }
+  },
+  {
+    "name": "Local2Ftp",
+    "id": "Local2FtpTask",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Executor Component",
+        "type": "String",
+        "editable": false,
+        "value": "${local2FtpTask}",
+        "binding": {
+          "type": "property",
+          "name": "camunda:delegateExpression"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Remote Path",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "remotePath"
+        }
+      },
+      {
+        "label": "File Name",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "fileName"
+        }
+      },
+      {
+        "label": "Suffix",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": ".txt",
+            "value": ".txt"
+          },
+          {
+            "name": ".zip",
+            "value": ".zip"
+          },
+          {
+            "name": ".csv",
+            "value": ".csv"
+          },
+          {
+            "name": ".xml",
+            "value": ".xml"
+          },
+          {
+            "name": ".dbf",
+            "value": ".dbf"
+          },
+          {
+            "name": ".xls",
+            "value": ".xls"
+          },
+          {
+            "name": ".pdf",
+            "value": ".pdf"
+          },
+          {
+            "name": ".doc",
+            "value": ".doc"
+          },
+          {
+            "name": ".docx",
+            "value": ".docx"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "suffix"
+        }
+      },
+      {
+        "label": "Local Directory",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "localDirectory"
+        }
+      },
+      {
+        "label": "Ftp Prefix",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "ftp_prefix"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "delegate": false,
+      "implementation": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
+    }
+  },
+  {
+    "name": "Sql",
+    "id": "SqlTask",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Executor Component",
+        "type": "String",
+        "editable": false,
+        "value": "${sqlTask}",
+        "binding": {
+          "type": "property",
+          "name": "camunda:delegateExpression"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Sql",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "sql"
+        }
+      },
+      {
+        "label": "Result Type",
+        "type": "Dropdown",
+        "value": "0",
+        "choices": [
+          {
+            "name": "Object",
+            "value": "0"
+          },
+          {
+            "name": "Map<String, Object>",
+            "value": "1"
+          },
+          {
+            "name": "List<Map<String, Object>>",
+            "value": "2"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "resultType"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "delegate": false,
+      "implementation": false,
       "fields": false,
       "field-name": false,
       "field-type": false,
@@ -277,13 +496,12 @@
       },
       {
         "label": "From",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "custom_mail_from"
+          "name": "customMailFrom"
         },
         "constraints": {
-          "notEmpty": true,
           "pattern": {
             "value": "^[A-z0-9._%+-]+@[A-z0-9.-]+\\.[A-z]{2,}$",
             "message": "Must be a valid email."
@@ -292,21 +510,25 @@
       },
       {
         "label": "To",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "custom_mail_to"
+          "name": "customMailTo"
         },
         "constraints": {
+          "pattern": {
+            "value": "^[A-z0-9._%+-]+@[A-z0-9.-]+\\.[A-z]{2,}$",
+            "message": "Must be a valid email."
+          },
           "notEmpty": true
         }
       },
       {
         "label": "Subject",
-        "type": "String",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "custom_mail_subject"
+          "name": "customMailSubject"
         },
         "constraints": {
           "notEmpty": true
@@ -314,36 +536,15 @@
       },
       {
         "label": "Content",
-        "description": "By the way, you can use <a href=\"https://freemarker.apache.org/\">freemarker templates</a> here",
         "value": "Hello ${userName}!",
         "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "custom_mail_content",
+          "name": "customMailContent",
           "scriptFormat": "freemarker"
         },
         "constraints": {
           "notEmpty": true
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "editable": false,
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "editable": false,
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
         }
       }
     ],
@@ -351,9 +552,6 @@
       "_all": true,
       "delegate": false,
       "implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false,
       "fields": false,
       "field-name": false,
       "field-type": false,
@@ -361,8 +559,69 @@
     }
   },
   {
-    "name": "Bash Shell(Expression)",
-    "id": "Bash Shell Expression Script Task",
+    "name": "Job Caller",
+    "id": "Job Call Activity",
+    "appliesTo": [
+      "bpmn:CallActivity"
+    ],
+    "properties": [
+      {
+        "label": "Called Element",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "calledElement"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Tenant Id",
+        "type": "Text",
+        "value": "${execution.tenantId}",
+        "binding": {
+          "type": "property",
+          "name": "camunda:calledElementTenantId"
+        }
+      },
+      {
+        "label": "Input all",
+        "type": "Hidden",
+        "binding": {
+          "type": "camunda:in",
+          "variables": "all"
+        }
+      },
+      {
+        "label": "Input local",
+        "type": "Hidden",
+        "binding": {
+          "type": "camunda:in",
+          "variables": "local"
+        }
+      },
+      {
+        "label": "Output all",
+        "type": "Hidden",
+        "binding": {
+          "type": "camunda:out",
+          "variables": "all"
+        }
+      },
+      {
+        "label": "Output local",
+        "type": "Hidden",
+        "binding": {
+          "type": "camunda:out",
+          "variables": "local"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Shell(File Path)",
+    "id": "Shell File Path Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -371,7 +630,7 @@
         "label": "Script Format",
         "type": "String",
         "editable": false,
-        "value": "bash",
+        "value": "shell",
         "binding": {
           "type": "property",
           "name": "scriptFormat"
@@ -381,9 +640,8 @@
         }
       },
       {
-        "label": "Expression",
+        "label": "Script",
         "type": "Text",
-        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -391,37 +649,16 @@
         "constraints": {
           "notEmpty": true
         }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
       }
     ],
     "entriesVisible": {
       "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
+      "script-implementation": false
     }
   },
   {
-    "name": "CMD Shell(Expression)",
-    "id": "CMD Shell Expression Script Task",
+    "name": "Groovy(File Path)",
+    "id": "Groovy File Path Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -430,7 +667,7 @@
         "label": "Script Format",
         "type": "String",
         "editable": false,
-        "value": "cmd",
+        "value": "groovy",
         "binding": {
           "type": "property",
           "name": "scriptFormat"
@@ -440,9 +677,8 @@
         }
       },
       {
-        "label": "Expression",
+        "label": "Script",
         "type": "Text",
-        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -450,37 +686,16 @@
         "constraints": {
           "notEmpty": true
         }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
       }
     ],
     "entriesVisible": {
       "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
+      "script-implementation": false
     }
   },
   {
-    "name": "Python(Expression)",
-    "id": "Python Expression Script Task",
+    "name": "Shell(Text)",
+    "id": "Shell Text Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -489,7 +704,7 @@
         "label": "Script Format",
         "type": "String",
         "editable": false,
-        "value": "python",
+        "value": "shell",
         "binding": {
           "type": "property",
           "name": "scriptFormat"
@@ -499,9 +714,8 @@
         }
       },
       {
-        "label": "Expression",
+        "label": "Script",
         "type": "Text",
-        "value": "${}",
         "binding": {
           "type": "property",
           "name": "script"
@@ -511,35 +725,102 @@
         }
       },
       {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
+        "label": "Language",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Cmd(Bat)",
+            "value": ".bat"
+          },
+          {
+            "name": "Go",
+            "value": ".go"
+          },
+          {
+            "name": "Groovy",
+            "value": ".groovy"
+          },
+          {
+            "name": "Perl",
+            "value": ".pl"
+          },
+          {
+            "name": "Php",
+            "value": ".php"
+          },
+          {
+            "name": "Python",
+            "value": ".py"
+          },
+          {
+            "name": "Ruby",
+            "value": ".rb"
+          },
+          {
+            "name": "Shell(Bash)",
+            "value": ".sh"
+          }
+        ],
         "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
+          "type": "camunda:inputParameter",
+          "name": "shell_language"
         }
       },
       {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
+        "label": "Charset",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "UTF-8",
+            "value": "UTF-8"
+          },
+          {
+            "name": "ISO-8859-1",
+            "value": "ISO-8859-1"
+          },
+          {
+            "name": "GBK",
+            "value": "GBK"
+          },
+          {
+            "name": "GB2312",
+            "value": "GB2312"
+          },
+          {
+            "name": "GB18030",
+            "value": "GB18030"
+          },
+          {
+            "name": "US-ASCII",
+            "value": "US-ASCII"
+          },
+          {
+            "name": "UTF-16",
+            "value": "UTF-16"
+          },
+          {
+            "name": "UTF-16BE",
+            "value": "UTF-16BE"
+          },
+          {
+            "name": "UTF-16LE",
+            "value": "UTF-16LE"
+          }
+        ],
         "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
+          "type": "camunda:inputParameter",
+          "name": "shell_charset_command"
         }
       }
     ],
     "entriesVisible": {
       "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
+      "script-implementation": false
     }
   },
   {
-    "name": "Perl(Expression)",
-    "id": "Perl Expression Script Task",
+    "name": "Groovy(Text)",
+    "id": "Groovy Text Script Task",
     "appliesTo": [
       "bpmn:ScriptTask"
     ],
@@ -548,7 +829,44 @@
         "label": "Script Format",
         "type": "String",
         "editable": false,
-        "value": "perl",
+        "value": "groovy",
+        "binding": {
+          "type": "property",
+          "name": "scriptFormat"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Script",
+        "type": "Text",
+        "binding": {
+          "type": "property",
+          "name": "script"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "script-implementation": false
+    }
+  },
+  {
+    "name": "Shell(Expression)",
+    "id": "Shell Expression Script Task",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties": [
+      {
+        "label": "Script Format",
+        "type": "String",
+        "editable": false,
+        "value": "shell",
         "binding": {
           "type": "property",
           "name": "scriptFormat"
@@ -570,30 +888,97 @@
         }
       },
       {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
+        "label": "Language",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Cmd(Bat)",
+            "value": ".bat"
+          },
+          {
+            "name": "Go",
+            "value": ".go"
+          },
+          {
+            "name": "Groovy",
+            "value": ".groovy"
+          },
+          {
+            "name": "Perl",
+            "value": ".pl"
+          },
+          {
+            "name": "Php",
+            "value": ".php"
+          },
+          {
+            "name": "Python",
+            "value": ".py"
+          },
+          {
+            "name": "Ruby",
+            "value": ".rb"
+          },
+          {
+            "name": "Shell(Bash)",
+            "value": ".sh"
+          }
+        ],
         "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
+          "type": "camunda:inputParameter",
+          "name": "shell_language"
         }
       },
       {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
+        "label": "Charset",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "UTF-8",
+            "value": "UTF-8"
+          },
+          {
+            "name": "ISO-8859-1",
+            "value": "ISO-8859-1"
+          },
+          {
+            "name": "GBK",
+            "value": "GBK"
+          },
+          {
+            "name": "GB2312",
+            "value": "GB2312"
+          },
+          {
+            "name": "GB18030",
+            "value": "GB18030"
+          },
+          {
+            "name": "US-ASCII",
+            "value": "US-ASCII"
+          },
+          {
+            "name": "UTF-16",
+            "value": "UTF-16"
+          },
+          {
+            "name": "UTF-16BE",
+            "value": "UTF-16BE"
+          },
+          {
+            "name": "UTF-16LE",
+            "value": "UTF-16LE"
+          }
+        ],
         "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
+          "type": "camunda:inputParameter",
+          "name": "shell_charset_command"
         }
       }
     ],
     "entriesVisible": {
       "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
+      "script-implementation": false
     }
   },
   {
@@ -627,599 +1012,11 @@
         "constraints": {
           "notEmpty": true
         }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
       }
     ],
     "entriesVisible": {
       "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
-    }
-  },
-  {
-    "name": "Bash Shell(File Path)",
-    "id": "Bash Shell File Path Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "bash",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "File Path",
-        "type": "String",
-        "binding": {
-          "type": "property",
-          "name": "camunda:resource"
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
-    }
-  },
-  {
-    "name": "CMD Shell(File Path)",
-    "id": "CMD Shell File Path Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "cmd",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "File Path",
-        "type": "String",
-        "binding": {
-          "type": "property",
-          "name": "camunda:resource"
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
-    }
-  },
-  {
-    "name": "Python(File Path)",
-    "id": "Python File Path Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "python",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "File Path",
-        "type": "String",
-        "binding": {
-          "type": "property",
-          "name": "camunda:resource"
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
-    }
-  },
-  {
-    "name": "Perl(File Path)",
-    "id": "Perl File Path Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "perl",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "File Path",
-        "type": "String",
-        "binding": {
-          "type": "property",
-          "name": "camunda:resource"
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
-    }
-  },
-  {
-    "name": "Groovy(File Path)",
-    "id": "Groovy File Path Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "groovy",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "File Path",
-        "type": "String",
-        "binding": {
-          "type": "property",
-          "name": "camunda:resource"
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
-    }
-  },
-  {
-    "name": "Bash Shell(Text)",
-    "id": "Bash Shell Text Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "bash",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Script",
-        "type": "Text",
-        "value": "echo $PATH",
-        "binding": {
-          "type": "property",
-          "name": "script"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
-    }
-  },
-  {
-    "name": "CMD Shell(Text)",
-    "id": "CMD Shell Text Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "cmd",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Script",
-        "type": "Text",
-        "value": "echo %PATH%",
-        "binding": {
-          "type": "property",
-          "name": "script"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
-    }
-  },
-  {
-    "name": "Python(Text)",
-    "id": "Python Text Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "python",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Script",
-        "type": "Text",
-        "binding": {
-          "type": "property",
-          "name": "script"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
-    }
-  },
-  {
-    "name": "Perl(Text)",
-    "id": "Perl Text Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "perl",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Script",
-        "type": "Text",
-        "binding": {
-          "type": "property",
-          "name": "script"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
-    }
-  },
-  {
-    "name": "Groovy(Text)",
-    "id": "Groovy Text Script Task",
-    "appliesTo": [
-      "bpmn:ScriptTask"
-    ],
-    "properties": [
-      {
-        "label": "Script Format",
-        "type": "String",
-        "editable": false,
-        "value": "groovy",
-        "binding": {
-          "type": "property",
-          "name": "scriptFormat"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Script",
-        "type": "Text",
-        "binding": {
-          "type": "property",
-          "name": "script"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Asynchronous Before",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      },
-      {
-        "label": "Asynchronous After",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncAfter"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false,
-      "asyncBefore": false,
-      "asyncAfter": false,
-      "exclusive": false
+      "script-implementation": false
     }
   }
 ]

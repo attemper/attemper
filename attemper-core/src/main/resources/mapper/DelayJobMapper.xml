@@ -17,7 +17,7 @@
             #{id, jdbcType=VARCHAR},
             #{jobName, jdbcType=VARCHAR},
             #{status, jdbcType=INTEGER},
-            #{requestTime, jdbcType=TIMESTAMP},
+            #{requestTime, jdbcType=INTEGER},
             #{tenantId, jdbcType=VARCHAR}
         )
     </insert>
@@ -26,16 +26,16 @@
         <include refid="infoSql"/>
         <where>
             <if test="id != null">
-                and lower(dj.ID) like concat('%', lower(#{id, jdbcType=VARCHAR}), '%')
+                AND LOWER(dj.ID) LIKE CONCAT(CONCAT('%', LOWER(#{id, jdbcType=VARCHAR})), '%')
             </if>
             <if test="jobName != null">
-                and lower(j.JOB_NAME) like concat('%', lower(#{jobName, jdbcType=VARCHAR}), '%')
+                AND LOWER(j.JOB_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{jobName, jdbcType=VARCHAR})), '%')
             </if>
             <if test="displayName != null">
-                and lower(j.DISPLAY_NAME) like concat('%', lower(#{displayName, jdbcType=VARCHAR}), '%')
+                AND LOWER(j.DISPLAY_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{displayName, jdbcType=VARCHAR})), '%')
             </if>
             <if test="status != null &amp;&amp;status.size() &gt; 0">
-                and dj.STATUS in
+                AND dj.STATUS IN
                 <foreach item="item" collection="status" open="(" separator="," close=")">
                     #{item, jdbcType=INTEGER}
                 </foreach>
@@ -52,53 +52,36 @@
         </choose>
     </select>
 
-    <select id="get" parameterType="map" resultType="com.github.attemper.common.result.dispatch.delay.DelayJob">
+    <select id="get" parameterType="java.lang.String" resultType="com.github.attemper.common.result.dispatch.delay.DelayJob">
         <include refid="infoSql"/>
         <where>
-            <if test="id != null">
-                and dj.ID = #{id, jdbcType=VARCHAR}
-            </if>
+            AND dj.ID = #{1, jdbcType=VARCHAR}
         </where>
     </select>
 
     <delete id="delete" parameterType="map">
-        DELETE FROM dj USING ${tablePrefix}delay_job dj
+        DELETE FROM ${tablePrefix}delay_job
         <where>
             ID in
             <foreach item="id" collection="ids" open="(" separator="," close=")">
                 #{id, jdbcType=VARCHAR}
             </foreach>
         </where>
-        <!--
-        ;
-        DELETE FROM a,b,c USING
-        act_re_procdef a
-        JOIN act_ge_bytearray c
-        ON a.DEPLOYMENT_ID_ = c.DEPLOYMENT_ID_ AND a.RESOURCE_NAME_ = c.NAME_
-        JOIN act_re_deployment b
-        ON a.DEPLOYMENT_ID_ = b.ID_
-        <where>
-            a.KEY_ in
-            <foreach item="jobName" collection="jobNames" open="(" separator="," close=")">
-                #{jobName}
-            </foreach>
-            AND a.TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
-        </where>-->
     </delete>
 
     <sql id="infoSql">
-        SELECT dj.*, j.`DISPLAY_NAME` FROM ${tablePrefix}delay_job dj JOIN ${tablePrefix}job j USING(JOB_NAME, TENANT_ID)
+        SELECT dj.*, j.DISPLAY_NAME FROM ${tablePrefix}delay_job dj JOIN ${tablePrefix}job j ON dj.JOB_NAME = j.JOB_NAME AND dj.TENANT_ID = j.TENANT_ID
     </sql>
 
     <sql id="condJobName">
         <if test="jobName != null">
-            and dj.JOB_NAME = #{jobName, jdbcType=VARCHAR}
+            AND dj.JOB_NAME = #{jobName, jdbcType=VARCHAR}
         </if>
     </sql>
 
     <sql id="condTenantId">
         <if test="tenantId != null">
-            and dj.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            AND dj.TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>

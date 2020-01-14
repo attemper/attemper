@@ -25,8 +25,6 @@ public interface CommonConstants {
 
     String delayId = "delayId";
 
-    String projectName = "projectName";
-
     String status = "status";
 
     String isRetry = "isRetry";
@@ -39,7 +37,23 @@ public interface CommonConstants {
 
     String procInstId = "procInstId";
 
-    String FALSE = "false";
+    String type = "type";
+
+    String content = "content";
+
+    String lowerStartTime = "lowerStartTime";
+
+    String upperStartTime = "upperStartTime";
+
+    String COLON = ":";
+
+    String COMMA = ",";
+
+    String EMPTY = "";
+
+    String BR = "<br>";
+
+    String select = "select";
 
     int DEF_CURRENT_PAGE = 1;
 
@@ -47,9 +61,6 @@ public interface CommonConstants {
 
     int MAX_PAGE_SIZE = 5000;
 
-    String REGEX_EMAIL = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?";
-
     String yyyyMMdd = "yyyyMMdd";
 
-    String REGEX_TRADE_DATE = "^([TWMSHY]{1})((([+-])([0123456789]*))?)(( ((([+-])([0123456789]*))?))?)$";
 }

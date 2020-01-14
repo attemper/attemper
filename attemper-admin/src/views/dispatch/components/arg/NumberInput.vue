@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-input-number v-model="val" :min="min" :max="max" :step="step" :precision="precision" controls-position="right" />
+    <el-input-number v-model="val" style="width: 100%;" :min="min" :max="max" :step="step" :precision="precision" controls-position="right" />
   </div>
 </template>
 <script>

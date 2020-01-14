@@ -138,6 +138,56 @@ export const importModelReq = (data) => {
   })
 }
 
+export const updateTriggerReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.TRIGGER,
+    method: 'put',
+    data: data
+  })
+}
+
+export const getTriggerReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.TRIGGER + APIPath.GET,
+    method: 'get',
+    params: params
+  })
+}
+
+const TEST = '/test'
+
+export const testCronTriggerReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.TRIGGER + TEST + '/cron',
+    method: 'post',
+    data: data
+  })
+}
+
+export const testCalendarOffsetTriggerReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.TRIGGER + TEST + '/calendarOffset',
+    method: 'post',
+    data: data
+  })
+}
+
+export const testDailyTimeIntervalTriggerReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.TRIGGER + TEST + '/dailyTimeInterval',
+    method: 'post',
+    data: data
+  })
+}
+
+export const testCalendarIntervalTriggerReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.TRIGGER + TEST + '/calendarInterval',
+    method: 'post',
+    data: data
+  })
+}
+
 export const listArgReq = (params) => {
   return request({
     url: APIPath.DISPATCH + APIPath.JOB + APIPath.ARG,
@@ -186,3 +236,18 @@ export const getJsonArgReq = (params) => {
   })
 }
 
+export const updateConditionReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.CONDITION,
+    method: 'put',
+    data: data
+  })
+}
+
+export const getConditionReq = (params) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.JOB + APIPath.CONDITION + APIPath.GET,
+    method: 'get',
+    params: params
+  })
+}

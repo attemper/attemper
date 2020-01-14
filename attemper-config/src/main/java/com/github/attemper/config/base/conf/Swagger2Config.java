@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
  * swagger2
- * @author ldang
  */
 @Configuration
 @EnableSwagger2

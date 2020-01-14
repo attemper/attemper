@@ -2,14 +2,12 @@ package com.github.attemper.common.result.app.gist;
 
 import lombok.ToString;
 
-import java.util.Date;
-
 @ToString
 public class Gist {
 
     protected String gistName;
 
-    protected Date createTime;
+    protected long createTime;
 
     protected String tenantId;
 
@@ -22,11 +20,11 @@ public class Gist {
         return this;
     }
 
-    public Date getCreateTime() {
+    public long getCreateTime() {
         return createTime;
     }
 
-    public Gist setCreateTime(Date createTime) {
+    public Gist setCreateTime(long createTime) {
         this.createTime = createTime;
         return this;
     }

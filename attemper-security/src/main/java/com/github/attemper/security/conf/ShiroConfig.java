@@ -1,6 +1,7 @@
 package com.github.attemper.security.conf;
 
 import com.github.attemper.java.sdk.common.constant.SdkAPIPath;
+import com.github.attemper.java.sdk.common.executor.constant.ExecutorAPIPath;
 import com.github.attemper.security.shiro.CustomRealm;
 import com.github.attemper.security.shiro.JWTFilter;
 import org.apache.shiro.mgt.SecurityManager;
@@ -54,7 +55,9 @@ public class ShiroConfig {
         filterMap.put("/webjars/**", "anon");
         filterMap.put("/swagger-resources/**", "anon");
         filterMap.put("/v2/api-docs", "anon");  //swagger2 api
-        filterMap.put("/kaptcha", "anon");
+        //filterMap.put("/kaptcha", "anon");
+        filterMap.put(ExecutorAPIPath.RouterPath.SYNC, "anon");
+        filterMap.put(ExecutorAPIPath.RouterPath.ASYNC, "anon");
         filterMap.put("/**", jwtFilter);
         bean.setFilterChainDefinitionMap(filterMap);
 

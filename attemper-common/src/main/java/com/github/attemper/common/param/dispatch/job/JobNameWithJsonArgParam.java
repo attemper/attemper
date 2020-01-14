@@ -10,16 +10,7 @@ import org.apache.commons.lang.StringUtils;
 @Getter
 @Setter
 @ToString
-public class JobNameWithJsonArgParam implements CommonParam {
-
-    protected String jobName;
+public class JobNameWithJsonArgParam extends JobNameParam {
 
     protected JsonNode jsonData;
-
-    public String validate() {
-        if(StringUtils.isBlank(jobName)){
-            return "6000";
-        }
-        return null;
-    }
 }

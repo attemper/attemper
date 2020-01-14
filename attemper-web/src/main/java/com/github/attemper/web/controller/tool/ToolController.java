@@ -1,6 +1,7 @@
 package com.github.attemper.web.controller.tool;
 
 import com.github.attemper.common.constant.APIPath;
+import com.github.attemper.common.param.tool.server.ServerInfoGetParam;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.core.service.tool.ToolService;
 import io.swagger.annotations.Api;
@@ -14,9 +15,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author ldang
- */
 @Api("Tool")
 @RestController
 public class ToolController {
@@ -30,16 +28,28 @@ public class ToolController {
         return CommonResult.putResult(service.listTimeZone());
     }
 
-    @ApiOperation("list services of executor")
+    @ApiOperation("List services of scheduler")
+    @GetMapping(APIPath.ToolPath.LIST_SCHEDULER_SERVICE)
+    public CommonResult<List<ServiceInstance>> listSchedulerService() {
+        return CommonResult.putResult(service.listSchedulerService());
+    }
+
+    @ApiOperation("List services of executor")
     @GetMapping(APIPath.ToolPath.LIST_EXECUTOR_SERVICE)
     public CommonResult<List<ServiceInstance>> listExecutorService() {
         return CommonResult.putResult(service.listExecutorService());
     }
 
+    @ApiOperation("Get server info")
+    @GetMapping(APIPath.ToolPath.GET_SERVER_INFO)
+    public CommonResult<Map<String, Object>> getServerInfo(ServerInfoGetParam param) {
+        return CommonResult.putResult(service.requestServerInfo(param));
+    }
+
     @ApiOperation("Ping the Internet address")
     @GetMapping(APIPath.ToolPath.PING)
-    public CommonResult<Boolean> ping(String uri, Integer type) {
-        return CommonResult.putResult(service.ping(uri, type));
+    public CommonResult<Boolean> ping(String uri, Integer uriType) {
+        return CommonResult.putResult(service.ping(uri, uriType));
     }
 
     @ApiOperation("Get server time")

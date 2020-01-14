@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.attemper</groupId>
 	<artifactId>attemper</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<modules>
 		<module>${project.artifactId}-admin</module>
 		<module>${project.artifactId}-common</module>
@@ -26,47 +26,51 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
-		<spring.boot.version>2.1.7.RELEASE</spring.boot.version>
-		<spring.cloud.version>Greenwich.SR2</spring.cloud.version>
+		<spring.boot.version>2.2.2.RELEASE</spring.boot.version>
+		<spring.cloud.version>Greenwich.SR4</spring.cloud.version>
 
-		<camunda.spring.boot.version>3.3.3</camunda.spring.boot.version>
-		<camunda.version>7.11.0</camunda.version>
+		<camunda.spring.boot.version>3.4.0</camunda.spring.boot.version>
+		<camunda.version>7.12.0</camunda.version>
 		<disruptor.version>3.4.2</disruptor.version>
-		<quartz.spring.boot.version>1.0.0-SNAPSHOT</quartz.spring.boot.version>
-		<quartz.version>3.0.0-SNAPSHOT</quartz.version>
-		<sdk.version>1.0.0-SNAPSHOT</sdk.version>
+		<quartz.spring.boot.version>1.0.0</quartz.spring.boot.version>
+		<quartz.version>2.3.2.1</quartz.version>
+		<sdk.version>1.0.0</sdk.version>
 		<sdk.artifactId>attemper-java-sdk</sdk.artifactId>
 
-		<mysql.version>5.1.27</mysql.version>
-		<mybatis.spring.boot.version>2.1.0</mybatis.spring.boot.version>
-		<pagehelper.spring.boot.version>1.2.7</pagehelper.spring.boot.version>
-		<jackson.version>2.9.9</jackson.version>
-		<httpclient.version>4.5.5</httpclient.version>
-		<commons.lang.version>2.6</commons.lang.version>
-		<commons.io.version>2.5</commons.io.version>
-		<commons.collections.version>3.2.1</commons.collections.version>
 		<commons.logging.version>1.2</commons.logging.version>
-		<shiro.version>1.4.0</shiro.version>
-		<jjwt.version>0.9.1</jjwt.version>
-		<!--<kaptcha.version>0.0.9</kaptcha.version>-->
-		<swagger.version>2.9.2</swagger.version>
+		<commons.codec.version>1.13</commons.codec.version>
+		<shiro.version>1.4.2</shiro.version>
 		<lombok.version>1.16.18</lombok.version>
-		<!--<jpinyin.version>1.1.8</jpinyin.version>-->
-		<reflections.version>0.9.10</reflections.version>
 		<junit.version>4.12</junit.version>
-		<groovy.version>2.4.15</groovy.version>
-		<fasterxml.uuid.version>3.2.0</fasterxml.uuid.version>
+		<jna.version>5.5.0</jna.version>
 
-		<!-- plugin version -->
-		<os.plugin.version>1.5.0.Final</os.plugin.version>
-		<protobuf.plugin.version>0.5.0</protobuf.plugin.version>
-		<protoc.version>3.5.1</protoc.version>
-		<maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
-		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<lombok.maven.plugin.version>1.16.18.0</lombok.maven.plugin.version>
 		<!-- docker -->
-		<dockerfile.maven.plugin.version>1.4.10</dockerfile.maven.plugin.version>
+		<dockerfile.maven.plugin.version>1.4.13</dockerfile.maven.plugin.version>
+
+		<!-- plugin version -->
+		<maven.compiler.plugin.version>2.1</maven.compiler.plugin.version>
+		<maven.release.plugin.version>2.5.3</maven.release.plugin.version>
 	</properties>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
 	<dependencyManagement>
 		<dependencies>
@@ -86,42 +90,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<dependency>
-				<groupId>mysql</groupId>
-				<artifactId>mysql-connector-java</artifactId>
-				<version>${mysql.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mybatis.spring.boot</groupId>
-				<artifactId>mybatis-spring-boot-starter</artifactId>
-				<version>${mybatis.spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.github.pagehelper</groupId>
-				<artifactId>pagehelper-spring-boot-starter</artifactId>
-				<version>${pagehelper.spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
-				<version>${httpclient.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-lang</groupId>
-				<artifactId>commons-lang</artifactId>
-				<version>${commons.lang.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>${commons.io.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-collections</groupId>
-				<artifactId>commons-collections</artifactId>
-				<version>${commons.collections.version}</version>
-				<optional>true</optional>
-			</dependency>
+
 			<dependency>
 				<groupId>org.apache.shiro</groupId>
 				<artifactId>shiro-core</artifactId>
@@ -137,45 +106,11 @@
 				<artifactId>shiro-spring</artifactId>
 				<version>${shiro.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>io.jsonwebtoken</groupId>
-				<artifactId>jjwt</artifactId>
-				<version>${jjwt.version}</version>
-			</dependency>
-			<!--<dependency>
-				<groupId>com.github.axet</groupId>
-				<artifactId>kaptcha</artifactId>
-				<version>${kaptcha.version}</version>
-			</dependency>-->
 
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
 				<version>${lombok.version}</version>
-			</dependency>
-			<!-- swagger begin -->
-			<dependency>
-				<groupId>io.springfox</groupId>
-				<artifactId>springfox-swagger2</artifactId>
-				<version>${swagger.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.springfox</groupId>
-				<artifactId>springfox-swagger-ui</artifactId>
-				<version>${swagger.version}</version>
-			</dependency>
-			<!-- swagger end -->
-
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-databind</artifactId>
-				<version>${jackson.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.reflections</groupId>
-				<artifactId>reflections</artifactId>
-				<version>${reflections.version}</version>
 			</dependency>
 
 			<!-- camunda -->
@@ -192,11 +127,6 @@
 				<version>${camunda.spring.boot.version}</version>
 			</dependency>
 
-			<!--<dependency>
-				<groupId>com.github.stuxuhai</groupId>
-				<artifactId>jpinyin</artifactId>
-				<version>${jpinyin.version}</version>
-			</dependency>-->
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -214,11 +144,6 @@
 				<artifactId>quartz-core</artifactId>
 				<version>${quartz.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>quartz-plugins</artifactId>
-				<version>${quartz.version}</version>
-			</dependency>
 
 			<dependency>
 				<groupId>com.lmax</groupId>
@@ -226,29 +151,45 @@
 				<version>${disruptor.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.fasterxml.uuid</groupId>
-				<artifactId>java-uuid-generator</artifactId>
-				<version>${fasterxml.uuid.version}</version>
+				<groupId>net.java.dev.jna</groupId>
+				<artifactId>jna-platform</artifactId>
+				<version>${jna.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.java.dev.jna</groupId>
+						<artifactId>jna</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
-				<groupId>org.codehaus.groovy</groupId>
-				<artifactId>groovy-all</artifactId>
-				<version>${groovy.version}</version>
-			</dependency>
+				<groupId>net.java.dev.jna</groupId>
+				<artifactId>jna</artifactId>
+				<version>${jna.version}</version>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.plugin.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>${maven.deploy.plugin.version}</version>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven.jar.plugin.version}</version>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>${maven.release.plugin.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.projectlombok</groupId>

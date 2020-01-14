@@ -3,7 +3,8 @@ package com.github.attemper.core.ext.notice;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.core.ext.notice.channel.Sender;
 import org.reflections.Reflections;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
@@ -12,13 +13,12 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
-public class NoticeService implements CommandLineRunner {
+public class NoticeService implements ApplicationListener<WebServerInitializedEvent> {
 
-    private Map<Integer, Sender> senderMap;
+    private Map<Integer, Sender> senderMap = new HashMap<>();
 
     @Override
-    public void run(String... args) {
-        senderMap = new HashMap<>();
+    public void onApplicationEvent(WebServerInitializedEvent webServerInitializedEvent) {
         Reflections reflections = new Reflections(Sender.class.getPackage().getName());
         Set<Class<? extends Sender>> subTypeSet = reflections.getSubTypesOf(Sender.class);
         for (Class<? extends Sender> subType : subTypeSet) {

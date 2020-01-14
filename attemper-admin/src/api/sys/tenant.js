@@ -41,17 +41,25 @@ export const getReq = (params) => {
   })
 }
 
-export const getTagsReq = (params) => {
+export const updatePasswordReq = (data) => {
   return request({
-    url: APIPath.SYS + APIPath.TENANT + '/tag',
+    url: APIPath.SYS + APIPath.TENANT + '/password',
+    method: 'put',
+    data: data
+  })
+}
+
+export const getRolesReq = (params) => {
+  return request({
+    url: APIPath.SYS + APIPath.TENANT + '/role',
     method: 'get',
     params: params
   })
 }
 
-export const updateTagReq = (data) => {
+export const updateRoleReq = (data) => {
   return request({
-    url: APIPath.SYS + APIPath.TENANT + '/tag',
+    url: APIPath.SYS + APIPath.TENANT + '/role',
     method: 'put',
     data: data
   })

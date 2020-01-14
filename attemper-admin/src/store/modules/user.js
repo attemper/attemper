@@ -2,12 +2,14 @@ import { login, getInfo } from '@/api/sys/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 import { closeAllTabs } from '@/utils/tools'
+import { Message } from 'element-ui'
+import langSelect from '../../lang/index'
 
 const state = {
   token: getToken(),
   userName: '',
   displayName: '',
-  admin: null,
+  superAdmin: null,
   roles: [],
   resourceNames: []
 }
@@ -21,8 +23,8 @@ const mutations = {
   SET_DISPLAY_NAME: (state, displayName) => {
     state.displayName = displayName
   },
-  SET_ADMIN: (state, admin) => {
-    state.admin = admin
+  SET_SUPER_ADMIN: (state, superAdmin) => {
+    state.superAdmin = superAdmin
   },
   SET_RESOURCE_NAMES: (state, resourceNames) => {
     state.resourceNames = resourceNames
@@ -33,14 +35,14 @@ const mutations = {
 }
 const actions = {
   // user login
-  login({ commit, dispatch }, userInfo) {
+  login({ commit /*, dispatch*/ }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login(username.trim(), password).then(response => {
         const result = response.data.result
         commit('SET_TOKEN', result.token)
         setToken(result.token)
-        dispatch('getInfo')
+        // dispatch('getInfo')
         resolve()
       }).catch(error => {
         reject(error)
@@ -53,17 +55,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         const { data } = response
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
         const { result } = data
         commit('SET_USER_NAME', result.tenant.userName)
         commit('SET_DISPLAY_NAME', result.tenant.displayName)
-        commit('SET_ADMIN', result.tenant.admin)
+        commit('SET_SUPER_ADMIN', result.tenant.superAdmin)
+        if (result.tenant.status === 1) {
+          Message.warning(langSelect.t('tip.tenantFrozen'))
+        }
         const roleNames = []
-        if (result.tags && result.tags.length) {
-          result.tags.forEach(tag => {
-            roleNames.push(tag.tagName)
+        if (result.roles && result.roles.length) {
+          result.roles.forEach(role => {
+            roleNames.push(role.roleName)
           })
           commit('SET_ROLES', roleNames)
           sessionStorage.roleNames = JSON.stringify(roleNames)

@@ -7,8 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 动态数据源
- * @auth ldang
+ * dynamic datasource
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
     private static final ThreadLocal<String> dynamicDataSourceHolder = new ThreadLocal<>();

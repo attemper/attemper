@@ -24,7 +24,7 @@ public class InstanceUpdatedService {
         if (validateState(instance)) {
             runtimeService.deleteProcessInstanceIfExists(
                     instance.getProcInstId(),
-                    StatusProperty.getValue(901),
+                    StatusProperty.getValue(930),
                     true,
                     true,
                     false,

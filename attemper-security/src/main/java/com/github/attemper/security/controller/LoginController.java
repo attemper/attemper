@@ -42,7 +42,7 @@ public class LoginController {
      *
      * @return
      */
-    @ApiOperation("Get tenant&resource&tag by token")
+    @ApiOperation("Get tenant&resource&role by token")
     @GetMapping(APIPath.LoginPath.INFO)
     public CommonResult<LoginInfo> getInfo() {
         return CommonResult.putResult(service.getInfo());

@@ -21,21 +21,22 @@
             #{password, jdbcType=VARCHAR},
             #{attribute, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR}
-        );
+        )
     </insert>
 
     <update id="update" parameterType="com.github.attemper.common.result.dispatch.datasource.DataSourceInfo">
         UPDATE
         ${tablePrefix}datasource
-        SET
-        DRIVER_CLASS_NAME = #{driverClassName, jdbcType=VARCHAR},
-        JDBC_URL = #{jdbcUrl, jdbcType=VARCHAR},
-        USER_NAME = #{userName, jdbcType=VARCHAR},
-        PASSWORD = #{password, jdbcType=VARCHAR},
-        ATTRIBUTE = #{attribute, jdbcType=VARCHAR}
+        <set>
+            DRIVER_CLASS_NAME = #{driverClassName, jdbcType=VARCHAR},
+            JDBC_URL = #{jdbcUrl, jdbcType=VARCHAR},
+            USER_NAME = #{userName, jdbcType=VARCHAR},
+            PASSWORD = #{password, jdbcType=VARCHAR},
+            ATTRIBUTE = #{attribute, jdbcType=VARCHAR},
+        </set>
         <where>
-            <include refid="condDbName"/>
-            <include refid="condTenantId"/>
+            <include refid="condDbName_"/>
+            <include refid="condTenantId_"/>
         </where>
     </update>
 
@@ -44,8 +45,8 @@
         SELECT *
         FROM ${tablePrefix}datasource
         <where>
-            <include refid="condDbName"/>
-            <include refid="condTenantId"/>
+            <include refid="condDbName_"/>
+            <include refid="condTenantId_"/>
         </where>
     </select>
 
@@ -55,53 +56,49 @@
         FROM ${tablePrefix}datasource
         <where>
             <if test="dbName != null">
-                and lower(DB_NAME) like concat('%', lower(#{dbName, jdbcType=VARCHAR}), '%')
+                AND LOWER(DB_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{dbName, jdbcType=VARCHAR})), '%')
             </if>
             <if test="driverClassName != null">
-                and DRIVER_CLASS_NAME = #{driverClassName, jdbcType=VARCHAR}
+                AND DRIVER_CLASS_NAME = #{driverClassName, jdbcType=VARCHAR}
             </if>
             <if test="jdbcUrl != null">
-                and lower(JDBC_URL) like concat('%', lower(#{jdbcUrl, jdbcType = VARCHAR}), '%')
+                AND LOWER(JDBC_URL) LIKE CONCAT(CONCAT('%', LOWER(#{jdbcUrl, jdbcType = VARCHAR})), '%')
             </if>
             <if test="userName != null">
-                and lower(USER_NAME) like concat('%', lower(#{userName, jdbcType = VARCHAR}), '%')
+                AND LOWER(USER_NAME) LIKE CONCAT(CONCAT('%', LOWER(#{userName, jdbcType = VARCHAR})), '%')
             </if>
-            <include refid="condTenantId"/>
+            <include refid="condTenantId_"/>
         </where>
         <choose>
             <when test="sort == null">
-                order by DB_NAME ${direction}
+                order by DB_NAME
             </when>
             <otherwise>
-                order by ${sort} ${direction}
+                order by ${sort}
             </otherwise>
         </choose>
     </select>
 
     <delete id="delete" parameterType="map">
-        DELETE <include refid="dbNamesSql"/>
+        DELETE FROM ${tablePrefix}datasource
+        <where>
+            DB_NAME IN
+            <foreach item="dbName" collection="dbNames" open="(" separator="," close=")">
+                #{dbName, jdbcType=VARCHAR}
+            </foreach>
+            <include refid="condTenantId_"/>
+        </where>
     </delete>
 
-    <sql id="dbNamesSql">
-        FROM ${tablePrefix}datasource
-        <where>
-            DB_NAME in
-            <foreach item="dbName" collection="dbNames" open="(" separator="," close=")">
-                #{dbName}
-            </foreach>
-            <include refid="condTenantId"/>
-        </where>
-    </sql>
-
-    <sql id="condDbName">
+    <sql id="condDbName_">
         <if test="dbName != null">
-            and DB_NAME = #{dbName, jdbcType=VARCHAR}
+            AND DB_NAME = #{dbName, jdbcType=VARCHAR}
         </if>
     </sql>
 
-    <sql id="condTenantId">
+    <sql id="condTenantId_">
         <if test="tenantId != null">
-            and TENANT_ID = #{tenantId, jdbcType=VARCHAR}
+            AND TENANT_ID = #{tenantId, jdbcType=VARCHAR}
         </if>
     </sql>
 

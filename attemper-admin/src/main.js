@@ -9,9 +9,9 @@ import '@/styles/index.scss' // global css
 // https://github.com/apache/incubator-echarts/blob/master/index.js
 import ECharts from 'vue-echarts/components/ECharts.vue'
 import 'echarts/lib/chart/pie'
+import 'echarts/lib/chart/line'
 import 'echarts/lib/component/title'
 import 'echarts/lib/component/tooltip'
-import 'echarts/lib/chart/scatter'
 import 'echarts/lib/component/singleAxis'
 
 import App from './App'
@@ -23,15 +23,6 @@ import './icons' // icon
 import './permission' // permission control
 import './utils/error-log' // error log
 import * as filters from './filters' // global filters
-
-/**
- * If you don't want to use mock-server
- * you want to use mockjs for request interception
- * you can execute:
- *
- * import { mockXHR } from '../mock'
- * mockXHR()
- */
 
 Vue.use(Element, {
   size: localStorage.getItem('size') || 'small', // set element-ui default size

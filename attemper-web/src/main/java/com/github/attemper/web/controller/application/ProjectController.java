@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * @author ldang
- */
 @Api("Project")
 @RestController
 public class ProjectController {
@@ -40,21 +37,21 @@ public class ProjectController {
 	@ApiOperation("Remove projects")
 	@ApiImplicitParam(value = "ProjectRemoveParam", name = "param", dataType = "ProjectRemoveParam", required = true)
 	@DeleteMapping(APIPath.ProjectPath.$)
-	public CommonResult<Void> remove(@RequestBody ProjectRemoveParam param) {
+	public CommonResult<Void> remove(@RequestBody ProjectNamesParam param) {
 		return CommonResult.putResult(service.remove(param));
     }
 
 	@ApiOperation("Save project info")
 	@ApiImplicitParam(value = "ProjectInfoSaveParam", name = "param", dataType = "ProjectInfoSaveParam", required = true)
 	@PostMapping(APIPath.ProjectPath.INFO)
-	public CommonResult<Void> saveInfo(@RequestBody ProjectInfoSaveParam param) {
+	public CommonResult<ProjectInfo> saveInfo(@RequestBody ProjectInfoSaveParam param) {
 		return CommonResult.putResult(service.saveInfo(param));
 	}
 
 	@ApiOperation("List project info")
 	@ApiImplicitParam(value = "ProjectGetParam", name = "param", dataType = "ProjectGetParam", required = true)
 	@GetMapping(APIPath.ProjectPath.INFO)
-	public CommonResult<List<ProjectInfo>> listInfo(ProjectGetParam param) {
+	public CommonResult<List<ProjectInfo>> listInfo(ProjectNameParam param) {
 		return CommonResult.putResult(service.listInfo(param));
 	}
 
@@ -75,7 +72,7 @@ public class ProjectController {
 	@ApiOperation("List project executor")
 	@ApiImplicitParam(value = "ProjectGetParam", name = "param", dataType = "ProjectGetParam", required = true)
 	@GetMapping(APIPath.ProjectPath.EXECUTOR)
-	public CommonResult<List<String>> listExecutor(ProjectGetParam param) {
+	public CommonResult<List<String>> listExecutor(ProjectNameParam param) {
 		return CommonResult.putResult(service.listExecutor(param));
 	}
 }

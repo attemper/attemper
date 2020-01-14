@@ -1,15 +1,12 @@
 <template>
-  <div>
-    <el-date-picker
-      v-model="value"
-      :size="size"
-      type="datetime"
-      :placeholder="placeholder"
-      :picker-options="pickerOptions"
-      value-format="yyyy-MM-dd HH:mm:ss"
-      @change="change"
-    />
-  </div>
+  <el-date-picker
+    v-model="value_"
+    type="datetime"
+    :placeholder="placeholder"
+    :picker-options="pickerOptions"
+    value-format="timestamp"
+    @change="change"
+  />
 </template>
 
 <script>
@@ -17,52 +14,70 @@
 export default {
   name: 'DateTimeGenerator',
   props: {
+    value: {
+      type: Number,
+      default: 0
+    },
     placeholder: {
       type: String,
       default: null
-    },
-    size: {
-      type: String,
-      default: ''
     }
   },
   data() {
     return {
-      value: null,
-      pickerOptions: {
+      value_: null
+    }
+  },
+  computed: {
+    pickerOptions() {
+      const now = new Date()
+      return {
         shortcuts: [{
-          text: 'today',
+          text: this.$t('tip.today'),
           onClick(picker) {
-            picker.$emit('pick', new Date())
+            picker.$emit('pick', now)
           }
         }, {
-          text: 'yesterday',
+          text: this.$t('tip.yesterday'),
           onClick(picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', date)
+            picker.$emit('pick', new Date(now.getTime() - 3600 * 1000 * 24))
           }
         }, {
-          text: '1 week ago',
+          text: this.$t('tip.lastWeek'),
           onClick(picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
+            picker.$emit('pick', new Date(now.getTime() - 3600 * 1000 * 24 * 7))
+          }
+        }, {
+          text: this.$t('tip.lastMonth'),
+          onClick(picker) {
+            picker.$emit('pick', new Date(now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear(), now.getMonth() === 0 ? 11 : now.getMonth() - 1, now.getDate()))
+          }
+        }, {
+          text: this.$t('tip.lastYear'),
+          onClick(picker) {
+            picker.$emit('pick', new Date(now.getFullYear() - 1, now.getMonth(), now.getDate()))
           }
         }]
       }
     }
   },
-  created() {},
+  watch: {
+    value(val) {
+      this.setValue(val)
+    }
+  },
+  created() {
+    this.setValue(this.value)
+  },
   methods: {
-    change() {
-      this.$emit('update', this.value)
-      this.$emit('change')
+    setValue(val) {
+      this.value_ = val
+    },
+    change(val) {
+      this.value_ = val
+      this.$emit('update', this.value_)
+      this.$emit('change', this.value_)
     }
   }
 }
 </script>
-
-<style rel="stylesheet/scss" lang="scss">
-
-</style>

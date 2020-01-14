@@ -18,7 +18,7 @@ public class DelayJob {
 
     protected List<Date> nextFireTimes;
 
-    protected Date requestTime;
+    protected long requestTime;
 
     protected String tenantId;
 
@@ -67,11 +67,11 @@ public class DelayJob {
         return this;
     }
 
-    public Date getRequestTime() {
+    public long getRequestTime() {
         return requestTime;
     }
 
-    public DelayJob setRequestTime(Date requestTime) {
+    public DelayJob setRequestTime(long requestTime) {
         this.requestTime = requestTime;
         return this;
     }

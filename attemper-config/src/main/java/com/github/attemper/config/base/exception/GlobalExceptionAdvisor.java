@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * centrally handling exception
- * @author ldang
  */
 @Slf4j
 @RestControllerAdvice

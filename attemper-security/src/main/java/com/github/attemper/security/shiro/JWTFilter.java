@@ -1,12 +1,12 @@
 package com.github.attemper.security.shiro;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.entity.ApiLog;
 import com.github.attemper.config.base.service.ApiLogService;
+import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.config.base.util.IPUtil;
 import com.github.attemper.config.base.util.ServletUtil;
 import com.github.attemper.security.model.JWTToken;
@@ -14,7 +14,6 @@ import com.github.attemper.sys.exception.JWTDecodedException;
 import com.github.attemper.sys.exception.JWTExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -27,13 +26,12 @@ import java.io.IOException;
 
 /**
  * json web token filter of shiro
- * @author ldang
  */
 @Slf4j
 public class JWTFilter extends BasicHttpAuthenticationFilter {
 
     /**
-     * step1:校验token是否存在
+     * step1:validate token
      * @param request
      * @param response
      * @return
@@ -48,7 +46,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     }
 
     /**
-     * setp2.1返回false，以执行onAccessDenied
+     * setp2.1onAccessDenied will be executed when return false
      * @param request
      * @param response
      * @param mappedValue
@@ -60,7 +58,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     }
 
     /**
-     * step2.2:存在token时，允许登录
+     * step2.2:has token,allow login
      * @param request
      * @param response
      * @return
@@ -80,7 +78,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     }
 
     /**
-     * step3:执行登录方法
+     * step3:login
      * @param request
      * @param response
      * @return
@@ -89,22 +87,22 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     protected boolean executeLogin(ServletRequest request, ServletResponse response) {
         String accessToken = WebUtils.toHttp(request).getHeader(CommonConstants.token);
         JWTToken token = new JWTToken(accessToken);
-        SecurityUtils.getSubject().login(token);  //会请求ream中的认证方法
+        SecurityUtils.getSubject().login(token);  // jumt to real
         return true;
     }
 
     /**
-     * 打印异常并返回false
+     * print exception to front-end
      * @param response
      * @param code
      * @return
      */
     private boolean printError(ServletResponse response, int code) {
         try {
-            ((HttpServletResponse) response).setStatus(HttpStatus.SC_UNAUTHORIZED);
-            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             CommonResult result = CommonResult.put(code);
-            String json = SpringContextAware.getBean(ObjectMapper.class).writeValueAsString(result);
+            String json = BeanUtil.bean2JsonStr(result);
             response.getWriter().print(json);
             saveLog(result);
         } catch (IOException e) {
@@ -114,7 +112,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     }
 
     /**
-     * 保存报错日志
+     * save error log
      * @param result
      */
     private void saveLog(CommonResult result) {
@@ -122,7 +120,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                 .code(result.getCode())
                 .msg(result.getMsg())
                 .duration(result.getDuration())
-                .responseTime(result.getResponseTime())
+                .handleTime(result.getHandleTime())
                 .className(this.getClass().getName())
                 .param(ServletUtil.getHeader(CommonConstants.token))
                 .ip(IPUtil.getIpAddr())

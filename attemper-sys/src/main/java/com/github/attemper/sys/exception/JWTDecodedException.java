@@ -7,7 +7,6 @@ import org.apache.shiro.authc.AuthenticationException;
 
 /**
  * jwt decode exception
- * @author ldang
  */
 public class JWTDecodedException extends AuthenticationException {
 

@@ -1,8 +1,5 @@
 package com.github.attemper.common.enums;
 
-/**
- * @author ldang
- */
 public enum TenantStatus {
 
     NORMAL(0),
@@ -13,9 +10,9 @@ public enum TenantStatus {
     FROZEN(1),
 
     /**
-     * deleted in logic
+     * disabled
      */
-    DELETED(2);
+    DISABLED(2);
 
     private int status;
 

@@ -7,9 +7,6 @@ import com.github.attemper.sys.store.SysStore;
 
 import java.util.Map;
 
-/**
- * @author ldang
- */
 public abstract class BaseServiceAdapter implements BaseService {
 
     @Override

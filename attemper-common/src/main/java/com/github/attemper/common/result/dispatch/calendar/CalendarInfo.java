@@ -10,10 +10,4 @@ public class CalendarInfo {
     protected String calendarName;
 
     protected String displayName;
-
-    protected Integer type;
-
-    protected Integer position;
-
-    protected String tenantId;
 }

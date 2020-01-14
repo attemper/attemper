@@ -2,8 +2,6 @@ package com.github.attemper.common.result.dispatch.instance;
 
 import lombok.ToString;
 
-import java.util.Date;
-
 @ToString
 public class InstanceAct {
 
@@ -12,8 +10,6 @@ public class InstanceAct {
     protected String actInstId;
 
     protected String parentActInstId;
-
-    protected String executionId;
 
     protected String procInstId;
 
@@ -25,17 +21,20 @@ public class InstanceAct {
 
     protected String actType;
 
-    protected Date startTime;
+    protected Long startTime;
 
-    protected Date endTime;
+    protected Long endTime;
 
     protected Long duration;
 
-    protected int status;
+    protected Integer status;
 
     protected String logKey;
 
     protected String logText;
+
+    // it is not a column of xxx_instance_act
+    protected String incidentMsg;
 
     protected String bizUri;
 
@@ -63,15 +62,6 @@ public class InstanceAct {
 
     public InstanceAct setParentActInstId(String parentActInstId) {
         this.parentActInstId = parentActInstId;
-        return this;
-    }
-
-    public String getExecutionId() {
-        return executionId;
-    }
-
-    public InstanceAct setExecutionId(String executionId) {
-        this.executionId = executionId;
         return this;
     }
 
@@ -120,20 +110,20 @@ public class InstanceAct {
         return this;
     }
 
-    public Date getStartTime() {
+    public Long getStartTime() {
         return startTime;
     }
 
-    public InstanceAct setStartTime(Date startTime) {
+    public InstanceAct setStartTime(Long startTime) {
         this.startTime = startTime;
         return this;
     }
 
-    public Date getEndTime() {
+    public Long getEndTime() {
         return endTime;
     }
 
-    public InstanceAct setEndTime(Date endTime) {
+    public InstanceAct setEndTime(Long endTime) {
         this.endTime = endTime;
         return this;
     }
@@ -147,11 +137,11 @@ public class InstanceAct {
         return this;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public InstanceAct setStatus(int status) {
+    public InstanceAct setStatus(Integer status) {
         this.status = status;
         return this;
     }
@@ -171,6 +161,15 @@ public class InstanceAct {
 
     public InstanceAct setLogText(String logText) {
         this.logText = logText;
+        return this;
+    }
+
+    public String getIncidentMsg() {
+        return incidentMsg;
+    }
+
+    public InstanceAct setIncidentMsg(String incidentMsg) {
+        this.incidentMsg = incidentMsg;
         return this;
     }
 

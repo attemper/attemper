@@ -34,3 +34,11 @@ export const listDayReq = (params) => {
     params: params
   })
 }
+
+export const importDateReq = (data) => {
+  return request({
+    url: APIPath.DISPATCH + APIPath.CALENDAR + DAY + '/import',
+    method: 'post',
+    data: data
+  })
+}

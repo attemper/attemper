@@ -61,6 +61,15 @@ export default class CustomContextPad {
       appendStart(event, element, 'ScriptTask')
     }
 
+    // CallActivity
+    function appendCallActivity(event, element) {
+      append(event, element, 'CallActivity')
+    }
+
+    function appendCallActivityStart(event) {
+      appendStart(event, element, 'CallActivity')
+    }
+
     return {
       'append.parallel-gateway': {
         group: 'model',
@@ -87,6 +96,15 @@ export default class CustomContextPad {
         action: {
           click: appendScriptTask,
           dragstart: appendScriptTaskStart
+        }
+      },
+      'append.call-activity': {
+        group: 'model',
+        className: 'bpmn-icon-call-activity',
+        title: translate('Append CallActivity'),
+        action: {
+          click: appendCallActivity,
+          dragstart: appendCallActivityStart
         }
       }
     }

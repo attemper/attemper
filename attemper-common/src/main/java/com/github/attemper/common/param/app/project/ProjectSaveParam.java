@@ -1,13 +1,10 @@
 package com.github.attemper.common.param.app.project;
 
-import com.github.attemper.common.param.CommonParam;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 
 @ToString
-public class ProjectSaveParam implements CommonParam {
-
-    protected String projectName;
+public class ProjectSaveParam extends ProjectNameParam {
 
     protected String parentProjectName;
 
@@ -15,29 +12,16 @@ public class ProjectSaveParam implements CommonParam {
 
     protected String contextPath;
 
-    protected boolean bindExecutor;
-
-    protected Integer position;
+    protected int bindExecutor;
 
     public String validate() {
-        if (StringUtils.isBlank(projectName)) {
-            return "6500";
-        } else if (projectName.length() >= 255) {
+        if (projectName.length() >= 255) {
             return "1503";
         }
         if (StringUtils.isBlank(displayName)) {
             return "6503";
         }
-        return null;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public ProjectSaveParam setProjectName(String projectName) {
-        this.projectName = projectName;
-        return this;
+        return super.validate();
     }
 
     public String getParentProjectName() {
@@ -67,21 +51,12 @@ public class ProjectSaveParam implements CommonParam {
         return this;
     }
 
-    public boolean isBindExecutor() {
+    public int getBindExecutor() {
         return bindExecutor;
     }
 
-    public ProjectSaveParam setBindExecutor(boolean bindExecutor) {
+    public ProjectSaveParam setBindExecutor(int bindExecutor) {
         this.bindExecutor = bindExecutor;
-        return this;
-    }
-
-    public Integer getPosition() {
-        return position;
-    }
-
-    public ProjectSaveParam setPosition(Integer position) {
-        this.position = position;
         return this;
     }
 }

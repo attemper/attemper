@@ -11,7 +11,7 @@ const name = defaultSettings.title || 'vue Element Admin' // page title
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
-const port = 8055 // dev port
+const port = 80 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -29,7 +29,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
+    open: false,
     overlay: {
       warnings: false,
       errors: true
@@ -43,7 +43,7 @@ module.exports = {
         }
       }
     },
-    after: require('./mock/mock-server.js')
+    disableHostCheck: true
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

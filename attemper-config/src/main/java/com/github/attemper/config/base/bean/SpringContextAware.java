@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * get spring context
- * @author ldang
  */
 @Component
 public class SpringContextAware implements ApplicationContextAware {

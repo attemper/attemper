@@ -24,12 +24,12 @@ const sysRouter = {
     }
   },
   {
-    path: 'tag',
-    component: () => import('@/views/sys/tag'),
-    name: 'tag',
+    path: 'role',
+    component: () => import('@/views/sys/role'),
+    name: 'role',
     meta: {
-      title: 'tag',
-      icon: 'tag',
+      title: 'role',
+      icon: 'role',
       noCache: false
     }
   }

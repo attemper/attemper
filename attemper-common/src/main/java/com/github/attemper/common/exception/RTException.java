@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Customize RuntimeException
- * @author ldang
  *
  */
 @Slf4j
@@ -37,10 +36,10 @@ public class RTException extends RuntimeException {
 	}
 
     public RTException(int code, Throwable e) {
-		super(StatusProperty.getValue(code) + ":" + ExceptionUtil.getStackTrace(e), e);
+		super(StatusProperty.getValue(code) + ":" + e.getMessage(), e);
         this.code = code;
-		this.msg = StatusProperty.getValue(code) + ":" + ExceptionUtil.getStackTrace(e);
-		log.error("{} \n {}", this.code, this.msg, e);
+		this.msg = super.getMessage();
+		log.error("{} \n {}", this.code, StatusProperty.getValue(code) + ":" + ExceptionUtil.getStackTrace(e));
     }
 
 	public RTException(int code, Object msg) {
