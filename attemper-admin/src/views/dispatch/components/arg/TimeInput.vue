@@ -23,7 +23,7 @@ export default {
         if (isBlank(this.value) || this.value.length !== 6) {
           return null
         }
-        return new Date(2019, 0, 1,
+        return new Date(2020, 0, 1,
           parseInt(this.value.substring(0, 2)),
           parseInt(this.value.substring(2, 4)),
           parseInt(this.value.substring(4, 6)))
