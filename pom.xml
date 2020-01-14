@@ -16,7 +16,6 @@
 		<module>${project.artifactId}-web</module>
 		<module>${project.artifactId}-scheduler</module>
 		<module>${project.artifactId}-executor</module>
-		<module>${project.artifactId}-eureka-server</module>
 	</modules>
 	<packaging>pom</packaging>
 
