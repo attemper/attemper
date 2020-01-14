@@ -38,3 +38,8 @@
 ## 文档
 
 请参考 [调度中心在线文档](https://attemper.github.io/attemper-document/)
+
+## 交流学习
+
+QQ群:  
+[1029617143](https://jq.qq.com/?_wv=1027&k=5LIPQ4t)
