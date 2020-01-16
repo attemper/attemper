@@ -18,7 +18,6 @@ export default {
     executor: '执行器监控',
     application: '应用管理',
     project: '项目管理',
-    program: '程序包管理',
     gist: '代码片段'
   },
   actions: {
@@ -357,27 +356,6 @@ export default {
       tip: {
         searchKey: '项目名称/中文名称',
         projectRemoveWarning: '请先删除子节点'
-      }
-    },
-    program: {
-      title: {
-        programList: '程序列表',
-        packageList: '程序包列表'
-      },
-      columns: {
-        programName: '程序名称',
-        packageName: '程序包名称',
-        injectOrder: '程序加载顺序',
-        uploadTime: '上传时间',
-        loadTime: '部署时间',
-        unloadTime: '卸载时间'
-      },
-      rules: {
-        programName: '程序名称不能为空',
-        injectOrder: '程序加载顺序不能为空'
-      },
-      placeholder: {
-        programName: '请输入程序名称'
       }
     },
     gist: {
