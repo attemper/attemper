@@ -12,7 +12,7 @@
     <artifactId>${project.parent.artifactId}-common</artifactId>
 
     <properties>
-        <jackson.version>2.9.9</jackson.version>
+        <jackson.version>2.10.1</jackson.version>
         <commons.lang.version>2.6</commons.lang.version>
     </properties>
 
