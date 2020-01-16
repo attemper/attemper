@@ -18,7 +18,6 @@ export default {
     executor: 'Executor',
     application: 'Application',
     project: 'Project',
-    program: 'Program',
     gist: 'Gist'
   },
   actions: {
@@ -357,27 +356,6 @@ export default {
       tip: {
         searchKey: 'project name/display name',
         projectRemoveWarning: 'Please delete children first'
-      }
-    },
-    program: {
-      title: {
-        programList: 'Program list',
-        packageList: 'Package list'
-      },
-      columns: {
-        programName: 'Program name',
-        packageName: 'Package name',
-        injectOrder: 'Inject order',
-        uploadTime: 'Upload time',
-        loadTime: 'Load time',
-        unloadTime: 'Unload time'
-      },
-      rules: {
-        programName: 'The program name can not be blank',
-        injectOrder: 'The inject order can not be blank'
-      },
-      placeholder: {
-        programName: 'Please entry program name'
       }
     },
     gist: {
