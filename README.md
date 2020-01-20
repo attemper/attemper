@@ -21,7 +21,7 @@
 
 ## 简介
 - 分布式、多租户的支持流程编排的任务调度应用
-  - 支持工作流式的任务编排
+  - 基于`camunda`工作流引擎，支持工作流式的任务编排
   - 基于`Spring Boot`框架开发，对微服务友好
   - 支持`Mysql`/`Oracle`/`Sql Server`/`PostgreSQL`
   - 支持`Eureka`作为注册中心，可自行扩展与`Spring Cloud`集成的其他注册服务的中间件
