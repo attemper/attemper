@@ -25,6 +25,7 @@
   - 基于`Spring Boot`框架开发，对微服务友好
   - 支持`Mysql`/`Oracle`/`Sql Server`/`PostgreSQL`
   - 支持`Eureka`作为注册中心，可自行扩展与`Spring Cloud`集成的其他注册服务的中间件
+  - 支持脚本任务(`Shell`/`Python`等)
   - 支持父子、并发、分支判断等任务
   - 支持(父子)任务传参、参数替换
   - 支持延迟任务(预约操作)
