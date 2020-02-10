@@ -28,12 +28,13 @@
             </when>
             <otherwise>
                 UPDATE
-                ${tablePrefix}calendar_day
+                ${tablePrefix}calendar_day cd
                 SET
                 REMARK = #{remark, jdbcType=VARCHAR}
-                WHERE
-                    CALENDAR_NAME = #{calendarName, jdbcType=VARCHAR}
-                    AND DAY_NUM = #{dayNum, jdbcType=INTEGER}
+                <where>
+                    <include refid="condCalendarName"/>
+                    <include refid="condDayName"/>
+                </where>
             </otherwise>
         </choose>
     </update>
@@ -74,7 +75,7 @@
     <select id="get" parameterType="com.github.attemper.common.param.dispatch.calendar.CalendarNameParam"
             resultType="com.github.attemper.common.result.dispatch.calendar.CalendarInfo">
         SELECT *
-        FROM ${tablePrefix}calendar c
+        FROM ${tablePrefix}calendar cd
         <where>
             <include refid="condCalendarName"/>
         </where>
@@ -109,7 +110,7 @@
     </sql>
 
     <sql id="condCalendarName">
-        AND c.CALENDAR_NAME = #{calendarName, jdbcType=VARCHAR}
+        AND cd.CALENDAR_NAME = #{calendarName, jdbcType=VARCHAR}
     </sql>
 
 </mapper>
