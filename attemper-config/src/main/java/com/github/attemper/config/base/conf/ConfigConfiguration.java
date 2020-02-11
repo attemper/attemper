@@ -12,6 +12,7 @@ import com.github.attemper.config.base.service.ApiLogService;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
+import org.camunda.bpm.engine.impl.persistence.StrongUuidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -49,9 +50,13 @@ public class ConfigConfiguration {
 
     @Bean
     public IdGenerator idGenerator() {
-        return new SnowFlakeIdGenerator(
-                appProperties.getSnowFlake().getDataCenterId(),
-                appProperties.getSnowFlake().getMachineId());
+        if (appProperties.getSnowFlake().getDataCenterId() != null &&
+                appProperties.getSnowFlake().getMachineId() != null) {
+            return new SnowFlakeIdGenerator(
+                    appProperties.getSnowFlake().getDataCenterId(),
+                    appProperties.getSnowFlake().getMachineId());
+        }
+        return new StrongUuidGenerator();
     }
 
     @Bean
