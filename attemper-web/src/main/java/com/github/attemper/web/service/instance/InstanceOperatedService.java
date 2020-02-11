@@ -50,7 +50,7 @@ public class InstanceOperatedService {
 
     public String getInstanceArgs(InstanceIdParam param) {
         Instance instance = instanceService.getByInstId(param.getProcInstId());
-        Map<String, Object> argMap = jobService.transArgToMap(instance.getJobName());
+        Map<String, Object> argMap = jobService.getArgsAsMap(instance.getJobName());
         if (argMap.size() == 0) {
             return null;
         }

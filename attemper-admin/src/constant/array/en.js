@@ -294,5 +294,7 @@ export const firedSources = [
 ]
 
 export const sendConfigs = [
-  'Email'
+  'Email',
+  'DingTalk',
+  'WxWork'
 ]

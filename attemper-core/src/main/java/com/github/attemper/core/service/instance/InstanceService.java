@@ -6,7 +6,7 @@ import com.github.attemper.common.param.dispatch.instance.InstanceActParam;
 import com.github.attemper.common.param.dispatch.instance.InstanceGetParam;
 import com.github.attemper.common.param.dispatch.instance.InstanceListParam;
 import com.github.attemper.common.param.sys.tenant.TenantNameParam;
-import com.github.attemper.common.property.StatusProperty;
+import com.github.attemper.common.property.TipProperty;
 import com.github.attemper.common.result.dispatch.instance.Instance;
 import com.github.attemper.common.result.dispatch.instance.InstanceAct;
 import com.github.attemper.common.result.dispatch.instance.InstanceWithChildren;
@@ -15,6 +15,7 @@ import com.github.attemper.core.dao.instance.InstanceMapper;
 import com.github.attemper.core.ext.notice.MessageBean;
 import com.github.attemper.core.ext.notice.NoticeService;
 import com.github.attemper.core.ext.notice.channel.Sender;
+import com.github.attemper.core.service.dispatch.ArgService;
 import com.github.attemper.java.sdk.common.util.DateUtil;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.service.TenantService;
@@ -48,6 +49,9 @@ public class InstanceService extends BaseServiceAdapter {
 
     @Autowired
     private TenantService tenantService;
+
+    @Autowired
+    private ArgService argService;
 
     @Autowired
     private ScheduledExecutorService scheduledExecutorService;
@@ -172,6 +176,8 @@ public class InstanceService extends BaseServiceAdapter {
                 instance,
                 tenant,
                 noticeTime);
+        Map<String, Object> alarmArgMap = argService.listStartsWith(CommonConstants.KEY_ALARM_ARG, instance.getTenantId());
+        messageBean.setExtraMap(alarmArgMap);
         String sendConfig = tenant.getSendConfig();
         if (StringUtils.isNotBlank(sendConfig)) {
             for (int i = 0; i < sendConfig.length(); i++) {
@@ -228,28 +234,29 @@ public class InstanceService extends BaseServiceAdapter {
             if (bizUriSB.length() >= 1) {
                 bizUriSB.deleteCharAt(bizUriSB.length() - 1);
                 if (bizUriSB.length() >= 1) {
-                    alarmPosition = StatusProperty.getValue(903);
+                    alarmPosition = TipProperty.getValue(10053);
                 } else {
-                    alarmPosition = StatusProperty.getValue(904);
+                    alarmPosition = TipProperty.getValue(10054);
                 }
             }
             if (logKeySB.length() >= 1) {
                 logKeySB.deleteCharAt(logKeySB.length() - 1);
             }
         } else {
-            alarmPosition = StatusProperty.getValue(902);
+            alarmPosition = TipProperty.getValue(10052);
             logKeySB.append(instance.getCode());
             errorMsgSB.append(instance.getMsg());
         }
-        String subject = MessageFormat.format(StatusProperty.getValue(900),
+        String subject = MessageFormat.format(TipProperty.getValue(10050),
                 instance.getJobName(),
                 instance.getDisplayName());
-        String content = MessageFormat.format(StatusProperty.getValue(901),
+        String content = MessageFormat.format(TipProperty.getValue(10051),
                 now,
                 tenant.getUserName(),
                 tenant.getDisplayName(),
                 instance.getJobName(),
                 instance.getDisplayName(),
+                instance.getStartTime() == null ? CommonConstants.EMPTY : DateUtil.format(new Date(instance.getStartTime()), DateUtil.DATE_FORMAT_YYYYMMDDHHMMSS),
                 actIdSB,
                 actNameSB,
                 instance.getSchedulerUri(),

@@ -3,6 +3,8 @@ package com.github.attemper.core.ext.notice;
 import com.github.attemper.common.result.sys.tenant.Tenant;
 import lombok.ToString;
 
+import java.util.Map;
+
 @ToString
 public class MessageBean {
 
@@ -13,6 +15,11 @@ public class MessageBean {
     protected String subject;
 
     protected String content;
+
+    /**
+     * param to support more alarm types
+     */
+    protected Map<String, Object> extraMap;
 
     public String getFrom() {
         return from;
@@ -47,6 +54,15 @@ public class MessageBean {
 
     public MessageBean setContent(String content) {
         this.content = content;
+        return this;
+    }
+
+    public Map<String, Object> getExtraMap() {
+        return extraMap;
+    }
+
+    public MessageBean setExtraMap(Map<String, Object> extraMap) {
+        this.extraMap = extraMap;
         return this;
     }
 }

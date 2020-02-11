@@ -1,5 +1,6 @@
 package com.github.attemper.core.service.dispatch;
 
+import com.github.attemper.common.enums.ArgType;
 import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.param.dispatch.arg.ArgListParam;
 import com.github.attemper.common.param.dispatch.arg.ArgNameParam;
@@ -9,6 +10,7 @@ import com.github.attemper.common.param.dispatch.arg.ext.SqlArgParam;
 import com.github.attemper.common.param.dispatch.arg.ext.TradeDateArgParam;
 import com.github.attemper.common.result.dispatch.arg.Arg;
 import com.github.attemper.config.base.datasource.DynamicDataSource;
+import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.dao.dispatch.ArgMapper;
 import com.github.attemper.core.engine.DateCalculatorFactory;
 import com.github.attemper.core.engine.date.DateHandler;
@@ -29,6 +31,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +90,12 @@ public class ArgService extends BaseServiceAdapter {
         Map<String, Object> paramMap = injectTenantIdToMap(param);
         mapper.delete(paramMap);
         return null;
+    }
+
+    public Map<String, Object> listStartsWith(String argNamePrefix, String tenantId) {
+        Arg arg = new Arg().setArgName(argNamePrefix).setTenantId(tenantId);
+        List<Arg> args = mapper.listStartsWith(BeanUtil.bean2Map(arg));
+        return transArgsToMap(args);
     }
 
     private Arg toArg(ArgSaveParam param) {
@@ -146,4 +156,94 @@ public class ArgService extends BaseServiceAdapter {
         }
         return latestContent;
     }
+
+    public Map<String, Object> transArgsToMap(List<Arg> args) {
+        Map<String, Object> varMap = new HashMap<>();
+        for (Arg arg : args) {
+            if (arg.getArgValue() != null) {
+                if (ArgType.get(arg.getArgType()) == null) {
+                    arg.setArgType(ArgType.STRING.getValue());
+                }
+                Object realArgValue;
+                switch (ArgType.get(arg.getArgType())) {
+                    case TRADE_DATE:
+                        realArgValue = getTradeDate(
+                                new TradeDateArgParam()
+                                        .setCalendarName(arg.getAttribute())
+                                        .setExpression(arg.getArgValue()));
+                        break;
+                    case GIST:
+                        realArgValue = getGistCode(arg.getArgValue(), arg.getTenantId());
+                        break;
+                    case SQL:
+                        List<Map<String, Object>> mapList = getSqlResult(
+                                new SqlArgParam()
+                                        .setDbName(arg.getAttribute())
+                                        .setSql(arg.getArgValue()));
+                        if (mapList.size() == 1) {
+                            realArgValue = mapList.get(0).values().toArray()[0];
+                        } else {
+                            realArgValue = mapList;
+                        }
+                        break;
+                    case LIST:
+                        realArgValue = toListValue(arg);
+                        break;
+                    case MAP:
+                        realArgValue = toMapValue(arg);
+                        break;
+                    default: //string date datetime time
+                        realArgValue = toGenericValue(arg.getArgType(), arg.getArgValue());
+                        break;
+                }
+                varMap.put(arg.getArgName(), realArgValue);
+            }
+        }
+        return varMap;
+    }
+
+    private Object toGenericValue(int argType, String argValue) {
+        if (ArgType.get(argType) == null) {
+            argType = ArgType.STRING.getValue();
+        }
+        try {
+            switch (ArgType.get(argType)) {
+                case BOOLEAN:
+                    return Boolean.parseBoolean(argValue);
+                case INTEGER:
+                    return Integer.parseInt(argValue);
+                case DOUBLE:
+                    return Double.parseDouble(argValue);
+                case LONG:
+                    return Long.parseLong(argValue);
+                default: //string date datetime time
+                    return argValue;
+            }
+        } catch (NumberFormatException e) {
+            log.error(e.getMessage(), e);
+            return argValue;
+        }
+    }
+
+    private List<Object> toListValue(Arg arg) {
+        List<Object> list = new ArrayList<>();
+        String[] values = arg.getArgValue().split(",,");
+        for (String value : values) {
+            list.add(toGenericValue(arg.getGenericType(), value));
+        }
+        return list;
+    }
+
+    private Map<String, Object> toMapValue(Arg arg) {
+        Map<String, Object> map = new HashMap<>();
+        String[] entries = arg.getArgValue().split(",,");
+        for (String entry : entries) {
+            String[] keyValueArray = entry.split("::");
+            if (keyValueArray.length > 1) {
+                map.put(keyValueArray[0], toGenericValue(arg.getGenericType(), keyValueArray[1]));
+            }
+        }
+        return map;
+    }
+
 }

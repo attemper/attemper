@@ -73,7 +73,7 @@ public class JobCallingService {
     }
 
     public void invoke(String id, String jobName, String triggerName, String tenantId, String parentId, List<String> beforeActIds, List<String> afterActIds, Map<String, Object> dataMap) {
-        Map<String, Object> variableMap = jobService.transArgToMap(jobName, tenantId);
+        Map<String, Object> variableMap = jobService.getArgsAsMap(jobName, tenantId);
         if (dataMap != null) {
             variableMap.putAll(dataMap);
         }

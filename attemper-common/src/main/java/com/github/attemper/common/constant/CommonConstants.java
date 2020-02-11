@@ -55,12 +55,9 @@ public interface CommonConstants {
 
     String select = "select";
 
-    int DEF_CURRENT_PAGE = 1;
-
-    int DEF_PAGE_SIZE = 10;
-
-    int MAX_PAGE_SIZE = 5000;
-
     String yyyyMMdd = "yyyyMMdd";
 
+    String UNDERSCORE = "_";
+
+    String KEY_ALARM_ARG = "alarm" + UNDERSCORE;
 }

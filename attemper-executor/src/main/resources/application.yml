@@ -33,10 +33,6 @@ spring:
         defaultPropertyInclusion: non_null
         deserialization: 
             FAIL_ON_UNKNOWN_PROPERTIES: false
-    mail:
-        host: xxx
-        username: xxx
-        password: xxx
 
 mybatis:
     mapperLocations: classpath*:mapper/*Mapper.xml
@@ -71,7 +67,7 @@ camunda:
     job-execution:
       lock-time-in-millis: 10800000 # 3h
 
-app:
-  snow-flake:
-    data-center-id: 0
-    machine-id: 20
+#app:
+#  snow-flake:
+#    data-center-id: 0
+#    machine-id: 20

@@ -33,10 +33,6 @@ spring:
         defaultPropertyInclusion: non_null
         deserialization: 
             FAIL_ON_UNKNOWN_PROPERTIES: false
-    mail:
-        host: xxx
-        username: xxx
-        password: xxx
 
 mybatis:
     mapperLocations: classpath*:mapper/*Mapper.xml
@@ -86,6 +82,6 @@ app:
     delayedInSecond: 5
   executor:
     name: attemper-executor
-  snow-flake:
-    data-center-id: 0
-    machine-id: 1
+#  snow-flake:
+#    data-center-id: 0
+#    machine-id: 1

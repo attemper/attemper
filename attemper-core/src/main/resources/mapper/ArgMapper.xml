@@ -128,6 +128,15 @@
         </choose>
     </select>
 
+    <select id="listStartsWith" parameterType="map" resultType="com.github.attemper.common.result.dispatch.arg.Arg">
+        SELECT *
+        FROM ${tablePrefix}arg
+        <where>
+            ARG_NAME LIKE CONCAT(#{argName, jdbcType=VARCHAR}, '%')
+            <include refid="condTenantId_"/>
+        </where>
+    </select>
+
     <delete id="delete" parameterType="map">
         DELETE FROM ${tablePrefix}arg
         <where>

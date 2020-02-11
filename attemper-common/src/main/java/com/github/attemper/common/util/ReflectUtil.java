@@ -1,5 +1,6 @@
 package com.github.attemper.common.util;
 
+import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
 import org.apache.commons.lang.StringUtils;
 
@@ -8,22 +9,14 @@ import java.util.Map;
 
 public class ReflectUtil {
 
-    public static Object reflectObj(Class<?> clazz, String prefix, Map<String, Object> map) {
-        Object obj;
-        try {
-            obj = clazz.newInstance();
-        } catch (InstantiationException e) {
-            throw new RTException(1101, e);
-        } catch (IllegalAccessException e) {
-            throw new RTException(1102, e);
-        }
+    public static <T> T reflectObj(T obj, String prefix, Map<String, Object> map) {
         prefix = StringUtils.trimToNull(prefix);
-        setFields(obj, clazz, prefix, map);
+        setFields(obj, obj.getClass(), prefix, map);
         return obj;
     }
 
-    public static Object reflectObj(Class<?> clazz, Map<String, Object> map) {
-        return reflectObj(clazz, null, map);
+    public static <T> T reflectObj(T obj, Map<String, Object> map) {
+        return reflectObj(obj, null, map);
     }
 
     private static void setFields(Object obj, Class<?> clazz, String prefix, Map<String, Object> map) {
@@ -36,14 +29,27 @@ public class ReflectUtil {
                 boolean accessible = field.isAccessible();
                 field.setAccessible(true);
                 for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    String realFieldName;
+                    String argName;
                     if (prefix == null) {
-                        realFieldName = field.getName();
+                        argName = field.getName();
                     } else {
-                        realFieldName = prefix + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+                        // {prefix}Abc
+                        argName = prefix + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
                     }
-                    if (realFieldName.equals(entry.getKey())) {
+                    if (argName.equals(entry.getKey())) {
                         field.set(obj, entry.getValue());
+                    }else {
+                        // {prefix}_abc
+                        argName = prefix + CommonConstants.UNDERSCORE + field.getName();
+                        if (argName.equals(entry.getKey())) {
+                            field.set(obj, entry.getValue());
+                        } else {
+                            // {prefix}abc
+                            argName = prefix + field.getName();
+                            if (argName.equals(entry.getKey())) {
+                                field.set(obj, entry.getValue());
+                            }
+                        }
                     }
                 }
                 field.setAccessible(accessible);

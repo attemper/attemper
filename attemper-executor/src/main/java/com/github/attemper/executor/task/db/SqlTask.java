@@ -22,7 +22,7 @@ public class SqlTask extends ParentTask implements Databasing {
 
     @Override
     public void executeIntern(DelegateExecution execution) {
-        ResultTypeSqlParam param = (ResultTypeSqlParam) ReflectUtil.reflectObj(ResultTypeSqlParam.class, execution.getVariables());
+        ResultTypeSqlParam param = ReflectUtil.reflectObj(new ResultTypeSqlParam(), execution.getVariables());
         appendLogText(execution, 10002, param);
         String sql = param.getSql();
         if (StringUtils.isBlank(sql)) {

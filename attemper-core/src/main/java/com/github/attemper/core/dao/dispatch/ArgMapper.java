@@ -22,4 +22,6 @@ public interface ArgMapper {
     void delete(Map<String, Object> paramMap);
 
     List<Arg> list(Map<String, Object> paramMap);
+
+    List<Arg> listStartsWith(Map<String, Object> paramMap);
 }

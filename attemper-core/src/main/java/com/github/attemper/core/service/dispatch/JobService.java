@@ -1,10 +1,7 @@
 package com.github.attemper.core.service.dispatch;
 
 import com.github.attemper.common.constant.CommonConstants;
-import com.github.attemper.common.enums.ArgType;
 import com.github.attemper.common.enums.ConditionType;
-import com.github.attemper.common.param.dispatch.arg.ext.SqlArgParam;
-import com.github.attemper.common.param.dispatch.arg.ext.TradeDateArgParam;
 import com.github.attemper.common.param.dispatch.condition.ConditionSaveParam;
 import com.github.attemper.common.param.dispatch.condition.sub.ConditionCommonParam;
 import com.github.attemper.common.param.dispatch.job.JobArgListParam;
@@ -100,105 +97,20 @@ public class JobService extends BaseServiceAdapter {
     }
 
     public String getJsonArg(JobNameParam jobNameParam) {
-        Map<String, Object> map = transArgToMap(jobNameParam.getJobName());
+        Map<String, Object> map = getArgsAsMap(jobNameParam.getJobName());
         return map.isEmpty() ? null : BeanUtil.bean2JsonStr(map);
     }
 
     @Autowired
     private ArgService argService;
 
-    public Map<String, Object> transArgToMap(String jobName) {
-        return transArgToMap(jobName, injectTenantId());
+    public Map<String, Object> getArgsAsMap(String jobName) {
+        return getArgsAsMap(jobName, injectTenantId());
     }
 
-    public Map<String, Object> transArgToMap(String jobName, String tenantId) {
-        Map<String, Object> varMap = new HashMap<>();
+    public Map<String, Object> getArgsAsMap(String jobName, String tenantId) {
         List<Arg> args = getArg(jobName, tenantId);
-        for (Arg arg : args) {
-            if (arg.getArgValue() != null) {
-                if (ArgType.get(arg.getArgType()) == null) {
-                    arg.setArgType(ArgType.STRING.getValue());
-                }
-                Object realArgValue;
-                switch (ArgType.get(arg.getArgType())) {
-                    case TRADE_DATE:
-                        realArgValue = argService.getTradeDate(
-                                new TradeDateArgParam()
-                                        .setCalendarName(arg.getAttribute())
-                                        .setExpression(arg.getArgValue()));
-                        break;
-                    case GIST:
-                        realArgValue = argService.getGistCode(arg.getArgValue(), tenantId);
-                        break;
-                    case SQL:
-                        List<Map<String, Object>> mapList = argService.getSqlResult(
-                                new SqlArgParam()
-                                        .setDbName(arg.getAttribute())
-                                        .setSql(arg.getArgValue()));
-                        if (mapList.size() == 1) {
-                            realArgValue = mapList.get(0).values().toArray()[0];
-                        } else {
-                            realArgValue = mapList;
-                        }
-                        break;
-                    case LIST:
-                        realArgValue = toListValue(arg);
-                        break;
-                    case MAP:
-                        realArgValue = toMapValue(arg);
-                        break;
-                    default: //string date datetime time
-                        realArgValue = toGenericValue(arg.getArgType(), arg.getArgValue());
-                        break;
-                }
-                varMap.put(arg.getArgName(), realArgValue);
-            }
-        }
-        return varMap;
-    }
-
-    private Object toGenericValue(int argType, String argValue) {
-        if (ArgType.get(argType) == null) {
-            argType = ArgType.STRING.getValue();
-        }
-        try {
-            switch (ArgType.get(argType)) {
-                case BOOLEAN:
-                    return Boolean.parseBoolean(argValue);
-                case INTEGER:
-                    return Integer.parseInt(argValue);
-                case DOUBLE:
-                    return Double.parseDouble(argValue);
-                case LONG:
-                    return Long.parseLong(argValue);
-                default: //string date datetime time
-                    return argValue;
-            }
-        } catch (NumberFormatException e) {
-            log.error(e.getMessage(), e);
-            return argValue;
-        }
-    }
-
-    private List<Object> toListValue(Arg arg) {
-        List<Object> list = new ArrayList<>();
-        String[] values = arg.getArgValue().split(",,");
-        for (String value : values) {
-            list.add(toGenericValue(arg.getGenericType(), value));
-        }
-        return list;
-    }
-
-    private Map<String, Object> toMapValue(Arg arg) {
-        Map<String, Object> map = new HashMap<>();
-        String[] entries = arg.getArgValue().split(",,");
-        for (String entry : entries) {
-            String[] keyValueArray = entry.split("::");
-            if (keyValueArray.length > 1) {
-                map.put(keyValueArray[0], toGenericValue(arg.getGenericType(), keyValueArray[1]));
-            }
-        }
-        return map;
+        return argService.transArgsToMap(args);
     }
 
     public ConditionResult getCondition(JobNameParam param) {

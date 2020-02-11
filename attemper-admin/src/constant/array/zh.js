@@ -294,5 +294,7 @@ export const firedSources = [
 ]
 
 export const sendConfigs = [
-  '邮件'
+  '邮件',
+  '钉钉',
+  '企业微信'
 ]
