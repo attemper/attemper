@@ -20,6 +20,7 @@ insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('A_Sto
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('A_Stock','20200128','春节');
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('A_Stock','20200129','春节');
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('A_Stock','20200130','春节');
+insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('A_Stock','20200131','春节');
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('A_Stock','20200201','周末');
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('A_Stock','20200202','周末');
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('A_Stock','20200208','周末');
@@ -141,6 +142,8 @@ insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('China
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('China_Legal','20200128','春节');
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('China_Legal','20200129','春节');
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('China_Legal','20200130','春节');
+insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('China_Legal','20200131','春节');
+insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('China_Legal','20200201','周末');
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('China_Legal','20200202','周末');
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('China_Legal','20200208','周末');
 insert into attemper_calendar_day (CALENDAR_NAME, DAY_NUM, REMARK) values('China_Legal','20200209','周末');
