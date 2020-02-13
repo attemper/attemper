@@ -87,7 +87,7 @@
   - 支持监控调度器和执行器的状态(cpu/内存/jvm/文件系统)
   
 - 告警
-  - 告警方式支持邮件（可自己扩展）
+  - 告警方式支持邮件、钉钉机器人和企业微信机器人
   - 告警条件：执行报错
 
 - 统计与分析
@@ -116,7 +116,36 @@
 
 [Spring Boot&MVC系统对接Demo](https://github.com/attemper/attemper-samples)
 
-## 交流
+## 预览
 
-QQ群:  
-[1029617143](https://jq.qq.com/?_wv=1027&k=5LIPQ4t)
+- 任务  
+  - 列表  
+![任务](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/job/jobs.png)
+  - 设计  
+![设计](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/job/job-demo-050-parallel.png)
+
+- 触发器  
+![触发器](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/trigger/trigger-cron.png)
+
+- 参数  
+![参数](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/arg/args.png)
+
+- 项目  
+![项目](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/project/projects.png)
+
+- 日历  
+![日历](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/calendar/calendars.png)
+
+- 执行实例  
+![执行实例](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/monitor/instances.png)
+
+- 任务执行图  
+![任务执行图](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/monitor/tasks.png)
+
+- 告警  
+  - 邮件  
+![邮件](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/alarm/email.png)
+  - 钉钉机器人  
+![钉钉机器人](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/alarm/dingtalk.png)
+  - 企业微信机器人  
+![企业微信机器人](https://gitee.com/attemper/attemper-document/raw/master/docs/guide/assets/alarm/wxwork.png)
