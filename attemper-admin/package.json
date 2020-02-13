@@ -1,6 +1,6 @@
 {
   "name": "attemper-admin",
-  "version": "1.0.1-SNAPSHOT",
+  "version": "1.0.1",
   "description": "The front end of attemper-web",
   "author": "ldang264 <820704815@qq.com>",
   "license": "MIT",

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.attemper</groupId>
 	<artifactId>attemper</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<modules>
 		<module>${project.artifactId}-admin</module>
 		<module>${project.artifactId}-common</module>
