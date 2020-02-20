@@ -18,7 +18,7 @@ public class CustomMailTask extends ParentTask {
 
     @Override
     public void executeIntern(DelegateExecution execution) {
-        MailParam param = ReflectUtil.reflectObj(new MailParam(), CUSTOM_MAIL, execution.getVariables());
+        MailParam param = ReflectUtil.reflectObj(MailParam.class, CUSTOM_MAIL, execution.getVariables());
         MessageBean messageBean = new MessageBean()
                 .setFrom(param.getFrom())
                 .setTo(new Tenant().setEmail(param.getTo()))

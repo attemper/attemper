@@ -24,7 +24,7 @@ public class FtpFileConditionStrategy implements ConditionStrategy<FtpFileCondit
             return false;
         }
         String prefix = ftpFileCondition.getPrefix();
-        FtpInfo ftpInfo = ReflectUtil.reflectObj(new FtpInfo(), prefix, variableMap);
+        FtpInfo ftpInfo = ReflectUtil.reflectObj(FtpInfo.class, prefix, variableMap);
         FTPClient ftpClient = FtpUtil.getFtpClient(ftpInfo);
         try {
             // because \ was an escape character,so \{xxx} can not be parsed

@@ -20,7 +20,7 @@ public class DingTalkSender implements Sender {
     @Override
     public void send(MessageBean messageBean) {
         DingTalkAlarm alarm = new DingTalkAlarm();
-        DingTalkConfig config = ReflectUtil.reflectObj(new DingTalkConfig(),
+        DingTalkConfig config = ReflectUtil.reflectObj(DingTalkConfig.class,
                 CommonConstants.KEY_ALARM_ARG + getIndex(),
                 messageBean.getExtraMap());
         Information info = new MarkdownMsg().setMarkdown(

@@ -20,7 +20,7 @@ public class WxWorkSender implements Sender {
     @Override
     public void send(MessageBean messageBean) {
         WxWorkAlarm alarm = new WxWorkAlarm();
-        WxWorkConfig config = ReflectUtil.reflectObj(new WxWorkConfig(),
+        WxWorkConfig config = ReflectUtil.reflectObj(WxWorkConfig.class,
                 CommonConstants.KEY_ALARM_ARG + getIndex(),
                 messageBean.getExtraMap());
         Information info = new MarkdownMsg().setMarkdown(new ContentEntity().setContent(messageBean.getContent().replace("<br>", "\n")));

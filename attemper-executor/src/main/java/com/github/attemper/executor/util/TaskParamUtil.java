@@ -13,7 +13,7 @@ import java.util.Map;
 public class TaskParamUtil {
 
     public static FileParam injectFileParam(Map<String, Object> map) {
-        FileParam param = ReflectUtil.reflectObj(new FileParam(), map);
+        FileParam param = ReflectUtil.reflectObj(FileParam.class, map);
         String localDirectory = StringUtils.isBlank(param.getLocalDirectory()) ? FileUtil.getUserHome() : param.getLocalDirectory();
         String fileNameWithSuffix = param.getFileName() + param.getSuffix();
         param.setLocalDirectory(localDirectory);

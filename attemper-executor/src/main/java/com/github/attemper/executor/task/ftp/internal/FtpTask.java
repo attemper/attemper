@@ -34,7 +34,7 @@ public abstract class FtpTask extends ParentTask {
     private FTPClient injectFtpClient(DelegateExecution execution) {
         FTPClient ftpClient;
         String ftpPrefix = (String) execution.getVariable(FTP_PREFIX);
-        FtpInfo ftpInfo = ReflectUtil.reflectObj(new FtpInfo(), ftpPrefix, execution.getVariables());
+        FtpInfo ftpInfo = ReflectUtil.reflectObj(FtpInfo.class, ftpPrefix, execution.getVariables());
         appendLogText(execution, 10200, ftpPrefix, ftpInfo);
         ftpClient = FtpUtil.getFtpClient(ftpInfo);
         if (ftpClient == null) {

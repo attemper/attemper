@@ -9,14 +9,21 @@ import java.util.Map;
 
 public class ReflectUtil {
 
-    public static <T> T reflectObj(T obj, String prefix, Map<String, Object> map) {
+    public static <T> T reflectObj(Class<T> t, String prefix, Map<String, Object> map) {
         prefix = StringUtils.trimToNull(prefix);
-        setFields(obj, obj.getClass(), prefix, map);
-        return obj;
+        try {
+            T obj = t.newInstance();
+            setFields(obj, t, prefix, map);
+            return obj;
+        } catch (InstantiationException e) {
+            throw new RTException(1101, e);
+        } catch (IllegalAccessException e) {
+            throw new RTException(1102, e);
+        }
     }
 
-    public static <T> T reflectObj(T obj, Map<String, Object> map) {
-        return reflectObj(obj, null, map);
+    public static <T> T reflectObj(Class<T> t, Map<String, Object> map) {
+        return reflectObj(t, null, map);
     }
 
     private static void setFields(Object obj, Class<?> clazz, String prefix, Map<String, Object> map) {

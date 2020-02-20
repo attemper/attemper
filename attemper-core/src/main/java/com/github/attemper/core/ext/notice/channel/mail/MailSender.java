@@ -19,7 +19,7 @@ public class MailSender implements Sender {
     @Override
     public void send(MessageBean messageBean) {
         MailAlarm alarm = new MailAlarm();
-        MailConfig config = ReflectUtil.reflectObj(new MailConfig(),
+        MailConfig config = ReflectUtil.reflectObj(MailConfig.class,
                 CommonConstants.KEY_ALARM_ARG + getIndex(),
                 messageBean.getExtraMap());
         if (StringUtils.isBlank(messageBean.getTo().getEmail())) {
