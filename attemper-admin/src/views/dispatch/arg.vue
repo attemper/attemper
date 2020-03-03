@@ -28,7 +28,7 @@
         type="selection"
         width="45"
       />
-      <el-table-column :label="$t('dispatch.arg.columns.argName')" prop="id" sortable="custom" align="center" min-width="100px">
+      <el-table-column :label="$t('dispatch.arg.columns.argName')" prop="id" sortable="custom" min-width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.argName }}</span>
         </template>
