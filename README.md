@@ -21,6 +21,7 @@
 
 ## 简介
 - 分布式、多租户的支持流程编排的任务调度应用
+  - 同时支持Redis分布式锁和Quartz数据库悲观锁
   - 基于`camunda`工作流引擎，支持工作流式的任务编排
   - 基于`Spring Boot`框架开发，对微服务友好
   - 支持`Mysql`/`Oracle`/`Sql Server`/`PostgreSQL`
