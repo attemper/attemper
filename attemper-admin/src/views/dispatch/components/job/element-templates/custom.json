@@ -559,6 +559,126 @@
     }
   },
   {
+    "name": "Custom DingTalk",
+    "id": "CustomDingTalkTask",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Executor Component",
+        "type": "String",
+        "value": "${customDingTalkTask}",
+        "editable": false,
+        "binding": {
+          "type": "property",
+          "name": "camunda:delegateExpression"
+        }
+      },
+      {
+        "label": "WebHook url",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "customDingTalkUrl"
+        }
+      },
+      {
+        "label": "Secret",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "customDingTalkSecret"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Subject",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "customDingTalkSubject"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Content",
+        "type": "Text",
+        "value": "Job ${execution.id}!",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "customDingTalkContent",
+          "scriptFormat": "freemarker"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "delegate": false,
+      "implementation": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
+    }
+  },
+  {
+    "name": "Custom WxWork",
+    "id": "CustomWxWorkTask",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Executor Component",
+        "type": "String",
+        "value": "${customWxWorkTask}",
+        "editable": false,
+        "binding": {
+          "type": "property",
+          "name": "camunda:delegateExpression"
+        }
+      },
+      {
+        "label": "WebHook url",
+        "type": "Text",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "customWxWorkUrl"
+        }
+      },
+      {
+        "label": "Content",
+        "type": "Text",
+        "value": "Job ${execution.id}!",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "customWxWorkContent",
+          "scriptFormat": "freemarker"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "delegate": false,
+      "implementation": false,
+      "fields": false,
+      "field-name": false,
+      "field-type": false,
+      "field-value": false
+    }
+  },
+  {
     "name": "Job Caller",
     "id": "Job Call Activity",
     "appliesTo": [

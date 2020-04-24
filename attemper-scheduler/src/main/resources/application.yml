@@ -68,6 +68,14 @@ org:
       misfireThreshold: 10000
       acquireTriggersWithinLock: true
 
+#For redis
+#org:
+  #quartz:
+    #jobStore:
+      #isClustered: true
+      #misfireThreshold: 10000
+      #class: com.github.quartz.impl.redisjobstore.RedisJobStore
+
 app:
   web:
     enable-scheduling: true

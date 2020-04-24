@@ -1,6 +1,6 @@
 {
   "name": "attemper-admin",
-  "version": "1.0.2-SNAPSHOT",
+  "version": "1.1.0",
   "description": "The front end of attemper-web",
   "author": "ldang264 <820704815@qq.com>",
   "license": "MIT",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "axios": "0.19.1",
-    "bpmn-js": "6.1.2",
+    "bpmn-js": "6.4.2",
     "bpmn-js-properties-panel": "0.33.1",
     "camunda-bpmn-moddle": "4.3.0",
     "codemirror": "5.50.2",
@@ -57,7 +57,7 @@
     "nprogress": "0.2.0",
     "path-to-regexp": "6.1.0",
     "screenfull": "5.0.0",
-    "v-calendar": "1.0.1",
+    "v-calendar": "1.0.5",
     "vue": "2.6.11",
     "vue-avatar": "2.1.8",
     "vue-count-to": "1.0.13",
