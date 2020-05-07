@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class MailSender implements Sender {
 
     @Override
-    public void send(MessageBean messageBean) {
+    public void send(MessageBean messageBean) throws Exception {
         MailAlarm alarm = new MailAlarm();
         MailConfig config = ReflectUtil.reflectObj(MailConfig.class,
                 CommonConstants.KEY_ALARM_ARG + getIndex(),
@@ -27,14 +27,11 @@ public class MailSender implements Sender {
             return;
         }
         MailInformation info = new MailInformation()
+                .setFrom(messageBean.getFrom())
                 .setTo(messageBean.getTo().getEmail())
                 .setSubject(messageBean.getSubject())
                 .setContent(messageBean.getContent());
-        try {
-            alarm.send(config, info);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        alarm.send(config, info);
     }
 
     @Override

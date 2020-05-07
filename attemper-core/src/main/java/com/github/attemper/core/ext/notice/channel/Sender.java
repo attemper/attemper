@@ -4,7 +4,7 @@ import com.github.attemper.core.ext.notice.MessageBean;
 
 public interface Sender {
 
-    void send(MessageBean messageBean);
+    void send(MessageBean messageBean) throws Exception;
 
     int getIndex();
 }

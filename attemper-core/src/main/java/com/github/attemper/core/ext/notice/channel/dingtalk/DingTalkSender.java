@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class DingTalkSender implements Sender {
 
     @Override
-    public void send(MessageBean messageBean) {
+    public void send(MessageBean messageBean) throws Exception {
         DingTalkAlarm alarm = new DingTalkAlarm();
         DingTalkConfig config = ReflectUtil.reflectObj(DingTalkConfig.class,
                 CommonConstants.KEY_ALARM_ARG + getIndex(),
@@ -27,11 +27,7 @@ public class DingTalkSender implements Sender {
                 new MarkdownBody()
                         .setTitle(messageBean.getSubject())
                         .setText(messageBean.getContent().replace(CommonConstants.BR, "\n\n")));
-        try {
-            alarm.send(config, info);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        alarm.send(config, info);
     }
 
     @Override

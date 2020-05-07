@@ -184,7 +184,11 @@ public class InstanceService extends BaseServiceAdapter {
                 if (sendConfig.charAt(i) != '0') {
                     Sender sender = noticeService.getSenderMap().get(i);
                     if (sender != null) {
-                        sender.send(messageBean);
+                        try {
+                            sender.send(messageBean);
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
+                        }
                     } else {
                         log.error("send is missing:{} of {}", i, sendConfig);
                     }

@@ -2,6 +2,7 @@ package com.github.attemper.executor.task.dingtalk;
 
 import com.github.attemper.alarm.AlarmType;
 import com.github.attemper.common.constant.CommonConstants;
+import com.github.attemper.common.exception.RTException;
 import com.github.attemper.common.util.ReflectUtil;
 import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.ext.notice.MessageBean;
@@ -36,7 +37,11 @@ public class CustomDingTalkTask extends ParentTask {
                 .setContent(param.getContent())
                 .setExtraMap(extraMap);
         appendLogText(execution, 10002, param);
-        dingTalkSender.send(messageBean);
+        try {
+            dingTalkSender.send(messageBean);
+        } catch (Exception e) {
+            throw new RTException(1901, e);
+        }
     }
 
     private static final String CUSTOM_DING_TALK = "customDingTalk";

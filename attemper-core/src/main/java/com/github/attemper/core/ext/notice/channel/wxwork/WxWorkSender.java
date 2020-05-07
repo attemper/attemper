@@ -18,17 +18,13 @@ import org.springframework.stereotype.Service;
 public class WxWorkSender implements Sender {
 
     @Override
-    public void send(MessageBean messageBean) {
+    public void send(MessageBean messageBean) throws Exception {
         WxWorkAlarm alarm = new WxWorkAlarm();
         WxWorkConfig config = ReflectUtil.reflectObj(WxWorkConfig.class,
                 CommonConstants.KEY_ALARM_ARG + getIndex(),
                 messageBean.getExtraMap());
         Information info = new MarkdownMsg().setMarkdown(new ContentEntity().setContent(messageBean.getContent().replace("<br>", "\n")));
-        try {
-            alarm.send(config, info);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        alarm.send(config, info);
     }
 
     @Override

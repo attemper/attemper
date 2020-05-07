@@ -27,7 +27,7 @@ public class ReflectUtil {
     }
 
     private static void setFields(Object obj, Class<?> clazz, String prefix, Map<String, Object> map) {
-        if (clazz == null) {
+        if (clazz == null || map == null) {
             return;
         }
         Field[] fields = clazz.getDeclaredFields();
