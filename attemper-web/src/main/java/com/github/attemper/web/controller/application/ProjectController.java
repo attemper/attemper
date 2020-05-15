@@ -6,71 +6,64 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.app.project.Project;
 import com.github.attemper.common.result.app.project.ProjectInfo;
 import com.github.attemper.core.service.application.ProjectService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api("Project")
+@Tag(name ="Project")
 @RestController
 public class ProjectController {
 	
 	@Autowired
 	private ProjectService service;
 
-	@ApiOperation("Get project tree list")
+	@Operation(summary = "Get project tree list")
 	@GetMapping(APIPath.ProjectPath.LIST_TREE)
 	public CommonResult<List<Project>> getTreeList() {
 		return CommonResult.putResult(service.getAll());
 	}
 
-	@ApiOperation("Add or update project")
-	@ApiImplicitParam(value = "ProjectSaveParam", name = "param", dataType = "ProjectSaveParam", required = true)
+	@Operation(summary = "Add or update project", parameters = {@Parameter(name = "param", required = true)})
 	@PostMapping(APIPath.ProjectPath.$)
 	public CommonResult<Project> save(@RequestBody ProjectSaveParam param) {
 		return CommonResult.putResult(service.save(param));
 	}
 
-	@ApiOperation("Remove projects")
-	@ApiImplicitParam(value = "ProjectRemoveParam", name = "param", dataType = "ProjectRemoveParam", required = true)
+	@Operation(summary = "Remove projects", parameters = {@Parameter(name = "param", required = true)})
 	@DeleteMapping(APIPath.ProjectPath.$)
 	public CommonResult<Void> remove(@RequestBody ProjectNamesParam param) {
 		return CommonResult.putResult(service.remove(param));
     }
 
-	@ApiOperation("Save project info")
-	@ApiImplicitParam(value = "ProjectInfoSaveParam", name = "param", dataType = "ProjectInfoSaveParam", required = true)
+	@Operation(summary = "Save project info", parameters = {@Parameter(name = "param", required = true)})
 	@PostMapping(APIPath.ProjectPath.INFO)
 	public CommonResult<ProjectInfo> saveInfo(@RequestBody ProjectInfoSaveParam param) {
 		return CommonResult.putResult(service.saveInfo(param));
 	}
 
-	@ApiOperation("List project info")
-	@ApiImplicitParam(value = "ProjectGetParam", name = "param", dataType = "ProjectGetParam", required = true)
+	@Operation(summary = "List project info", parameters = {@Parameter(name = "param", required = true)})
 	@GetMapping(APIPath.ProjectPath.INFO)
 	public CommonResult<List<ProjectInfo>> listInfo(ProjectNameParam param) {
 		return CommonResult.putResult(service.listInfo(param));
 	}
 
-	@ApiOperation("Remove project info")
-	@ApiImplicitParam(value = "ProjectInfoRemoveParam", name = "param", dataType = "ProjectInfoRemoveParam", required = true)
+	@Operation(summary = "Remove project info", parameters = {@Parameter(name = "param", required = true)})
 	@DeleteMapping(APIPath.ProjectPath.INFO)
 	public CommonResult<Void> removeInfo(@RequestBody ProjectInfoRemoveParam param) {
 		return CommonResult.putResult(service.removeInfo(param));
 	}
 
-	@ApiOperation("Save project executor")
-	@ApiImplicitParam(value = "ProjectExecutorSaveParam", name = "param", dataType = "ProjectExecutorSaveParam", required = true)
+	@Operation(summary = "Save project executor", parameters = {@Parameter(name = "param", required = true)})
 	@PostMapping(APIPath.ProjectPath.EXECUTOR)
 	public CommonResult<Void> saveExecutors(@RequestBody ProjectExecutorSaveParam param) {
 		return CommonResult.putResult(service.saveExecutors(param));
 	}
 
-	@ApiOperation("List project executor")
-	@ApiImplicitParam(value = "ProjectGetParam", name = "param", dataType = "ProjectGetParam", required = true)
+	@Operation(summary = "List project executor", parameters = {@Parameter(name = "param", required = true)})
 	@GetMapping(APIPath.ProjectPath.EXECUTOR)
 	public CommonResult<List<String>> listExecutor(ProjectNameParam param) {
 		return CommonResult.putResult(service.listExecutor(param));

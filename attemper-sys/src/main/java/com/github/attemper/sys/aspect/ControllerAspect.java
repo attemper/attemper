@@ -16,8 +16,8 @@ import com.github.attemper.java.sdk.common.param.BaseParam;
 import com.github.attemper.java.sdk.common.param.sys.login.LoginParam;
 import com.github.attemper.sys.ext.jwt.JWTService;
 import com.github.attemper.sys.holder.TenantHolder;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -147,17 +147,17 @@ public class ControllerAspect {
         apiLog.setParam(StringUtil.formatToJsonStr(joinPoint.getArgs()));
 
         Class<?> clazz = joinPoint.getTarget().getClass();
-        Api api = clazz.getAnnotation(Api.class);
+        Tag api = clazz.getAnnotation(Tag.class);
         if (api != null) {
-            apiLog.setTag(api.value());
+            apiLog.setTag(api.name());
         }
         apiLog.setClassName(clazz.getName());
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
-        ApiOperation apiOperation = method.getAnnotation(ApiOperation.class);
+        Operation apiOperation = method.getAnnotation(Operation.class);
         if (apiOperation != null) {
-            apiLog.setOperation(apiOperation.value());
+            apiLog.setOperation(apiOperation.description());
         }
         apiLog.setMethod(method.getName());
         AspectUtil.resolvePath(method, apiLog);

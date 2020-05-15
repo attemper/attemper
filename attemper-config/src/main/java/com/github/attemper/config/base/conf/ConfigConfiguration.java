@@ -35,7 +35,6 @@ import java.util.concurrent.ScheduledExecutorService;
         GlobalExceptionAdvisor.class,
 
         LocaleConfig.class,
-        Swagger2Config.class,
         LocalServerConfig.class,
 
         SpringContextAware.class,

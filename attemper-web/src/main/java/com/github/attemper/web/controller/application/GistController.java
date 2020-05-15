@@ -7,73 +7,65 @@ import com.github.attemper.common.result.CommonResult;
 import com.github.attemper.common.result.app.gist.Gist;
 import com.github.attemper.common.result.app.gist.GistInfo;
 import com.github.attemper.core.service.application.GistService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-@Api("Gist")
+@Tag(name ="Gist")
 @RestController
 public class GistController {
 
     @Autowired
     private GistService service;
 
-    @ApiOperation("Add gist")
-    @ApiImplicitParam(value = "GistNameParam", name = "param", dataType = "GistNameParam", required = true)
+    @Operation(summary = "Add gist", parameters = {@Parameter(name = "param", required = true)})
     @PostMapping(value = APIPath.GistPath.$)
     public CommonResult<Gist> add(@RequestBody GistNameParam param) {
         return CommonResult.putResult(service.add(param));
     }
 
-    @ApiOperation("List gists")
-    @ApiImplicitParam(value = "GistListParam", name = "param", dataType = "GistListParam", required = true)
+    @Operation(summary = "List gists", parameters = {@Parameter(name = "param", required = true)})
     @GetMapping(APIPath.GistPath.$)
     public CommonResult<Map<String, Object>> list(GistListParam param) {
         return CommonResult.putResult(service.list(param));
     }
 
-    @ApiOperation("Remove gists")
-    @ApiImplicitParam(value = "GistNamesParam", name = "param", dataType = "GistNamesParam", required = true)
+    @Operation(summary = "Remove gists", parameters = {@Parameter(name = "param", required = true)})
     @DeleteMapping(value = APIPath.GistPath.$)
     public CommonResult<Void> remove(@RequestBody GistNamesParam param) {
         return CommonResult.putResult(service.remove(param));
     }
 
-    @ApiOperation("Add gist info")
-    @ApiImplicitParam(value = "GistInfoSaveParam", name = "param", dataType = "GistInfoSaveParam", required = true)
+    @Operation(summary = "Add gist info", parameters = {@Parameter(name = "param", required = true)})
     @PostMapping(value = APIPath.GistPath.INFO)
     public CommonResult<GistInfo> addInfo(@RequestBody GistInfoSaveParam param) {
         return CommonResult.putResult(service.addInfo(param));
     }
 
-    @ApiOperation("List gist info")
-    @ApiImplicitParam(value = "GistNameParam", name = "param", dataType = "GistNameParam", required = true)
+    @Operation(summary = "List gist info", parameters = {@Parameter(name = "param", required = true)})
     @GetMapping(APIPath.GistPath.INFO)
     public CommonResult<List<GistInfo>> listInfo(GistNameParam param) {
         return CommonResult.putResult(service.listInfo(param));
     }
 
-    @ApiOperation("Remove info")
-    @ApiImplicitParam(value = "IdParam", name = "param", dataType = "IdParam", required = true)
+    @Operation(summary = "Remove info", parameters = {@Parameter(name = "param", required = true)})
     @DeleteMapping(value = APIPath.GistPath.INFO)
     public CommonResult<Void> removeInfo(@RequestBody IdParam param) {
         return CommonResult.putResult(service.removeInfo(param));
     }
 
-    @ApiOperation("Get content")
-    @ApiImplicitParam(value = "IdParam", name = "param", dataType = "IdParam", required = true)
+    @Operation(summary = "Get content", parameters = {@Parameter(name = "param", required = true)})
     @GetMapping(APIPath.GistPath.CONTENT)
     public CommonResult<String> getContent(IdParam param) {
         return CommonResult.putResult(service.getContent(param));
     }
 
-    @ApiOperation("Update content")
-    @ApiImplicitParam(value = "GistInfoContentParam", name = "param", dataType = "GistInfoContentParam", required = true)
+    @Operation(summary = "Update content", parameters = {@Parameter(name = "param", required = true)})
     @PutMapping(value = APIPath.GistPath.CONTENT)
     public CommonResult<Void> updateContent(@RequestBody GistInfoContentParam param) {
         return CommonResult.putResult(service.updateContent(param));

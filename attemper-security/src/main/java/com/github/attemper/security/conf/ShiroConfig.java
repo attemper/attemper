@@ -52,9 +52,8 @@ public class ShiroConfig {
         filterMap.put(SdkAPIPath.LoginPath.$, "anon");  //web login
         filterMap.put(SdkAPIPath.LoginPath.LOGIN_BY_ENCODED_USERNAME_PWD, "anon");  //sdk login
         filterMap.put("/swagger-ui.html", "anon");  //swagger-ui
-        filterMap.put("/webjars/**", "anon");
-        filterMap.put("/swagger-resources/**", "anon");
-        filterMap.put("/v2/api-docs", "anon");  //swagger2 api
+        filterMap.put("/swagger-ui/**", "anon");  //swagger-ui
+        filterMap.put("/v3/api-docs/**", "anon");  //swagger-ui
         //filterMap.put("/kaptcha", "anon");
         filterMap.put(ExecutorAPIPath.RouterPath.SYNC, "anon");
         filterMap.put(ExecutorAPIPath.RouterPath.ASYNC, "anon");

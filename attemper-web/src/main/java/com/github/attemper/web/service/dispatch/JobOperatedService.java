@@ -24,8 +24,6 @@ import com.github.attemper.sys.util.PageUtil;
 import com.github.attemper.web.ext.trigger.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.google.common.base.Charsets;
-import com.google.common.net.MediaType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
@@ -52,6 +50,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -391,7 +390,7 @@ public class JobOperatedService extends BaseServiceAdapter {
             jobModels.add(mainModel);
         }
         response.setHeader("Content-Disposition", "attachment; filename=" + param.getFileName());
-        response.setContentType(MediaType.ZIP.toString());
+        response.setContentType("application/zip");
         try (ServletOutputStream outputStream = response.getOutputStream();
              ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);) {
             if (jobModels.size() > 0) {
@@ -430,7 +429,7 @@ public class JobOperatedService extends BaseServiceAdapter {
              ZipInputStream zis = new ZipInputStream(is);){
             ZipEntry zipEntry;
             while ((zipEntry = zis.getNextEntry()) != null) {
-                nameDataMap.put(zipEntry.getName(), new String(FileUtil.inputStreamAsByteArray(zis), Charsets.UTF_8));
+                nameDataMap.put(zipEntry.getName(), new String(FileUtil.inputStreamAsByteArray(zis), "UTF-8"));
             }
         } catch (IOException e) {
             throw new RTException(1100, e);
@@ -715,7 +714,11 @@ public class JobOperatedService extends BaseServiceAdapter {
     }
 
     private BpmnModelInstance toBpmnModelInstance(String xmlContent) {
-        return Bpmn.readModelFromStream(new ByteArrayInputStream(xmlContent.getBytes(Charsets.UTF_8)));
+        try {
+            return Bpmn.readModelFromStream(new ByteArrayInputStream(xmlContent.getBytes("UTF-8")));
+        } catch (UnsupportedEncodingException e) {
+            throw new RTException(1100, e);
+        }
     }
 
     private static final String SUFFIX_BPMN_XML = ".bpmn20.xml";
