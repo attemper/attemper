@@ -35,10 +35,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ldang264/attemper.git"
+    "url": "git+https://github.com/attemper/attemper.git"
   },
   "bugs": {
-    "url": "https://github.com/ldang264/attemper/issues"
+    "url": "https://github.com/attemper/attemper/issues"
   },
   "dependencies": {
     "axios": "0.19.1",

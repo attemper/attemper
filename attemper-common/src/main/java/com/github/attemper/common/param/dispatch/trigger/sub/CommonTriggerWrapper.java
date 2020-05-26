@@ -1,7 +1,7 @@
 package com.github.attemper.common.param.dispatch.trigger.sub;
 
 import com.github.attemper.common.param.CommonParam;
-import com.github.attemper.java.sdk.common.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

@@ -1,7 +1,7 @@
 package com.github.attemper.common.param.dispatch.condition.sub;
 
 import com.github.attemper.common.enums.ConditionType;
-import com.github.attemper.java.sdk.common.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
