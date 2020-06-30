@@ -153,33 +153,32 @@ export default {
       const downloadLink = this.$refs.exportBPMN
       const downloadSvgLink = this.$refs.exportSvg
       this.bpmnModeler.on('commandStack.changed', function() {
-        self.exportSvg(function(err, svg) {
-          self.setEncoded(downloadSvgLink, self.getExportFileName() + '.svg', err ? null : svg)
+        self.exportSvg(function(svg) {
+          self.setEncoded(downloadSvgLink, self.getExportFileName() + '.svg', svg)
         })
 
-        self.exportBPMN(function(err, xml) {
-          self.setEncoded(downloadLink, self.getExportFileName() + '.bpmn.xml', err ? null : xml)
+        self.exportBPMN(function(xml) {
+          self.setEncoded(downloadLink, self.getExportFileName() + '.bpmn.xml', xml)
         })
 
-        self.bindJobContent(function(err, xml) {
-          if (!err) {
-            self.job.content = xml
-          } else {
-            console.error(err)
-          }
+        self.bindJobContent(function(xml) {
+          self.job.content = xml
         })
       })
       this.initWidget()
     },
-    openDiagram(xml) {
+    openDiagram: async function(xml) {
       const self = this
-      this.bpmnModeler.importXML(xml, function(err) {
-        if (err) {
-          console.error(err)
-        } else {
-          self.bpmnModeler.get('canvas').zoom('fit-viewport')
+      try {
+        const result = await this.bpmnModeler.importXML(xml)
+        const { warnings } = result
+        if (warnings && warnings.length > 0) {
+          console.log(warnings)
         }
-      })
+        self.bpmnModeler.get('canvas').zoom('fit-viewport')
+      } catch (err) {
+        console.error(err.message, err.warnings)
+      }
     },
     save() {
       this.$confirm(
@@ -333,13 +332,25 @@ export default {
       }
       return label
     },
-    exportSvg(done) {
-      this.bpmnModeler.saveSVG(done)
+    exportSvg: async function(done) {
+      try {
+        const result = await this.bpmnModeler.saveSVG()
+        const { svg } = result
+        console.log(svg)
+        done(svg)
+      } catch (err) {
+        console.error(err)
+      }
     },
-    exportBPMN(done) {
-      this.bpmnModeler.saveXML({ format: true }, function(err, xml) {
-        done(err, xml)
-      })
+    exportBPMN: async function(done) {
+      try {
+        const result = await this.bpmnModeler.saveXML({ format: true })
+        const { xml } = result
+        console.log(xml)
+        done(xml)
+      } catch (err) {
+        console.error(err)
+      }
     },
     setEncoded(link, name, data) {
       const encodedData = encodeURIComponent(data)
@@ -353,9 +364,7 @@ export default {
       return (this.job.displayName || this.job.jobName || 'undefined') + '-' + getTimeStr()
     },
     bindJobContent(done) {
-      this.bpmnModeler.saveXML({ format: true }, function(err, xml) {
-        done(err, xml)
-      })
+      this.exportBPMN(done)
     },
     initWidget() {
       const self = this
