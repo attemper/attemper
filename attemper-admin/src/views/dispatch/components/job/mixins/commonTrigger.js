@@ -52,9 +52,10 @@ export default {
       return item
     },
     loadConst() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.misfireInstructions = array.misfireInstructions
-        this.simpleTriggerMisfireInstructions = array.simpleTriggerMisfireInstructions
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.misfireInstructions = array['misfireInstructions_' + lang]
+        this.simpleTriggerMisfireInstructions = array['simpleTriggerMisfireInstructions_' + lang]
       })
     }
   }

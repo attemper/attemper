@@ -453,8 +453,9 @@ export default {
       this.arg.argValue = val
     },
     loadConst() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.calendarTypes = array.dateCalendarTypes
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.calendarTypes = array['dateCalendarTypes_' + lang]
       })
     },
     init() {

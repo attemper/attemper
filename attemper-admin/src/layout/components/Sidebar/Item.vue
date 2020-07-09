@@ -18,8 +18,12 @@ export default {
     const vnodes = []
 
     if (icon) {
-      const iconStr = injectIcon(icon)
-      vnodes.push(<svg-icon icon-class={iconStr}/>)
+      if (icon.includes('el-icon')) {
+        vnodes.push(<i class={[icon, 'sub-el-icon']} />)
+      } else {
+        const iconStr = injectIcon(icon)
+        vnodes.push(<svg-icon icon-class={iconStr}/>)
+      }
     }
 
     if (title) {
@@ -29,3 +33,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .sub-el-icon {
+    color: currentColor;
+    width: 1em;
+    height: 1em;
+  }
+</style>

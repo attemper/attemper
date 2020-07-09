@@ -726,14 +726,15 @@ export default {
       }))
     },
     loadConst() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.jobStatuses = array.jobStatuses
-        this.milliSecondTimeUnits = array.milliSecondTimeUnits
-        this.inDayTimeUnits = array.inDayTimeUnits
-        this.dayTimeUnit = array.dayTimeUnit
-        this.overDayTimeUnits = array.overDayTimeUnits
-        this.daysOfWeek = array.daysOfWeek
-        this.jobCharts = array.jobCharts
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.jobStatuses = array['jobStatuses_' + lang]
+        this.milliSecondTimeUnits = array['milliSecondTimeUnits_' + lang]
+        this.inDayTimeUnits = array['inDayTimeUnits_' + lang]
+        this.dayTimeUnit = array['dayTimeUnit_' + lang]
+        this.overDayTimeUnits = array['overDayTimeUnits_' + lang]
+        this.daysOfWeek = array['daysOfWeek_' + lang]
+        this.jobCharts = array['jobCharts_' + lang]
         this.search()
       })
       this.initArgTypes()

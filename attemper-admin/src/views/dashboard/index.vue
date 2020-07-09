@@ -143,22 +143,24 @@ export default {
       })
     },
     init() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
         this.renderChart(instanceCountReq,
-          array.instanceStatuses,
+          array['instanceStatuses_' + lang],
           'instanceChart',
           this.$t('chart.instance'),
           INSTANCE_COLORS
         ).then(res => { this.totalInstanceCount = res })
 
         this.renderChart(jobCountReq,
-          array.jobStatuses, 'jobChart',
+          array['jobStatuses_' + lang],
+          'jobChart',
           this.$t('chart.job'),
           JOB_COLORS
         ).then(res => { this.totalJobCount = res })
 
         this.renderChart(tenantCountReq,
-          array.tenantStatuses,
+          array['tenantStatuses_' + lang],
           'tenantChart',
           this.$t('chart.tenant'),
           TENANT_COLORS

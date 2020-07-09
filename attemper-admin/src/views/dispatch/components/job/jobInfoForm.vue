@@ -79,8 +79,9 @@ export default {
       })
     },
     loadConst() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.jobStatuses = array.jobStatuses
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.jobStatuses = array['jobStatuses_' + lang]
       })
     }
   }

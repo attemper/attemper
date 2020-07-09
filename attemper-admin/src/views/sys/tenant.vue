@@ -387,9 +387,10 @@ export default {
         this.editDialog.password.visible = false
     },
     loadConst() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.tenantStatuses = array.tenantStatuses
-        this.sendConfigs = array.sendConfigs
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.tenantStatuses = array['tenantStatuses_' + lang]
+        this.sendConfigs = array['sendConfigs_' + lang]
       })
     }
   }

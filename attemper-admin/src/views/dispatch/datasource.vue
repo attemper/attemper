@@ -312,7 +312,7 @@ export default {
       return item
     },
     loadConst() {
-      import(`@/constant/common.js`).then((array) => {
+      import('@/lang/dict.js').then(array => {
         this.databases = array.databases
       })
     }

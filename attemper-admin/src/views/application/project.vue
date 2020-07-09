@@ -107,7 +107,7 @@
           <div style="margin-top: 10px;">
             <el-row>
               <el-col :span="8">
-                <el-input v-model="projectInfo.uri" placeholder="uri" />
+                <el-input v-model="projectInfo.uri" :placeholder="projectInfo.uriType === 0 ? 'service name' : 'http(s)://'" />
               </el-col>
               <el-col :span="6" :offset="1">
                 <el-select v-model="projectInfo.uriType" style="width: 100%;">
@@ -351,8 +351,9 @@ export default {
       this.projectInfo = Object.assign({}, val) || Object.assign({}, DEF_INSTANCE)
     },
     loadConst() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.uriTypes = array.uriTypes
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.uriTypes = array['uriTypes_' + lang]
       })
     }
   }

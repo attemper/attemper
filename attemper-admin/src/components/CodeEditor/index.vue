@@ -1,8 +1,10 @@
 <template>
   <div class="base-editor">
+    <!--
     <el-select v-model="theme" style="width: 200px; margin: 10px 0 10px 10px;" filterable @change="selectTheme">
       <el-option v-for="item in themes" :key="item.value" :value="item.value" :label="item.value" />
     </el-select>
+    -->
     <textarea ref="textarea" />
   </div>
 </template>
@@ -55,8 +57,8 @@ import 'codemirror/addon/dialog/dialog.css'
 import 'codemirror/addon/display/fullscreen.js'
 import 'codemirror/addon/display/fullscreen.css'
 
-const DEF_THEME_NAME = 'idea'
-const THEME_KEY = 'theme'
+// const DEF_THEME_NAME = 'idea'
+// const THEME_KEY = 'theme'
 export default {
   name: 'CodeEditor',
   /* eslint-disable vue/require-prop-types */
@@ -76,9 +78,9 @@ export default {
   },
   data() {
     return {
-      editor: false,
-      theme: DEF_THEME_NAME,
-      themes: []
+      editor: false // ,
+      // theme: DEF_THEME_NAME,
+      // themes: []
     }
   },
   watch: {
@@ -90,16 +92,16 @@ export default {
     }
   },
   created() {
-    this.initTheme()
+    // this.initTheme()
     this.initEditor()
   },
   methods: {
     initEditor() {
-      import(`@/constant/common.js`).then((array) => {
+      import('@/lang/dict.js').then(array => {
         const mode = array.modes.find(item => {
           return item.label === this.extension
         })
-        this.themes = array.themes
+        // this.themes = array.themes
         this.editor = CodeMirror.fromTextArea(this.$refs.textarea, {
           lineNumbers: true,
           mode: mode ? mode.value : 'text/javascript',
@@ -113,7 +115,8 @@ export default {
           matchBrackets: true,
           autoCloseBrackets: true
         })
-        this.importTheme(this.theme)
+        // this.importTheme(this.theme)
+        this.editor.setOption('theme', 'idea')
         this.editor.setValue(this.extension === '.json' ? JSON.stringify(this.value, null, 2) : this.value)
         this.editor.on('change', cm => {
           this.$emit('changed', cm.getValue())
@@ -123,7 +126,8 @@ export default {
     },
     getValue() {
       return this.editor.getValue()
-    },
+    }
+    /*,
     initTheme() {
       this.theme = sessionStorage.getItem(THEME_KEY) || DEF_THEME_NAME
     },
@@ -136,6 +140,7 @@ export default {
         this.editor.setOption(THEME_KEY, themeName)
       })
     }
+    */
   }
 }
 </script>

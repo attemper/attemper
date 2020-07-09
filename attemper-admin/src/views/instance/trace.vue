@@ -466,8 +466,9 @@ export default {
       this.editDialog.param.visible = false
     },
     loadConst() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.instanceStatuses = array.instanceStatuses
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.instanceStatuses = array['instanceStatuses_' + lang]
       })
     }
   }

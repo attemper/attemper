@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.util.List;
 
 public interface Databasing {
 
@@ -29,7 +28,4 @@ public interface Databasing {
         return new JdbcTemplate(dataSource);
     }
 
-    default int[] insert(JdbcTemplate jdbcTemplate, String sql, List<Object[]> data) {
-        return jdbcTemplate.batchUpdate(sql, data);
-    }
 }

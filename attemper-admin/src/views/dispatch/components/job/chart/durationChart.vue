@@ -83,8 +83,9 @@ export default {
       })
     },
     loadConst() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.durationOrders = array.durationOrders
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.durationOrders = array['durationOrders_' + lang]
       })
     }
   }

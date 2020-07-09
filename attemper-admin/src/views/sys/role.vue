@@ -398,9 +398,10 @@ export default {
       )
     },
     loadConst() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.transferTitles = array.transferTitles
-        this.allocateTitles = array.allocateTitles
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.transferTitles = array['transferTitles_' + lang]
+        this.allocateTitles = array['allocateTitles_' + lang]
       })
     }
   }

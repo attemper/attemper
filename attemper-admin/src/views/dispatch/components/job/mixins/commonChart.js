@@ -15,12 +15,13 @@ export default {
     }
   },
   created() {
-    this.loadConstant()
+    this.loadConst()
   },
   methods: {
-    loadConstant() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.firedSources = array.firedSources
+    loadConst() {
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.firedSources = array['firedSources_' + lang]
       })
     }
   }

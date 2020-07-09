@@ -8,10 +8,9 @@ function resolve(dir) {
 }
 
 const name = defaultSettings.title || 'vue Element Admin' // page title
-// If your port is set to 80,
-// use administrator privileges to execute the command line.
-// For example, Mac: sudo npm run
-const port = 80 // dev port
+// You can change the port by the following method:
+// port = 9527 npm run dev OR npm run dev --port = 9527
+const port = process.env.port || process.env.npm_config_port || 80 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -56,8 +55,11 @@ module.exports = {
     }
   },
   chainWebpack(config) {
-    config.plugins.delete('preload') // TODO: need test
-    config.plugins.delete('prefetch') // TODO: need test
+    // it can improve the speed of the first screen, it is recommended to turn on preload
+    // config.plugins.delete('preload')
+
+    // when there are many pages, it will cause too many meaningless requests
+    config.plugins.delete('prefetch')
 
     // set svg-sprite-loader
     config.module
@@ -86,12 +88,6 @@ module.exports = {
         return options
       })
       .end()
-
-    config
-      // https://webpack.js.org/configuration/devtool/#development
-      .when(process.env.NODE_ENV === 'development',
-        config => config.devtool('cheap-source-map')
-      )
 
     config
       .when(process.env.NODE_ENV !== 'development',

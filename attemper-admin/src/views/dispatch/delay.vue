@@ -123,8 +123,8 @@
 </template>
 
 <script>
-import { getTriggerReq, updateTriggerReq } from '@/api/dispatch/job'
-import { listReq, removeReq, manualReq } from '@/api/dispatch/delay'
+import { getTriggerReq, updateTriggerReq, manualReq } from '@/api/dispatch/job'
+import { listReq, removeReq } from '@/api/dispatch/delay'
 import * as calendarApi from '@/api/dispatch/calendar'
 import * as toolApi from '@/api/dispatch/tool'
 import { buildMsg } from '@/utils/tools'
@@ -273,13 +273,14 @@ export default {
       this.selectRow(row)
     },
     loadConst() {
-        import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-          this.milliSecondTimeUnits = array.milliSecondTimeUnits
-          this.inDayTimeUnits = array.inDayTimeUnits
-          this.dayTimeUnit = array.dayTimeUnit
-          this.overDayTimeUnits = array.overDayTimeUnits
-          this.daysOfWeek = array.daysOfWeek
-        })
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.milliSecondTimeUnits = array['milliSecondTimeUnits_' + lang]
+        this.inDayTimeUnits = array['inDayTimeUnits_' + lang]
+        this.dayTimeUnit = array['dayTimeUnit_' + lang]
+        this.overDayTimeUnits = array['overDayTimeUnits_' + lang]
+        this.daysOfWeek = array['daysOfWeek_' + lang]
+      })
     },
     linkJob() {
       const route = {

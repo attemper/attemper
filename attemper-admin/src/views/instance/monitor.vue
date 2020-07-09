@@ -415,10 +415,11 @@ export default {
       this.editDialog.param.visible = false
     },
     loadConst() {
-      import(`@/constant/array/${localStorage.getItem('language')}.js`).then((array) => {
-        this.doingInstanceStatuses = array.doingInstanceStatuses
-        this.doneInstanceStatuses = array.doneInstanceStatuses
-        this.instanceStatuses = array.instanceStatuses
+      const lang = localStorage.getItem('language')
+      import('@/lang/dict.js').then(array => {
+        this.doingInstanceStatuses = array['doingInstanceStatuses_' + lang]
+        this.doneInstanceStatuses = array['doneInstanceStatuses_' + lang]
+        this.instanceStatuses = array['instanceStatuses_' + lang]
         this.search()
       })
     }
