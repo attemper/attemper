@@ -44,7 +44,6 @@ public class TenantController {
 		return CommonResult.putResult(service.updatePassword(param));
 	}
 
-
 	@Operation(summary = "List tenants", parameters = {@Parameter(name = "param", required = true)})
 	@GetMapping(APIPath.TenantPath.$)
 	public CommonResult<Map<String, Object>> list(TenantListParam param) {

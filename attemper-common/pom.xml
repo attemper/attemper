@@ -12,7 +12,6 @@
     <artifactId>${project.parent.artifactId}-common</artifactId>
 
     <properties>
-        <jackson.version>2.10.1</jackson.version>
         <commons.lang.version>2.6</commons.lang.version>
     </properties>
 
@@ -29,7 +28,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
