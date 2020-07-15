@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@Tag(name ="Delay Job")
+@Tag(name = "Delay Job")
 @RestController
 public class DelayJobController {
 

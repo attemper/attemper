@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name ="Instance")
+@Tag(name = "Instance")
 @RestController
 public class InstanceController {
 

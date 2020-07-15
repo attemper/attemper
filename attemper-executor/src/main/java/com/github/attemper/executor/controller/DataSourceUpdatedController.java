@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name ="Operate datasource")
+@Tag(name = "Operate datasource")
 @RestController
 public class DataSourceUpdatedController {
 

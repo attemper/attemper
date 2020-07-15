@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name ="Job")
+@Tag(name = "Job")
 @RestController
 public class JobController {
 	

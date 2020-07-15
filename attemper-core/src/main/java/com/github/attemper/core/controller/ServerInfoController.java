@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name ="Server info")
+@Tag(name = "Server info")
 @RestController
 public class ServerInfoController {
 

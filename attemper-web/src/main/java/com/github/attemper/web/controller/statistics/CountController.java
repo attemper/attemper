@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name ="Count")
+@Tag(name = "Count")
 @RestController
 public class CountController {
 

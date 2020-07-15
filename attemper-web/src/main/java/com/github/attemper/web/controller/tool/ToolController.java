@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name ="Tool")
+@Tag(name = "Tool")
 @RestController
 public class ToolController {
 

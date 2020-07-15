@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name ="Calendar")
+@Tag(name = "Calendar")
 @RestController
 public class CalendarController {
 

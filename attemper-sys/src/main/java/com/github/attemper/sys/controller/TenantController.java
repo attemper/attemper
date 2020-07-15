@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name ="Tenant")
+@Tag(name = "Tenant")
 @RestController
 public class TenantController {
 	

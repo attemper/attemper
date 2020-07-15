@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name ="Project")
+@Tag(name = "Project")
 @RestController
 public class ProjectController {
 	
