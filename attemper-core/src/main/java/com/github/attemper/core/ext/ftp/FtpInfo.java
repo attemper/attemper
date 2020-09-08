@@ -2,7 +2,7 @@ package com.github.attemper.core.ext.ftp;
 
 import com.github.attemper.common.exception.RTException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 public class FtpInfo {

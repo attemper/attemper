@@ -12,7 +12,7 @@ import com.github.attemper.sys.ext.jwt.JWTService;
 import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.service.TenantService;
 import com.github.attemper.sys.util.PasswordUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

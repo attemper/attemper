@@ -1,7 +1,7 @@
 package com.github.attemper.executor.ext.param;
 
 import com.github.attemper.executor.ext.enums.ResultDataType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ResultTypeSqlParam extends SqlParam {
 

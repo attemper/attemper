@@ -12,7 +12,7 @@ import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.core.service.dispatch.CalendarService;
 import com.github.attemper.invoker.job.ExecutableJob;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.Calendar;
 import org.quartz.*;
 import org.quartz.impl.calendar.HolidayCalendar;

@@ -2,7 +2,7 @@ package com.github.attemper.common.param.sys.role;
 
 import com.github.attemper.common.param.CommonParam;
 import lombok.ToString;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @ToString
 public class RoleNameParam implements CommonParam {

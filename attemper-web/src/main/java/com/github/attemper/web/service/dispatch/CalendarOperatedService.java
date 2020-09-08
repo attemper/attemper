@@ -9,7 +9,7 @@ import com.github.attemper.config.base.util.BeanUtil;
 import com.github.attemper.core.dao.dispatch.CalendarMapper;
 import com.github.attemper.java.sdk.common.util.DateUtil;
 import com.github.attemper.sys.service.BaseServiceAdapter;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.commons.utils.IoUtil;
 import org.quartz.Calendar;
 import org.quartz.Scheduler;

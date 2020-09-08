@@ -2,7 +2,7 @@ package com.github.attemper.common.param.dispatch.job;
 
 import com.github.attemper.common.enums.JobStatus;
 import lombok.ToString;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @ToString
 public class JobSaveParam extends JobContentSaveParam {
