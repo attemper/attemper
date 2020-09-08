@@ -1,7 +1,7 @@
 package com.github.attemper.core.util;
 
 import com.github.attemper.common.exception.RTException;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

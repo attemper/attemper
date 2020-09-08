@@ -1,7 +1,7 @@
 package com.github.attemper.common.param;
 
 import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 @ToString
 public class IdParam implements CommonParam {

@@ -4,7 +4,7 @@ import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.param.dispatch.trigger.sub.DailyTimeIntervalTriggerWrapper;
 import com.github.attemper.invoker.util.QuartzUtil;
 import com.github.attemper.invoker.util.TimeUtil;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.quartz.DateBuilder;
 import org.quartz.Trigger;
 import org.quartz.impl.triggers.DailyTimeIntervalTriggerImpl;

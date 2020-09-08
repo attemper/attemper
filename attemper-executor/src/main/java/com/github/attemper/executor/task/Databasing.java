@@ -3,7 +3,7 @@ package com.github.attemper.executor.task;
 import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.config.base.datasource.DynamicDataSource;
 import com.github.attemper.core.service.dispatch.DataSourceService;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;

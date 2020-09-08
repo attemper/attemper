@@ -8,7 +8,7 @@ import com.github.attemper.config.base.property.AppProperties;
 import com.github.attemper.core.dao.application.ProjectMapper;
 import com.github.attemper.sys.holder.TenantHolder;
 import com.github.attemper.sys.service.BaseServiceAdapter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;

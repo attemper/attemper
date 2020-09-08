@@ -20,7 +20,7 @@ import com.github.attemper.sys.service.BaseServiceAdapter;
 import com.github.attemper.sys.util.PageUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.impl.cfg.IdGenerator;
 import org.quartz.DateBuilder;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -13,7 +13,7 @@ import com.github.attemper.security.model.JWTToken;
 import com.github.attemper.sys.exception.JWTDecodedException;
 import com.github.attemper.sys.exception.JWTExpiredException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;

@@ -1,7 +1,7 @@
 package com.github.attemper.invoker.util;
 
 import com.github.attemper.common.constant.CommonConstants;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.quartz.TimeOfDay;
 
 import java.util.HashSet;

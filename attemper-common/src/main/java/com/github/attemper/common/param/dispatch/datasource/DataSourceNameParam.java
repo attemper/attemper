@@ -2,7 +2,7 @@ package com.github.attemper.common.param.dispatch.datasource;
 
 import com.github.attemper.common.param.CommonParam;
 import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 @ToString
 public class DataSourceNameParam implements CommonParam {

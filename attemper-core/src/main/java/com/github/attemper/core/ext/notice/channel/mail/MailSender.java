@@ -9,7 +9,7 @@ import com.github.attemper.common.util.ReflectUtil;
 import com.github.attemper.core.ext.notice.MessageBean;
 import com.github.attemper.core.ext.notice.channel.Sender;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Slf4j

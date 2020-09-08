@@ -336,6 +336,7 @@ export default {
       try {
         const result = await this.bpmnModeler.saveSVG()
         const { svg } = result
+        console.log(svg)
         done(svg)
       } catch (err) {
         console.error(err)
@@ -345,6 +346,7 @@ export default {
       try {
         const result = await this.bpmnModeler.saveXML({ format: true })
         const { xml } = result
+        console.log(xml)
         done(xml)
       } catch (err) {
         console.error(err)

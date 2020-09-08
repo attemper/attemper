@@ -2,7 +2,7 @@ package com.github.attemper.common.param.app.gist;
 
 import com.github.attemper.common.param.CommonParam;
 import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 @ToString
 public class GistNameParam implements CommonParam {

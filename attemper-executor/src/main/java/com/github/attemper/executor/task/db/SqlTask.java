@@ -6,7 +6,7 @@ import com.github.attemper.executor.ext.enums.ResultDataType;
 import com.github.attemper.executor.ext.param.ResultTypeSqlParam;
 import com.github.attemper.executor.task.Databasing;
 import com.github.attemper.executor.task.ParentTask;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;

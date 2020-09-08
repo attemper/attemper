@@ -11,7 +11,7 @@ import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.executor.disruptor.event.JobEvent;
 import com.lmax.disruptor.WorkHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.ProcessDefinition;

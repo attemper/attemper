@@ -1,7 +1,7 @@
 package com.github.attemper.common.param.dispatch.instance;
 
 import com.github.attemper.common.param.CommonParam;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 public class InstanceGetParam implements CommonParam {
 

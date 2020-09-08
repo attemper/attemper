@@ -13,7 +13,7 @@ import com.github.attemper.core.service.instance.InstanceService;
 import com.github.attemper.invoker.service.JobCallingService;
 import com.github.attemper.web.ext.app.ExecutorHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.history.HistoricVariableInstance;
 import org.camunda.bpm.engine.history.HistoricVariableInstanceQuery;
