@@ -1,7 +1,7 @@
 package com.github.attemper.common.param.app.project;
 
 import lombok.ToString;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @ToString
 public class ProjectSaveParam extends ProjectNameParam {

@@ -2,7 +2,7 @@ package com.github.attemper.common.util;
 
 import com.github.attemper.common.constant.CommonConstants;
 import com.github.attemper.common.exception.RTException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.Map;

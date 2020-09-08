@@ -1,7 +1,7 @@
 package com.github.attemper.common.param.dispatch.calendar;
 
 import lombok.ToString;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @ToString
 public class DayCalendarListParam extends CalendarListParam {

@@ -2,7 +2,7 @@ package com.github.attemper.common.param.dispatch.arg.ext;
 
 import com.github.attemper.common.param.CommonParam;
 import lombok.ToString;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Pattern;
 

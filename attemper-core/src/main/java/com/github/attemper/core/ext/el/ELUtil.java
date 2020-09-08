@@ -1,6 +1,6 @@
 package com.github.attemper.core.ext.el;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.impl.javax.el.ExpressionFactory;
 import org.camunda.bpm.engine.impl.javax.el.ValueExpression;
 import org.camunda.bpm.engine.impl.juel.ExpressionFactoryImpl;
