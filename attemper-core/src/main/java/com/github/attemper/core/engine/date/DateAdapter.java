@@ -8,7 +8,6 @@ import com.github.attemper.config.base.bean.SpringContextAware;
 import com.github.attemper.core.service.dispatch.CalendarService;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -95,7 +94,7 @@ public abstract class DateAdapter implements DateHandler {
         return dayCalendarConfigs.stream().map(DayCalendarConfig::getDayNum).collect(Collectors.toList());
     }
 
-    protected int getDate(@NotNull Date date) {
+    protected int getDate(Date date) {
         return Integer.parseInt(DateTimeUtil.formatDate(date, CommonConstants.yyyyMMdd));
     }
 

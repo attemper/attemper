@@ -25,17 +25,12 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.hibernate.validator.HibernateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Set;
 
 @Slf4j
 @Component
@@ -44,9 +39,6 @@ public class ControllerAspect {
 
     @Autowired
     private JWTService jwtService;
-
-    private static Validator validator = Validation
-            .byProvider(HibernateValidator.class).configure().failFast(true).buildValidatorFactory().getValidator();
 
     @Pointcut("(execution(public * " + GlobalConstants.basePackageLocation + "*.controller..*Controller.*(..)))"
     )
@@ -101,12 +93,6 @@ public class ControllerAspect {
         if (args != null) {
             for (Object arg : args) {
                 if (arg != null) {
-                    Set<ConstraintViolation<Object>> violations = validator.validate(arg);
-                    if (!violations.isEmpty()) {
-                        ConstraintViolation<Object> violation = violations.iterator().next();
-                        String codeStr = violation.getMessage();
-                        return CommonResult.put(Integer.valueOf(codeStr));
-                    }
                     if (arg instanceof BaseParam) {
                         BaseParam baseParam = (BaseParam) arg;
                         if (arg instanceof CommonParam) {
