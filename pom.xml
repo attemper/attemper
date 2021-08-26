@@ -6,7 +6,6 @@
 	<artifactId>attemper</artifactId>
 	<version>1.1.1</version>
 	<modules>
-		<module>${project.artifactId}-admin</module>
 		<module>${project.artifactId}-common</module>
 		<module>${project.artifactId}-config</module>
 		<module>${project.artifactId}-sys</module>
@@ -26,23 +25,24 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
+		<!-- https://start.spring.io/actuator/info -->
 		<spring.boot.version>2.4.4</spring.boot.version>
-		<spring.cloud.version>Hoxton.SR12</spring.cloud.version>
+		<spring.cloud.version>2020.0.3</spring.cloud.version>
 
         <camunda.version>7.15.0</camunda.version>
 		<disruptor.version>3.4.2</disruptor.version>
-		<quartz.spring.boot.version>1.0.0</quartz.spring.boot.version>
+		<quartz.spring.boot.version>1.0.1</quartz.spring.boot.version>
 		<quartz.version>2.3.2.2</quartz.version>
-		<quartz.redis.version>0.9.2</quartz.redis.version>
+		<quartz.redis.version>0.9.3</quartz.redis.version>
 		<sdk.version>1.0.0</sdk.version>
 		<sdk.artifactId>attemper-java-sdk</sdk.artifactId>
 		<alarm.version>0.1.0</alarm.version>
 
 		<commons.logging.version>1.2</commons.logging.version>
 		<commons.codec.version>1.13</commons.codec.version>
-		<shiro.version>1.6.0</shiro.version>
+		<shiro.version>1.7.0</shiro.version>
 		<lombok.version>1.16.18</lombok.version>
-		<junit.version>4.13.1</junit.version>
+		<junit.version>4.12</junit.version>
 		<jna.version>5.5.0</jna.version>
 
 		<lombok.maven.plugin.version>1.16.18.0</lombok.maven.plugin.version>

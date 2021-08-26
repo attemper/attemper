@@ -140,33 +140,31 @@ public class QuartzUtil {
     }
 
     private static String handleHolidayCalendar(List<String> calendarNames) {
-        if (calendarNames == null || calendarNames.size() == 0) {
-            return null;
-        } else if (calendarNames.size() == 1) {
+        if (calendarNames == null || calendarNames.size() == 0) return null;
+        if (calendarNames.size() == 1) {
             getAndAddHolidayCalendar(calendarNames.get(0));
             return calendarNames.get(0);
-        } else {
-            HolidayCalendar lastCalendar = getAndAddHolidayCalendar(calendarNames.get(0));
-            HolidayCalendar currentCalendar = null;
-            for (int i = 1; i < calendarNames.size(); i++) {
-                currentCalendar = getAndAddHolidayCalendar(calendarNames.get(i));
-                currentCalendar.setBaseCalendar(lastCalendar);
-                if (i == calendarNames.size() - 1) {
-                    break;
-                }
-                lastCalendar = (HolidayCalendar) currentCalendar.clone();
-            }
-            String combinedCalendarName = StringUtils.join(calendarNames, CommonConstants.COLON);
-            Scheduler scheduler = SpringContextAware.getBean(Scheduler.class);
-            try {
-                if (scheduler.getCalendar(combinedCalendarName) == null) {
-                    scheduler.addCalendar(combinedCalendarName, currentCalendar, false, false);
-                }
-            } catch (SchedulerException e) {
-                throw new RTException(e);
-            }
-            return combinedCalendarName;
         }
+        HolidayCalendar lastCalendar = getAndAddHolidayCalendar(calendarNames.get(0));
+        HolidayCalendar currentCalendar = null;
+        for (int i = 1; i < calendarNames.size(); i++) {
+            currentCalendar = getAndAddHolidayCalendar(calendarNames.get(i));
+            currentCalendar.setBaseCalendar(lastCalendar);
+            if (i == calendarNames.size() - 1) {
+                break;
+            }
+            lastCalendar = (HolidayCalendar) currentCalendar.clone();
+        }
+        String combinedCalendarName = StringUtils.join(calendarNames, CommonConstants.COLON);
+        Scheduler scheduler = SpringContextAware.getBean(Scheduler.class);
+        try {
+            if (scheduler.getCalendar(combinedCalendarName) == null) {
+                scheduler.addCalendar(combinedCalendarName, currentCalendar, false, false);
+            }
+        } catch (SchedulerException e) {
+            throw new RTException(e);
+        }
+        return combinedCalendarName;
     }
 
     public static HolidayCalendar getAndAddHolidayCalendar(String calendarName) {
@@ -209,34 +207,26 @@ public class QuartzUtil {
     }
 
     private static HolidayCalendar getHolidayCalendar(List<String> calendarNames) {
-        if (calendarNames == null || calendarNames.size() == 0) {
-            return null;
-        } else if (calendarNames.size() == 1) {
-            return getHolidayCalendar(calendarNames.get(0));
-        } else {
-            HolidayCalendar lastCalendar = getHolidayCalendar(calendarNames.get(0));
-            HolidayCalendar currentCalendar = null;
-            for (int i = 1; i < calendarNames.size(); i++) {
-                currentCalendar = getHolidayCalendar(calendarNames.get(i));
-                currentCalendar.setBaseCalendar(lastCalendar);
-                if (i == calendarNames.size() - 1) {
-                    break;
-                }
-                lastCalendar = (HolidayCalendar) currentCalendar.clone();
-            }
-            return currentCalendar;
+        if (calendarNames == null || calendarNames.size() == 0) return null;
+        if (calendarNames.size() == 1) return getHolidayCalendar(calendarNames.get(0));
+        HolidayCalendar lastCalendar = getHolidayCalendar(calendarNames.get(0));
+        HolidayCalendar currentCalendar = null;
+        for (int i = 1; i < calendarNames.size(); i++) {
+            currentCalendar = getHolidayCalendar(calendarNames.get(i));
+            currentCalendar.setBaseCalendar(lastCalendar);
+            if (i == calendarNames.size() - 1) break;
+            lastCalendar = (HolidayCalendar) currentCalendar.clone();
         }
+        return currentCalendar;
     }
 
     public static List<Date> getNextFireTimes(List<? extends CommonTriggerWrapper> list, String tenantId) {
-        if (list != null && list.size() > 0) {
-            List<Date> allNextFireTimes = new ArrayList<>(numTimes);
-            for (CommonTriggerWrapper item : list) {
-                allNextFireTimes.addAll(getNextFireTimes(item.getTriggerName(), tenantId));
-            }
-            return allNextFireTimes;
+        if (list == null || list.size() == 0) return new ArrayList<>(0);
+        List<Date> allNextFireTimes = new ArrayList<>(numTimes);
+        for (CommonTriggerWrapper item : list) {
+            allNextFireTimes.addAll(getNextFireTimes(item.getTriggerName(), tenantId));
         }
-        return new ArrayList<>(0);
+        return allNextFireTimes;
     }
 
     public static List<Date> getNextFireTimes(String triggerName, String tenantId) {
@@ -265,9 +255,7 @@ public class QuartzUtil {
 
     private static List<Date> resolvePastTime(List<Date> dates) {
         Date now = new Date();
-        if (dates == null || dates.size() == 0) {
-            return dates;
-        }
+        if (dates == null || dates.size() == 0) return dates;
         List<Date> dateList = new ArrayList<>(dates.size());
         for (Date date : dates) {
             if (!date.before(now)) {  // only show future date

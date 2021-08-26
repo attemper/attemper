@@ -167,17 +167,16 @@ export default {
       })
       this.initWidget()
     },
-    openDiagram: async function(xml) {
-      const self = this
+    async openDiagram(xml) {
       try {
         const result = await this.bpmnModeler.importXML(xml)
         const { warnings } = result
-        if (warnings && warnings.length > 0) {
-          console.log(warnings)
+        this.bpmnModeler.get('canvas').zoom('fit-viewport')
+        if (warnings.length > 0) {
+          this.$message.warning(warnings)
         }
-        self.bpmnModeler.get('canvas').zoom('fit-viewport')
       } catch (err) {
-        console.error(err.message, err.warnings)
+        this.$message.error(err.message + err.warnings)
       }
     },
     save() {
@@ -332,22 +331,22 @@ export default {
       }
       return label
     },
-    exportSvg: async function(done) {
+    async exportSvg(done) {
       try {
         const result = await this.bpmnModeler.saveSVG()
         const { svg } = result
         done(svg)
       } catch (err) {
-        console.error(err)
+        this.$message.error(err)
       }
     },
-    exportBPMN: async function(done) {
+    async exportBPMN(done) {
       try {
         const result = await this.bpmnModeler.saveXML({ format: true })
         const { xml } = result
         done(xml)
       } catch (err) {
-        console.error(err)
+        this.$message.error(err)
       }
     },
     setEncoded(link, name, data) {

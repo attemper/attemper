@@ -1060,3 +1060,36 @@ ALTER TABLE ACT_RU_VARIABLE
 
 ALTER TABLE ACT_HI_DETAIL
   ADD INITIAL_ NUMBER(1,0) CHECK (INITIAL_ IN (1,0));
+
+/** 7.14 */
+-- https://jira.camunda.com/browse/CAM-12304
+ALTER TABLE ACT_RU_VARIABLE
+    ADD BATCH_ID_ NVARCHAR2(64);
+CREATE INDEX ACT_IDX_BATCH_ID ON ACT_RU_VARIABLE(BATCH_ID_);
+ALTER TABLE ACT_RU_VARIABLE
+    ADD CONSTRAINT ACT_FK_VAR_BATCH
+        FOREIGN KEY (BATCH_ID_)
+            REFERENCES ACT_RU_BATCH (ID_);
+
+-- https://jira.camunda.com/browse/CAM-12411
+create index ACT_IDX_VARIABLE_TASK_NAME_TYP on ACT_RU_VARIABLE(TASK_ID_, NAME_, TYPE_);
+
+/** 7.15 */
+
+-- https://jira.camunda.com/browse/CAM-13013
+
+create table ACT_RU_TASK_METER_LOG (
+                                       ID_ NVARCHAR2(64) not null,
+                                       ASSIGNEE_HASH_ NUMBER(19,0),
+                                       TIMESTAMP_ TIMESTAMP(6),
+                                       primary key (ID_)
+);
+
+create index ACT_IDX_TASK_METER_LOG_TIME on ACT_RU_TASK_METER_LOG(TIMESTAMP_);
+
+-- https://jira.camunda.com/browse/CAM-13060
+ALTER TABLE ACT_RU_INCIDENT
+    ADD ANNOTATION_ NVARCHAR2(2000);
+
+ALTER TABLE ACT_HI_INCIDENT
+    ADD ANNOTATION_ NVARCHAR2(2000);

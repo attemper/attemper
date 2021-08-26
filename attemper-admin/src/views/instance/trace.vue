@@ -288,12 +288,8 @@ export default {
       })
       const self = this
       this.bpmnViewer.on('commandStack.changed', function() {
-        self.bindContent(function(err, xml) {
-          if (!err) {
-            self.job.content = xml
-          } else {
-            self.$message.error(err)
-          }
+        self.bindContent(function(xml) {
+          self.job.content = xml
         })
       })
       var eventBus = this.bpmnViewer.get('eventBus')
@@ -344,15 +340,17 @@ export default {
         })
       })
     },
-    openDiagram(xml) {
-      const self = this
-      this.bpmnViewer.importXML(xml, function(err) {
-        if (!err) {
-          self.bpmnViewer.get('canvas').zoom('fit-viewport')
-        } else {
-          self.$message.error(err)
+    async openDiagram(xml) {
+      try {
+        const result = await this.bpmnViewer.importXML(xml)
+        const { warnings } = result
+        this.bpmnViewer.get('canvas').zoom('fit-viewport')
+        if (warnings.length > 0) {
+          this.$message.warning(warnings)
         }
-      })
+      } catch (err) {
+        this.$message.error(err.message + err.warnings)
+      }
     },
     search() {
       this.listLoading = true
