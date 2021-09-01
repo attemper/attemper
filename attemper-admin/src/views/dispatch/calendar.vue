@@ -9,14 +9,14 @@
           <el-checkbox v-model="excluded" :disabled="!dayObj" class="cell">{{ $t('actions.exclude') }}</el-checkbox>
           <el-input v-model="remark" :disabled="!dayObj" class="cell" :placeholder="$t('placeholders.remark')" />
           <el-button :disabled="!dayObj" class="cell" type="success" @click="saveDate">{{ $t('actions.save') }}</el-button>
-          <el-upload style="display: inline;" action="" accept="text/plain" :on-change="importDate" :auto-upload="false" :show-file-list="false">
+          <el-upload style="margin-left: 5px; display: inline;" action="" accept="text/plain" :on-change="importDate" :auto-upload="false" :show-file-list="false">
             <el-button class="cell" type="primary" icon="el-icon-upload2">{{ $t('actions.import') }}</el-button>
           </el-upload>
         </div>
       </el-aside>
       <el-main>
         <v-calendar
-          :min-date="new Date(2020, 0, 1)"
+          :min-date="new Date(2021, 0, 1)"
           :attributes="attrs"
           :from-date="new Date(new Date().getFullYear(), 0, 1)"
           :columns="layout.columns"
