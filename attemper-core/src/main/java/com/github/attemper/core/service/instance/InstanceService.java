@@ -102,18 +102,14 @@ public class InstanceService extends BaseServiceAdapter {
         PageHelper.startPage(param.getCurrentPage(), param.getPageSize());
         Page<InstanceWithChildren> list = (Page<InstanceWithChildren>) mapper.listInstance(paramMap);
         if (param.isListChildren()) {
-            list.parallelStream().forEach(item -> {
-                item.setHasChildren(mapper.countRetriedChildren(item.getId()) > 0);
-            });
+            list.parallelStream().forEach(item -> item.setHasChildren(mapper.countRetriedChildren(item.getId()) > 0));
         }
         return PageUtil.toResultMap(list);
     }
 
     public List<InstanceWithChildren> listRetriedChildren(InstanceGetParam param) {
         List<InstanceWithChildren> list = mapper.listRetriedChildren(param.getId());
-        list.parallelStream().forEach(item -> {
-            item.setHasChildren(mapper.countRetriedChildren(item.getId()) > 0);
-        });
+        list.parallelStream().forEach(item -> item.setHasChildren(mapper.countRetriedChildren(item.getId()) > 0));
         return list;
     }
 

@@ -15,7 +15,7 @@ import java.util.Set;
 @Component
 public class NoticeService implements ApplicationListener<WebServerInitializedEvent> {
 
-    private Map<Integer, Sender> senderMap = new HashMap<>();
+    private final Map<Integer, Sender> senderMap = new HashMap<>();
 
     @Override
     public void onApplicationEvent(WebServerInitializedEvent webServerInitializedEvent) {

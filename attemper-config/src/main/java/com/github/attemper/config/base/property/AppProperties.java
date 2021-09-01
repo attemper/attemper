@@ -9,7 +9,7 @@ public class AppProperties {
 
     private String schema = "http://";
 
-    private int jucScheduledPoolSize = 10;
+    private int jucScheduledPoolSize = Runtime.getRuntime().availableProcessors() * 2; // default size is cpu * 2
 
     @NestedConfigurationProperty
     private final LocaleInfo localeInfo = new LocaleInfo();
