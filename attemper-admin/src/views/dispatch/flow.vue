@@ -141,7 +141,7 @@ export default {
           customTranslateModule,
           customControlsModule
         ],
-        elementTemplates: customElementTemplate,
+        elementTemplates: customElementTemplate, // camunda:poperty must be String, Hidden or Dropdown
         moddleExtensions: {
           camunda: camundaModdleDescriptor
         },

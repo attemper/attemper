@@ -21,7 +21,7 @@
       },
       {
         "label": "Bean Name",
-        "type": "Text",
+        "type": "String",
         "binding": {
           "type": "camunda:property",
           "name": "beanName"
@@ -29,7 +29,7 @@
       },
       {
         "label": "Method Name",
-        "type": "Text",
+        "type": "String",
         "binding": {
           "type": "camunda:property",
           "name": "methodName"
@@ -54,7 +54,7 @@
       },
       {
         "label": "Sub URL",
-        "type": "Text",
+        "type": "String",
         "binding": {
           "type": "camunda:property",
           "name": "subUrl"
@@ -120,7 +120,7 @@
       },
       {
         "label": "Bean Name",
-        "type": "Text",
+        "type": "String",
         "binding": {
           "type": "camunda:property",
           "name": "beanName"
@@ -128,7 +128,7 @@
       },
       {
         "label": "Method Name",
-        "type": "Text",
+        "type": "String",
         "binding": {
           "type": "camunda:property",
           "name": "methodName"
@@ -153,7 +153,7 @@
       },
       {
         "label": "Sub URL",
-        "type": "Text",
+        "type": "String",
         "binding": {
           "type": "camunda:property",
           "name": "subUrl"
