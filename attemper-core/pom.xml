@@ -5,15 +5,15 @@
     <parent>
         <groupId>com.github.attemper</groupId>
         <artifactId>attemper</artifactId>
-        <version>1.1.1</version>
+        <version>1.1.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>${project.parent.artifactId}-core</artifactId>
 
     <properties>
-        <reflections.version>0.9.11</reflections.version>
-        <oshi.version>4.2.1</oshi.version>
+        <reflections.version>0.10.1</reflections.version>
+        <oshi.version>5.8.2</oshi.version>
         <commons.net.version>3.6</commons.net.version>
     </properties>
 
