@@ -19,7 +19,7 @@
 
 .djs-minimap {
   bottom: 20px;
-  left: 200px;
+  left: 20px;
   top: auto;
   right: auto;
 }
@@ -47,23 +47,11 @@
 
 .buttons{
   position: absolute;
-  left: 0;
-  bottom: 20px;
+  left: 100px;
+  bottom: 10px;
   &>li{
     display:inline-block;
     margin: 5px;
-    &>a{
-      color: #999;
-      background: #eee;
-      cursor: not-allowed;
-      padding: 8px;
-      border: 1px solid #ccc;
-      &.active{
-        color: #333;
-        background: #fff;
-        cursor: pointer;
-      }
-    }
   }
 }
 

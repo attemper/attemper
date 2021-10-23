@@ -3,13 +3,27 @@
     <div ref="canvas" class="canvas" />
     <div ref="propertiesPanel" class="properties-panel-parent" />
     <ul class="buttons">
-      <li>{{ $t('actions.download') }}</li>
-      <li>
-        <a ref="exportBPMN" :title="$t('dispatch.flow.title.xml')" href="javascript:">{{ $t('dispatch.flow.btn.xml') }}</a>
-      </li>
-      <li>
-        <a ref="exportSvg" :title="$t('dispatch.flow.title.svg')" href="javascript:">{{ $t('dispatch.flow.btn.svg') }}</a>
-      </li>
+      <el-tooltip :content="$t('dispatch.flow.title.undo')">
+        <el-button icon="el-icon-back" @click="bpmnModeler.get('commandStack').undo()" />
+      </el-tooltip>
+      <el-tooltip :content="$t('dispatch.flow.title.redo')">
+        <el-button icon="el-icon-right" @click="bpmnModeler.get('commandStack').redo()" />
+      </el-tooltip>
+      <el-tooltip :content="$t('dispatch.flow.title.fit')">
+        <el-button icon="el-icon-rank" @click="fitViewport" />
+      </el-tooltip>
+      <el-tooltip :content="$t('dispatch.flow.title.zoomBig')">
+        <el-button icon="el-icon-zoom-in" @click="zoomViewport(true)" />
+      </el-tooltip>
+      <el-tooltip :content="$t('dispatch.flow.title.zoomSmall')">
+        <el-button icon="el-icon-zoom-out" @click="zoomViewport(false)" />
+      </el-tooltip>
+      <el-tooltip :content="$t('dispatch.flow.title.bpmn')">
+        <el-button icon="el-icon-download" @click="exportBPMN(true)" />
+      </el-tooltip>
+      <el-tooltip :content="$t('dispatch.flow.title.svg')">
+        <el-button icon="el-icon-picture" @click="exportSVG(true)" />
+      </el-tooltip>
     </ul>
     <div class="custom-area">
       <el-select
@@ -31,21 +45,21 @@
           <el-button type="success" @click="saveAndPublish">{{ $t('actions.saveAndPublish') }}</el-button>
           <el-button slot="reference" icon="el-icon-check" type="success" />
         </el-popover>
-        <el-tooltip :content="$t('dispatch.flow.tip.exchange')" effect="dark" placement="top">
+        <el-tooltip :content="$t('dispatch.flow.tip.exchange')" placement="top">
           <span style="margin-left: 10px;">
             <el-button type="warning" @click="exchange">
               <svg-icon icon-class="exchange" />
             </el-button>
           </span>
         </el-tooltip>
-        <el-tooltip :content="$t('dispatch.flow.tip.copy')" effect="dark" placement="top-start">
+        <el-tooltip :content="$t('dispatch.flow.tip.copy')" placement="top-start">
           <span style="margin-left: 10px;">
             <el-button type="primary" @click="openCopyDialog">
               <svg-icon icon-class="copy" />
             </el-button>
           </span>
         </el-tooltip>
-        <el-tooltip :content="$t('actions.manual')" effect="dark" placement="top-start">
+        <el-tooltip :content="$t('actions.manual')" placement="top-start">
           <span style="margin-left: 10px;">
             <el-button :disabled="!job.procDefId && job.version === 0" type="danger" @click="openParam">
               <svg-icon icon-class="hand" />
@@ -116,7 +130,8 @@ export default {
           visible: false
         }
       },
-      targetJobParam: {}
+      targetJobParam: {},
+      zoom: 1
     }
   },
   created() {
@@ -149,22 +164,6 @@ export default {
           bindTo: document
         }
       })
-      const self = this
-      const downloadLink = this.$refs.exportBPMN
-      const downloadSvgLink = this.$refs.exportSvg
-      this.bpmnModeler.on('commandStack.changed', function() {
-        self.exportSvg(function(svg) {
-          self.setEncoded(downloadSvgLink, self.getExportFileName() + '.svg', svg)
-        })
-
-        self.exportBPMN(function(xml) {
-          self.setEncoded(downloadLink, self.getExportFileName() + '.bpmn.xml', xml)
-        })
-
-        self.bindJobContent(function(xml) {
-          self.job.content = xml
-        })
-      })
       this.initWidget()
     },
     async openDiagram(xml) {
@@ -184,7 +183,8 @@ export default {
         this.$t('tip.saveConfirm'),
         this.$t('tip.confirm'),
         { type: 'info' })
-        .then(() => {
+        .then(async() => {
+          this.process.content = await this.exportBPMN()
           updateContentReq(this.job).then(res => {
             this.$message.success(res.data.msg)
             this.openNewJobPage(this.job.jobName)
@@ -208,7 +208,8 @@ export default {
         this.$t('tip.saveAndPublishConfirm'),
         this.$t('tip.confirm'),
         { type: 'info' })
-        .then(() => {
+        .then(async() => {
+          this.process.content = await this.exportBPMN()
           updateContentReq(this.job).then(res => {
             publishReq({ jobNames: [this.job.jobName] }).then(res => {
               this.$message.success(res.data.msg)
@@ -331,37 +332,38 @@ export default {
       }
       return label
     },
-    async exportSvg(done) {
+    async exportSVG(download = false) {
       try {
-        const result = await this.bpmnModeler.saveSVG()
-        const { svg } = result
-        done(svg)
+        const { svg } = await this.bpmnModeler.saveSVG({ format: true })
+        if (download) {
+          this.downloadFile(this.getExportFileName(), svg, 'image/svg+xml')
+        }
+        return svg
       } catch (err) {
         this.$message.error(err)
       }
     },
-    async exportBPMN(done) {
+    async exportBPMN(download = false) {
       try {
-        const result = await this.bpmnModeler.saveXML({ format: true })
-        const { xml } = result
-        done(xml)
+        const { xml } = await this.bpmnModeler.saveXML({ format: true })
+        if (download) {
+          this.downloadFile(`${this.getExportFileName()}.bpmn`, xml, 'application/xml')
+        }
+        return xml
       } catch (err) {
         this.$message.error(err)
       }
     },
-    setEncoded(link, name, data) {
-      const encodedData = encodeURIComponent(data)
-      if (data) {
-        link.className = 'active'
-        link.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodedData
-        link.download = name
-      }
+    downloadFile(filename, data, type) {
+      const a = document.createElement('a')
+      const url = window.URL.createObjectURL(new Blob([data], { type: type }))
+      a.href = url
+      a.download = filename
+      a.click()
+      window.URL.revokeObjectURL(url)
     },
     getExportFileName() {
       return (this.job.displayName || this.job.jobName || 'undefined') + '-' + getTimeStr()
-    },
-    bindJobContent(done) {
-      this.exportBPMN(done)
     },
     initWidget() {
       const self = this
@@ -369,12 +371,11 @@ export default {
         function handleFileSelect(e) {
           e.stopPropagation()
           e.preventDefault()
-          var files = e.dataTransfer.files
-          var file = files[0]
-          var reader = new FileReader()
+          const files = e.dataTransfer.files
+          const file = files[0]
+          const reader = new FileReader()
           reader.onload = function(e) {
-            var xml = e.target.result
-            callback(xml)
+            callback(e.target.result)
           }
           reader.readAsText(file)
         }
@@ -395,6 +396,27 @@ export default {
       } else {
         registerFileDrop(self.$refs.container, this.openDiagram)
       }
+    },
+    fitViewport() {
+      this.zoom = this.bpmnModeler.get('canvas').zoom('fit-viewport')
+      const bbox = document.querySelector('.flow-containers .viewport').getBBox()
+      const currentViewbox = this.bpmnModeler.get('canvas').viewbox()
+      const elementMid = {
+        x: bbox.x + bbox.width / 2 - 65,
+        y: bbox.y + bbox.height / 2
+      }
+      this.bpmnModeler.get('canvas').viewbox({
+        x: elementMid.x - currentViewbox.width / 2,
+        y: elementMid.y - currentViewbox.height / 2,
+        width: currentViewbox.width,
+        height: currentViewbox.height
+      })
+      this.zoom = bbox.width / currentViewbox.width * 1.8
+    },
+    zoomViewport(zoomIn = true) {
+      this.zoom = this.bpmnModeler.get('canvas').zoom()
+      this.zoom += (zoomIn ? 0.1 : -0.1)
+      this.bpmnModeler.get('canvas').zoom(this.zoom)
     },
     getLoading() {
       return this.$loading({

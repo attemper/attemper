@@ -286,15 +286,9 @@ export default {
           bindTo: document
         }
       })
-      const self = this
-      this.bpmnViewer.on('commandStack.changed', function() {
-        self.bindContent(function(xml) {
-          self.job.content = xml
-        })
-      })
-      var eventBus = this.bpmnViewer.get('eventBus')
+      const eventBus = this.bpmnViewer.get('eventBus')
       // you may hook into any of the following events
-      var events = [
+      const events = [
         'element.click',
         'element.out'
       ]
@@ -429,11 +423,6 @@ export default {
     },
     clickCell(row, column, cell, event) {
       this.selectRow(row)
-    },
-    bindContent(done) {
-      this.bpmnViewer.saveXML({ format: true }, function(err, xml) {
-        done(err, xml)
-      })
     },
     renderRecordStyle({ row, rowIndex }) {
       return 'row' + row.status
