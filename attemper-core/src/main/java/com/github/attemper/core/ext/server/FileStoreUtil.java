@@ -17,8 +17,8 @@ public class FileStoreUtil {
 
     public static List<MapResult<String, Object>> getFileStoreInfo(SystemInfo systemInfo) {
         FileSystem fileSystem = systemInfo.getOperatingSystem().getFileSystem();
-        OSFileStore[] fileStores = fileSystem.getFileStores();
-        List<MapResult<String, Object>> list = new ArrayList<>(fileStores.length);
+        List<OSFileStore> fileStores = fileSystem.getFileStores();
+        List<MapResult<String, Object>> list = new ArrayList<>(fileStores.size());
         for (OSFileStore fs : fileStores) {
             list.add(new MapResult<>(fs.getMount(), FormatUtils.formatBytes(fs.getUsableSpace()) + '/' + FormatUtils.formatBytes(fs.getTotalSpace()) + '(' + NumberUtil.toPercentage(fs.getTotalSpace(), fs.getUsableSpace()) + ')'));
         }
