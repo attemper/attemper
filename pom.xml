@@ -40,7 +40,7 @@
 
 		<commons.logging.version>1.2</commons.logging.version>
 		<commons.codec.version>1.13</commons.codec.version>
-		<shiro.version>1.7.0</shiro.version>
+		<shiro.version>1.8.0</shiro.version>
 		<lombok.version>1.16.18</lombok.version>
 		<junit.version>4.13.2</junit.version>
 		<jna.version>5.5.0</jna.version>
