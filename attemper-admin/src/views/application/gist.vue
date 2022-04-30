@@ -26,7 +26,7 @@
             @cell-click="clickCell"
           >
             <el-table-column type="expand">
-              <template slot-scope="props">
+              <template v-slot="props">
                 <el-form label-position="left" inline class="table-expand">
                   <el-form-item :label="$t('columns.createTime')">
                     <span>{{ props.row.createTime | parseTime }}</span>
@@ -39,7 +39,7 @@
               width="45"
             />
             <el-table-column :label="$t('application.gist.columns.gistName')" align="center" min-width="100px">
-              <template slot-scope="scope">
+              <template v-slot="scope">
                 <span>{{ scope.row.gistName }}</span>
               </template>
             </el-table-column>

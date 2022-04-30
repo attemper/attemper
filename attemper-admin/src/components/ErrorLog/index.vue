@@ -13,7 +13,7 @@
       </div>
       <el-table :data="errorLogs" border>
         <el-table-column label="Message">
-          <template slot-scope="{row}">
+          <template v-slot="{row}">
             <div>
               <span class="message-title">Msg:</span>
               <el-tag type="danger">
@@ -37,7 +37,7 @@
           </template>
         </el-table-column>
         <el-table-column label="Stack">
-          <template slot-scope="scope">
+          <template v-slot="scope">
             {{ scope.row.err.stack }}
           </template>
         </el-table-column>

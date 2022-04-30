@@ -29,22 +29,22 @@
         width="45"
       />
       <el-table-column :label="$t('dispatch.arg.columns.argName')" prop="id" sortable="custom" min-width="100px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.argName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.arg.columns.argType')" align="center" width="100">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ formatType(scope.row.argType) }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.arg.columns.argValue')" min-width="150px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-link type="success" @click="update(scope.row)">{{ !scope.row.argValue || scope.row.argValue.trim().length === 0 ? '...' : scope.row.argValue }}</el-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.remark')" min-width="150px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.remark }}</span>
         </template>
       </el-table-column>
@@ -125,7 +125,7 @@
           :label="item"
           :width="item.length < 3 ? 50 : item.length*14"
         >
-          <template slot-scope="scope">
+          <template v-slot="scope">
             <el-popover trigger="hover" placement="top">
               <p>{{ scope.row[item] }}</p>
               <div slot="reference">

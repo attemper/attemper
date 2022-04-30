@@ -36,27 +36,27 @@
         width="45"
       />
       <el-table-column :label="$t('dispatch.datasource.columns.dbName')" prop="id" sortable="custom" align="center" min-width="100px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.dbName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.datasource.columns.driverClassName')" align="center" min-width="120px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ formatType(scope.row.driverClassName) }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.datasource.columns.jdbcUrl')" min-width="150px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.jdbcUrl }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.userName')" width="100px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.userName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button type="primary" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
         </template>
       </el-table-column>

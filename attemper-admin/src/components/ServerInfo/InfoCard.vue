@@ -7,12 +7,12 @@
       <div>
         <el-table :data="data" :show-header="showHeader">
           <el-table-column prop="displayName" min-width="70px">
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <span>{{ scope.row.displayName }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="value" min-width="130px">
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <span>{{ scope.row.value }}</span>
             </template>
           </el-table-column>

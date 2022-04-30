@@ -4,7 +4,6 @@ import com.github.attemper.executor.disruptor.consumer.RequestConsumer;
 import com.github.attemper.executor.disruptor.event.JobEvent;
 import com.github.attemper.executor.disruptor.exception.JobEventExceptionHandler;
 import com.github.attemper.executor.disruptor.producer.RequestProducer;
-import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.util.DaemonThreadFactory;
@@ -31,7 +30,7 @@ public class ExecutorConfiguration {
             consumers[i] = new RequestConsumer();
         }
         // Connect the handler
-        disruptor.handleEventsWithWorkerPool(consumers).then((EventHandler<JobEvent>) (jobEvent, l, b) -> {
+        disruptor.handleEventsWithWorkerPool(consumers).then((jobEvent, l, b) -> {
             // Failing to call clear here will result in the
             // object associated with the event to live until
             // it is overwritten once the ring buffer has wrapped

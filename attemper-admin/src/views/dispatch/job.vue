@@ -49,7 +49,7 @@
       @sort-change="sortChange"
     >
       <el-table-column type="expand">
-        <template slot-scope="props">
+        <template v-slot="props">
           <el-form label-position="left" inline class="table-expand">
             <el-form-item :label="$t('dispatch.job.columns.concurrent')">
               <el-tag :type="props.row.concurrent > 0 ? 'success' : 'info'">{{ props.row.concurrent ? $t('tip.yes') : $t('tip.no') }}</el-tag>
@@ -73,22 +73,22 @@
         sortable="custom"
         min-width="100px"
       >
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-link :type="scope.row.status | renderJobStatus" @click="openDesignDialog(scope.row)">{{ scope.row.jobName || '---' }}</el-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-link type="primary" @click="update(scope.row)">{{ scope.row.displayName || '---' }}</el-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.status')" align="center" class-name="status-col" width="80">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tag :type="scope.row.status | renderJobStatus">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.job.columns.nextFireTime')" width="160px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-popover trigger="hover" placement="left">
             <div v-if="scope.row.nextFireTimes && scope.row.nextFireTimes.length > 0">
               <p v-for="item in scope.row.nextFireTimes" :key="item + Math.random()">
@@ -102,7 +102,7 @@
         </template>
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" min-width="240" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <div style="padding-top: 6px;">
             <el-button
               type="info"
@@ -231,22 +231,22 @@
           style="width: 100%;"
         >
           <el-table-column :label="$t('dispatch.arg.columns.argName')" prop="id" sortable="custom" align="center" min-width="100px">
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <span>{{ scope.row.argName }}</span>
             </template>
           </el-table-column>
           <el-table-column :label="$t('dispatch.arg.columns.argType')" align="center" width="100">
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <span>{{ formatArgType(scope.row.argType) }}</span>
             </template>
           </el-table-column>
           <el-table-column :label="$t('dispatch.arg.columns.argValue')" min-width="150px">
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <span>{{ scope.row.argValue }}</span>
             </template>
           </el-table-column>
           <el-table-column :label="$t('actions.handle')" align="center" min-width="120" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <el-button :type="scope.row.allocated > 0 ? 'danger' : 'primary'" :icon="scope.row.allocated > 0 ? 'el-icon-minus' : 'el-icon-plus'" @click="operateArg(scope.row)" />
             </template>
           </el-table-column>

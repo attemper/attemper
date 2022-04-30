@@ -89,17 +89,17 @@
             @current-change="handleCurrentChange"
           >
             <el-table-column label="uri" prop="uri" align="center" min-width="100px">
-              <template slot-scope="scope">
+              <template v-slot="scope">
                 <span>{{ scope.row.uri }}</span>
               </template>
             </el-table-column>
             <el-table-column label="type" prop="uriType" align="center" min-width="80px">
-              <template slot-scope="scope">
+              <template v-slot="scope">
                 <el-tag :type="scope.row.uriType | typeFilter">{{ formatType(scope.row.uriType) }}</el-tag>
               </template>
             </el-table-column>
             <el-table-column :label="$t('actions.handle')" align="center" class-name="small-padding">
-              <template slot-scope="scope">
+              <template v-slot="scope">
                 <el-button type="danger" icon="el-icon-delete" @click="removeInfo(scope.row)" />
               </template>
             </el-table-column>

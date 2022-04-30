@@ -28,7 +28,7 @@
         width="45"
       />
       <el-table-column :label="$t('dispatch.delay.columns.id')" min-width="100px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
@@ -38,22 +38,22 @@
         align="center"
         min-width="100px"
       >
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-link type="primary" @click="linkJob(scope.row)">{{ scope.row.jobName || '-' }}</el-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.displayName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.delay.columns.requestTime')" width="160px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.requestTime | parseTime }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('dispatch.job.columns.nextFireTime')" width="160px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-popover trigger="hover" placement="left">
             <div v-if="scope.row.nextFireTimes && scope.row.nextFireTimes.length > 0">
               <p v-for="item in scope.row.nextFireTimes" :key="item + Math.random()">
@@ -67,7 +67,7 @@
         </template>
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="100" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <div style="padding-top: 6px;">
             <el-button
               type="success"

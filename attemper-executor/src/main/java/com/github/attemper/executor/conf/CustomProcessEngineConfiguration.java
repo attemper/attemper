@@ -7,7 +7,7 @@ import org.camunda.bpm.spring.boot.starter.configuration.impl.AbstractCamundaCon
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 @Order(-1)
 @Component
@@ -18,6 +18,6 @@ public class CustomProcessEngineConfiguration extends AbstractCamundaConfigurati
         processEngineConfiguration.setCmmnEnabled(false);
         processEngineConfiguration.setDmnEnabled(false);
         processEngineConfiguration.setDbIdentityUsed(false);
-        processEngineConfiguration.setCustomIncidentHandlers(Arrays.asList(new CustomJobIncidentHandler(Incident.FAILED_JOB_HANDLER_TYPE)));
+        processEngineConfiguration.setCustomIncidentHandlers(Collections.singletonList(new CustomJobIncidentHandler(Incident.FAILED_JOB_HANDLER_TYPE)));
     }
 }

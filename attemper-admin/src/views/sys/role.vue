@@ -25,17 +25,17 @@
         width="45"
       />
       <el-table-column :label="$t('sys.role.columns.roleName')" prop="id" align="center" min-width="100px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.roleName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.displayName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('actions.handle')" align="center" width="260px" class-name="small-padding">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button type="primary" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
           <el-button type="success" @click="openTenantDialog(scope.row)">{{ $t('sys.role.actions.tenant') }}</el-button>
           <el-button type="primary" @click="openResourceDialog(scope.row)">{{ $t('sys.role.actions.resource') }}</el-button>

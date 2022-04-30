@@ -26,12 +26,12 @@
         width="45"
       />
       <el-table-column :label="$t('columns.userName')" prop="userName" sortable="custom" align="center" min-width="100px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.userName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.displayName')" min-width="150px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-popover trigger="hover" placement="top">
             <p>{{ scope.row.displayName }}</p>
             <div slot="reference">
@@ -41,12 +41,12 @@
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.status')" align="center" width="100">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tag :type="scope.row.status | statusFilter">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column :label="$t('sys.tenant.columns.email')" min-width="100px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-popover trigger="hover" placement="top">
             <p>{{ scope.row.email }}</p>
             <div slot="reference">
@@ -56,7 +56,7 @@
         </template>
       </el-table-column>
       <el-table-column :label="$t('sys.tenant.columns.mobile')" min-width="100px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-popover trigger="hover" placement="top">
             <p>{{ scope.row.mobile }}</p>
             <div slot="reference">
@@ -66,7 +66,7 @@
         </template>
       </el-table-column>
       <el-table-column v-if="canUpdate" :label="$t('actions.handle')" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button type="warning" @click="changePassword(scope.row)">{{ $t('actions.changePassword') }}</el-button>
           <el-button type="primary" @click="update(scope.row)">{{ $t('actions.update') }}</el-button>
         </template>

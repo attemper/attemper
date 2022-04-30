@@ -61,7 +61,7 @@
       @cell-click="clickCell"
     >
       <el-table-column type="expand">
-        <template slot-scope="props">
+        <template v-slot="props">
           <el-form label-position="left" inline class="table-expand">
             <el-form-item :label="$t('monitor.columns.schedulerUri')">
               <span>{{ props.row.schedulerUri }}</span>
@@ -77,12 +77,12 @@
         width="45"
       />
       <el-table-column :label="$t('dispatch.job.columns.jobName')" show-overflow-tooltip min-width="120px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.jobName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.displayName')" min-width="120px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-popover trigger="hover" placement="top">
             <p>{{ scope.row.displayName || scope.row.jobName }}</p>
             <div slot="reference">
@@ -92,28 +92,28 @@
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.startTime')" width="160px" align="center">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.startTime | parseTime }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.endTime')" width="160px" align="center">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span v-show="scope.row.endTime">{{ scope.row.endTime | parseTime }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('monitor.columns.duration')" min-width="80px" align="center">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span v-show="scope.row.duration">{{ scope.row.duration | parseDuration }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('columns.status')" align="center" class-name="status-col" width="100px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span v-show="!scope.row.triggerName"><svg-icon icon-class="hand" /></span>
           <el-tag :type="scope.row.status | renderInstanceStatus">{{ formatStatus(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column :label="$t('monitor.columns.msg')" min-width="100px">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <div v-if="scope.row.code || scope.row.msg">
             <el-popover trigger="hover" placement="bottom">
               <p>{{ scope.row.code }}</p>
