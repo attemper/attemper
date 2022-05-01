@@ -24,6 +24,9 @@ import './permission' // permission control
 import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 
+import customTranslate from '@/utils/customTranslate'
+Vue.prototype.$customTranslate = customTranslate // BPMN international
+
 Vue.use(Element, {
   size: localStorage.getItem('size') || 'small', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)

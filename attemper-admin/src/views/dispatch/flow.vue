@@ -1,30 +1,42 @@
 <template>
-  <div ref="container" class="content">
-    <div ref="canvas" class="canvas" />
-    <div ref="propertiesPanel" class="properties-panel-parent" />
-    <ul class="buttons">
-      <el-tooltip :content="$t('dispatch.flow.title.undo')">
-        <el-button icon="el-icon-back" @click="bpmnModeler.get('commandStack').undo()" />
-      </el-tooltip>
-      <el-tooltip :content="$t('dispatch.flow.title.redo')">
-        <el-button icon="el-icon-right" @click="bpmnModeler.get('commandStack').redo()" />
-      </el-tooltip>
-      <el-tooltip :content="$t('dispatch.flow.title.fit')">
-        <el-button icon="el-icon-rank" @click="fitViewport" />
-      </el-tooltip>
-      <el-tooltip :content="$t('dispatch.flow.title.zoomBig')">
-        <el-button icon="el-icon-zoom-in" @click="zoomViewport(true)" />
-      </el-tooltip>
-      <el-tooltip :content="$t('dispatch.flow.title.zoomSmall')">
-        <el-button icon="el-icon-zoom-out" @click="zoomViewport(false)" />
-      </el-tooltip>
-      <el-tooltip :content="$t('dispatch.flow.title.bpmn')">
-        <el-button icon="el-icon-download" @click="exportBPMN(true)" />
-      </el-tooltip>
-      <el-tooltip :content="$t('dispatch.flow.title.svg')">
-        <el-button icon="el-icon-picture" @click="exportSVG(true)" />
-      </el-tooltip>
-    </ul>
+  <div ref="container">
+    <el-container>
+      <el-main>
+        <div ref="canvas" class="modelering" />
+        <ul class="buttons">
+          <el-tooltip :content="$customTranslate('Undo')">
+            <el-button icon="el-icon-back" @click="modeler.get('commandStack').undo()" />
+          </el-tooltip>
+          <el-tooltip :content="$customTranslate('Redo')">
+            <el-button icon="el-icon-right" @click="modeler.get('commandStack').redo()" />
+          </el-tooltip>
+          <el-tooltip :content="$customTranslate('Fit Size')">
+            <el-button icon="el-icon-rank" @click="fitViewport" />
+          </el-tooltip>
+          <el-tooltip :content="$customTranslate('Zoom Big')">
+            <el-button icon="el-icon-zoom-in" @click="zoomViewport(true)" />
+          </el-tooltip>
+          <el-tooltip :content="$customTranslate('Zoom Small')">
+            <el-button icon="el-icon-zoom-out" @click="zoomViewport(false)" />
+          </el-tooltip>
+          <el-tooltip :content="$customTranslate('Export as BPMN')">
+            <el-button icon="el-icon-download" @click="exportBPMN(true)" />
+          </el-tooltip>
+          <el-tooltip :content="$customTranslate('Export as SVG')">
+            <el-button icon="el-icon-picture" @click="exportSVG(true)" />
+          </el-tooltip>
+          <el-tooltip content="XML">
+            <el-button icon="el-icon-document" @click="showXML" />
+          </el-tooltip>
+        </ul>
+      </el-main>
+      <el-aside>
+        <properties-panel v-if="modeler" class="panel" :modeler="modeler" :element-templates="elementTemplates" />
+      </el-aside>
+    </el-container>
+    <el-drawer :visible.sync="drawer" size="60%" direction="btt" :with-header="false">
+      <el-input v-model="job.content" type="textarea" autosize @input="openDiagram(job.content)" />
+    </el-drawer>
     <div class="custom-area">
       <el-select
         v-model="currentVersion"
@@ -96,30 +108,33 @@
 
 <script>
 import { getContentReq, updateContentReq, versionsReq, copyReq, exchangeReq, publishReq, manualReq, getJsonArgReq } from '@/api/dispatch/job'
-import BpmnModeler from 'bpmn-js/lib/Modeler'
-import propertiesPanelModule from 'bpmn-js-properties-panel'
-import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
+import Modeler from 'bpmn-js/lib/Modeler'
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda'
 import miniMapModule from 'diagram-js-minimap'
-import customTranslate from '@/utils/customTranslate'
 import JobInfoForm from './components/job/jobInfoForm'
 import { getTimeStr } from '@/utils/tools'
-import customElementTemplate from './components/job/element-templates/custom'
+import CUSTOM_ELEMENT_TEMPLATES from './components/job/element-templates/custom'
 import customControlsModule from './components/job/custom'
 import CodeEditor from '@/components/CodeEditor'
+import PropertiesPanel from 'bpmn-vue-properties-panel-camunda/src/views/PropertiesPanel'
+import { INITIAL_DIAGRAM } from 'bpmn-vue-properties-panel-camunda/src/utils/constants'
+import { getProcessElement } from 'bpmn-vue-properties-panel-camunda/src/utils'
 
 export default {
   name: 'flow',
   components: {
+    PropertiesPanel,
     JobInfoForm,
     CodeEditor
   },
   data() {
     return {
-      job: {},
+      job: {
+        content: INITIAL_DIAGRAM
+      },
       jsonData: null,
       currentVersion: -1,
-      bpmnModeler: null,
+      modeler: null,
       jobWithVersions: [],
       editDialog: {
         title: undefined,
@@ -131,32 +146,28 @@ export default {
         }
       },
       targetJobParam: {},
-      zoom: 1
+      drawer: false,
+      elementTemplates: CUSTOM_ELEMENT_TEMPLATES
     }
   },
   created() {
-    setTimeout(() => this.bindBpmn(), 20)
     this.initJobWithVersions()
+  },
+  mounted() {
+    this.bindBpmn()
+    this.registerFileDrop()
   },
   methods: {
     bindBpmn() {
-      const canvas = this.$refs.canvas
-      const customTranslateModule = {
-        translate: ['value', customTranslate]
-      }
-      this.bpmnModeler = new BpmnModeler({
-        container: canvas,
-        propertiesPanel: {
-          parent: this.$refs.propertiesPanel
-        },
+      this.modeler = new Modeler({
+        container: this.$refs.canvas,
         additionalModules: [
-          propertiesProviderModule,
-          propertiesPanelModule,
           miniMapModule,
-          customTranslateModule,
+          {
+            translate: ['value', this.$customTranslate]
+          },
           customControlsModule
         ],
-        elementTemplates: customElementTemplate, // camunda:poperty must be String, Hidden or Dropdown
         moddleExtensions: {
           camunda: camundaModdleDescriptor
         },
@@ -164,19 +175,91 @@ export default {
           bindTo: document
         }
       })
-      this.initWidget()
+      this.openDiagram(this.job.content)
     },
     async openDiagram(xml) {
       try {
-        const result = await this.bpmnModeler.importXML(xml)
-        const { warnings } = result
-        this.bpmnModeler.get('canvas').zoom('fit-viewport')
-        if (warnings.length > 0) {
+        const { warnings } = await this.modeler.importXML(xml)
+        if (warnings.length) {
           this.$message.warning(warnings)
         }
       } catch (err) {
         this.$message.error(err.message + err.warnings)
       }
+    },
+    async exportSVG(download = false) {
+      try {
+        const { svg } = await this.modeler.saveSVG({ format: true })
+        if (download) {
+          this.downloadFile(this.getExportFileName(), svg, 'image/svg+xml')
+        }
+        return svg
+      } catch (err) {
+        this.$message.error(err)
+      }
+    },
+    async exportBPMN(download = false) {
+      try {
+        const { xml } = await this.modeler.saveXML({ format: true })
+        if (download) {
+          this.downloadFile(`${this.getExportFileName()}.bpmn`, xml, 'application/xml')
+        }
+        return (this.job.content = xml)
+      } catch (err) {
+        this.$message.error(err)
+      }
+    },
+    downloadFile(filename, data, type) {
+      const a = document.createElement('a')
+      const url = window.URL.createObjectURL(new Blob([data], { type: type }))
+      a.href = url
+      a.download = filename
+      a.click()
+      window.URL.revokeObjectURL(url)
+    },
+    getExportFileName() {
+      const processElement = getProcessElement(this.modeler)
+      return (processElement.name || processElement.id) + '_' + getTimeStr()
+    },
+    async showXML() {
+      await this.exportBPMN()
+      this.drawer = true
+    },
+    registerFileDrop() {
+      this.$refs.container.ondragover = e => {
+        e.stopPropagation()
+        e.preventDefault()
+        e.dataTransfer.dropEffect = 'copy' // Explicitly show this is a copy.
+      }
+      this.$refs.container.ondrop = e => {
+        e.stopPropagation()
+        e.preventDefault()
+        const reader = new FileReader()
+        reader.onload = e => {
+          this.openDiagram(e.target.result)
+        }
+        reader.readAsText(e.dataTransfer.files[0])
+      }
+    },
+    fitViewport() {
+      this.modeler.get('canvas').zoom(1)
+      const bbox = document.querySelector('.modelering .viewport').getBBox()
+      const currentViewbox = this.modeler.get('canvas').viewbox()
+      const elementMid = {
+        x: bbox.x + bbox.width / 2 - 65,
+        y: bbox.y + bbox.height / 2
+      }
+      this.modeler.get('canvas').viewbox({
+        x: elementMid.x - currentViewbox.width / 3,
+        y: elementMid.y - currentViewbox.height / 2,
+        width: currentViewbox.width,
+        height: currentViewbox.height
+      })
+    },
+    zoomViewport(zoomIn = true) {
+      const nextZoom = this.modeler.get('canvas').zoom() + (zoomIn ? 0.1 : -0.1)
+      this.modeler.get('canvas').zoom(nextZoom)
+      this.$message.info(Number(nextZoom * 100).toFixed(0) + '%')
     },
     save() {
       this.$confirm(
@@ -184,7 +267,7 @@ export default {
         this.$t('tip.confirm'),
         { type: 'info' })
         .then(async() => {
-          this.process.content = await this.exportBPMN()
+          this.job.content = await this.exportBPMN()
           updateContentReq(this.job).then(res => {
             this.$message.success(res.data.msg)
             this.openNewJobPage(this.job.jobName)
@@ -209,8 +292,8 @@ export default {
         this.$t('tip.confirm'),
         { type: 'info' })
         .then(async() => {
-          this.process.content = await this.exportBPMN()
-          updateContentReq(this.job).then(res => {
+          this.job.content = await this.exportBPMN()
+          updateContentReq(this.job).then(() => {
             publishReq({ jobNames: [this.job.jobName] }).then(res => {
               this.$message.success(res.data.msg)
               this.openNewJobPage(this.job.jobName)
@@ -332,92 +415,6 @@ export default {
       }
       return label
     },
-    async exportSVG(download = false) {
-      try {
-        const { svg } = await this.bpmnModeler.saveSVG({ format: true })
-        if (download) {
-          this.downloadFile(this.getExportFileName(), svg, 'image/svg+xml')
-        }
-        return svg
-      } catch (err) {
-        this.$message.error(err)
-      }
-    },
-    async exportBPMN(download = false) {
-      try {
-        const { xml } = await this.bpmnModeler.saveXML({ format: true })
-        if (download) {
-          this.downloadFile(`${this.getExportFileName()}.bpmn`, xml, 'application/xml')
-        }
-        return xml
-      } catch (err) {
-        this.$message.error(err)
-      }
-    },
-    downloadFile(filename, data, type) {
-      const a = document.createElement('a')
-      const url = window.URL.createObjectURL(new Blob([data], { type: type }))
-      a.href = url
-      a.download = filename
-      a.click()
-      window.URL.revokeObjectURL(url)
-    },
-    getExportFileName() {
-      return (this.job.displayName || this.job.jobName || 'undefined') + '-' + getTimeStr()
-    },
-    initWidget() {
-      const self = this
-      function registerFileDrop(container, callback) {
-        function handleFileSelect(e) {
-          e.stopPropagation()
-          e.preventDefault()
-          const files = e.dataTransfer.files
-          const file = files[0]
-          const reader = new FileReader()
-          reader.onload = function(e) {
-            callback(e.target.result)
-          }
-          reader.readAsText(file)
-        }
-        function handleDragOver(e) {
-          e.stopPropagation()
-          e.preventDefault()
-          e.dataTransfer.dropEffect = 'copy' // Explicitly show this is a copy.
-        }
-        container.ondragover = handleDragOver
-        container.ondrop = handleFileSelect
-      }
-      // file drag / drop ///////////////////////
-      // check file api availability
-      if (!window.FileList || !window.FileReader) {
-        window.alert(
-          'Looks like you use an older browser that does not support drag and drop. ' +
-            'Try using Chrome, Firefox or the Internet Explorer > 10.')
-      } else {
-        registerFileDrop(self.$refs.container, this.openDiagram)
-      }
-    },
-    fitViewport() {
-      this.zoom = this.bpmnModeler.get('canvas').zoom('fit-viewport')
-      const bbox = document.querySelector('.flow-containers .viewport').getBBox()
-      const currentViewbox = this.bpmnModeler.get('canvas').viewbox()
-      const elementMid = {
-        x: bbox.x + bbox.width / 2 - 65,
-        y: bbox.y + bbox.height / 2
-      }
-      this.bpmnModeler.get('canvas').viewbox({
-        x: elementMid.x - currentViewbox.width / 2,
-        y: elementMid.y - currentViewbox.height / 2,
-        width: currentViewbox.width,
-        height: currentViewbox.height
-      })
-      this.zoom = bbox.width / currentViewbox.width * 1.8
-    },
-    zoomViewport(zoomIn = true) {
-      this.zoom = this.bpmnModeler.get('canvas').zoom()
-      this.zoom += (zoomIn ? 0.1 : -0.1)
-      this.bpmnModeler.get('canvas').zoom(this.zoom)
-    },
     getLoading() {
       return this.$loading({
         lock: true,
@@ -439,6 +436,46 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style rel="stylesheet/scss" lang="scss" >
   @import "~@/styles/bpmn.scss";
+
+  .modelering {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .panel {
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    right: 5px;
+    min-width: 300px;
+    border-left: 1px solid #ccc;
+    overflow: auto;
+    background-color: #F2F6FC;
+    .el-badge__content.is-fixed {
+      top: 15px;
+    }
+  }
+
+  .djs-palette {
+    left: 5px;
+    top: 5px;
+  }
+
+  .custom-area {
+    position: absolute;
+    bottom: 30px;
+    right: 350px;
+  }
+
+  .buttons {
+    position: absolute;
+    left: 100px;
+    bottom: 10px;
+  }
+
 </style>

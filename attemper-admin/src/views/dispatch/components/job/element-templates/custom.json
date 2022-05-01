@@ -87,16 +87,7 @@
           "name": "requestMethod"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false,
-      "fields": false,
-      "field-name": false,
-      "field-type": false,
-      "field-value": false
-    }
+    ]
   },
   {
     "name": "Http(Async)",
@@ -186,16 +177,7 @@
           "name": "requestMethod"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false,
-      "fields": false,
-      "field-name": false,
-      "field-type": false,
-      "field-value": false
-    }
+    ]
   },
   {
     "name": "Ftp2Local",
@@ -295,16 +277,7 @@
           "name": "ftp_prefix"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false,
-      "fields": false,
-      "field-name": false,
-      "field-type": false,
-      "field-value": false
-    }
+    ]
   },
   {
     "name": "Local2Ftp",
@@ -404,16 +377,7 @@
           "name": "ftp_prefix"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false,
-      "fields": false,
-      "field-name": false,
-      "field-type": false,
-      "field-value": false
-    }
+    ]
   },
   {
     "name": "Sql",
@@ -466,16 +430,7 @@
           "name": "resultType"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false,
-      "fields": false,
-      "field-name": false,
-      "field-type": false,
-      "field-value": false
-    }
+    ]
   },
   {
     "name": "Custom Mail",
@@ -504,7 +459,7 @@
         "constraints": {
           "pattern": {
             "value": "^[A-z0-9._%+-]+@[A-z0-9.-]+\\.[A-z]{2,}$",
-            "message": "Must be a valid email."
+            "message": "Must be a valid email"
           }
         }
       },
@@ -518,7 +473,7 @@
         "constraints": {
           "pattern": {
             "value": "^[A-z0-9._%+-]+@[A-z0-9.-]+\\.[A-z]{2,}$",
-            "message": "Must be a valid email."
+            "message": "Must be a valid email"
           },
           "notEmpty": true
         }
@@ -547,16 +502,7 @@
           "notEmpty": true
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false,
-      "fields": false,
-      "field-name": false,
-      "field-type": false,
-      "field-value": false
-    }
+    ]
   },
   {
     "name": "Custom DingTalk",
@@ -618,16 +564,7 @@
           "notEmpty": true
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false,
-      "fields": false,
-      "field-name": false,
-      "field-type": false,
-      "field-value": false
-    }
+    ]
   },
   {
     "name": "Custom WxWork",
@@ -667,16 +604,7 @@
           "notEmpty": true
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false,
-      "fields": false,
-      "field-name": false,
-      "field-type": false,
-      "field-value": false
-    }
+    ]
   },
   {
     "name": "Job Caller",
@@ -714,27 +642,11 @@
         }
       },
       {
-        "label": "Input local",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:in",
-          "variables": "local"
-        }
-      },
-      {
         "label": "Output all",
         "type": "Hidden",
         "binding": {
           "type": "camunda:out",
           "variables": "all"
-        }
-      },
-      {
-        "label": "Output local",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:out",
-          "variables": "local"
         }
       }
     ]
@@ -770,11 +682,7 @@
           "notEmpty": true
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false
-    }
+    ]
   },
   {
     "name": "Groovy(File Path)",
@@ -807,11 +715,7 @@
           "notEmpty": true
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false
-    }
+    ]
   },
   {
     "name": "Shell(Text)",
@@ -932,11 +836,7 @@
           "name": "shell_charset_command"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false
-    }
+    ]
   },
   {
     "name": "Groovy(Text)",
@@ -969,11 +869,7 @@
           "notEmpty": true
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false
-    }
+    ]
   },
   {
     "name": "Shell(Expression)",
@@ -1095,11 +991,7 @@
           "name": "shell_charset_command"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false
-    }
+    ]
   },
   {
     "name": "Groovy(Expression)",
@@ -1133,10 +1025,6 @@
           "notEmpty": true
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "script-implementation": false
-    }
+    ]
   }
 ]

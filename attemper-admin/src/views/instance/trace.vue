@@ -1,6 +1,6 @@
 <template>
-  <div class="layout">
-    <div ref="canvas" class="canvas-monitor" />
+  <div class="container">
+    <div ref="canvas" class="viewering" />
     <div v-show="showRefresh" class="refresh">
       <el-button type="primary" icon="el-icon-refresh" @click="refresh" />
     </div>
@@ -59,7 +59,9 @@
                   <date-time-generator v-model="page.upperEndTime" @update="page.upperEndTime = $event" @change="search" />
                 </el-form-item>
               </el-form>
-              <el-button v-if="showAll" slot="reference" class="filter-item" style="float: right;" type="primary" @click="visible = !visible">{{ $t('actions.highSearch') }}</el-button>
+              <el-button v-if="showAll" slot="reference" class="filter-item" style="float: right;" type="primary" @click="visible = !visible">
+                {{ $t('actions.highSearch') }}
+              </el-button>
             </el-popover>
           </div>
           <el-table
@@ -78,17 +80,17 @@
               width="45"
             />
             <el-table-column :label="$t('columns.startTime')" min-width="100px" align="center">
-              <template slot-scope="scope">
+              <template v-slot="scope">
                 <div>{{ scope.row.startTime | parseTime }}</div>
               </template>
             </el-table-column>
             <el-table-column :label="$t('columns.endTime')" min-width="100px" align="center">
-              <template slot-scope="scope">
+              <template v-slot="scope">
                 <span>{{ scope.row.endTime | parseTime }}</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('monitor.columns.duration')" min-width="80px" align="center">
-              <template slot-scope="scope">
+              <template v-slot="scope">
                 <span>{{ scope.row.duration | parseDuration }}</span>
               </template>
             </el-table-column>
@@ -105,7 +107,9 @@
         </el-tab-pane>
         <el-tab-pane :label="$t('monitor.label.task')" name="task">
           <div v-if="singleActNodes && singleActNodes.length > 0" class="operation-area">
-            <el-button type="warning" icon="el-icon-s-operation" @click="openParam">{{ $t('actions.retry') }}</el-button>
+            <el-button type="warning" icon="el-icon-s-operation" @click="openParam">
+              {{ $t('actions.retry') }}
+            </el-button>
           </div>
           <el-timeline>
             <el-timeline-item
@@ -166,8 +170,6 @@ import { listReq, listActReq, getArgsReq, retryReq } from '@/api/instance/instan
 import { getContentReq } from '@/api/dispatch/job'
 import BpmnViewer from 'bpmn-js'
 import miniMapModule from 'diagram-js-minimap'
-import customTranslate from '@/utils/customTranslate'
-import customElementTemplate from '../dispatch/components/job/element-templates/custom'
 import Pagination from '@/components/Pagination'
 import DateTimeGenerator from '@/components/DateTimeGenerator'
 import CodeEditor from '@/components/CodeEditor'
@@ -186,7 +188,7 @@ export default {
         procDefId: null,
         content: null
       },
-      bpmnViewer: null,
+      viewer: null,
       list: null,
       listLoading: true,
       page: {
@@ -271,43 +273,40 @@ export default {
       }
     },
     bindBpmn() {
-      const canvas = this.$refs.canvas
-      const customTranslateModule = {
-        translate: ['value', customTranslate]
-      }
-      this.bpmnViewer = new BpmnViewer({
-        container: canvas,
+      this.viewer = new BpmnViewer({
+        container: this.$refs.canvas,
         additionalModules: [
           miniMapModule,
-          customTranslateModule
+          {
+            translate: ['value', this.$customTranslate]
+          }
         ],
-        elementTemplates: customElementTemplate,
         keyboard: {
           bindTo: document
         }
       })
-      const eventBus = this.bpmnViewer.get('eventBus')
+      const eventBus = this.viewer.get('eventBus')
       // you may hook into any of the following events
       const events = [
         'element.click',
         'element.out'
       ]
-      events.forEach(function(event) {
-        eventBus.on(event, function(e) {
+      events.forEach(event => {
+        eventBus.on(event, e => {
           // e.element = the model element
           // e.gfx = the graphical element
           // console.log(event, 'on', e.element.id)
           // console.log(e.element)
           if (e.element.type !== 'bpmn:Process' && !e.element.type.endsWith('Event')) {
-            const overlays = self.bpmnViewer.get('overlays')
+            const overlays = this.viewer.get('overlays')
             if (event === 'element.click') {
-              if (self.nodeOverlay[e.element.id]) {
-                overlays.remove(self.nodeOverlay[e.element.id])
-                self.nodeOverlay[e.element.id] = undefined
+              if (this.nodeOverlay[e.element.id]) {
+                overlays.remove(this.nodeOverlay[e.element.id])
+                this.nodeOverlay[e.element.id] = undefined
               }
-              listActReq({ procInstId: self.procInstId, actId: e.element.id }).then(res => {
-                self.activeName = 'task'
-                self.singleActNodes = res.data.result
+              listActReq({ procInstId: this.procInstId, actId: e.element.id }).then(res => {
+                this.activeName = 'task'
+                this.singleActNodes = res.data.result
                 /* if (nodes.length > 0) {
                   let htmlText = '<div style="width: 300px;">'
                   nodes.forEach(node => {
@@ -321,13 +320,13 @@ export default {
                     },
                     html: htmlText
                   })
-                  self.nodeOverlay[e.element.id] = overlayId
+                  this.nodeOverlay[e.element.id] = overlayId
                 }*/
               })
             } else if (event === 'element.out') {
-              if (self.nodeOverlay[e.element.id]) {
-                overlays.remove(self.nodeOverlay[e.element.id])
-                self.nodeOverlay[e.element.id] = undefined
+              if (this.nodeOverlay[e.element.id]) {
+                overlays.remove(this.nodeOverlay[e.element.id])
+                this.nodeOverlay[e.element.id] = undefined
               }
             }
           }
@@ -336,10 +335,10 @@ export default {
     },
     async openDiagram(xml) {
       try {
-        const result = await this.bpmnViewer.importXML(xml)
+        const result = await this.viewer.importXML(xml)
         const { warnings } = result
-        this.bpmnViewer.get('canvas').zoom('fit-viewport')
-        if (warnings.length > 0) {
+        this.viewer.get('canvas').zoom('fit-viewport')
+        if (warnings.length) {
           this.$message.warning(warnings)
         }
       } catch (err) {
@@ -376,7 +375,7 @@ export default {
       }
       getContentReq(params).then(res => {
         this.job.content = res.data.result
-        if (!this.bpmnViewer) {
+        if (!this.viewer) {
           this.bindBpmn()
         }
         setTimeout(() => {
@@ -402,8 +401,8 @@ export default {
         this.setActNodes(res.data.result)
         const nodes = res.data.result
         if (nodes.length > 0) {
-          const overlays = this.bpmnViewer.get('overlays')
-          const elementRegistry = this.bpmnViewer.get('elementRegistry')
+          const overlays = this.viewer.get('overlays')
+          const elementRegistry = this.viewer.get('elementRegistry')
           nodes.forEach(node => {
             const shape = elementRegistry.get(node.actId)
             overlays.remove({ element: node.actId })
@@ -421,13 +420,13 @@ export default {
         }
       })
     },
-    clickCell(row, column, cell, event) {
+    clickCell(row) {
       this.selectRow(row)
     },
-    renderRecordStyle({ row, rowIndex }) {
+    renderRecordStyle({ row }) {
       return 'row' + row.status
     },
-    handleClick(tab, event) {
+    handleClick(tab) {
       if (tab.name === 'flow') {
         this.renderFlow()
       } else if (tab.name === 'record') {
@@ -435,7 +434,7 @@ export default {
       }
     },
     renderFlow() {
-      listActReq({ procInstId: this.procInstId }).then(res => {
+      listActReq({ procInstId: this.procInstId }).then(() => {
         this.getAct()
       })
     },
@@ -464,4 +463,90 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
   @import "~@/styles/bpmn.scss";
+
+  .viewering {
+    background-color: #ffffff;
+    width: 100%;
+    height: 50%;
+    font-size: 12px;
+    float: left;
+  }
+
+  .container {
+    margin: 0;
+    padding: 0;
+    width:100%;
+    height: 100%;
+    position: absolute;
+  }
+
+  .refresh {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+
+  .external{
+    width: 100%;
+    height: 50%;
+    font-size: 12px;
+    float: right;
+    overflow: auto;
+  }
+
+  .operation-area {
+    margin-bottom: 15px;
+  }
+
+  .el-table .row0{
+    color: #409EFF;
+  }
+
+  .el-table .row1{
+    color: #67C23A;
+  }
+
+  .el-table .row2{
+    color: #F56C6C;
+  }
+
+  .el-table .row3{
+    color: #E6A23C;
+  }
+
+  .el-table .row4{
+    color: #909399;
+  }
+
+  .status0 {
+    background-color: #409EFF; /* color elements as green */
+    opacity: 0.5;
+    border-radius: 10px;
+    //pointer-events: none; /* no pointer events, allows clicking through onto the element */
+  }
+
+  .status1 {
+    background-color: #67C23A; /* color elements as green */
+    opacity: 0.5;
+    border-radius: 10px;
+  }
+
+  .status2 {
+    background-color: #F56C6C; /* color elements as green */
+    opacity: 0.5;
+    border-radius: 10px;
+  }
+
+  .status3 {
+    background-color: #E6A23C; /* color elements as green */
+    opacity: 0.5;
+    border-radius: 10px;
+  }
+
+  .status4 {
+    background-color: #909399; /* color elements as green */
+    opacity: 0.5;
+    border-radius: 10px;
+  }
+
 </style>

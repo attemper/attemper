@@ -213,15 +213,6 @@ export default {
       }
     },
     flow: {
-      title: {
-        undo: '撤销',
-        redo: '重做',
-        fit: '自适应',
-        zoomBig: '放大',
-        zoomSmall: '缩小',
-        bpmn: '以.bpmn文件导出',
-        svg: '以.svg文件导出'
-      },
       tip: {
         copy: '复制',
         exchange: '将当前模型切换为最新的版本',

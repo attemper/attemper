@@ -213,14 +213,6 @@ export default {
       }
     },
     flow: {
-      btn: {
-        xml: 'XML',
-        svg: 'SVG'
-      },
-      title: {
-        xml: 'download as .xml(.bpmn) file',
-        svg: 'download as .svg image'
-      },
       tip: {
         copy: 'Copy',
         exchange: 'Exchange to latest using current version',
