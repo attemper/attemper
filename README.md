@@ -10,7 +10,7 @@
       <img src="https://img.shields.io/badge/quartz-2.3.2-brightgreen.svg" alt="quartz">
     </a>
     <a href="https://github.com/camunda/camunda-bpm-platform">
-      <img src="https://img.shields.io/badge/camunda-7.15.0-brightgreen.svg" alt="camunda">
+      <img src="https://img.shields.io/badge/camunda-7.16.0-brightgreen.svg" alt="camunda">
     </a>
     <a href="https://github.com/LMAX-Exchange/disruptor">
       <img src="https://img.shields.io/badge/disruptor-3.4.2-brightgreen.svg" alt="disruptor">
