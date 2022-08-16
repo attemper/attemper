@@ -1,10 +1,10 @@
 # attemper
 <p align="center">
     <a href="https://github.com/spring-projects/spring-boot">
-      <img src="https://img.shields.io/badge/spring--boot-2.4.4-brightgreen.svg" alt="spring-boot">
+      <img src="https://img.shields.io/badge/spring--boot-2.5.4-brightgreen.svg" alt="spring-boot">
     </a>
     <a href="https://github.com/spring-projects/spring-cloud">
-      <img src="https://img.shields.io/badge/spring--cloud-Hoxton.2020.0.3-brightgreen.svg" alt="spring-cloud">
+      <img src="https://img.shields.io/badge/spring--cloud-Hoxton.2020.0.4-brightgreen.svg" alt="spring-cloud">
     </a>
     <a href="https://github.com/quartz-scheduler/quartz">
       <img src="https://img.shields.io/badge/quartz-2.3.2-brightgreen.svg" alt="quartz">
